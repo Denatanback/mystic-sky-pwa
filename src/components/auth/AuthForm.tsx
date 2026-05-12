@@ -71,6 +71,7 @@ export function LoginForm() {
       saveMockUser({
         name: "Путник",
         email: email.trim(),
+        gender: "",
         birthDate: "",
         birthTime: "",
         birthTimeUnknown: false,
@@ -166,6 +167,7 @@ export function RegisterForm() {
     saveMockUser({
       name: name.trim(),
       email: email.trim(),
+      gender: "",
       birthDate,
       birthTime: birthTimeUnknown ? "" : birthTime,
       birthTimeUnknown,

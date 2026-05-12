@@ -68,7 +68,7 @@ function MenuItem({
     alignItems: "center",
     gap: 14,
     padding: "14px 16px",
-    background: danger ? "rgba(206,116,109,.07)" : "rgba(255,255,255,.03)",
+    background: danger ? "rgba(206,116,109,.07)" : "transparent",
     border: `1px solid ${danger ? "rgba(206,116,109,.22)" : "var(--line-soft)"}`,
     borderRadius: "var(--radius-md)",
     cursor: "pointer",
@@ -146,12 +146,13 @@ export default function ProfilePage() {
 
         {/* avatar hero */}
         <div style={{
-          background: "rgba(17,20,40,.85)",
-          border: "1px solid rgba(216,168,95,.18)",
+          background: "transparent",
+          border: "1px solid rgba(216,168,95,.22)",
           borderRadius: "var(--radius-xl)",
           padding: "28px 20px 24px",
           textAlign: "center",
           backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
           marginBottom: 16,
           position: "relative",
           overflow: "hidden",
@@ -230,13 +231,14 @@ export default function ProfilePage() {
 
         {/* path progress */}
         <div style={{
-          background: "rgba(17,20,40,.75)",
-          border: "1px solid var(--line-soft)",
+          background: "transparent",
+          border: "1px solid rgba(216,168,95,.18)",
           borderRadius: "var(--radius-lg)",
           padding: "14px 16px",
           marginBottom: 20,
           display: "flex", alignItems: "center", gap: 14,
           backdropFilter: "blur(6px)",
+          WebkitBackdropFilter: "blur(6px)",
         }}>
           <div style={{ flexShrink: 0, position: "relative", width: 60, height: 60 }}>
             <svg width="60" height="60" viewBox="0 0 60 60" style={{ transform: "rotate(-90deg)" }}>
@@ -329,6 +331,14 @@ export default function ProfilePage() {
                 Выйти
               </button>
             </div>
+          </div>
+        )}
+
+      </div>
+      <BottomNav />
+    </div>
+  );
+}
           </div>
         )}
 

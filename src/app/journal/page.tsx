@@ -110,12 +110,13 @@ export default function JournalPage() {
             { val: "3",  label: "узла",        color: "var(--blue)" },
           ].map(s => (
             <div key={s.label} style={{
-              background: "rgba(17,20,40,.80)",
-              border: "1px solid rgba(255,255,255,.07)",
+              background: "transparent",
+              border: "1px solid rgba(216,168,95,.18)",
               borderRadius: "var(--radius-md)",
               padding: "12px 10px",
               textAlign: "center",
               backdropFilter: "blur(6px)",
+              WebkitBackdropFilter: "blur(6px)",
             }}>
               <div style={{ fontSize: 22, fontWeight: 700, color: s.color, fontFamily: "var(--font-serif)", lineHeight: 1.1 }}>{s.val}</div>
               <div style={{ fontSize: 11, color: "var(--muted-2)", marginTop: 3 }}>{s.label}</div>
@@ -125,12 +126,13 @@ export default function JournalPage() {
 
         {/* quick note */}
         <div style={{
-          background: "rgba(17,20,40,.85)",
-          border: "1px solid rgba(216,168,95,.18)",
+          background: "transparent",
+          border: "1px solid rgba(216,168,95,.22)",
           borderRadius: "var(--radius-lg)",
           padding: "18px 18px 16px",
           marginBottom: 20,
           backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
             <span style={{ color: "var(--gold)", opacity: .7 }}><IconSparkle /></span>
@@ -272,6 +274,14 @@ export default function JournalPage() {
           <div style={{ textAlign: "center", padding: "48px 24px", color: "var(--muted-2)" }}>
             <div style={{ fontSize: 32, marginBottom: 12 }}>✦</div>
             <p style={{ fontSize: 14 }}>Пока нет записей в этой категории.</p>
+          </div>
+        )}
+
+      </div>
+      <BottomNav />
+    </div>
+  );
+}
           </div>
         )}
 

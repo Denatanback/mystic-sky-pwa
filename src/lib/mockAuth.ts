@@ -4,6 +4,7 @@ const AUTH_KEY    = "mysticSky.isAuthenticated";
 export type MockUserProfile = {
   name: string;
   email: string;
+  gender: "female" | "male" | "";
   birthDate: string;
   birthTime: string;
   birthTimeUnknown: boolean;
@@ -40,6 +41,7 @@ export function setMockUser(partial: { name: string; email: string }): void {
   const profile: MockUserProfile = {
     name: partial.name,
     email: partial.email,
+    gender: "",
     birthDate: "",
     birthTime: "",
     birthTimeUnknown: false,

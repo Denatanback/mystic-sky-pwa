@@ -1,7 +1,7 @@
 export const appRoutes = [
-  { href: "/home",    label: "Главная",   iconActive: "/assets/icons/icon-home-active.png",    iconInactive: "/assets/icons/icon-home-inactive.png" },
-  { href: "/sky",     label: "Небо",      iconActive: "/assets/icons/icon-sky-active.png",     iconInactive: "/assets/icons/icon-sky-inactive.png" },
-  { href: "/today",   label: "Путь",      iconActive: "/assets/icons/icon-path-active.png",    iconInactive: "/assets/icons/icon-path-inactive.png" },
-  { href: "/journal", label: "Журнал",    iconActive: "/assets/icons/icon-journal-active.png", iconInactive: "/assets/icons/icon-journal-inactive.png" },
-  { href: "/profile", label: "Профиль",   iconActive: "/assets/icons/icon-profile-inactive.png", iconInactive: "/assets/icons/icon-profile-inactive.png" },
+  { href: "/home",    label: "Главная", icon: "/assets/icons/icon-home.png" },
+  { href: "/sky",     label: "Небо",    icon: "/assets/icons/icon-sky.png" },
+  { href: "/today",   label: "Путь",    icon: "/assets/icons/icon-path.png" },
+  { href: "/journal", label: "Журнал",  icon: "/assets/icons/icon-journal.png" },
+  { href: "/profile", label: "Профиль", icon: "/assets/icons/icon-profile.png" },
 ];
