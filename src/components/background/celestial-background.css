@@ -1,0 +1,60 @@
+.celestial-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #07131e 0%, #050c14 45%, #030509 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.star-layer {
+  position: absolute;
+  inset: -32px;
+  will-change: transform;
+  transition: transform 220ms ease-out;
+}
+
+.twinkle-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #f0e0c8;
+  animation: starTwinkle var(--dur, 5.8s) ease-in-out infinite;
+}
+
+.twinkle-star.bright {
+  background: #fff8e8;
+  box-shadow: 0 0 5px rgba(255, 248, 232, 0.7);
+}
+
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.nebula-blue {
+  width: 280px;
+  height: 280px;
+  left: -80px;
+  top: 80px;
+  background: radial-gradient(circle, rgba(44, 82, 120, 0.22) 0%, transparent 65%);
+}
+
+.nebula-purple {
+  width: 320px;
+  height: 320px;
+  right: -100px;
+  bottom: 120px;
+  background: radial-gradient(circle, rgba(100, 60, 130, 0.16) 0%, transparent 65%);
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: var(--op, 0.5); transform: scale(0.88); }
+  40%       { opacity: calc(var(--op, 0.5) * 1.5); transform: scale(1.2); }
+  70%       { opacity: calc(var(--op, 0.5) * 0.85); transform: scale(0.95); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .twinkle-star { animation: none; }
+  .star-layer   { transition: none; }
+}

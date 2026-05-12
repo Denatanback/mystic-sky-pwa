@@ -1,0 +1,4 @@
+.mascot-fox {
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 18px rgba(185, 143, 79, 0.15));
+  flex-shrink: 0;
+}

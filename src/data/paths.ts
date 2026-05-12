@@ -1,0 +1,86 @@
+import type { SkyPath } from "@/lib/types";
+
+/* Path colors use hex so they work safely in both CSS and JS contexts
+   (CSS variables like var(--astro) break when concatenated in template literals) */
+export const skyPaths: SkyPath[] = [
+  {
+    id: "astrology",
+    title: "Астрология",
+    shortTitle: "Астро",
+    description: "Солнце, Луна, асцендент, личные циклы и дневные прогнозы.",
+    color: "#f08acb",
+    progress: 60,
+    openedStars: 7,
+    totalStars: 12,
+    icon: "✦",
+    stars: [
+      { id: "sun",  title: "Солнечный знак", layer: "basic", status: "opened"    },
+      { id: "moon", title: "Лунный знак",     layer: "basic", status: "available" },
+      { id: "asc",  title: "Асцендент",       layer: "deep",  status: "locked"    },
+    ],
+  },
+  {
+    id: "numerology",
+    title: "Нумерология",
+    shortTitle: "Числа",
+    description: "Число пути, личный год, матрица судьбы и числовые сценарии.",
+    color: "#60e4c6",
+    progress: 45,
+    openedStars: 8,
+    totalStars: 14,
+    icon: "∞",
+    stars: [
+      { id: "life-path",      title: "Число жизненного пути", layer: "basic", status: "opened"    },
+      { id: "personal-year",  title: "Личный год",            layer: "basic", status: "available" },
+      { id: "destiny-matrix", title: "Матрица судьбы",        layer: "deep",  status: "locked"    },
+    ],
+  },
+  {
+    id: "human-design",
+    title: "Дизайн человека",
+    shortTitle: "Дизайн",
+    description: "Тип, стратегия, авторитет, центры и способ принимать решения.",
+    color: "#f4bd54",
+    progress: 25,
+    openedStars: 3,
+    totalStars: 10,
+    icon: "△",
+    stars: [
+      { id: "type",      title: "Тип",       layer: "basic", status: "opened"    },
+      { id: "strategy",  title: "Стратегия", layer: "basic", status: "available" },
+      { id: "authority", title: "Авторитет", layer: "deep",  status: "locked"    },
+    ],
+  },
+  {
+    id: "past-life",
+    title: "Прошлая жизнь",
+    shortTitle: "Прошлое",
+    description: "Образы, кармические следы и темы, которые возвращаются в твоём пути.",
+    color: "#7cb5ff",
+    progress: 40,
+    openedStars: 5,
+    totalStars: 11,
+    icon: "◎",
+    stars: [
+      { id: "first-image",  title: "Первый образ",           layer: "basic", status: "opened"    },
+      { id: "karmic-theme", title: "Кармическая тема",       layer: "basic", status: "available" },
+      { id: "old-pattern",  title: "Повторяющийся сценарий", layer: "deep",  status: "locked"    },
+    ],
+  },
+  {
+    id: "spiritual-practices",
+    title: "Духовные практики",
+    shortTitle: "Практики",
+    description: "Ритуалы, намерения, дневные практики и работа с внутренним фокусом.",
+    color: "#c99cff",
+    progress: 35,
+    openedStars: 6,
+    totalStars: 13,
+    icon: "✧",
+    stars: [
+      { id: "tea",           title: "Ритуал чая",      layer: "basic", status: "opened"    },
+      { id: "intention",     title: "Намерение дня",   layer: "basic", status: "available" },
+      { id: "moon-practice", title: "Лунная практика", layer: "deep",  status: "locked"    },
+    ],
+  },
+];
