@@ -19,9 +19,18 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Eluna",
-  description: "Your personal star path — daily insights, sky map, practices and journal.",
+  description: "Your personal star path -- daily insights, sky map, practices and journal.",
   manifest: "/manifest.json",
   appleWebApp: { capable: true, title: "Eluna", statusBarStyle: "black-translucent" },
+  icons: {
+    icon: [
+      { url: "/favicon.jpg", type: "image/jpeg" },
+    ],
+    apple: [
+      { url: "/favicon.jpg", type: "image/jpeg" },
+    ],
+    shortcut: "/favicon.jpg",
+  },
 };
 export const viewport: Viewport = {
   themeColor: "#070816",

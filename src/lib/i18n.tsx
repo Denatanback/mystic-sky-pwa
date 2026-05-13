@@ -351,8 +351,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
 
   useEffect(() => {
-    const stored = localStorage.getItem("eluna-lang") as Lang | null;
-    if (stored === "ru" || stored === "en") setLangState(stored);
+    const stored = localStorage.getItem("eluna-lang");
+    if (stored === "en" || stored === "ru") setLangState(stored);
   }, []);
 
   function setLang(l: Lang) {
@@ -360,7 +360,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("eluna-lang", l);
   }
 
-  return <LangCtx.Provider value={{ lang, setLang, t: T[lang] as typeof T["en"] }}>{children}</LangCtx.Provider>;
+  return (
+    <LangCtx.Provider value={{ lang, setLang, t: T[lang] }}>
+      {children}
+    </LangCtx.Provider>
+  );
 }
 
-export function useLang() { return useContext(LangCtx); }
+export function useLang() {
+  return useContext(LangCtx);
+}

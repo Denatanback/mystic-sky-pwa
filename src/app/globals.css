@@ -421,10 +421,21 @@ input, textarea { cursor: text; }
    ═══════════════════════════════════════════════════════════ */
 .app.sky-page {
   background:
-    radial-gradient(ellipse 90% 50% at 50%  5%, rgba(100,40,180,.38), transparent),
-    radial-gradient(ellipse 60% 40% at 85% 35%, rgba(180,60,140,.22), transparent),
-    radial-gradient(ellipse 50% 40% at 15% 65%, rgba(40,60,200,.18), transparent),
+    radial-gradient(ellipse 100% 60% at 50%  0%, rgba(80,30,160,.55), transparent),
+    radial-gradient(ellipse 60% 40% at 85% 35%, rgba(160,50,130,.30), transparent),
+    radial-gradient(ellipse 50% 40% at 15% 65%, rgba(40,50,180,.22), transparent),
+    url('/assets/sky-background/sky-background-main.png') center top / cover no-repeat,
     #060411;
+}
+
+/* Welcome / auth pages background */
+.app.welcome-bg {
+  background:
+    radial-gradient(ellipse 100% 60% at 50%  0%, rgba(80,30,160,.62), transparent),
+    radial-gradient(ellipse 65% 45% at 85% 30%, rgba(160,50,130,.35), transparent),
+    radial-gradient(ellipse 55% 45% at 15% 75%, rgba(40,60,200,.22), transparent),
+    url('/assets/welcome-bg.png') center center / cover no-repeat,
+    #07050f;
 }
 
 /* Filter tabs */

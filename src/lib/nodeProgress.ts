@@ -46,3 +46,9 @@ export function isNodeLocked(discipline: string, nodeId: number): boolean {
   const prev = getNodeState(discipline, nodeId - 1);
   return prev.status !== "completed";
 }
+
+/** Wipe all node progress — call on new account creation or sign-out */
+export function clearProgress() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(KEY);
+}

@@ -15,6 +15,7 @@
     "react-dom": "19.2.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
@@ -23,7 +24,6 @@
     "eslint": "latest",
     "eslint-config-next": "latest",
     "postcss": "latest",
-    "tailwindcss": "latest",
-    "typescript": "latest"
+    "tailwindcss": "latest"
   }
 }

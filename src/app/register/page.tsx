@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { StarField } from "@/components/app-shell/StarField";
 import { saveMockUser, setMockAuthenticated } from "@/lib/mockAuth";
+import { LangToggle } from "@/components/app-shell/LangToggle";
+import { clearProgress } from "@/lib/nodeProgress";
 
 const DIRECTIONS = [
   { id: "astro",    emoji: "🌙", label: "Астрология",       sub: "карта, транзиты, ежедневный день" },
@@ -209,18 +211,13 @@ export default function RegisterPage() {
   }
 
   function finish() {
+    clearProgress(); // fresh start for new account
     saveMockUser({ name, email, gender, birthDate, birthTime, birthTimeUnknown: timeUnknown, birthPlace, createdAt: new Date().toISOString() });
     setMockAuthenticated();
     router.push("/home");
   }
 
   const pageStyle: React.CSSProperties = {
-    width: "min(100vw, 430px)", minHeight: "100dvh",
-    position: "relative", overflow: "hidden",
-    background: `
-      radial-gradient(ellipse 90% 55% at 50% 0%, rgba(120,50,200,.45), transparent),
-      radial-gradient(ellipse 60% 45% at 85% 30%, rgba(160,50,130,.25), transparent),
-      #07050f`,
     padding: "0 18px 40px",
   };
 
@@ -232,7 +229,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <main style={pageStyle}>
+    <main className="app welcome-bg no-nav" style={pageStyle}>
       <StarField />
       <div style={{ position: "relative", zIndex: 2 }}>
 
@@ -262,7 +259,7 @@ export default function RegisterPage() {
           <span style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", letterSpacing: ".05em" }}>
             Eluna<span style={{ color: "var(--gold-2)" }}>✦</span>
           </span>
-          <span style={{ width: 42 }} />
+          <LangToggle />
         </div>
 
         {/* Stepper */}
@@ -627,7 +624,7 @@ export default function RegisterPage() {
                 boxShadow: "0 10px 32px rgba(90,32,144,.5), inset 0 1px 0 rgba(255,255,255,.15)",
               }}
             >
-              Перейти в Eluna →
+              Перейти в Eluna &#8594;
             </button>
           </>
         )}

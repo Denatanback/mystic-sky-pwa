@@ -95,7 +95,13 @@ export default function JournalPage() {
             })}
           </div>
         </section>
-        {filtered.length === 0 && <div style={{ textAlign: "center", padding: "48px 24px", color: "var(--muted-2)" }}><div style={{ fontSize: 32, marginBottom: 12 }}>&#10022;</div><p style={{ fontSize: 14 }}>{t.journal.empty}</p></div>}
+        {filtered.length === 0 && (
+          <div style={{ textAlign: "center", padding: "48px 24px", color: "var(--muted-2)" }}>
+            <div style={{ fontSize: 32, marginBottom: 12 }}>📓</div>
+            <p style={{ fontSize: 14 }}>{t.journal.all === "All" ? "No entries yet" : "Записей пока нет"}</p>
+          </div>
+        )}
+
       </div>
       <BottomNav />
     </div>

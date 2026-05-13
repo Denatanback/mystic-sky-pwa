@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { setMockUser } from "@/lib/mockAuth";
+import { LangToggle } from "@/components/app-shell/LangToggle";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,16 +25,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main style={{
-      width: "min(100vw, 430px)", minHeight: "100dvh",
-      position: "relative", overflow: "hidden",
-      background: `
-        radial-gradient(ellipse 90% 55% at 50% 0%, rgba(120,50,200,.45), transparent),
-        radial-gradient(ellipse 60% 45% at 85% 30%, rgba(160,50,130,.25), transparent),
-        radial-gradient(ellipse 50% 40% at 15% 75%, rgba(40,60,200,.18), transparent),
-        #07050f`,
-      padding: "0 18px 40px",
-    }}>
+<main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
       <StarField />
       <div style={{ position: "relative", zIndex: 2 }}>
 
@@ -52,7 +44,7 @@ export default function LoginPage() {
           <span style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", letterSpacing: ".05em" }}>
             Eluna<span style={{ color: "var(--gold-2)" }}>✦</span>
           </span>
-          <span style={{ width: 42 }} />
+          <LangToggle />
         </div>
 
         {/* moon visual */}

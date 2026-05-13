@@ -19,7 +19,7 @@ export function NodePage({ title, subtitle, nodeNum, totalNodes, backHref, child
   const pct = ((nodeNum - 1) / (totalNodes - 1)) * 100;
 
   return (
-    <div className="app">
+    <div className="app sky-page">
       <StarField orbits={false} />
       <div className="content" style={{ paddingBottom: 100 }}>
 

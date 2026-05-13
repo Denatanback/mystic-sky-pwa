@@ -335,10 +335,8 @@ export default function PastLifeNodePage() {
     </NodePage>
   );
 
-  return (
-    <NodePage title={lang === "ru" ? meta.ru : meta.en} subtitle={lang === "ru" ? meta.sub.ru : meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/pastlife" badge={state.status === "completed" ? "completed" : undefined}>
-      {nodeId === "1" && <PLNode1 />}
-      {nodeId === "2" && <PLNode2 />}
-    </NodePage>
-  );
+  if (nodeId === "1") return <Node1 meta={meta} />;
+  if (nodeId === "2") return <Node2 meta={meta} />;
+  router.push("/sky/pastlife");
+  return null;
 }

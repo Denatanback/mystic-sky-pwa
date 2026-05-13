@@ -1,24 +1,22 @@
+"use client";
 import Link from "next/link";
 import { StarField } from "@/components/app-shell/StarField";
+import { LangToggle } from "@/components/app-shell/LangToggle";
 
 export default function WelcomePage() {
   return (
-    <main style={{
-      width: "min(100vw, 430px)", minHeight: "100dvh",
-      position: "relative", overflow: "hidden",
-      background: `
-        radial-gradient(ellipse 90% 55% at 50% 0%,   rgba(120,50,200,.5),  transparent),
-        radial-gradient(ellipse 60% 45% at 85% 30%,  rgba(160,50,130,.3),  transparent),
-        radial-gradient(ellipse 50% 40% at 15% 75%,  rgba(40, 60,200,.2),  transparent),
-        #07050f`,
-      padding: "0 18px 40px",
-    }}>
+    <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
       <StarField />
 
       <div style={{ position: "relative", zIndex: 2 }}>
 
+        {/* Top bar: lang toggle */}
+        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 16 }}>
+          <LangToggle />
+        </div>
+
         {/* Logo */}
-        <div style={{ paddingTop: 52, textAlign: "center" }}>
+        <div style={{ paddingTop: 24, textAlign: "center" }}>
           <div style={{
             fontFamily: "var(--font-serif)", fontSize: 44,
             fontWeight: 400, color: "var(--text)", letterSpacing: ".06em",

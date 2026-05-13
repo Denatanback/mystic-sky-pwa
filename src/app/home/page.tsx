@@ -117,8 +117,8 @@ export default function HomePage() {
           <div style={{ ...glassCard, padding: "14px 12px", display: "flex", flexDirection: "column", gap: 10 }}>
             <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.3, color: "var(--gold)", fontWeight: 600 }}>{t.home.yourCard}</p>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 62, height: 62, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", position: "relative" }}>
-                <Image src="/assets/main_screen/lotus-01.png" alt="Card" fill style={{ objectFit: "contain" }} />
+              <div style={{ width: 56, height: 80, borderRadius: 8, flexShrink: 0, overflow: "hidden", position: "relative", boxShadow: "0 4px 14px rgba(0,0,0,.5)" }}>
+                <Image src="/assets/main_screen/card-01.png" alt="Card" fill style={{ objectFit: "cover" }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontFamily: "var(--font-serif)", fontSize: 15, color: "var(--text)", lineHeight: 1.2, marginBottom: 4 }}>{t.home.moonInScorpio}</p>
