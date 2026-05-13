@@ -100,8 +100,8 @@ export default function SkyPage() {
             const dim = !nodeVisible(n); const size = isActive ? 84 : 72;
             const nodePath = NODE_PATH[n.id];
             const Inner = () => <>
-              <div style={{ width: size, height: size, borderRadius: "50%", border: `${isActive?2:1.5}px solid ${isActive?"rgba(216,168,95,.85)":isPremium?"rgba(160,130,220,.3)":"rgba(216,168,95,.4)"}`, background: isActive?"radial-gradient(circle at 40% 35%, rgba(216,168,95,.15), rgba(80,40,160,.85))":isPremium?"radial-gradient(circle at 40% 35%, rgba(255,255,255,.04), rgba(20,10,40,.92))":"radial-gradient(circle at 40% 35%, rgba(255,255,255,.06), rgba(15,8,32,.88))", boxShadow: isActive?"0 0 0 8px rgba(216,168,95,.08), 0 0 24px rgba(216,168,95,.35)":"0 4px 14px rgba(0,0,0,.3)", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", flexShrink: 0 }}>
-                <Image src={n.emblem} alt={nodeLabel(n.id)} fill style={{ objectFit: "contain", padding: isActive?10:8, opacity: isPremium?.5:1 }} />
+              <div style={{ width: size, height: size, borderRadius: "50%", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", flexShrink: 0 }}>
+                <Image src={n.emblem} alt={nodeLabel(n.id)} fill style={{ objectFit: "contain", opacity: isPremium?.5:1 }} />
                 {isActive && <div style={{ position: "absolute", top: -6, left: "50%", transform: "translateX(-50%)", width: 20, height: 20, borderRadius: "50%", background: "linear-gradient(135deg, #d8a85f, #8040c0)", border: "1.5px solid rgba(216,168,95,.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, zIndex: 5, boxShadow: "0 0 8px rgba(216,168,95,.5)" }}>&#9733;</div>}
                 {isPremium && <div style={{ position: "absolute", bottom: 6, right: 6, zIndex: 5, lineHeight: 0, filter: "drop-shadow(0 1px 3px rgba(0,0,0,.8))" }}><Image src="/assets/icons/icon-lock.png" alt="Locked" width={30} height={30} style={{ objectFit: "contain" }} /></div>}
               </div>
@@ -123,8 +123,8 @@ export default function SkyPage() {
           <div>
             <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", marginBottom: 10 }}>{t.sky.currentPoint}</p>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 52, height: 52, borderRadius: "50%", flexShrink: 0, background: "radial-gradient(circle at 40% 35%, rgba(120,60,200,.5), rgba(40,20,80,.85))", border: "1.5px solid rgba(216,168,95,.45)", position: "relative", overflow: "hidden", boxShadow: "0 0 16px rgba(120,60,200,.35)" }}>
-                <Image src={activeNode.emblem} alt={nodeLabel(activeNode.id)} fill style={{ objectFit: "contain", padding: 6 }} />
+              <div style={{ width: 52, height: 52, borderRadius: "50%", flexShrink: 0, position: "relative", overflow: "hidden" }}>
+                <Image src={activeNode.emblem} alt={nodeLabel(activeNode.id)} fill style={{ objectFit: "contain" }} />
               </div>
               <div style={{ flex: 1 }}>
                 <p style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 400, color: "var(--text)", lineHeight: 1.1, marginBottom: 2 }}>{nodeLabel(activeNode.id)}</p>
