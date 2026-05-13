@@ -335,8 +335,8 @@ export default function PastLifeNodePage() {
     </NodePage>
   );
 
-  if (nodeId === "1") return <Node1 meta={meta} />;
-  if (nodeId === "2") return <Node2 meta={meta} />;
+  if (nodeId === "1") return <PLNode1 />;
+  if (nodeId === "2") return <PLNode2 />;
   router.push("/sky/pastlife");
   return null;
 }

@@ -34,5 +34,5 @@ export default function AstrologyPathPage() {
 
   const discipline = lang === "ru" ? "Астрология" : "Astrology";
 
-  return <NodePathPage discipline={discipline} disciplineKey="astrology" nodes={NODES} lines={LINES} nextNodeIndex={4} />;
+  return <NodePathPage discipline={discipline} disciplineKey="astrology" nodes={NODES} lines={LINES} />;
 }

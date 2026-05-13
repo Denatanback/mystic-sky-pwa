@@ -38,7 +38,7 @@ function computeStatus(disciplineKey: string, nodeNum: number): NodeStatus {
 }
 
 export function NodePathPage({ discipline, disciplineKey, nodes, lines }: Props) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   // Compute real statuses from localStorage on client
   const [liveNodes, setLiveNodes] = useState<PathNode[]>(nodes);
@@ -143,7 +143,7 @@ export function NodePathPage({ discipline, disciplineKey, nodes, lines }: Props)
           <div style={{ border: "1px solid rgba(216,168,95,.28)", borderRadius: 20, marginBottom: 10, padding: "22px 20px", textAlign: "center", background: "rgba(14,10,32,.6)", backdropFilter: "blur(12px)" }}>
             <div style={{ fontSize: 36, marginBottom: 10 }}>&#127775;</div>
             <p style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--gold-2)" }}>
-              {t.nodePath.title === "Constellation" ? "Path Complete!" : "Путь завершён!"}
+              {lang === "en" ? "Path Complete!" : "Путь завершён!"}
             </p>
           </div>
         )}
