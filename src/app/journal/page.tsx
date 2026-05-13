@@ -14,7 +14,7 @@ export default function JournalPage() {
   const { t } = useLang();
   const [note, setNote] = useState("");
   const [saved, setSaved] = useState(false);
-  const [activeTag, setActiveTag] = useState(t.journal.all);
+  const [activeTag, setActiveTag] = useState<"All" | "Insight" | "Node" | "Card">(t.journal.all);
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const ENTRIES = [

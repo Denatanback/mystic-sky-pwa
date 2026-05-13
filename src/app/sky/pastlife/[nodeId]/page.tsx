@@ -1,4 +1,6 @@
 "use client";
+
+import type { ReactNode } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { NodePage } from "@/components/sky/NodePage";
@@ -161,7 +163,7 @@ function calcKarma(answers: number[]): KarmaTheme {
 function Quiz<T extends string>({ questions, calcResult, renderResult, lang }: {
   questions: { q: { en: string; ru: string }; opts: { label: { en: string; ru: string } }[] }[];
   calcResult: (a: number[]) => T;
-  renderResult: (r: T) => JSX.Element;
+  renderResult: (r: T) => ReactNode;
   lang: string;
 }) {
   const [qIdx, setQIdx] = useState(-1);
