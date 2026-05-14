@@ -3,18 +3,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { StarField } from "@/components/app-shell/StarField";
-import { saveMockUser, setMockAuthenticated } from "@/lib/mockAuth";
+import { createClient } from "@/lib/supabase/client";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { clearProgress } from "@/lib/nodeProgress";
-
-const DIRECTIONS = [
-  { id: "astro",    emoji: "🌙", label: "Астрология",       sub: "карта, транзиты, ежедневный день" },
-  { id: "soul",     emoji: "💫", label: "Родственная душа",  sub: "любовь, совместимость, притяжение" },
-  { id: "practice", emoji: "🕯",  label: "Практики",         sub: "ритуалы, дыхание, внимание" },
-  { id: "cards",    emoji: "✦",  label: "МАК-карты",         sub: "образы, вопросы, инсайты" },
-];
-
-const STEP_LABELS = ["Аккаунт", "Рождение", "Интересы", "Старт"];
+import { useLang } from "@/lib/i18n";
 
 // ─── Masking helpers ─────────────────────────────────────────────────
 
@@ -25,40 +17,10 @@ function formatBirthDateInput(raw: string): string {
   return digits.slice(0, 2) + "." + digits.slice(2, 4) + "." + digits.slice(4);
 }
 
-function validateBirthDate(val: string): string | null {
-  if (!val) return "Введите дату рождения";
-  if (val.length < 10) return "Введите полную дату в формате ДД.ММ.ГГГГ";
-  const parts = val.split(".");
-  if (parts.length !== 3) return "Формат: ДД.ММ.ГГГГ";
-  const day = parseInt(parts[0], 10);
-  const mon = parseInt(parts[1], 10);
-  const year = parseInt(parts[2], 10);
-  const now = new Date().getFullYear();
-  if (mon < 1 || mon > 12) return "Месяц должен быть от 01 до 12";
-  if (day < 1 || day > 31) return "День должен быть от 01 до 31";
-  if (year < 1900 || year > now) return `Год должен быть от 1900 до ${now}`;
-  const d = new Date(year, mon - 1, day);
-  if (d.getFullYear() !== year || d.getMonth() !== mon - 1 || d.getDate() !== day)
-    return "Такой даты не существует";
-  return null;
-}
-
 function formatBirthTimeInput(raw: string): string {
   const digits = raw.replace(/\D/g, "").slice(0, 4);
   if (digits.length <= 2) return digits;
   return digits.slice(0, 2) + ":" + digits.slice(2);
-}
-
-function validateBirthTime(val: string): string | null {
-  if (!val) return null;
-  if (val.length < 5) return "Введите время в формате ЧЧ:ММ";
-  const parts = val.split(":");
-  if (parts.length !== 2) return "Формат: ЧЧ:ММ";
-  const hh = parseInt(parts[0], 10);
-  const mm = parseInt(parts[1], 10);
-  if (hh < 0 || hh > 23) return "Часы от 00 до 23";
-  if (mm < 0 || mm > 59) return "Минуты от 00 до 59";
-  return null;
 }
 
 function generateSecurePassword(): string {
@@ -150,6 +112,9 @@ const btnPrimary: React.CSSProperties = {
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { t } = useLang();
+  const r = t.register;
+
   const [step, setStep] = useState(1);
 
   // Step 1
@@ -174,15 +139,45 @@ export default function RegisterPage() {
   // Step 3
   const [selected, setSelected] = useState<string[]>(["astro", "practice"]);
 
+  function validateBirthDate(val: string): string | null {
+    if (!val) return r.birthDateRequired;
+    if (val.length < 10) return r.birthDateFull;
+    const parts = val.split(".");
+    if (parts.length !== 3) return r.birthDateFormat;
+    const day = parseInt(parts[0], 10);
+    const mon = parseInt(parts[1], 10);
+    const year = parseInt(parts[2], 10);
+    const now = new Date().getFullYear();
+    if (mon < 1 || mon > 12) return r.birthMonthRange;
+    if (day < 1 || day > 31) return r.birthDayRange;
+    if (year < 1900 || year > now) return `${r.birthYearRange} ${now}`;
+    const d = new Date(year, mon - 1, day);
+    if (d.getFullYear() !== year || d.getMonth() !== mon - 1 || d.getDate() !== day)
+      return r.birthDateInvalid;
+    return null;
+  }
+
+  function validateBirthTime(val: string): string | null {
+    if (!val) return null;
+    if (val.length < 5) return r.birthTimeFormat;
+    const parts = val.split(":");
+    if (parts.length !== 2) return r.birthTimeFormatHint;
+    const hh = parseInt(parts[0], 10);
+    const mm = parseInt(parts[1], 10);
+    if (hh < 0 || hh > 23) return r.birthHourRange;
+    if (mm < 0 || mm > 59) return r.birthMinuteRange;
+    return null;
+  }
+
   function toggleDir(id: string) {
     setSelected(prev => prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]);
   }
 
   function validateStep1(): boolean {
     let ok = true;
-    if (!name.trim()) { setNameError("Введите ваше имя"); ok = false; } else setNameError(null);
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setEmailError("Введите корректный email"); ok = false; } else setEmailError(null);
-    if (password.length < 8) { setPassError("Минимум 8 символов"); ok = false; } else setPassError(null);
+    if (!name.trim()) { setNameError(r.nameRequired); ok = false; } else setNameError(null);
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setEmailError(r.emailRequired); ok = false; } else setEmailError(null);
+    if (password.length < 8) { setPassError(r.passwordMin); ok = false; } else setPassError(null);
     return ok;
   }
 
@@ -196,7 +191,7 @@ export default function RegisterPage() {
     } else {
       setBirthTimeError(null);
     }
-    if (!birthPlace.trim()) { setBirthPlaceError("Укажите место рождения"); ok = false; } else setBirthPlaceError(null);
+    if (!birthPlace.trim()) { setBirthPlaceError(r.birthPlaceRequired); ok = false; } else setBirthPlaceError(null);
     return ok;
   }
 
@@ -210,11 +205,48 @@ export default function RegisterPage() {
     setPassError(null);
   }
 
-  function finish() {
+  async function finish() {
     clearProgress(); // fresh start for new account
-    saveMockUser({ name, email, gender, birthDate, birthTime, birthTimeUnknown: timeUnknown, birthPlace, createdAt: new Date().toISOString() });
-    setMockAuthenticated();
-    router.push("/home");
+
+    const [day, month, year] = birthDate.split(".");
+    const birthDateIso = day && month && year ? `${year}-${month}-${day}` : "";
+
+    try {
+      const supabase = createClient();
+
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/home`,
+          data: {
+            full_name: name.trim(),
+            gender,
+            birth_date: birthDateIso,
+            birth_time: timeUnknown ? "" : birthTime,
+            birth_time_unknown: timeUnknown,
+            birth_place: birthPlace.trim(),
+            language: "ru",
+          },
+        },
+      });
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      if (!data.session) {
+        alert("Account created. Please check your email to confirm registration.");
+        router.push("/login");
+        return;
+      }
+
+      router.push("/home");
+      router.refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Registration failed");
+    }
   }
 
   const pageStyle: React.CSSProperties = {
@@ -264,7 +296,7 @@ export default function RegisterPage() {
 
         {/* Stepper */}
         <div style={{ display: "flex", gap: 6, marginTop: 20, marginBottom: 32 }}>
-          {STEP_LABELS.map((lbl, i) => {
+          {r.stepLabels.map((lbl, i) => {
             const done = i + 1 < step;
             const active = i + 1 === step;
             return (
@@ -288,13 +320,13 @@ export default function RegisterPage() {
         {step === 1 && (
           <>
             <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 30, fontWeight: 400, color: "var(--text)", marginBottom: 6 }}>
-              Создай аккаунт
+              {r.step1Title}
             </h1>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 24 }}>
-              Сохраним твой прогресс, карту и личные заметки.
+              {r.step1Sub}
             </p>
             <div style={glassCard}>
-              <FieldWrap label="Имя" error={nameError}>
+              <FieldWrap label={r.nameLabel} error={nameError}>
                 <div style={{ ...inputRow, ...(nameError ? { border: errBorder } : {}) }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-2)" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 21a8 8 0 0 0-16 0" /><circle cx="12" cy="7" r="4" />
@@ -302,8 +334,8 @@ export default function RegisterPage() {
                   <input
                     value={name}
                     onChange={e => { setName(e.target.value); if (nameError) setNameError(null); }}
-                    onBlur={() => { if (!name.trim()) setNameError("Введите ваше имя"); }}
-                    placeholder="Как к тебе обращаться?"
+                    onBlur={() => { if (!name.trim()) setNameError(r.nameRequired); }}
+                    placeholder={r.namePlaceholder}
                     style={inputBase}
                   />
                 </div>
@@ -311,7 +343,7 @@ export default function RegisterPage() {
 
               {/* Gender toggle */}
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 12, color: "var(--muted)", letterSpacing: ".04em" }}>Пол</label>
+                <label style={{ fontSize: 12, color: "var(--muted)", letterSpacing: ".04em" }}>{r.genderLabel}</label>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {(["female", "male"] as const).map(g => (
                     <button
@@ -329,7 +361,7 @@ export default function RegisterPage() {
                         transition: "all .18s",
                       }}
                     >
-                      {g === "female" ? "Женщина" : "Мужчина"}
+                      {g === "female" ? r.female : r.male}
                     </button>
                   ))}
                 </div>
@@ -344,14 +376,14 @@ export default function RegisterPage() {
                     type="email"
                     value={email}
                     onChange={e => { setEmail(e.target.value); if (emailError) setEmailError(null); }}
-                    onBlur={() => { if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setEmailError("Введите корректный email"); }}
+                    onBlur={() => { if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setEmailError(r.emailRequired); }}
                     placeholder="you@email.com"
                     style={inputBase}
                   />
                 </div>
               </FieldWrap>
 
-              <FieldWrap label="Пароль" error={passError}>
+              <FieldWrap label={r.passwordLabel} error={passError}>
                 <div style={{ ...inputRow, ...(passError ? { border: errBorder } : {}), gap: 8 }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-2)" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                     <rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" />
@@ -360,15 +392,15 @@ export default function RegisterPage() {
                     type={showPass ? "text" : "password"}
                     value={password}
                     onChange={e => { setPassword(e.target.value); if (passError) setPassError(null); }}
-                    onBlur={() => { if (password.length > 0 && password.length < 8) setPassError("Минимум 8 символов"); }}
-                    placeholder="Минимум 8 символов"
+                    onBlur={() => { if (password.length > 0 && password.length < 8) setPassError(r.passwordMin); }}
+                    placeholder={r.passwordPlaceholder}
                     style={{ ...inputBase, letterSpacing: showPass ? "normal" : password ? ".12em" : "normal" }}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPass(v => !v)}
                     style={{ background: "none", border: "none", cursor: "pointer", padding: "0 2px", flexShrink: 0, display: "flex", alignItems: "center" }}
-                    aria-label={showPass ? "Скрыть пароль" : "Показать пароль"}
+                    aria-label={showPass ? r.hidePassword : r.showPassword}
                   >
                     <EyeIcon open={showPass} />
                   </button>
@@ -387,17 +419,17 @@ export default function RegisterPage() {
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
                   </svg>
-                  Сгенерировать пароль
+                  {r.generatePassword}
                 </button>
               </FieldWrap>
 
               <button onClick={goStep2} style={{ ...btnPrimary, width: "100%" }}>
-                Продолжить →
+                {r.continue}
               </button>
             </div>
             <p style={{ textAlign: "center", fontSize: 13, color: "var(--muted-2)", marginTop: 20 }}>
-              Уже есть аккаунт?{" "}
-              <Link href="/login" style={{ color: "var(--gold-2)", fontWeight: 500 }}>Войти</Link>
+              {r.haveAccount}{" "}
+              <Link href="/login" style={{ color: "var(--gold-2)", fontWeight: 500 }}>{r.signIn}</Link>
             </p>
           </>
         )}
@@ -406,13 +438,13 @@ export default function RegisterPage() {
         {step === 2 && (
           <>
             <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 30, fontWeight: 400, color: "var(--text)", marginBottom: 6 }}>
-              Данные рождения
+              {r.step2Title}
             </h1>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 24 }}>
-              Это основа для персональной карты и ежедневных подсказок.
+              {r.step2Sub}
             </p>
             <div style={glassCard}>
-              <FieldWrap label="Дата рождения" error={birthDateError}>
+              <FieldWrap label={r.birthDateLabel} error={birthDateError}>
                 <div style={{ ...inputRow, ...(birthDateError ? { border: errBorder } : {}) }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-2)" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
                     <path d="M8 2v4M16 2v4" /><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M3 10h18" />
@@ -421,7 +453,7 @@ export default function RegisterPage() {
                     value={birthDate}
                     onChange={e => { const fmt = formatBirthDateInput(e.target.value); setBirthDate(fmt); if (birthDateError) setBirthDateError(null); }}
                     onBlur={() => setBirthDateError(validateBirthDate(birthDate))}
-                    placeholder="ДД.ММ.ГГГГ"
+                    placeholder={r.birthDatePlaceholder}
                     inputMode="numeric"
                     style={inputBase}
                     maxLength={10}
@@ -429,7 +461,7 @@ export default function RegisterPage() {
                 </div>
               </FieldWrap>
 
-              <FieldWrap label="Время рождения" error={birthTimeError}>
+              <FieldWrap label={r.birthTimeLabel} error={birthTimeError}>
                 <div style={{ ...inputRow, ...(birthTimeError ? { border: errBorder } : {}), opacity: timeUnknown ? .45 : 1 }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-2)" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
@@ -438,7 +470,7 @@ export default function RegisterPage() {
                     value={birthTime}
                     onChange={e => { const fmt = formatBirthTimeInput(e.target.value); setBirthTime(fmt); if (birthTimeError) setBirthTimeError(null); }}
                     onBlur={() => { if (!timeUnknown) setBirthTimeError(validateBirthTime(birthTime)); }}
-                    placeholder="ЧЧ:ММ"
+                    placeholder={r.birthTimePlaceholder}
                     inputMode="numeric"
                     disabled={timeUnknown}
                     style={inputBase}
@@ -453,17 +485,17 @@ export default function RegisterPage() {
                       fontFamily: "var(--font-sans)", padding: 0, opacity: 1,
                     }}
                   >
-                    {timeUnknown ? "✓ Не знаю" : "Не знаю"}
+                    {timeUnknown ? r.birthTimeUnknownActive : r.birthTimeUnknown}
                   </button>
                 </div>
                 {!birthTimeError && !timeUnknown && (
                   <span style={{ fontSize: 11, color: "var(--muted-2)", marginTop: 1 }}>
-                    Необязательно. Уточняет асцендент и дома.
+                    {r.birthTimeNote}
                   </span>
                 )}
               </FieldWrap>
 
-              <FieldWrap label="Место рождения" error={birthPlaceError}>
+              <FieldWrap label={r.birthPlaceLabel} error={birthPlaceError}>
                 <div style={{ ...inputRow, ...(birthPlaceError ? { border: errBorder } : {}) }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-2)" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Z" /><circle cx="12" cy="9" r="2.5" />
@@ -471,20 +503,20 @@ export default function RegisterPage() {
                   <input
                     value={birthPlace}
                     onChange={e => { setBirthPlace(e.target.value); if (birthPlaceError) setBirthPlaceError(null); }}
-                    onBlur={() => { if (!birthPlace.trim()) setBirthPlaceError("Укажите место рождения"); }}
-                    placeholder="Москва, Россия"
+                    onBlur={() => { if (!birthPlace.trim()) setBirthPlaceError(r.birthPlaceRequired); }}
+                    placeholder={r.birthPlacePlaceholder}
                     style={inputBase}
                   />
                 </div>
                 {!birthPlaceError && (
                   <span style={{ fontSize: 11, color: "var(--muted-2)", marginTop: 1 }}>
-                    Начни с города. Страну можно добавить при необходимости.
+                    {r.birthPlaceNote}
                   </span>
                 )}
               </FieldWrap>
 
               <button onClick={goStep3} style={{ ...btnPrimary, width: "100%" }}>
-                Продолжить →
+                {r.continue}
               </button>
             </div>
           </>
@@ -494,13 +526,13 @@ export default function RegisterPage() {
         {step === 3 && (
           <>
             <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 30, fontWeight: 400, color: "var(--text)", marginBottom: 6 }}>
-              Что тебе ближе?
+              {r.step3Title}
             </h1>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 24 }}>
-              Выбери 1–2 направления. Это настроит твой первый путь.
+              {r.step3Sub}
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {DIRECTIONS.map(d => {
+              {r.directions.map(d => {
                 const active = selected.includes(d.id);
                 return (
                   <button
@@ -548,7 +580,7 @@ export default function RegisterPage() {
               })}
             </div>
             <button onClick={() => setStep(4)} style={{ ...btnPrimary, width: "100%", marginTop: 20 }}>
-              Продолжить →
+              {r.continue}
             </button>
           </>
         )}
@@ -577,10 +609,10 @@ export default function RegisterPage() {
 
             <div style={{ textAlign: "center", marginBottom: 24 }}>
               <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 32, fontWeight: 400, color: "var(--text)", marginBottom: 8 }}>
-                Твой путь готов
+                {r.step4Title}
               </h1>
               <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.65, maxWidth: 300, margin: "0 auto" }}>
-                Мы собрали стартовую карту. Первый день начнётся с короткого прогноза и мягкой практики.
+                {r.step4Sub}
               </p>
             </div>
 
@@ -590,9 +622,9 @@ export default function RegisterPage() {
               display: "flex", flexDirection: "column", gap: 12, marginBottom: 16,
             }}>
               {[
-                { icon: "🌙", title: "Стартовая карта",  sub: "Создана по введённым данным" },
-                { icon: "✦",  title: "Первый путь",       sub: "Интуиция и личный ритм" },
-                { icon: "📓", title: "Журнал наблюдений", sub: "Готов для первых записей" },
+                { icon: "🌙", title: r.startMap,            sub: r.startMapSub },
+                { icon: "✦",  title: r.firstPath,           sub: r.firstPathSub },
+                { icon: "📓", title: r.observationJournal,  sub: r.observationJournalSub },
               ].map(item => (
                 <div key={item.title} style={{ display: "flex", alignItems: "center", gap: 14 }}>
                   <div style={{
@@ -624,7 +656,7 @@ export default function RegisterPage() {
                 boxShadow: "0 10px 32px rgba(90,32,144,.5), inset 0 1px 0 rgba(255,255,255,.15)",
               }}
             >
-              Перейти в Eluna &#8594;
+              {r.enterEluna}
             </button>
           </>
         )}

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
-import { getMockUser, clearMockAuth } from "@/lib/mockAuth";
+import { createClient } from "@/lib/supabase/client";
 import { useLang } from "@/lib/i18n";
 
 function IconMoon() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4a7 7 0 1 0 11.5 11.5Z"/></svg>; }
@@ -27,8 +27,49 @@ export default function ProfilePage() {
   const { t } = useLang();
   const [fullName, setFullName] = useState("...");
   const [confirmLogout, setConfirmLogout] = useState(false);
-  useEffect(() => { const user = getMockUser(); if (user?.name) setFullName(user.name.trim()); }, []);
-  function handleLogout() { clearMockAuth(); router.push("/welcome"); }
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadProfile() {
+      const supabase = createClient();
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        router.push("/welcome");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
+      const name =
+        profile?.full_name ||
+        user.user_metadata?.full_name ||
+        user.email?.split("@")[0] ||
+        "...";
+
+      if (!cancelled) setFullName(name.trim());
+    }
+
+    loadProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/welcome");
+    router.refresh();
+  }
 
   const pathProgress = 2 / 8, r = 26, circ = 2 * Math.PI * r;
   const dash = circ * pathProgress;

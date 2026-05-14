@@ -3,25 +3,45 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
-import { setMockUser } from "@/lib/mockAuth";
+import { createClient } from "@/lib/supabase/client";
 import { LangToggle } from "@/components/app-shell/LangToggle";
+import { useLang } from "@/lib/i18n";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useLang();
+  const l = t.login;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim() || !password.trim()) return;
+
     setLoading(true);
-    const rawName = email.split("@")[0].replace(/[._-]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-    setTimeout(() => {
-      setMockUser({ name: rawName, email });
+
+    try {
+      const supabase = createClient();
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
       router.push("/home");
-    }, 600);
+      router.refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -79,9 +99,9 @@ export default function LoginPage() {
           <h1 style={{
             fontFamily: "var(--font-serif)", fontSize: 32, fontWeight: 400,
             color: "var(--text)", lineHeight: 1.15, marginBottom: 8,
-          }}>С возвращением</h1>
-          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-            Твой путь продолжается с того места,<br />где ты остановился.
+          }}>{l.title}</h1>
+          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, whiteSpace: "pre-line" }}>
+            {l.subtitle}
           </p>
         </div>
 
@@ -127,8 +147,8 @@ export default function LoginPage() {
             {/* password */}
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <label style={{ fontSize: 12, color: "var(--muted)", letterSpacing: ".04em" }}>Пароль</label>
-                <a href="#" style={{ fontSize: 12, color: "var(--gold)", opacity: .8 }}>Забыли?</a>
+                <label style={{ fontSize: 12, color: "var(--muted)", letterSpacing: ".04em" }}>{l.passwordLabel}</label>
+                <a href="#" style={{ fontSize: 12, color: "var(--gold)", opacity: .8 }}>{l.forgotPassword}</a>
               </div>
               <div style={{
                 display: "flex", alignItems: "center", gap: 10,
@@ -154,7 +174,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setShowPass(p => !p)}
                   style={{ background: "none", border: "none", color: "var(--muted-2)", cursor: "pointer", padding: 0 }}
-                  aria-label="Показать пароль"
+                  aria-label={showPass ? t.register.hidePassword : t.register.showPassword}
                 >
                   {showPass ? (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
@@ -186,13 +206,13 @@ export default function LoginPage() {
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               }}
             >
-              {loading ? "Входим..." : <>Войти <span>→</span></>}
+              {loading ? l.submitting : <>{l.submit} <span>→</span></>}
             </button>
 
             {/* divider */}
             <div style={{ display: "flex", alignItems: "center", gap: 12, color: "var(--muted-2)", fontSize: 12 }}>
               <span style={{ height: 1, background: "var(--line)", flex: 1 }} />
-              или войти через
+              {l.orSignInWith}
               <span style={{ height: 1, background: "var(--line)", flex: 1 }} />
             </div>
 
@@ -219,8 +239,8 @@ export default function LoginPage() {
         </div>
 
         <p style={{ textAlign: "center", fontSize: 13, color: "var(--muted-2)", marginTop: 20 }}>
-          Нет аккаунта?{" "}
-          <Link href="/register" style={{ color: "var(--gold-2)", fontWeight: 500 }}>Создать</Link>
+          {l.noAccount}{" "}
+          <Link href="/register" style={{ color: "var(--gold-2)", fontWeight: 500 }}>{l.create}</Link>
         </p>
 
       </div>

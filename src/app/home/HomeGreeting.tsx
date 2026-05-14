@@ -1,6 +1,7 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { getMockUser } from "@/lib/mockAuth";
+import { createClient } from "@/lib/supabase/client";
 import { useLang } from "@/lib/i18n";
 
 export function HomeGreeting() {
@@ -8,8 +9,39 @@ export function HomeGreeting() {
   const { t } = useLang();
 
   useEffect(() => {
-    const user = getMockUser();
-    if (user?.name) setFirstName(user.name.trim().split(/\s+/)[0]);
+    let cancelled = false;
+
+    async function loadProfile() {
+      const supabase = createClient();
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
+      const name =
+        profile?.full_name ||
+        user.user_metadata?.full_name ||
+        user.email?.split("@")[0] ||
+        "";
+
+      if (!cancelled && name) {
+        setFirstName(name.trim().split(/\s+/)[0]);
+      }
+    }
+
+    loadProfile();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
