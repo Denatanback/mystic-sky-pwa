@@ -25,7 +25,7 @@ export default function WelcomePage() {
 
         <div className="auth-logo-position"><Logo variant="hero" priority /></div>
 
-
+        <div className="auth-hero-content">
         {/* Tagline */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <h1 style={{
@@ -100,6 +100,7 @@ export default function WelcomePage() {
           ))}
         </div>
 
+        </div>{/* /auth-hero-content */}
       </div>
     </main>
   );

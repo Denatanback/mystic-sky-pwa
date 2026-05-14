@@ -4,7 +4,6 @@ import { Logo } from "@/components/Logo";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { StarField } from "@/components/app-shell/StarField";
 import { createClient } from "@/lib/supabase/client";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { useLang } from "@/lib/i18n";
@@ -48,11 +47,10 @@ export default function LoginPage() {
 
   return (
 <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
-      <StarField />
       <div style={{ position: "relative", zIndex: 2 }}>
 
         {/* back + brand */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 18 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 18, overflow: "visible", position: "relative", zIndex: 20 }}>
           <Link href="/welcome" style={{
             width: 42, height: 42, borderRadius: "50%",
             background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.1)",

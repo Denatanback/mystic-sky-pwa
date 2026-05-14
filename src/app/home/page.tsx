@@ -65,9 +65,9 @@ export default function HomePage() {
     <div className="app">
       <StarField />
       <div className="content">
-        <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-<Logo variant="header" />
-          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <header className="app-topbar">
+          <div className="app-topbar__logo"><Logo variant="header" /></div>
+          <div className="app-topbar__actions">
             <button className="icon-btn" aria-label="Mode">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg>
             </button>
