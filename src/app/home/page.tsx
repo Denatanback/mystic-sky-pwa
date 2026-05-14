@@ -65,7 +65,7 @@ export default function HomePage() {
       <StarField />
       <div className="content">
         <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-<div style={{ width: 100, height: 40, position: "relative", flexShrink: 0 }}>
+<div style={{ width: 44, height: 44, position: "relative", flexShrink: 0 }}>
             <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain", objectPosition: "left center" }} />
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>

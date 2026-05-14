@@ -25,7 +25,7 @@ export default function WelcomePage() {
 
         {/* Logo — centered, large */}
         <div style={{ display: "flex", justifyContent: "center", paddingTop: 24, paddingBottom: 8 }}>
-          <div style={{ width: 180, height: 72, position: "relative" }}>
+          <div style={{ width: 160, height: 160, position: "relative" }}>
             <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain" }} priority />
           </div>
         </div>

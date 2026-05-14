@@ -62,7 +62,7 @@ export default function LoginPage() {
               <path d="M19 12H5m0 0 7 7m-7-7 7-7" />
             </svg>
           </Link>
-<div style={{ width: 90, height: 36, position: "relative", flexShrink: 0 }}>
+<div style={{ width: 44, height: 44, position: "relative", flexShrink: 0 }}>
             <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain", objectPosition: "center" }} />
           </div>
           <LangToggle />
