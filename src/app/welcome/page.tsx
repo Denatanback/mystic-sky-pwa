@@ -1,13 +1,10 @@
 "use client";
 import Link from "next/link";
-import { StarField } from "@/components/app-shell/StarField";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 
 export default function WelcomePage() {
   return (
     <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
-      <StarField />
-
       <div style={{ position: "relative", zIndex: 2 }}>
 
         {/* Top bar: lang toggle */}
@@ -15,47 +12,8 @@ export default function WelcomePage() {
           <LangToggle />
         </div>
 
-        {/* Logo */}
-        <div style={{ paddingTop: 24, textAlign: "center" }}>
-          <div style={{
-            fontFamily: "var(--font-serif)", fontSize: 44,
-            fontWeight: 400, color: "var(--text)", letterSpacing: ".06em",
-            lineHeight: 1,
-          }}>
-            Eluna<span style={{ color: "var(--gold-2)" }}>✦</span>
-          </div>
-        </div>
-
-        {/* Moon visual */}
-        <div style={{ position: "relative", height: 220, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {/* Outer rings */}
-          {[200, 160, 120].map((s, i) => (
-            <div key={i} style={{
-              position: "absolute", width: s, height: s, borderRadius: "50%",
-              border: `1px solid rgba(216,168,95,${0.06 + i * 0.04})`,
-            }} />
-          ))}
-          {/* Moon */}
-          <div style={{
-            width: 90, height: 90, borderRadius: "50%", position: "relative",
-            background: "radial-gradient(circle at 38% 36%, rgba(180,130,255,.4), rgba(80,40,160,.6) 55%, rgba(20,10,50,.9))",
-            border: "1px solid rgba(216,168,95,.45)",
-            boxShadow: "0 0 0 14px rgba(216,168,95,.05), 0 0 0 30px rgba(131,184,207,.03), 0 0 40px rgba(140,70,220,.35)",
-          }}>
-            {/* Crescent overlay */}
-            <div style={{
-              position: "absolute", width: 72, height: 72, borderRadius: "50%",
-              background: "radial-gradient(circle at 30% 30%, rgba(60,20,100,.7), #07050f 70%)",
-              right: -8, top: 6,
-            }} />
-            {/* Star on moon */}
-            <div style={{
-              position: "absolute", top: "28%", left: "22%",
-              color: "var(--gold-2)", fontSize: 14,
-              textShadow: "0 0 8px rgba(216,168,95,.8)",
-            }}>✦</div>
-          </div>
-        </div>
+        {/* Spacer — let the background image breathe */}
+        <div style={{ height: 200 }} />
 
         {/* Tagline */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
@@ -98,7 +56,7 @@ export default function WelcomePage() {
             background: "transparent", color: "var(--gold-2)",
             border: "1px solid rgba(216,168,95,.35)",
             fontSize: 15, fontWeight: 500,
-            textDecoration: "none", transition: "background .2s",
+            textDecoration: "none",
           }}>
             У меня уже есть аккаунт
           </Link>
@@ -115,9 +73,9 @@ export default function WelcomePage() {
           display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginTop: 16,
         }}>
           {[
-            { n: "5",    label: "направлений" },
-            { n: "7",    label: "минут в день" },
-            { n: "∞",   label: "личный путь" },
+            { n: "5",  label: "направлений" },
+            { n: "7",  label: "минут в день" },
+            { n: "∞",  label: "личный путь"  },
           ].map(s => (
             <div key={s.label} style={{
               padding: "13px 8px", borderRadius: 16, textAlign: "center",

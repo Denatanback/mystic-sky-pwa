@@ -330,13 +330,15 @@ export default function PastLifeNodePage() {
     <NodePage title={lang === "ru" ? meta.ru : meta.en} subtitle={lang === "ru" ? meta.sub.ru : meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/pastlife">
       <div style={{ textAlign: "center", padding: "40px 16px" }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
-        <p style={{ color: "var(--muted)" }}>{lang === "ru" ? "Завершите предыдущий узел" : "Complete the previous node first"}</p>
+        <p style={{ color: "var(--muted)" }}>{lang === "ru" ? "\u0417\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u0435 \u043f\u0440\u0435\u0434\u044b\u0434\u0443\u0449\u0438\u0439 \u0443\u0437\u0435\u043b" : "Complete the previous node first"}</p>
       </div>
     </NodePage>
   );
 
-  if (nodeId === "1") return <PLNode1 />;
-  if (nodeId === "2") return <PLNode2 />;
-  router.push("/sky/pastlife");
-  return null;
+  return (
+    <NodePage title={lang === "ru" ? meta.ru : meta.en} subtitle={lang === "ru" ? meta.sub.ru : meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/pastlife" badge={state.status === "completed" ? "completed" : undefined}>
+      {nodeId === "1" && <PLNode1 />}
+      {nodeId === "2" && <PLNode2 />}
+    </NodePage>
+  );
 }

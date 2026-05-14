@@ -361,7 +361,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <LangCtx.Provider value={{ lang, setLang, t: T[lang] as typeof T["en"] }}>
+    <LangCtx.Provider value={{ lang, setLang, t: T[lang] as Translations }}>
       {children}
     </LangCtx.Provider>
   );

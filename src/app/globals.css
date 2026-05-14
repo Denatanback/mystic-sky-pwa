@@ -430,12 +430,7 @@ input, textarea { cursor: text; }
 
 /* Welcome / auth pages background */
 .app.welcome-bg {
-  background:
-    radial-gradient(ellipse 100% 60% at 50%  0%, rgba(80,30,160,.62), transparent),
-    radial-gradient(ellipse 65% 45% at 85% 30%, rgba(160,50,130,.35), transparent),
-    radial-gradient(ellipse 55% 45% at 15% 75%, rgba(40,60,200,.22), transparent),
-    url('/assets/welcome-bg.png') center center / cover no-repeat,
-    #07050f;
+  background: url('/assets/welcome-bg.png') center center / cover no-repeat #07050f;
 }
 
 /* Filter tabs */
