@@ -437,54 +437,57 @@ input, textarea { cursor: text; }
    ELUNA LOGO
    ═══════════════════════════════════════════════════════════ */
 
-/* Auth pages: logo in normal flow, centered, below top controls */
+/* Base logo — never clip, never stretch */
+.eluna-logo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center;
+  flex-shrink: 0;
+}
+.eluna-logo--header { width: clamp(120px, 28vw, 180px); }
+.eluna-logo--auth   { width: clamp(160px, 42vw, 260px); }
+.eluna-logo--hero   { width: clamp(180px, 48vw, 300px); }
+
+/* Auth pages: logo in normal flow, fully visible */
 .auth-brand {
   position: relative;
-  z-index: 20;
+  z-index: 30;
   display: flex;
   justify-content: center;
   align-items: center;
   padding-top: calc(env(safe-area-inset-top, 0px) + 32px);
-  padding-left: 72px;
-  padding-right: 72px;
-  margin-bottom: 48px;
+  margin-bottom: 32px;
   overflow: visible;
-}
-.auth-brand img {
-  width: clamp(150px, 42vw, 240px);
-  height: auto;
-  display: block;
-  object-fit: contain;
-  object-position: center;
 }
 
 /* App topbar (home / sky / journal / etc.) */
 .app-topbar {
   position: relative;
-  z-index: 20;
+  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 56px;
-  padding: max(16px, env(safe-area-inset-top)) 0 8px;
+  min-height: 72px;
+  padding: calc(env(safe-area-inset-top, 0px) + 20px) 0 12px;
   overflow: visible;
   gap: 12px;
   margin-bottom: 8px;
 }
 .app-topbar__logo {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
   overflow: visible;
   min-width: 0;
   flex: 1;
+  display: flex;
+  align-items: center;
 }
 .app-topbar__actions {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
-  z-index: 21;
 }
 
 /* Filter tabs */
