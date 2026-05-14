@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+import { Logo } from "@/components/Logo";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -289,9 +289,7 @@ export default function RegisterPage() {
               </svg>
             </button>
           )}
-          <span style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", letterSpacing: ".05em" }}>
-            Eluna<span style={{ color: "var(--gold-2)" }}>✦</span>
-          </span>
+          <Logo variant="auth" />
           <LangToggle />
         </div>
 

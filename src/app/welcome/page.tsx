@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
+import { Logo } from "@/components/Logo";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { useLang } from "@/lib/i18n";
 
@@ -15,7 +15,7 @@ export default function WelcomePage() {
   ];
 
   return (
-    <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
+    <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px", position: "relative" }}>
       <div style={{ position: "relative", zIndex: 2 }}>
 
         {/* Top bar: lang toggle */}
@@ -23,12 +23,7 @@ export default function WelcomePage() {
           <LangToggle />
         </div>
 
-        {/* Logo — centered, large */}
-        <div style={{ display: "flex", justifyContent: "center", paddingTop: 24, paddingBottom: 8 }}>
-          <div style={{ width: 320, height: 320, position: "relative" }}>
-            <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain" }} priority />
-          </div>
-        </div>
+        <div className="auth-logo-position"><Logo variant="hero" priority /></div>
 
 
         {/* Tagline */}

@@ -1,8 +1,9 @@
 "use client";
+import { Logo } from "@/components/Logo";
+import Image from "next/image";
 import React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { getMockUser } from "@/lib/mockAuth";
@@ -61,9 +62,7 @@ export default function SkyPage() {
       <StarField orbits={false} />
       <div className="content" style={{ paddingBottom: 100 }}>
         <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-          <div style={{ width: 176, height: 176, position: "relative", flexShrink: 0 }}>
-            <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain", objectPosition: "left center" }} />
-          </div>
+          <Logo variant="header" />
           <div style={{ display: "flex", gap: 10 }}>
             <button className="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
             <button className="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg></button>

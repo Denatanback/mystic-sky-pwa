@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
 import Image from "next/image";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
@@ -65,9 +66,7 @@ export default function HomePage() {
       <StarField />
       <div className="content">
         <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-<div style={{ width: 176, height: 176, position: "relative", flexShrink: 0 }}>
-            <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain", objectPosition: "left center" }} />
-          </div>
+<Logo variant="header" />
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
             <button className="icon-btn" aria-label="Mode">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg>

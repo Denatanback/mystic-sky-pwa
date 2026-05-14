@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -62,9 +63,7 @@ export default function LoginPage() {
               <path d="M19 12H5m0 0 7 7m-7-7 7-7" />
             </svg>
           </Link>
-<div style={{ width: 176, height: 176, position: "relative", flexShrink: 0 }}>
-            <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain", objectPosition: "center" }} />
-          </div>
+<Logo variant="auth" />
           <LangToggle />
         </div>
 

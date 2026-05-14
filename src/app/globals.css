@@ -433,6 +433,37 @@ input, textarea { cursor: text; }
   background: url('/assets/welcome-bg-notext.png') center center / cover no-repeat #07050f;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   ELUNA LOGO
+   ═══════════════════════════════════════════════════════════ */
+.eluna-logo {
+  display: block;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  flex-shrink: 0;
+}
+.eluna-logo--header {
+  width: clamp(92px, 22vw, 150px);
+  max-height: 34px;
+}
+.eluna-logo--auth {
+  width: clamp(120px, 34vw, 220px);
+  max-height: 56px;
+}
+.eluna-logo--hero {
+  width: clamp(160px, 44vw, 280px);
+  max-height: 72px;
+}
+.auth-logo-position {
+  position: absolute;
+  top: clamp(28px, 7vh, 72px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+}
+
 /* Filter tabs */
 .sky-tabs {
   display: flex; gap: 6px; margin-bottom: 16px;
