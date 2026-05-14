@@ -49,8 +49,8 @@ export default function LoginPage() {
 <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
       <div style={{ position: "relative", zIndex: 2 }}>
 
-        {/* back + brand */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 18, overflow: "visible", position: "relative", zIndex: 20 }}>
+        {/* Top controls */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 18 }}>
           <Link href="/welcome" style={{
             width: 42, height: 42, borderRadius: "50%",
             background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.1)",
@@ -61,8 +61,12 @@ export default function LoginPage() {
               <path d="M19 12H5m0 0 7 7m-7-7 7-7" />
             </svg>
           </Link>
-<Logo variant="auth" />
           <LangToggle />
+        </div>
+
+        {/* Logo — normal flow, centered, fully visible */}
+        <div className="auth-brand">
+          <Logo variant="auth" priority />
         </div>
 
         {/* moon visual */}

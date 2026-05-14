@@ -289,8 +289,12 @@ export default function RegisterPage() {
               </svg>
             </button>
           )}
-          <Logo variant="auth" />
           <LangToggle />
+        </div>
+
+        {/* Logo — normal flow, centered, fully visible */}
+        <div className="auth-brand">
+          <Logo variant="auth" />
         </div>
 
         {/* Stepper */}

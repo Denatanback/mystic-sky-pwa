@@ -437,22 +437,25 @@ input, textarea { cursor: text; }
    ELUNA LOGO
    ═══════════════════════════════════════════════════════════ */
 
-/* Auth pages: logo floats above hero, no overlap */
-.auth-logo-position {
-  position: absolute;
-  top: clamp(22px, 5vh, 52px);
-  left: 50%;
-  transform: translateX(-50%);
+/* Auth pages: logo in normal flow, centered, below top controls */
+.auth-brand {
+  position: relative;
   z-index: 20;
-  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 32px);
+  padding-left: 72px;
+  padding-right: 72px;
+  margin-bottom: 48px;
   overflow: visible;
 }
-
-/* Hero content pushed below the floating logo */
-.auth-hero-content {
-  position: relative;
-  z-index: 10;
-  padding-top: clamp(86px, 14vh, 132px);
+.auth-brand img {
+  width: clamp(150px, 42vw, 240px);
+  height: auto;
+  display: block;
+  object-fit: contain;
+  object-position: center;
 }
 
 /* App topbar (home / sky / journal / etc.) */

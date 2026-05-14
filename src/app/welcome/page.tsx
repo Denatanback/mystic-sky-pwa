@@ -11,11 +11,11 @@ export default function WelcomePage() {
   const stats = [
     { n: "5", label: w.directions },
     { n: "7", label: w.minDay },
-    { n: "∞", label: w.personalPath },
+    { n: "\u221e", label: w.personalPath },
   ];
 
   return (
-    <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px", position: "relative" }}>
+    <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
       <div style={{ position: "relative", zIndex: 2 }}>
 
         {/* Top bar: lang toggle */}
@@ -23,9 +23,11 @@ export default function WelcomePage() {
           <LangToggle />
         </div>
 
-        <div className="auth-logo-position"><Logo variant="hero" priority /></div>
+        {/* Logo — normal flow, centered, fully visible */}
+        <div className="auth-brand">
+          <Logo variant="hero" priority />
+        </div>
 
-        <div className="auth-hero-content">
         {/* Tagline */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <h1 style={{
@@ -59,7 +61,7 @@ export default function WelcomePage() {
             boxShadow: "0 8px 28px rgba(90,32,144,.5), inset 0 1px 0 rgba(255,255,255,.12)",
             textDecoration: "none",
           }}>
-            {w.createAccount} <span>→</span>
+            {w.createAccount} <span>&#8594;</span>
           </Link>
           <Link href="/login" style={{
             height: 48, borderRadius: 999, display: "flex",
@@ -73,17 +75,14 @@ export default function WelcomePage() {
           </Link>
           <p style={{
             textAlign: "center", color: "var(--muted-2)",
-            fontSize: 12, lineHeight: 1.4,
-            whiteSpace: "pre-line",
+            fontSize: 12, lineHeight: 1.4, whiteSpace: "pre-line",
           }}>
             {w.guestNote}
           </p>
         </div>
 
         {/* Stats */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginTop: 16,
-        }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginTop: 16 }}>
           {stats.map(s => (
             <div key={s.label} style={{
               padding: "13px 8px", borderRadius: 16, textAlign: "center",
@@ -94,13 +93,11 @@ export default function WelcomePage() {
                 display: "block", color: "var(--gold-2)", fontSize: 22,
                 fontFamily: "var(--font-serif)", fontWeight: 400,
               }}>{s.n}</strong>
-              <span style={{ fontSize: 11, color: "var(--muted)", marginTop: 3, display: "block" }}>{s.label}
-</span>
+              <span style={{ fontSize: 11, color: "var(--muted)", marginTop: 3, display: "block" }}>{s.label}</span>
             </div>
           ))}
         </div>
 
-        </div>{/* /auth-hero-content */}
       </div>
     </main>
   );
