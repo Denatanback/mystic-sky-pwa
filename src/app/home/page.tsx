@@ -65,9 +65,9 @@ export default function HomePage() {
       <StarField />
       <div className="content">
         <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-          <span style={{ fontFamily: "var(--font-serif)", fontSize: 32, color: "var(--text)", fontWeight: 400, letterSpacing: ".05em" }}>
-            Eluna<sup style={{ color: "var(--gold-2)", fontSize: 16, verticalAlign: "super" }}>✦</sup>
-          </span>
+<div style={{ width: 100, height: 40, position: "relative", flexShrink: 0 }}>
+            <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain", objectPosition: "left center" }} />
+          </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
             <button className="icon-btn" aria-label="Mode">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg>

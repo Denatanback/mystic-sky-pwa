@@ -61,7 +61,9 @@ export default function SkyPage() {
       <StarField orbits={false} />
       <div className="content" style={{ paddingBottom: 100 }}>
         <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-          <span style={{ fontFamily: "var(--font-serif)", fontSize: 32, color: "var(--text)", fontWeight: 400, letterSpacing: ".05em" }}>Eluna<sup style={{ color: "var(--gold-2)", fontSize: 16, verticalAlign: "super" }}>&#10022;</sup></span>
+          <div style={{ width: 100, height: 40, position: "relative", flexShrink: 0 }}>
+            <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain", objectPosition: "left center" }} />
+          </div>
           <div style={{ display: "flex", gap: 10 }}>
             <button className="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
             <button className="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg></button>

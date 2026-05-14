@@ -18,16 +18,20 @@ export default function WelcomePage() {
     <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
       <div style={{ position: "relative", zIndex: 2 }}>
 
-        {/* Top bar: logo + lang toggle */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 16 }}>
-          <div style={{ width: 90, height: 44, position: "relative" }}>
-            <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain", objectPosition: "left center" }} priority />
-          </div>
+        {/* Top bar: lang toggle */}
+        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 16 }}>
           <LangToggle />
         </div>
 
-        {/* Spacer — let the background image breathe */}
-        <div style={{ height: 160 }} />
+        {/* Logo — centered, large */}
+        <div style={{ display: "flex", justifyContent: "center", paddingTop: 24, paddingBottom: 8 }}>
+          <div style={{ width: 180, height: 72, position: "relative" }}>
+            <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain" }} priority />
+          </div>
+        </div>
+
+        {/* Spacer */}
+        <div style={{ height: 100 }} />
 
         {/* Tagline */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
