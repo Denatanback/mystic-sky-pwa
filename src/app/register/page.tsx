@@ -551,7 +551,7 @@ export default function RegisterPage() {
                     }}
                   >
                     <div style={{
-                      width: 44, height: 44, borderRadius: "50%", flexShrink: 0,
+                      width: 176, height: 176, borderRadius: "50%", flexShrink: 0,
                       background: active ? "rgba(128,64,192,.25)" : "rgba(255,255,255,.05)",
                       border: `1px solid ${active ? "rgba(216,168,95,.40)" : "rgba(255,255,255,.1)"}`,
                       display: "flex", alignItems: "center", justifyContent: "center",

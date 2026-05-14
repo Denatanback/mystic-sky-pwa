@@ -25,13 +25,11 @@ export default function WelcomePage() {
 
         {/* Logo — centered, large */}
         <div style={{ display: "flex", justifyContent: "center", paddingTop: 24, paddingBottom: 8 }}>
-          <div style={{ width: 160, height: 160, position: "relative" }}>
+          <div style={{ width: 320, height: 320, position: "relative" }}>
             <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain" }} priority />
           </div>
         </div>
 
-        {/* Spacer */}
-        <div style={{ height: 100 }} />
 
         {/* Tagline */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
