@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { useLang } from "@/lib/i18n";
 
@@ -17,13 +18,16 @@ export default function WelcomePage() {
     <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
       <div style={{ position: "relative", zIndex: 2 }}>
 
-        {/* Top bar: lang toggle */}
-        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 16 }}>
+        {/* Top bar: logo + lang toggle */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 16 }}>
+          <div style={{ width: 90, height: 44, position: "relative" }}>
+            <Image src="/assets/logo.png" alt="Eluna" fill style={{ objectFit: "contain", objectPosition: "left center" }} priority />
+          </div>
           <LangToggle />
         </div>
 
         {/* Spacer — let the background image breathe */}
-        <div style={{ height: 200 }} />
+        <div style={{ height: 160 }} />
 
         {/* Tagline */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
@@ -93,7 +97,8 @@ export default function WelcomePage() {
                 display: "block", color: "var(--gold-2)", fontSize: 22,
                 fontFamily: "var(--font-serif)", fontWeight: 400,
               }}>{s.n}</strong>
-              <span style={{ fontSize: 11, color: "var(--muted)", marginTop: 3, display: "block" }}>{s.label}</span>
+              <span style={{ fontSize: 11, color: "var(--muted)", marginTop: 3, display: "block" }}>{s.label}
+</span>
             </div>
           ))}
         </div>

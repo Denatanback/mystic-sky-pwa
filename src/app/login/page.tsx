@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
@@ -228,20 +229,15 @@ export default function LoginPage() {
                     border: "1px solid rgba(255,255,255,.12)",
                     color: "var(--muted)", fontSize: 14, fontWeight: 500,
                     cursor: "pointer", transition: "background .2s",
-                    fontFamily: "var(--font-sans)",
                   }}
                 >
                   {s}
                 </button>
               ))}
             </div>
+
           </form>
         </div>
-
-        <p style={{ textAlign: "center", fontSize: 13, color: "var(--muted-2)", marginTop: 20 }}>
-          {l.noAccount}{" "}
-          <Link href="/register" style={{ color: "var(--gold-2)", fontWeight: 500 }}>{l.create}</Link>
-        </p>
 
       </div>
     </main>

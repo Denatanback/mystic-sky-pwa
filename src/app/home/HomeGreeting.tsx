@@ -38,24 +38,22 @@ export function HomeGreeting() {
     }
 
     loadProfile();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
+  if (!firstName) return null;
+
+  const hour = new Date().getHours();
+  const greeting = hour < 12
+    ? t.home.greetingMorning || "Good morning"
+    : hour < 18
+    ? t.home.greetingDay || "Good afternoon"
+    : t.home.greetingEvening || "Good evening";
+
   return (
-    <div style={{ marginTop: 12 }}>
-      <h1 style={{
-        fontFamily: "var(--font-serif)", fontWeight: 400, fontSize: 30,
-        lineHeight: 1.15, color: "var(--text)",
-        display: "flex", alignItems: "center", gap: 6,
-      }}>
-        {t.home.hello} {firstName || "…"}
-        <span style={{ color: "var(--gold-2)", fontSize: 18, verticalAlign: "middle" }}>✦</span>
-      </h1>
-      <p style={{ color: "var(--muted)", fontSize: 13, marginTop: 4, lineHeight: 1.5 }}>
-        {t.home.greetingLine2}
+    <div style={{ marginBottom: 4 }}>
+      <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.4 }}>
+        {greeting}, <span style={{ color: "var(--gold-2)", fontWeight: 600 }}>{firstName}</span>
       </p>
     </div>
   );

@@ -430,7 +430,7 @@ input, textarea { cursor: text; }
 
 /* Welcome / auth pages background */
 .app.welcome-bg {
-  background: url('/assets/welcome-bg.png') center center / cover no-repeat #07050f;
+  background: url('/assets/welcome-bg-notext.png') center center / cover no-repeat #07050f;
 }
 
 /* Filter tabs */

@@ -139,13 +139,14 @@ export default function ProfilePage() {
           <MenuItem icon={<IconLogout />} title={t.profile.signOut} sub={t.profile.signOutSub} onClick={() => setConfirmLogout(true)} danger />
         ) : (
           <div style={{ background: "rgba(206,116,109,.10)", border: "1px solid rgba(206,116,109,.30)", borderRadius: "var(--radius-md)", padding: "16px", textAlign: "center" }}>
-            <p style={{ fontSize: 14, color: "var(--text)", marginBottom: 12 }}>{t.profile.confirmSignOut}</p>
+            <p style={{ fontSize: 14, color: "var(--text)", marginBottom: 12 }}>{t.profile.signOutConfirm}</p>
             <div style={{ display: "flex", gap: 10 }}>
-              <button onClick={() => setConfirmLogout(false)} style={{ flex: 1, padding: "10px", background: "rgba(255,255,255,.06)", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-sm)", color: "var(--muted)", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>{t.profile.stay}</button>
-              <button onClick={handleLogout} style={{ flex: 1, padding: "10px", background: "rgba(206,116,109,.20)", border: "1px solid rgba(206,116,109,.40)", borderRadius: "var(--radius-sm)", color: "var(--danger)", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>{t.profile.signOut}</button>
+              <button onClick={() => setConfirmLogout(false)} style={{ flex: 1, height: 42, borderRadius: 999, border: "1px solid rgba(255,255,255,.15)", background: "transparent", color: "var(--muted)", cursor: "pointer", fontSize: 14 }}>{t.profile.cancel}</button>
+              <button onClick={handleLogout} style={{ flex: 1, height: 42, borderRadius: 999, border: "none", background: "rgba(206,116,109,.25)", color: "#e87070", cursor: "pointer", fontSize: 14, fontWeight: 600 }}>{t.profile.signOut}</button>
             </div>
           </div>
         )}
+
       </div>
       <BottomNav />
     </div>
