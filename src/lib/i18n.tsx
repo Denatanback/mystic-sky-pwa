@@ -3,6 +3,13 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 export type Lang = "en" | "ru";
 
+/**
+ * Set to true to re-enable the Russian locale in the UI.
+ * RU translations are preserved in the T object below and will work
+ * immediately once this flag is flipped back to true.
+ */
+export const ENABLE_RU_LOCALE = false;
+
 const T = {
   en: {
     nav: { home: "Home", sky: "Sky", path: "Path", journal: "Journal", profile: "Profile" },
@@ -446,12 +453,20 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const stored = localStorage.getItem("eluna-lang");
+    if (!ENABLE_RU_LOCALE) {
+      // RU is temporarily disabled — migrate any stored RU preference to EN
+      if (stored === "ru") localStorage.setItem("eluna-lang", "en");
+      setLangState("en");
+      return;
+    }
     if (stored === "en" || stored === "ru") setLangState(stored);
   }, []);
 
   function setLang(l: Lang) {
-    setLangState(l);
-    localStorage.setItem("eluna-lang", l);
+    // Guard: ignore RU requests while the locale is disabled
+    const safe: Lang = (!ENABLE_RU_LOCALE && l === "ru") ? "en" : l;
+    setLangState(safe);
+    localStorage.setItem("eluna-lang", safe);
   }
 
   return (

@@ -1,11 +1,14 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { useLang } from "@/lib/i18n";
+import { useLang, ENABLE_RU_LOCALE } from "@/lib/i18n";
 
 export function LangToggle() {
   const { lang, setLang } = useLang();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  // RU locale is currently disabled — hide the toggle entirely
+  if (!ENABLE_RU_LOCALE) return null;
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {

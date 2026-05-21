@@ -543,21 +543,26 @@ export default function RegisterPage() {
                     onClick={() => toggleDir(d.id)}
                     style={{
                       display: "flex", alignItems: "center", gap: 14,
-                      padding: "16px 18px",
-                      background: active ? "rgba(128,64,192,.20)" : "rgba(255,255,255,.04)",
-                      border: `1px solid ${active ? "rgba(128,64,192,.60)" : "rgba(255,255,255,.1)"}`,
-                      borderRadius: "var(--radius-lg)",
+                      padding: "18px 20px",
+                      minHeight: 96,
+                      background: active ? "rgba(14,8,32,.85)" : "rgba(14,8,32,.62)",
+                      border: `1px solid ${active ? "rgba(128,64,192,.60)" : "rgba(255,214,130,.18)"}`,
+                      borderRadius: 24,
                       cursor: "pointer", transition: "all .18s",
                       textAlign: "left", fontFamily: "var(--font-sans)",
+                      backdropFilter: "blur(14px)",
+                      WebkitBackdropFilter: "blur(14px)",
                       boxShadow: active ? "0 0 20px rgba(128,64,192,.15)" : "none",
+                      overflow: "visible",
+                      width: "100%",
                     }}
                   >
                     <div style={{
-                      width: 176, height: 176, borderRadius: "50%", flexShrink: 0,
-                      background: active ? "rgba(128,64,192,.25)" : "rgba(255,255,255,.05)",
+                      width: 56, height: 56, borderRadius: 18, flexShrink: 0,
+                      background: active ? "rgba(128,64,192,.25)" : "rgba(255,255,255,.06)",
                       border: `1px solid ${active ? "rgba(216,168,95,.40)" : "rgba(255,255,255,.1)"}`,
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 20, transition: "all .18s",
+                      fontSize: 26, transition: "all .18s",
                     }}>
                       {d.emoji}
                     </div>
@@ -591,18 +596,12 @@ export default function RegisterPage() {
         {/* === STEP 4 === */}
         {step === 4 && (
           <>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 160, position: "relative" }}>
-              {[160, 120, 84].map((s, i) => (
-                <div key={i} style={{
-                  position: "absolute", width: s, height: s, borderRadius: "50%",
-                  border: `1px solid rgba(216,168,95,${0.06 + i * 0.05})`,
-                }} />
-              ))}
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 80, position: "relative" }}>
               <div style={{
                 width: 72, height: 72, borderRadius: "50%",
                 background: "radial-gradient(circle at 38% 36%, rgba(180,130,255,.45), rgba(80,40,160,.65) 55%, rgba(20,10,50,.95))",
                 border: "2px solid rgba(216,168,95,.45)",
-                boxShadow: "0 0 0 12px rgba(216,168,95,.05), 0 0 40px rgba(140,70,220,.45)",
+                boxShadow: "0 0 40px rgba(140,70,220,.45)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: 26, color: "var(--gold-2)",
               }}>

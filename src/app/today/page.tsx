@@ -92,7 +92,7 @@ const DISCIPLINES = [
   { key: "numerology",  labelRu: "Нумерология",        labelEn: "Numerology",        total: 8, emblem: "/assets/sky-emblems/sky-numerology-emblem.png" },
   { key: "humandesign", labelRu: "Дизайн человека",    labelEn: "Human Design",      total: 8, emblem: "/assets/sky-emblems/sky-humandesign-emblem.png" },
   { key: "pastlife",    labelRu: "Прошлая жизнь",      labelEn: "Past Life",         total: 7, emblem: "/assets/sky-emblems/sky-pastlife-emblem.png" },
-  { key: "spiritual",   labelRu: "Духовные практики",  labelEn: "Spiritual",         total: 7, emblem: "/assets/sky-emblems/sky-spiritual-emblem.png" },
+  { key: "spiritual",   labelRu: "Духовные практики",  labelEn: "Spiritual",         total: 7, emblem: "/assets/sky-emblems/sky-soulpractice-emblem.png" },
   { key: "soulmate",    labelRu: "Родственная душа",   labelEn: "Soul Mate",         total: 7, emblem: "/assets/sky-emblems/sky-soulmate-emblem.png" },
 ];
 

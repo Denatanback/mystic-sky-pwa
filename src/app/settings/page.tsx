@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
-import { useLang, type Lang } from "@/lib/i18n";
+import { useLang, type Lang, ENABLE_RU_LOCALE } from "@/lib/i18n";
 
 function IconChevron() {
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>;
@@ -52,19 +52,34 @@ export default function SettingsPage() {
               </div>
             </div>
             <div style={{ display: "flex", padding: "12px 16px", gap: 10 }}>
-              {(["en", "ru"] as Lang[]).map(l => (
-                <button key={l} onClick={() => setLang(l)} style={{
-                  flex: 1, padding: "12px 0", borderRadius: "var(--radius-md)", cursor: "pointer",
-                  fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: lang === l ? 700 : 500,
-                  border: `1.5px solid ${lang === l ? "rgba(216,168,95,.7)" : "rgba(255,255,255,.1)"}`,
-                  background: lang === l ? "rgba(216,168,95,.12)" : "rgba(255,255,255,.03)",
-                  color: lang === l ? "var(--gold)" : "var(--muted)",
-                  transition: "all .2s",
-                  boxShadow: lang === l ? "0 0 12px rgba(216,168,95,.2)" : "none",
+              {ENABLE_RU_LOCALE ? (
+                (["en", "ru"] as Lang[]).map(l => (
+                  <button key={l} onClick={() => setLang(l)} style={{
+                    flex: 1, padding: "12px 0", borderRadius: "var(--radius-md)", cursor: "pointer",
+                    fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: lang === l ? 700 : 500,
+                    border: `1.5px solid ${lang === l ? "rgba(216,168,95,.7)" : "rgba(255,255,255,.1)"}`,
+                    background: lang === l ? "rgba(216,168,95,.12)" : "rgba(255,255,255,.03)",
+                    color: lang === l ? "var(--gold)" : "var(--muted)",
+                    transition: "all .2s",
+                    boxShadow: lang === l ? "0 0 12px rgba(216,168,95,.2)" : "none",
+                  }}>
+                    {l === "en" ? t.settings.english : t.settings.russian}
+                  </button>
+                ))
+              ) : (
+                /* RU temporarily disabled — show read-only EN indicator */
+                <div style={{
+                  flex: 1, padding: "12px 0", borderRadius: "var(--radius-md)",
+                  fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 700,
+                  border: "1.5px solid rgba(216,168,95,.7)",
+                  background: "rgba(216,168,95,.12)",
+                  color: "var(--gold)",
+                  textAlign: "center",
+                  boxShadow: "0 0 12px rgba(216,168,95,.2)",
                 }}>
-                  {l === "en" ? t.settings.english : t.settings.russian}
-                </button>
-              ))}
+                  {t.settings.english}
+                </div>
+              )}
             </div>
           </div>
         </div>
