@@ -3,6 +3,7 @@ import Link from "next/link";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang, type Lang, ENABLE_RU_LOCALE } from "@/lib/i18n";
+import { MascotTopBarButton } from "@/components/mascot/MascotTopBarButton";
 
 function IconChevron() {
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>;
@@ -38,6 +39,7 @@ export default function SettingsPage() {
               <p>{t.settings.subtitle}</p>
             </div>
           </div>
+          <MascotTopBarButton />
         </header>
 
         {/* Language */}

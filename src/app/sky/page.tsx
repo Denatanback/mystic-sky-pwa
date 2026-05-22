@@ -8,6 +8,7 @@ import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { getMockUser } from "@/lib/mockAuth";
 import { useLang } from "@/lib/i18n";
+import { MascotTopBarButton } from "@/components/mascot/MascotTopBarButton";
 
 type NodeStatus = "active" | "available" | "premium";
 interface SkyNode { id: string; num: number; status: NodeStatus; emblem: string; deg: number; }
@@ -64,6 +65,7 @@ export default function SkyPage() {
         <header className="app-topbar">
           <div className="app-topbar__logo"><Logo variant="header" /></div>
           <div className="app-topbar__actions">
+            <MascotTopBarButton />
             <button className="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
             <button className="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg></button>
           </div>

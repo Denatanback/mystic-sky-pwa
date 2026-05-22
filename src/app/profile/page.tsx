@@ -6,6 +6,7 @@ import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { createClient } from "@/lib/supabase/client";
 import { useLang } from "@/lib/i18n";
+import { MascotTopBarButton } from "@/components/mascot/MascotTopBarButton";
 
 function IconMoon() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4a7 7 0 1 0 11.5 11.5Z"/></svg>; }
 function IconJournal() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M6 3h12v18H6z"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>; }
@@ -81,6 +82,7 @@ export default function ProfilePage() {
         <header className="header">
           <div className="screen-title"><h1>{t.profile.title}</h1><p>{t.profile.subtitle}</p></div>
           <button className="icon-btn" aria-label="Notifications"><IconBell /></button>
+          <MascotTopBarButton />
         </header>
 
         {/* Avatar hero */}

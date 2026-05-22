@@ -6,6 +6,7 @@ import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { HomeGreeting } from "./HomeGreeting";
 import { useLang } from "@/lib/i18n";
+import { MascotTopBarButton } from "@/components/mascot/MascotTopBarButton";
 
 function EnergyRing({ pct, label }: { pct: number; label: string }) {
   const r = 36, circ = 2 * Math.PI * r;
@@ -68,6 +69,7 @@ export default function HomePage() {
         <header className="app-topbar">
           <div className="app-topbar__logo"><Logo variant="header" /></div>
           <div className="app-topbar__actions">
+            <MascotTopBarButton />
             <button className="icon-btn" aria-label="Mode">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg>
             </button>

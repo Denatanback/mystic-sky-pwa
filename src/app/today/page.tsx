@@ -5,6 +5,7 @@ import Image from "next/image";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
+import { MascotTopBarButton } from "@/components/mascot/MascotTopBarButton";
 import { getMockUser } from "@/lib/mockAuth";
 import { getSunSign } from "@/lib/astroCalc";
 import { lifePathNumber } from "@/lib/numerologyCalc";
@@ -173,19 +174,22 @@ export default function TodayPage() {
       <div className="content">
 
         {/* Header */}
-        <header style={{ marginBottom: 20 }}>
-          <p style={{ fontSize: 12, color: "var(--muted)", textTransform: "capitalize", marginBottom: 2 }}>{dateLabel}</p>
-          <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 30, fontWeight: 400, color: "var(--text)", lineHeight: 1.1 }}>
-            {userName
-              ? (ru ? `Привет, ${userName}` : `Hello, ${userName}`)
-              : (ru ? "Твой день" : "Your day")}
-          </h1>
-          {planetDay && (
-            <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 4 }}>
-              <span style={{ color: "var(--gold)", marginRight: 6 }}>{planetDay.symbol}</span>
-              {ru ? `День ${planetDay.ru}` : `Day of ${planetDay.en}`}
-            </p>
-          )}
+        <header style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
+          <div>
+            <p style={{ fontSize: 12, color: "var(--muted)", textTransform: "capitalize", marginBottom: 2 }}>{dateLabel}</p>
+            <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 30, fontWeight: 400, color: "var(--text)", lineHeight: 1.1 }}>
+              {userName
+                ? (ru ? `Привет, ${userName}` : `Hello, ${userName}`)
+                : (ru ? "Твой день" : "Your day")}
+            </h1>
+            {planetDay && (
+              <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 4 }}>
+                <span style={{ color: "var(--gold)", marginRight: 6 }}>{planetDay.symbol}</span>
+                {ru ? `День ${planetDay.ru}` : `Day of ${planetDay.en}`}
+              </p>
+            )}
+          </div>
+          <MascotTopBarButton />
         </header>
 
         {/* Moon hero card */}
