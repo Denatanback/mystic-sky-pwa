@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
-import { setMockUser } from "@/lib/mockAuth";
+import { signIn } from "@/lib/auth/authAdapter";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -11,16 +11,20 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
     setLoading(true);
-    const rawName = email.split("@")[0].replace(/[._-]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-    setTimeout(() => {
-      setMockUser({ name: rawName, email });
-      router.push("/home");
-    }, 600);
+    setAuthError("");
+    const result = await signIn({ email, password });
+    setLoading(false);
+    if (result.error) {
+      setAuthError(result.error);
+      return;
+    }
+    router.push("/home");
   }
 
   return (
@@ -180,6 +184,11 @@ export default function LoginPage() {
             </div>
 
             {/* submit */}
+            {authError && (
+              <p style={{ color: "var(--danger)", fontSize: 12, lineHeight: 1.4, margin: 0 }}>
+                {authError}
+              </p>
+            )}
             <button
               type="submit"
               disabled={loading}

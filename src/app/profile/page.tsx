@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
-import { getMockUser, clearMockAuth } from "@/lib/mockAuth";
+import { getCurrentUser, signOut } from "@/lib/auth/authAdapter";
 
 function IconMoon() {
   return (
@@ -115,12 +115,17 @@ export default function ProfilePage() {
   const [confirmLogout, setConfirmLogout] = useState(false);
 
   useEffect(() => {
-    const user = getMockUser();
-    if (user?.name) setFullName(user.name.trim());
+    let cancelled = false;
+    void getCurrentUser().then((user) => {
+      if (!cancelled && user?.name) setFullName(user.name.trim());
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  function handleLogout() {
-    clearMockAuth();
+  async function handleLogout() {
+    await signOut();
     router.push("/welcome");
   }
 

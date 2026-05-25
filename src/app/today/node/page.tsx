@@ -30,7 +30,7 @@ const QUESTIONS = [
 export default function NodePage() {
   const [currentQ, setCurrentQ] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
-  const [answers, setAnswers] = useState<number[]>([]);
+  const [, setAnswers] = useState<number[]>([]);
 
   const progress = Math.round(((currentQ) / TOTAL_Q) * 100);
   const q = QUESTIONS[Math.min(currentQ, QUESTIONS.length - 1)];

@@ -71,16 +71,29 @@ public/
 
 ## Переменные окружения
 
-На данный момент проект не использует внешние API и не требует `.env` файлов.
+Supabase опционален. Без `.env.local` проект продолжает работать через mock-авторизацию в `localStorage`.
 
-Если в будущем потребуется — создайте `.env.local` на основе `.env.example`.
+Для Supabase создайте `.env.local` на основе `.env.local.example`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+```
+
+Реальные значения берутся в Supabase Project Settings → API.
+
+Нельзя добавлять `service_role` key во frontend.
 
 ---
 
 ## Демо-авторизация
 
-Проект использует mock-авторизацию через `localStorage`. Реального бэкенда нет.
-При регистрации/входе данные сохраняются только в браузере.
+Если Supabase env-переменные не заданы, проект использует mock-авторизацию через `localStorage`.
+Если env-переменные заданы, вход/регистрация работают через Supabase Auth.
+
+Подробная инструкция:
+
+`SUPABASE_SETUP.md`
 
 ---
 

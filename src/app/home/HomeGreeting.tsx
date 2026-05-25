@@ -1,13 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getMockUser } from "@/lib/mockAuth";
+import { getCurrentUser } from "@/lib/auth/authAdapter";
 
 export function HomeGreeting() {
   const [firstName, setFirstName] = useState<string>("…");
 
   useEffect(() => {
-    const user = getMockUser();
-    if (user?.name) setFirstName(user.name.trim().split(/\s+/)[0]);
+    let cancelled = false;
+    void getCurrentUser().then((user) => {
+      if (!cancelled && user?.name) {
+        setFirstName(user.name.trim().split(/\s+/)[0]);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (

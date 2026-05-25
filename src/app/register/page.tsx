@@ -3,9 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { StarField } from "@/components/app-shell/StarField";
-import { saveMockUser, setMockAuthenticated } from "@/lib/mockAuth";
-
-const STEPS = 4;
+import { register } from "@/lib/auth/authAdapter";
 
 const DIRECTIONS = [
   { id: "astro",    emoji: "🌙", label: "Астрология",       sub: "карта, транзиты, ежедневный день" },
@@ -52,14 +50,30 @@ export default function RegisterPage() {
   const [birthPlace, setBirthPlace] = useState("");
   const [timeUnknown, setTimeUnknown] = useState(false);
   const [selected, setSelected] = useState<string[]>(["astro", "practice"]);
+  const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
 
   function toggleDir(id: string) {
     setSelected(prev => prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]);
   }
 
-  function finish() {
-    saveMockUser({ name, email, birthDate, birthTime, birthTimeUnknown: timeUnknown, birthPlace, createdAt: new Date().toISOString() });
-    setMockAuthenticated();
+  async function finish() {
+    setLoading(true);
+    setAuthError("");
+    const result = await register({
+      name,
+      email,
+      password,
+      birthDate,
+      birthTime,
+      birthTimeUnknown: timeUnknown,
+      birthPlace,
+    });
+    setLoading(false);
+    if (result.error) {
+      setAuthError(result.error);
+      return;
+    }
     router.push("/home");
   }
 
@@ -398,17 +412,23 @@ export default function RegisterPage() {
 
             <button
               onClick={finish}
+              disabled={loading}
               style={{
                 width: "100%", height: 56, borderRadius: 999,
-                background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)",
+                background: loading ? "rgba(128,64,192,.5)" : "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)",
                 color: "#fff", fontSize: 17, fontWeight: 600,
                 fontFamily: "var(--font-serif)", letterSpacing: ".04em",
-                border: "none", cursor: "pointer",
+                border: "none", cursor: loading ? "default" : "pointer",
                 boxShadow: "0 10px 32px rgba(90,32,144,.5), inset 0 1px 0 rgba(255,255,255,.15)",
               }}
             >
-              Перейти в Eluna →
+              {loading ? "Создаём аккаунт..." : "Перейти в Eluna →"}
             </button>
+            {authError && (
+              <p style={{ color: "var(--danger)", fontSize: 12, lineHeight: 1.45, marginTop: 10, textAlign: "center" }}>
+                {authError}
+              </p>
+            )}
           </>
         )}
 
