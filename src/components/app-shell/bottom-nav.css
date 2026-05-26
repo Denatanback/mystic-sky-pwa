@@ -1,3 +1,17 @@
+/* ── Bottom Nav ─────────────────────────────────────────────── */
+
+@keyframes nav-pop {
+  0%   { transform: scale(0.78); }
+  55%  { transform: scale(1.18); }
+  80%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+@keyframes nav-glow-pulse {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 5px rgba(216,168,95,.75)) brightness(1.15); }
+  50%       { opacity: .85; filter: drop-shadow(0 0 9px rgba(216,168,95,.55)) brightness(1.05); }
+}
+
 .bottom-nav {
   position: fixed;
   left: 50%;
@@ -7,45 +21,69 @@
   width: min(100%, 460px);
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  background: rgba(10, 8, 20, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 6, 18, 0.97);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-top: 1px solid rgba(216,168,95,.12);
 }
 
+/* Nav item */
 .nav-item {
   min-height: 70px;
-  padding: 10px 3px 14px;
+  padding: 8px 3px 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   gap: 4px;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.32);
   font-family: var(--font-sans);
   font-size: 10px;
   font-weight: 400;
   letter-spacing: 0.01em;
   text-decoration: none;
-  transition: color 0.18s;
+  position: relative;
+  transition: color 0.22s;
 }
 
 .nav-item.active {
-  color: var(--eluna-gold);
+  color: var(--gold);
 }
 
-.nav-icon-img {
-  width: 26px;
-  height: 26px;
+/* Gold dot above icon */
+.nav-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 6px rgba(216,168,95,.8);
+  opacity: 0;
+  transform: scaleX(1);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  flex-shrink: 0;
+}
+
+.nav-dot.visible {
+  opacity: 1;
+}
+
+/* Icon wrapper */
+.nav-icon-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 40px;
+  height: 40px;
+  /* inactive: dim + desaturate */
+  filter: brightness(0.45) saturate(0.3);
+  transition: filter 0.22s ease, transform 0.22s ease;
 }
 
-.nav-icon-img img {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
+/* Active: pop animation + gold glow */
+.nav-icon-wrap.active {
+  animation: nav-pop 0.38s cubic-bezier(.36,.07,.19,.97) both,
+             nav-glow-pulse 2.8s ease-in-out 0.38s infinite;
+  filter: drop-shadow(0 0 6px rgba(216,168,95,.7)) brightness(1.15);
 }
 
 .nav-label {

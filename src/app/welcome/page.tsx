@@ -1,62 +1,31 @@
+"use client";
 import Link from "next/link";
-import { StarField } from "@/components/app-shell/StarField";
+import { Logo } from "@/components/Logo";
+import { LangToggle } from "@/components/app-shell/LangToggle";
+import { useLang } from "@/lib/i18n";
 
 export default function WelcomePage() {
-  return (
-    <main style={{
-      width: "min(100vw, 430px)", minHeight: "100dvh",
-      position: "relative", overflow: "hidden",
-      background: `
-        radial-gradient(ellipse 90% 55% at 50% 0%,   rgba(120,50,200,.5),  transparent),
-        radial-gradient(ellipse 60% 45% at 85% 30%,  rgba(160,50,130,.3),  transparent),
-        radial-gradient(ellipse 50% 40% at 15% 75%,  rgba(40, 60,200,.2),  transparent),
-        #07050f`,
-      padding: "0 18px 40px",
-    }}>
-      <StarField />
+  const { t } = useLang();
+  const w = t.welcome;
 
+  const stats = [
+    { n: "5", label: w.directions },
+    { n: "7", label: w.minDay },
+    { n: "\u221e", label: w.personalPath },
+  ];
+
+  return (
+    <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
       <div style={{ position: "relative", zIndex: 2 }}>
 
-        {/* Logo */}
-        <div style={{ paddingTop: 52, textAlign: "center" }}>
-          <div style={{
-            fontFamily: "var(--font-serif)", fontSize: 44,
-            fontWeight: 400, color: "var(--text)", letterSpacing: ".06em",
-            lineHeight: 1,
-          }}>
-            Eluna<span style={{ color: "var(--gold-2)" }}>✦</span>
-          </div>
+        {/* Top bar: lang toggle */}
+        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 16 }}>
+          <LangToggle />
         </div>
 
-        {/* Moon visual */}
-        <div style={{ position: "relative", height: 220, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {/* Outer rings */}
-          {[200, 160, 120].map((s, i) => (
-            <div key={i} style={{
-              position: "absolute", width: s, height: s, borderRadius: "50%",
-              border: `1px solid rgba(216,168,95,${0.06 + i * 0.04})`,
-            }} />
-          ))}
-          {/* Moon */}
-          <div style={{
-            width: 90, height: 90, borderRadius: "50%", position: "relative",
-            background: "radial-gradient(circle at 38% 36%, rgba(180,130,255,.4), rgba(80,40,160,.6) 55%, rgba(20,10,50,.9))",
-            border: "1px solid rgba(216,168,95,.45)",
-            boxShadow: "0 0 0 14px rgba(216,168,95,.05), 0 0 0 30px rgba(131,184,207,.03), 0 0 40px rgba(140,70,220,.35)",
-          }}>
-            {/* Crescent overlay */}
-            <div style={{
-              position: "absolute", width: 72, height: 72, borderRadius: "50%",
-              background: "radial-gradient(circle at 30% 30%, rgba(60,20,100,.7), #07050f 70%)",
-              right: -8, top: 6,
-            }} />
-            {/* Star on moon */}
-            <div style={{
-              position: "absolute", top: "28%", left: "22%",
-              color: "var(--gold-2)", fontSize: 14,
-              textShadow: "0 0 8px rgba(216,168,95,.8)",
-            }}>✦</div>
-          </div>
+        {/* Logo — normal flow, centered, fully visible */}
+        <div className="auth-brand">
+          <Logo variant="hero" priority />
         </div>
 
         {/* Tagline */}
@@ -64,15 +33,15 @@ export default function WelcomePage() {
           <h1 style={{
             fontFamily: "var(--font-serif)", fontSize: 34, fontWeight: 400,
             lineHeight: 1.15, color: "var(--text)", marginBottom: 12,
+            whiteSpace: "pre-line",
           }}>
-            Твой личный<br />звёздный путь
+            {w.tagline}
           </h1>
           <p style={{
             fontSize: 14, color: "var(--muted)", lineHeight: 1.65,
             maxWidth: 300, margin: "0 auto",
           }}>
-            Ежедневные подсказки, карта неба, практики,
-            ассоциативные карты и журнал наблюдений в одном пространстве.
+            {w.subtitle}
           </p>
         </div>
 
@@ -92,7 +61,7 @@ export default function WelcomePage() {
             boxShadow: "0 8px 28px rgba(90,32,144,.5), inset 0 1px 0 rgba(255,255,255,.12)",
             textDecoration: "none",
           }}>
-            Создать аккаунт <span>→</span>
+            {w.createAccount} <span>&#8594;</span>
           </Link>
           <Link href="/login" style={{
             height: 48, borderRadius: 999, display: "flex",
@@ -100,27 +69,21 @@ export default function WelcomePage() {
             background: "transparent", color: "var(--gold-2)",
             border: "1px solid rgba(216,168,95,.35)",
             fontSize: 15, fontWeight: 500,
-            textDecoration: "none", transition: "background .2s",
+            textDecoration: "none",
           }}>
-            У меня уже есть аккаунт
+            {w.haveAccount}
           </Link>
           <p style={{
             textAlign: "center", color: "var(--muted-2)",
-            fontSize: 12, lineHeight: 1.4,
+            fontSize: 12, lineHeight: 1.4, whiteSpace: "pre-line",
           }}>
-            Можно продолжить как гость, но прогресс пути<br />и личные записи не будут сохранены.
+            {w.guestNote}
           </p>
         </div>
 
         {/* Stats */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginTop: 16,
-        }}>
-          {[
-            { n: "5",    label: "направлений" },
-            { n: "7",    label: "минут в день" },
-            { n: "∞",   label: "личный путь" },
-          ].map(s => (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginTop: 16 }}>
+          {stats.map(s => (
             <div key={s.label} style={{
               padding: "13px 8px", borderRadius: 16, textAlign: "center",
               border: "1px solid rgba(216,168,95,.12)",

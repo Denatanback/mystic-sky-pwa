@@ -18,6 +18,7 @@ export type RegisterInput = {
   name: string;
   email: string;
   password: string;
+  gender?: MockUserProfile["gender"];
   birthDate: string;
   birthTime: string;
   birthTimeUnknown: boolean;
@@ -62,6 +63,7 @@ function mapSupabaseProfile(user: {
     id: user.id,
     name: profile?.full_name || metadataName || "Путник",
     email: user.email ?? "",
+    gender: "",
     birthDate: "",
     birthTime: "",
     birthTimeUnknown: false,
@@ -105,6 +107,7 @@ export async function register(input: RegisterInput): Promise<AuthResult> {
     saveMockUser({
       name,
       email,
+      gender: input.gender ?? "",
       birthDate: input.birthDate,
       birthTime: input.birthTimeUnknown ? "" : input.birthTime,
       birthTimeUnknown: input.birthTimeUnknown,
@@ -121,6 +124,7 @@ export async function register(input: RegisterInput): Promise<AuthResult> {
     options: {
       data: {
         full_name: name,
+        gender: input.gender ?? "",
         birth_date: input.birthDate,
         birth_time: input.birthTimeUnknown ? "" : input.birthTime,
         birth_time_unknown: input.birthTimeUnknown,
@@ -192,4 +196,3 @@ export async function upsertProfile(input: {
 
   return {};
 }
-

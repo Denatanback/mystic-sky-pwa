@@ -1,12 +1,16 @@
 "use client";
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { StarField } from "@/components/app-shell/StarField";
 import { signIn } from "@/lib/auth/authAdapter";
+import { LangToggle } from "@/components/app-shell/LangToggle";
+import { useLang } from "@/lib/i18n";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useLang();
+  const l = t.login;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -15,7 +19,8 @@ export default function LoginPage() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim() || !password.trim()) return;
+
     setLoading(true);
     setAuthError("");
     const result = await signIn({ email, password });
@@ -28,20 +33,10 @@ export default function LoginPage() {
   }
 
   return (
-    <main style={{
-      width: "min(100vw, 430px)", minHeight: "100dvh",
-      position: "relative", overflow: "hidden",
-      background: `
-        radial-gradient(ellipse 90% 55% at 50% 0%, rgba(120,50,200,.45), transparent),
-        radial-gradient(ellipse 60% 45% at 85% 30%, rgba(160,50,130,.25), transparent),
-        radial-gradient(ellipse 50% 40% at 15% 75%, rgba(40,60,200,.18), transparent),
-        #07050f`,
-      padding: "0 18px 40px",
-    }}>
-      <StarField />
+<main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
       <div style={{ position: "relative", zIndex: 2 }}>
 
-        {/* back + brand */}
+        {/* Top controls */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 18 }}>
           <Link href="/welcome" style={{
             width: 42, height: 42, borderRadius: "50%",
@@ -53,10 +48,12 @@ export default function LoginPage() {
               <path d="M19 12H5m0 0 7 7m-7-7 7-7" />
             </svg>
           </Link>
-          <span style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", letterSpacing: ".05em" }}>
-            Eluna<span style={{ color: "var(--gold-2)" }}>✦</span>
-          </span>
-          <span style={{ width: 42 }} />
+          <LangToggle />
+        </div>
+
+        {/* Logo — normal flow, centered, fully visible */}
+        <div className="auth-brand">
+          <Logo variant="auth" priority />
         </div>
 
         {/* moon visual */}
@@ -91,9 +88,9 @@ export default function LoginPage() {
           <h1 style={{
             fontFamily: "var(--font-serif)", fontSize: 32, fontWeight: 400,
             color: "var(--text)", lineHeight: 1.15, marginBottom: 8,
-          }}>С возвращением</h1>
-          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-            Твой путь продолжается с того места,<br />где ты остановился.
+          }}>{l.title}</h1>
+          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, whiteSpace: "pre-line" }}>
+            {l.subtitle}
           </p>
         </div>
 
@@ -139,8 +136,8 @@ export default function LoginPage() {
             {/* password */}
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <label style={{ fontSize: 12, color: "var(--muted)", letterSpacing: ".04em" }}>Пароль</label>
-                <a href="#" style={{ fontSize: 12, color: "var(--gold)", opacity: .8 }}>Забыли?</a>
+                <label style={{ fontSize: 12, color: "var(--muted)", letterSpacing: ".04em" }}>{l.passwordLabel}</label>
+                <a href="#" style={{ fontSize: 12, color: "var(--gold)", opacity: .8 }}>{l.forgotPassword}</a>
               </div>
               <div style={{
                 display: "flex", alignItems: "center", gap: 10,
@@ -166,7 +163,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setShowPass(p => !p)}
                   style={{ background: "none", border: "none", color: "var(--muted-2)", cursor: "pointer", padding: 0 }}
-                  aria-label="Показать пароль"
+                  aria-label={showPass ? t.register.hidePassword : t.register.showPassword}
                 >
                   {showPass ? (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
@@ -203,13 +200,13 @@ export default function LoginPage() {
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               }}
             >
-              {loading ? "Входим..." : <>Войти <span>→</span></>}
+              {loading ? l.submitting : <>{l.submit} <span>→</span></>}
             </button>
 
             {/* divider */}
             <div style={{ display: "flex", alignItems: "center", gap: 12, color: "var(--muted-2)", fontSize: 12 }}>
               <span style={{ height: 1, background: "var(--line)", flex: 1 }} />
-              или войти через
+              {l.orSignInWith}
               <span style={{ height: 1, background: "var(--line)", flex: 1 }} />
             </div>
 
@@ -225,20 +222,15 @@ export default function LoginPage() {
                     border: "1px solid rgba(255,255,255,.12)",
                     color: "var(--muted)", fontSize: 14, fontWeight: 500,
                     cursor: "pointer", transition: "background .2s",
-                    fontFamily: "var(--font-sans)",
                   }}
                 >
                   {s}
                 </button>
               ))}
             </div>
+
           </form>
         </div>
-
-        <p style={{ textAlign: "center", fontSize: 13, color: "var(--muted-2)", marginTop: 20 }}>
-          Нет аккаунта?{" "}
-          <Link href="/register" style={{ color: "var(--gold-2)", fontWeight: 500 }}>Создать</Link>
-        </p>
 
       </div>
     </main>
