@@ -3,7 +3,7 @@ import { useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
-import { MascotTopBarButton } from "@/components/mascot/MascotTopBarButton";
+import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 
 const MOON_PHASES = ["\u{1F311}","\u{1F312}","\u{1F313}","\u{1F314}","\u{1F315}","\u{1F316}","\u{1F317}","\u{1F318}"];
 
@@ -36,7 +36,7 @@ export default function JournalPage() {
         <header className="header">
           <div className="screen-title"><h1>{t.journal.title}</h1><p>{t.journal.subtitle}</p></div>
           <button className="icon-btn" aria-label="New entry"><IconPen /></button>
-          <MascotTopBarButton />
+          <GuideTopBarButton />
         </header>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 20 }}>

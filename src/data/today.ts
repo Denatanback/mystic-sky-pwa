@@ -7,7 +7,7 @@ export const todayDashboard = {
     title: "Новая звезда",
     path: "Астрологии"
   },
-  mascotPhrase: "Я подготовил для тебя правильное начало дня. Доверься своим звездам."
+  guidePhrase: "Я подготовил для тебя правильное начало дня. Доверься своим звездам."
 };
 
 export const dailyPathSteps = [

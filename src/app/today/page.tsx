@@ -5,7 +5,7 @@ import Image from "next/image";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
-import { MascotTopBarButton } from "@/components/mascot/MascotTopBarButton";
+import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { getMockUser } from "@/lib/mockAuth";
 import { getSunSign } from "@/lib/astroCalc";
 import { lifePathNumber } from "@/lib/numerologyCalc";
@@ -189,11 +189,11 @@ export default function TodayPage() {
               </p>
             )}
           </div>
-          <MascotTopBarButton />
+          <GuideTopBarButton />
         </header>
 
         {/* Moon hero card */}
-        <div style={{ border: "1px solid rgba(216,168,95,.25)", borderRadius: 24, background: "rgba(12,8,28,.65)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", padding: "20px 20px 18px", marginBottom: 14, overflow: "hidden", position: "relative" }}>
+        <div data-tour="today-moon-card" style={{ border: "1px solid rgba(216,168,95,.25)", borderRadius: 24, background: "rgba(12,8,28,.65)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", padding: "20px 20px 18px", marginBottom: 14, overflow: "hidden", position: "relative" }}>
           <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
             <div style={{ flexShrink: 0 }}>
               {moonInfo && <MoonVisual phase={moonInfo.phase} />}
@@ -283,7 +283,7 @@ export default function TodayPage() {
         <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>
           {ru ? "На сегодня" : "For today"}
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 18 }}>
+        <div data-tour="today-recommended-actions" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 18 }}>
           {[
             { eyebrow: ru ? "Карта дня" : "Card of day",  img: "/assets/main_screen/card-01.png",       href: "/cards", color: "linear-gradient(135deg,#7030b0,#4a1880)", btn: ru ? "Открыть" : "Open" },
             { eyebrow: ru ? "Медитация" : "Meditation",    img: "/assets/main_screen/meditation-01.png", href: "/sky/spiritual/1", color: "linear-gradient(135deg,#1a6b6b,#0d4040)", btn: ru ? "Начать" : "Start" },

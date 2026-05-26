@@ -97,7 +97,7 @@ export default function NodePage() {
         </div>
 
         {/* Question card */}
-        <div style={{
+        <div data-tour="today-moon-card" style={{
           borderRadius: 20, border: "1px solid rgba(216,168,95,.18)",
           background: "rgba(12,10,30,.85)", padding: 18, marginBottom: 14,
           backdropFilter: "blur(10px)",

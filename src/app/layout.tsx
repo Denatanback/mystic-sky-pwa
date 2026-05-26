@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Lora, Manrope } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
-import { MascotProvider } from "@/components/mascot/MascotProvider";
+import { GuideProvider } from "@/components/guide/GuideProvider";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin", "cyrillic"],
@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${manrope.variable} ${lora.variable}`}>
       <body>
-        <LanguageProvider><MascotProvider>{children}</MascotProvider></LanguageProvider>
+        <LanguageProvider><GuideProvider>{children}</GuideProvider></LanguageProvider>
       </body>
     </html>
   );

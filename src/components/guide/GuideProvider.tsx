@@ -9,55 +9,55 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 
-import { MascotSheet }            from "./MascotSheet";
-import { MascotTutorialOverlay }  from "./MascotTutorialOverlay";
+import { GuideSheet }            from "./GuideSheet";
+import { GuideTutorialOverlay }  from "./GuideTutorialOverlay";
 
-import type { MascotMood }        from "./mascotAssets";
+import type { GuideTone }        from "./guideAssets";
 import {
   SECTION_GUIDES,
   STORAGE_KEY,
   getGuide,
   pathToSection,
-  type MascotGuideStorage,
+  type GuideGuideStorage,
   type SectionKey,
-} from "./mascotGuides";
+} from "./guideGuides";
 
 // ── Context ───────────────────────────────────────────────────────────────────
 
-interface MascotContextValue {
+interface GuideContextValue {
   openHelp:         () => void;
   startTutorial:    (section?: SectionKey) => void;
   closeTutorial:    () => void;
   currentSection:   SectionKey | null;
-  currentMood:      MascotMood;
+  currentTone:      GuideTone;
 }
 
-const MascotCtx = createContext<MascotContextValue>({
+const GuideCtx = createContext<GuideContextValue>({
   openHelp:       () => {},
   startTutorial:  () => {},
   closeTutorial:  () => {},
   currentSection: null,
-  currentMood:    "calm",
+  currentTone:    "calm",
 });
 
-export function useMascot() {
-  return useContext(MascotCtx);
+export function useGuide() {
+  return useContext(GuideCtx);
 }
 
 // ── Storage helpers ───────────────────────────────────────────────────────────
 
-function loadStorage(): MascotGuideStorage {
+function loadStorage(): GuideGuideStorage {
   if (typeof window === "undefined") return { sections: {} };
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as MascotGuideStorage;
+    if (raw) return JSON.parse(raw) as GuideGuideStorage;
   } catch {
     // ignore corrupt data
   }
   return { sections: {} };
 }
 
-function saveStorage(data: MascotGuideStorage): void {
+function saveStorage(data: GuideGuideStorage): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
@@ -66,10 +66,10 @@ function saveStorage(data: MascotGuideStorage): void {
 }
 
 function markSection(
-  data: MascotGuideStorage,
+  data: GuideGuideStorage,
   section: SectionKey,
   patch: Partial<{ seen: boolean; completed: boolean; skipped: boolean }>,
-): MascotGuideStorage {
+): GuideGuideStorage {
   return {
     ...data,
     sections: {
@@ -88,25 +88,25 @@ function markSection(
 
 // ── Provider ──────────────────────────────────────────────────────────────────
 
-export function MascotProvider({ children }: { children: React.ReactNode }) {
+export function GuideProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const [sheetOpen,    setSheetOpen]    = useState(false);
   const [tutorialOpen, setTutorialOpen] = useState(false);
   const [tutorialStep, setTutorialStep] = useState(0);
-  const [currentMood,  setCurrentMood]  = useState<MascotMood>("calm");
+  const [currentTone,  setCurrentTone]  = useState<GuideTone>("calm");
 
-  const storageRef    = useRef<MascotGuideStorage>({ sections: {} });
+  const storageRef    = useRef<GuideGuideStorage>({ sections: {} });
   const autoTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Derive section from current pathname
   const currentSection: SectionKey | null = pathToSection(pathname ?? "");
   const guide = getGuide(currentSection);
 
-  // ── Sync mood to current section ─────────────────────────────────────────
+  // ── Sync tone to current section ─────────────────────────────────────────
   useEffect(() => {
     if (guide && !tutorialOpen && !sheetOpen) {
-      setCurrentMood(guide.defaultMood);
+      setCurrentTone(guide.defaultTone);
     }
   }, [currentSection]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -133,7 +133,7 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
       saveStorage(storageRef.current);
 
       // Auto-open the sheet (softer than jumping straight to tutorial)
-      setCurrentMood("curious");
+      setCurrentTone("curious");
       setSheetOpen(true);
     }, 700);
 
@@ -146,7 +146,7 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
 
   const openHelp = useCallback(() => {
     if (!guide) return;
-    setCurrentMood(guide.defaultMood);
+    setCurrentTone(guide.defaultTone);
     setSheetOpen(true);
   }, [guide]);
 
@@ -157,14 +157,14 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
 
     setSheetOpen(false);
     setTutorialStep(0);
-    setCurrentMood("curious");
+    setCurrentTone("curious");
     setTutorialOpen(true);
   }, [currentSection, guide]);
 
   const closeTutorial = useCallback(() => {
     setTutorialOpen(false);
     if (currentSection && guide) {
-      setCurrentMood(guide.defaultMood);
+      setCurrentTone(guide.defaultTone);
     }
   }, [currentSection, guide]);
 
@@ -179,7 +179,7 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
     if (!currentSection) return;
     storageRef.current = markSection(storageRef.current, currentSection, { completed: true });
     saveStorage(storageRef.current);
-    setCurrentMood("happy");
+    setCurrentTone("happy");
     setTutorialOpen(false);
   }
 
@@ -188,8 +188,8 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
     const nextStep = tutorialStep + 1;
     if (nextStep < guide.steps.length) {
       setTutorialStep(nextStep);
-      const stepMood = guide.steps[nextStep].mood;
-      if (stepMood) setCurrentMood(stepMood);
+      const stepTone = guide.steps[nextStep].tone;
+      if (stepTone) setCurrentTone(stepTone);
     }
   }
 
@@ -197,31 +197,31 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
     const prevStep = tutorialStep - 1;
     if (prevStep >= 0 && guide) {
       setTutorialStep(prevStep);
-      const stepMood = guide.steps[prevStep].mood;
-      if (stepMood) setCurrentMood(stepMood);
+      const stepTone = guide.steps[prevStep].tone;
+      if (stepTone) setCurrentTone(stepTone);
     }
   }
 
   // ── Context value ─────────────────────────────────────────────────────────
 
-  const ctxValue: MascotContextValue = {
+  const ctxValue: GuideContextValue = {
     openHelp,
     startTutorial,
     closeTutorial,
     currentSection,
-    currentMood,
+    currentTone,
   };
 
 
   return (
-    <MascotCtx.Provider value={ctxValue}>
+    <GuideCtx.Provider value={ctxValue}>
       {children}
 
       {/* Help sheet */}
       {sheetOpen && guide && (
-        <MascotSheet
+        <GuideSheet
           guide={guide}
-          mood={currentMood}
+          tone={currentTone}
           onClose={() => setSheetOpen(false)}
           onStartTutorial={() => startTutorial()}
         />
@@ -229,7 +229,7 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
 
       {/* Tutorial overlay */}
       {tutorialOpen && guide && guide.steps.length > 0 && (
-        <MascotTutorialOverlay
+        <GuideTutorialOverlay
           steps={guide.steps}
           currentStep={tutorialStep}
           sectionTitle={guide.title}
@@ -239,6 +239,6 @@ export function MascotProvider({ children }: { children: React.ReactNode }) {
           onDone={handleDone}
         />
       )}
-    </MascotCtx.Provider>
+    </GuideCtx.Provider>
   );
 }

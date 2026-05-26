@@ -1,12 +1,11 @@
 "use client";
 import { useState } from "react";
-import { MascotDisplay } from "./MascotDisplay";
-import type { MascotMood } from "./mascotAssets";
-import type { SectionGuide, QuickHelpItem } from "./mascotGuides";
+import type { GuideTone } from "./guideAssets";
+import type { SectionGuide, QuickHelpItem } from "./guideGuides";
 
-interface MascotSheetProps {
+interface GuideSheetProps {
   guide:          SectionGuide;
-  mood:           MascotMood;
+  tone:           GuideTone;
   onClose:        () => void;
   onStartTutorial:() => void;
 }
@@ -58,7 +57,26 @@ function FAQItem({ item }: { item: QuickHelpItem }) {
   );
 }
 
-export function MascotSheet({ guide, mood, onClose, onStartTutorial }: MascotSheetProps) {
+function GuideMark() {
+  return (
+    <div style={{
+      width: 54, height: 54, borderRadius: "50%",
+      border: "1px solid rgba(216,168,95,.34)",
+      background: "radial-gradient(circle at 35% 30%, rgba(240,200,123,.28), rgba(128,64,192,.22) 55%, rgba(10,6,28,.82))",
+      boxShadow: "0 0 24px rgba(128,64,192,.26), inset 0 1px 0 rgba(255,255,255,.08)",
+      display: "grid", placeItems: "center", color: "var(--gold-2)",
+      flexShrink: 0,
+    }}>
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3v4" /><path d="M12 17v4" /><path d="M3 12h4" /><path d="M17 12h4" />
+        <path d="m5.8 5.8 2.4 2.4" /><path d="m15.8 15.8 2.4 2.4" />
+        <path d="m18.2 5.8-2.4 2.4" /><path d="m8.2 15.8-2.4 2.4" />
+      </svg>
+    </div>
+  );
+}
+
+export function GuideSheet({ guide, onClose, onStartTutorial }: GuideSheetProps) {
   return (
     <>
       {/* Backdrop */}
@@ -105,9 +123,9 @@ export function MascotSheet({ guide, mood, onClose, onStartTutorial }: MascotShe
         {/* Scrollable content */}
         <div style={{ overflowY: "auto", padding: "12px 20px 32px", flex: 1 }}>
 
-          {/* Header row: mascot + section title */}
+          {/* Header row */}
           <div style={{ display: "flex", alignItems: "flex-end", gap: 14, marginBottom: 16 }}>
-            <MascotDisplay mood={mood} size={90} />
+            <GuideMark />
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 4 }}>
                 Guide
@@ -156,8 +174,8 @@ export function MascotSheet({ guide, mood, onClose, onStartTutorial }: MascotShe
                 color:        "#fff",
                 fontSize:     15,
                 fontWeight:   600,
-                fontFamily:   "var(--font-serif)",
-                letterSpacing:".03em",
+                fontFamily:   "var(--font-ui)",
+                letterSpacing:".02em",
                 cursor:       "pointer",
                 boxShadow:    "0 6px 22px rgba(90,32,144,.4), inset 0 1px 0 rgba(255,255,255,.12)",
                 display:      "flex",

@@ -8,7 +8,7 @@ import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { getMockUser } from "@/lib/mockAuth";
 import { useLang } from "@/lib/i18n";
-import { MascotTopBarButton } from "@/components/mascot/MascotTopBarButton";
+import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 
 type NodeStatus = "active" | "available" | "premium";
 interface SkyNode { id: string; num: number; status: NodeStatus; emblem: string; deg: number; }
@@ -65,7 +65,7 @@ export default function SkyPage() {
         <header className="app-topbar">
           <div className="app-topbar__logo"><Logo variant="header" /></div>
           <div className="app-topbar__actions">
-            <MascotTopBarButton />
+            <GuideTopBarButton />
             <button className="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
             <button className="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg></button>
           </div>
@@ -73,14 +73,14 @@ export default function SkyPage() {
         <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 38, fontWeight: 400, color: "var(--text)", marginBottom: 4, lineHeight: 1.1 }}>{t.sky.title}</h1>
         <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 18 }}>{t.sky.subtitle}</p>
 
-        <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+        <div data-tour="sky-map-filters" style={{ display: "flex", gap: 8, marginBottom: 20 }}>
           {TABS.map((tab_label, i) => (
             <button key={i} onClick={() => setTab(i)} style={{ flex: 1, padding: "10px 0", borderRadius: 999, border: `1px solid ${tab === i ? "transparent" : "rgba(255,255,255,.12)"}`, background: tab === i ? "linear-gradient(135deg, #7030b0, #4a1880)" : "rgba(255,255,255,.04)", color: tab === i ? "#fff" : "var(--muted)", fontSize: 13, fontWeight: tab === i ? 600 : 400, fontFamily: "var(--font-sans)", cursor: "pointer", boxShadow: tab === i ? "0 4px 14px rgba(80,20,130,.4)" : "none", transition: "all .2s" }}>{tab_label}</button>
           ))}
         </div>
 
         {/* Orbital map */}
-        <div style={{ position: "relative", height: 460, borderRadius: 24, overflow: "hidden", border: "1px solid rgba(216,168,95,.15)", background: "#06040f", marginBottom: 16 }}>
+        <div data-tour="sky-map-main" style={{ position: "relative", height: 460, borderRadius: 24, overflow: "hidden", border: "1px solid rgba(216,168,95,.15)", background: "#06040f", marginBottom: 16 }}>
           <div style={{ position: "absolute", inset: 0, pointerEvents: "none", filter: "blur(28px)", opacity: .5 }}>
             <div style={{ position: "absolute", width: 240, height: 130, left: "50%", top: "35%", transform: "translate(-50%,-50%)", background: "rgba(90,40,180,.3)", borderRadius: "50%" }} />
             <div style={{ position: "absolute", width: 160, height: 100, left: "20%", top: "65%", background: "rgba(50,70,200,.18)", borderRadius: "50%" }} />

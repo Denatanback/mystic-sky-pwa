@@ -1,8 +1,9 @@
-import type { MascotMood } from "./mascotAssets";
+import type { GuideTone } from "./guideAssets";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export type SectionKey =
+  | "home"
   | "today"
   | "sky"
   | "path"
@@ -14,26 +15,26 @@ export type TutorialStep = {
   id: string;
   title: string;
   text: string;
-  mood?: MascotMood;
+  tone?: GuideTone;
 };
 
 export type QuickHelpItem = {
   question: string;
   answer: string;
-  mood?: MascotMood;
+  tone?: GuideTone;
 };
 
 export type SectionGuide = {
   section: SectionKey;
   title: string;
   intro: string;
-  defaultMood: MascotMood;
+  defaultTone: GuideTone;
   autoLaunchOnFirstVisit: boolean;
   steps: TutorialStep[];
   quickHelp: QuickHelpItem[];
 };
 
-export type MascotGuideStorage = {
+export type GuideGuideStorage = {
   sections: Partial<Record<SectionKey, {
     seen: boolean;
     completed: boolean;
@@ -42,49 +43,74 @@ export type MascotGuideStorage = {
   }>>;
 };
 
-export const STORAGE_KEY = "eluna_mascot_guide_v1";
+export const STORAGE_KEY = "eluna:tours:v1:completed";
 
 // ── Section guides ────────────────────────────────────────────────────────────
 
 export const SECTION_GUIDES: Record<SectionKey, SectionGuide> = {
+  home: {
+    section: "home",
+    title: "Home",
+    intro: "A quick guide to your daily dashboard.",
+    defaultTone: "calm",
+    autoLaunchOnFirstVisit: true,
+    steps: [
+      {
+        id: "home-today-card",
+        title: "Today's insight",
+        text: "Your daily sky reading and emotional focus appear here.",
+      },
+      {
+        id: "home-day-energy",
+        title: "Day energy",
+        text: "This shows the overall rhythm of your day.",
+      },
+      {
+        id: "home-card-today",
+        title: "Your card today",
+        text: "Open your daily card for a short reflective message.",
+      },
+      {
+        id: "home-recommendations",
+        title: "Recommended for today",
+        text: "These actions help you turn the reading into practice.",
+      },
+    ],
+    quickHelp: [
+      {
+        question: "What changes daily?",
+        answer: "The date, daily reading, energy block, card prompt and recommendations are designed as your daily starting point.",
+      },
+      {
+        question: "Where do I continue my path?",
+        answer: "Use the Sky Map or Today page to move from a reading into a concrete practice.",
+      },
+    ],
+  },
 
   today: {
     section: "today",
     title: "Today",
     intro: "This is your daily starting point.",
-    defaultMood: "curious",
+    defaultTone: "curious",
     autoLaunchOnFirstVisit: true,
     steps: [
       {
-        id: "today-1",
-        title: "Your daily forecast",
-        text: "Read the main insight for the day and start with the energy around you.",
-        mood: "curious",
+        id: "today-moon-card",
+        title: "Moon today",
+        text: "This card shows the main emotional tone of the day.",
       },
       {
-        id: "today-2",
-        title: "Energy and card",
-        text: "Use the energy and card blocks as quick signals, not strict rules.",
-        mood: "calm",
-      },
-      {
-        id: "today-3",
+        id: "today-recommended-actions",
         title: "Recommended actions",
-        text: "Follow the suggested practices when you want a simple next step.",
-        mood: "happy",
-      },
-      {
-        id: "today-4",
-        title: "Come back daily",
-        text: "This page changes with your rhythm, so it works best as a daily check-in.",
-        mood: "calm",
+        text: "Use these small practices as your next step.",
       },
     ],
     quickHelp: [
       {
         question: "What is the moon card for?",
         answer: "It shows the current moon phase and its effect on your energy today.",
-        mood: "curious",
+        tone: "curious",
       },
       {
         question: "Does the forecast change every day?",
@@ -97,7 +123,7 @@ export const SECTION_GUIDES: Record<SectionKey, SectionGuide> = {
       {
         question: "What is the personal day number?",
         answer: "A numerology cycle number that describes the general theme of your day.",
-        mood: "curious",
+        tone: "curious",
       },
       {
         question: "Can I skip today and check yesterday?",
@@ -110,39 +136,25 @@ export const SECTION_GUIDES: Record<SectionKey, SectionGuide> = {
     section: "sky",
     title: "Sky Map",
     intro: "This is where your main directions live.",
-    defaultMood: "curious",
+    defaultTone: "curious",
     autoLaunchOnFirstVisit: true,
     steps: [
       {
-        id: "sky-1",
-        title: "Choose a direction",
-        text: "Each direction opens a different part of your personal path.",
-        mood: "curious",
+        id: "sky-map-main",
+        title: "Your Sky Map",
+        text: "This is where your personal directions live.",
       },
       {
-        id: "sky-2",
-        title: "Open nodes",
-        text: "Nodes contain questions, insights, and practices.",
-        mood: "calm",
-      },
-      {
-        id: "sky-3",
-        title: "Track progress",
-        text: "Completed nodes build your deeper map over time.",
-        mood: "happy",
-      },
-      {
-        id: "sky-4",
-        title: "Return anytime",
-        text: "You can explore slowly. There is no need to finish everything at once.",
-        mood: "calm",
+        id: "sky-map-filters",
+        title: "Filter directions",
+        text: "Switch between all, active, and locked areas of your path.",
       },
     ],
     quickHelp: [
       {
         question: "What does 'active' mean?",
         answer: "Active directions have unlocked nodes you can open right now.",
-        mood: "curious",
+        tone: "curious",
       },
       {
         question: "What is a node?",
@@ -167,39 +179,39 @@ export const SECTION_GUIDES: Record<SectionKey, SectionGuide> = {
     section: "path",
     title: "Path",
     intro: "This is your current journey.",
-    defaultMood: "curious",
+    defaultTone: "curious",
     autoLaunchOnFirstVisit: true,
     steps: [
       {
         id: "path-1",
         title: "Continue from where you stopped",
         text: "Your path shows what is active now.",
-        mood: "curious",
+        tone: "curious",
       },
       {
         id: "path-2",
         title: "Follow the next node",
         text: "Open the next step when you want guidance.",
-        mood: "calm",
+        tone: "calm",
       },
       {
         id: "path-3",
         title: "Reflect, do not rush",
         text: "The value is in noticing patterns, not speed.",
-        mood: "happy",
+        tone: "happy",
       },
       {
         id: "path-4",
         title: "Use journal notes",
         text: "Important thoughts can be saved into your journal.",
-        mood: "calm",
+        tone: "calm",
       },
     ],
     quickHelp: [
       {
         question: "What is a path?",
         answer: "A path is a sequence of nodes inside one direction — like a guided journey through a topic.",
-        mood: "curious",
+        tone: "curious",
       },
       {
         question: "How do I unlock the next node?",
@@ -220,33 +232,33 @@ export const SECTION_GUIDES: Record<SectionKey, SectionGuide> = {
     section: "journal",
     title: "Journal",
     intro: "This is where your observations become visible.",
-    defaultMood: "calm",
+    defaultTone: "calm",
     autoLaunchOnFirstVisit: true,
     steps: [
       {
         id: "journal-1",
         title: "Write what you noticed",
         text: "Capture thoughts, feelings, symbols, and repeated patterns.",
-        mood: "curious",
+        tone: "curious",
       },
       {
         id: "journal-2",
         title: "Keep it short",
         text: "Even one sentence is enough.",
-        mood: "calm",
+        tone: "calm",
       },
       {
         id: "journal-3",
         title: "Return later",
         text: "Your notes help you see how your path changes over time.",
-        mood: "happy",
+        tone: "happy",
       },
     ],
     quickHelp: [
       {
         question: "Can I tag my entries?",
         answer: "Yes — use Insight, Node, or Card tags to filter entries later.",
-        mood: "curious",
+        tone: "curious",
       },
       {
         question: "Are entries saved automatically?",
@@ -259,7 +271,7 @@ export const SECTION_GUIDES: Record<SectionKey, SectionGuide> = {
       {
         question: "Can I delete or edit a past entry?",
         answer: "Editing and deletion will be available in an upcoming update.",
-        mood: "sad",
+        tone: "sad",
       },
     ],
   },
@@ -268,33 +280,20 @@ export const SECTION_GUIDES: Record<SectionKey, SectionGuide> = {
     section: "profile",
     title: "Profile",
     intro: "This is your personal setup.",
-    defaultMood: "calm",
+    defaultTone: "calm",
     autoLaunchOnFirstVisit: true,
     steps: [
       {
-        id: "profile-1",
-        title: "Your details",
-        text: "Your profile stores the basic information used for personalization.",
-        mood: "curious",
-      },
-      {
-        id: "profile-2",
-        title: "Preferences",
-        text: "Adjust what should feel more personal to you.",
-        mood: "calm",
-      },
-      {
-        id: "profile-3",
-        title: "Progress",
-        text: "This is also where your journey can be connected to your account.",
-        mood: "happy",
+        id: "profile-button",
+        title: "Your profile",
+        text: "This is where your account, settings, and progress live.",
       },
     ],
     quickHelp: [
       {
         question: "Where is my birth chart?",
         answer: "Tap 'Personal Chart' to see your stored birth date, time, and place.",
-        mood: "curious",
+        tone: "curious",
       },
       {
         question: "Can I change my name or email?",
@@ -315,33 +314,33 @@ export const SECTION_GUIDES: Record<SectionKey, SectionGuide> = {
     section: "settings",
     title: "Settings",
     intro: "This is where you control the app experience.",
-    defaultMood: "calm",
+    defaultTone: "calm",
     autoLaunchOnFirstVisit: false,
     steps: [
       {
         id: "settings-1",
         title: "App preferences",
         text: "Manage language, account, and interface options here.",
-        mood: "calm",
+        tone: "calm",
       },
       {
         id: "settings-2",
         title: "Notifications later",
         text: "Some reminder settings may appear here as the app grows.",
-        mood: "curious",
+        tone: "curious",
       },
       {
         id: "settings-3",
         title: "Keep control",
         text: "You can always return here to adjust the experience.",
-        mood: "happy",
+        tone: "happy",
       },
     ],
     quickHelp: [
       {
         question: "How do I change the language?",
         answer: "The Language section at the top of this page lets you switch the interface language.",
-        mood: "curious",
+        tone: "curious",
       },
       {
         question: "Will notifications be added?",
@@ -364,6 +363,7 @@ export function getGuide(section: SectionKey | null): SectionGuide | null {
 
 /** Maps a pathname to a SectionKey. Returns null for unsupported routes. */
 export function pathToSection(pathname: string): SectionKey | null {
+  if (pathname === "/home") return "home";
   if (pathname === "/today" || pathname.startsWith("/today/")) return "today";
   if (pathname === "/sky"   || pathname.startsWith("/sky/"))   return "sky";
   if (pathname === "/path"  || pathname.startsWith("/path/"))  return "path";

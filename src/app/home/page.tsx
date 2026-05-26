@@ -6,7 +6,8 @@ import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { HomeGreeting } from "./HomeGreeting";
 import { useLang } from "@/lib/i18n";
-import { MascotTopBarButton } from "@/components/mascot/MascotTopBarButton";
+import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
+import { formatToday } from "@/lib/date/formatToday";
 
 function EnergyRing({ pct, label }: { pct: number; label: string }) {
   const r = 36, circ = 2 * Math.PI * r;
@@ -57,6 +58,7 @@ const glassCard: React.CSSProperties = {
 
 export default function HomePage() {
   const { t } = useLang();
+  const todayLabel = formatToday("en-US");
   const recs = [
     { key: "card",     eyebrow: t.home.cardOfDay,    img: "/assets/main_screen/card-01.png",       label: t.home.universeMsg,   btn: t.home.open,     href: "/cards", btnColor: "linear-gradient(135deg,#7030b0,#4a1880)" },
     { key: "ritual",   eyebrow: t.home.dailyRitual,  img: "/assets/main_screen/candle-01.png",      label: t.home.ritualLabel,   btn: t.home.start,    href: "/today", btnColor: "linear-gradient(135deg,#b07820,#7a5010)" },
@@ -69,7 +71,7 @@ export default function HomePage() {
         <header className="app-topbar">
           <div className="app-topbar__logo"><Logo variant="header" /></div>
           <div className="app-topbar__actions">
-            <MascotTopBarButton />
+            <GuideTopBarButton />
             <button className="icon-btn" aria-label="Mode">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg>
             </button>
@@ -77,7 +79,7 @@ export default function HomePage() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
               <span style={{ position: "absolute", top: 8, right: 8, width: 7, height: 7, borderRadius: "50%", background: "#c060a0", border: "1.5px solid var(--bg)" }} />
             </button>
-            <Link href="/profile" style={{ width: 38, height: 38, borderRadius: "50%", border: "2px solid rgba(216,168,95,.45)", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "radial-gradient(circle at 40% 35%, rgba(120,60,200,.5), rgba(40,20,80,.8))", flexShrink: 0, textDecoration: "none" }}>
+            <Link data-tour="profile-button" href="/profile" style={{ width: 38, height: 38, borderRadius: "50%", border: "2px solid rgba(216,168,95,.45)", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "radial-gradient(circle at 40% 35%, rgba(120,60,200,.5), rgba(40,20,80,.8))", flexShrink: 0, textDecoration: "none" }}>
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--muted)" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
             </Link>
           </div>
@@ -86,14 +88,14 @@ export default function HomePage() {
         <HomeGreeting />
 
         {/* Hero */}
-        <div style={{ position: "relative", borderRadius: 22, overflow: "hidden", border: "1px solid rgba(216,168,95,.22)", marginTop: 16, background: "linear-gradient(135deg, #0f0a2e 0%, #1a0a3a 50%, #0d0820 100%)", minHeight: 210, boxShadow: "0 20px 50px rgba(0,0,0,.5)" }}>
+        <div data-tour="home-today-card" style={{ position: "relative", borderRadius: 22, overflow: "hidden", border: "1px solid rgba(216,168,95,.22)", marginTop: 16, background: "linear-gradient(135deg, #0f0a2e 0%, #1a0a3a 50%, #0d0820 100%)", minHeight: 210, boxShadow: "0 20px 50px rgba(0,0,0,.5)" }}>
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "58%", pointerEvents: "none" }}>
             <Image src="/assets/main_screen/background-main.png" alt="Moon" fill style={{ objectFit: "cover", objectPosition: "left center" }} priority />
           </div>
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, #0f0a2e 38%, rgba(10,6,28,.85) 55%, transparent 80%)", pointerEvents: "none" }} />
           <div style={{ position: "relative", padding: "20px 20px 20px", maxWidth: "60%" }}>
             <div className="eyebrow"><span>✦</span> {t.home.today}</div>
-            <p style={{ fontFamily: "var(--font-display)", fontSize: 22, color: "var(--text)", fontWeight: 600, lineHeight: 1.2, marginBottom: 8 }}>24 May 2024</p>
+            <p style={{ fontFamily: "var(--font-display)", fontSize: 22, color: "var(--text)", fontWeight: 600, lineHeight: 1.2, marginBottom: 8 }}>{todayLabel}</p>
             <p style={{ fontSize: 13, color: "rgba(220,210,200,.75)", lineHeight: 1.5, marginBottom: 16 }}>{t.home.moonDesc}</p>
             <Link href="/today" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg, #7030b0, #4a1880)", color: "#fff", borderRadius: 999, padding: "10px 20px", fontSize: 13, fontWeight: 600, boxShadow: "0 6px 18px rgba(80,20,130,.5)", textDecoration: "none" }}>
               {t.home.readForecast} <span>&#8594;</span>
@@ -103,7 +105,7 @@ export default function HomePage() {
 
         {/* Energy + Card */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 14 }}>
-          <div style={{ ...glassCard, padding: "14px 12px", display: "flex", flexDirection: "column", gap: 10 }}>
+          <div data-tour="home-day-energy" style={{ ...glassCard, padding: "14px 12px", display: "flex", flexDirection: "column", gap: 10 }}>
             <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.3, color: "var(--gold)", fontWeight: 600 }}>{t.home.energy}</p>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <EnergyRing pct={78} label={t.home.high} />
@@ -115,7 +117,7 @@ export default function HomePage() {
             </div>
             <Link href="/today" style={{ fontSize: 12, color: "var(--gold)", marginTop: "auto", textDecoration: "none" }}>{t.home.more}</Link>
           </div>
-          <div style={{ ...glassCard, padding: "14px 12px", display: "flex", flexDirection: "column", gap: 10 }}>
+          <div data-tour="home-card-today" style={{ ...glassCard, padding: "14px 12px", display: "flex", flexDirection: "column", gap: 10 }}>
             <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.3, color: "var(--gold)", fontWeight: 600 }}>{t.home.yourCard}</p>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 56, height: 80, borderRadius: 8, flexShrink: 0, overflow: "hidden", position: "relative", boxShadow: "0 4px 14px rgba(0,0,0,.5)" }}>
@@ -131,7 +133,7 @@ export default function HomePage() {
         </div>
 
         {/* Recommended */}
-        <div style={{ marginTop: 22 }}>
+        <div data-tour="home-recommendations" style={{ marginTop: 22 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
             <p style={{ fontSize: 13, fontWeight: 600, color: "var(--gold)", textTransform: "uppercase", letterSpacing: 1.2, display: "flex", alignItems: "center", gap: 6 }}>
               <span>✦</span> {t.home.recommended}
