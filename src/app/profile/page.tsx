@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { getCurrentUser, signOut } from "@/lib/auth/authAdapter";
+import type { AuthUserProfile } from "@/lib/auth/authAdapter";
 import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
+import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 
 function IconMoon() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4a7 7 0 1 0 11.5 11.5Z"/></svg>; }
 function IconJournal() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M6 3h12v18H6z"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>; }
@@ -27,7 +29,21 @@ export default function ProfilePage() {
   const router = useRouter();
   const { t } = useLang();
   const [fullName, setFullName] = useState("...");
+  const [userProfile, setUserProfile] = useState<AuthUserProfile | null>(null);
   const [confirmLogout, setConfirmLogout] = useState(false);
+  const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  const openReminders = () => setFeatureInfo({
+    title: "Soul reminders",
+    description: "Daily reading reminders and practice notifications will appear here.",
+    statusLabel: "Coming soon",
+    primaryActionLabel: "Got it",
+  });
+  const openPersonalChart = () => setFeatureInfo({
+    title: "Personal Chart",
+    description: "Your personal chart will combine your birth data, daily rhythm, and completed practices into one evolving map.",
+    statusLabel: "Coming soon",
+    primaryActionLabel: "Continue exploring",
+  });
   useEffect(() => {
     let cancelled = false;
     void getCurrentUser().then((user) => {
@@ -35,7 +51,10 @@ export default function ProfilePage() {
         router.push("/welcome");
         return;
       }
-      if (!cancelled && user?.name) setFullName(user.name.trim());
+      if (!cancelled && user) {
+        setUserProfile(user);
+        if (user.name) setFullName(user.name.trim());
+      }
     });
     return () => {
       cancelled = true;
@@ -48,16 +67,13 @@ export default function ProfilePage() {
     router.refresh();
   }
 
-  const pathProgress = 2 / 8, r = 26, circ = 2 * Math.PI * r;
-  const dash = circ * pathProgress;
-
   return (
     <div className="app">
       <StarField />
       <div className="content">
         <header className="header" data-tour="profile-button">
           <div className="screen-title"><h1>{t.profile.title}</h1><p>{t.profile.subtitle}</p></div>
-          <button className="icon-btn" aria-label="Notifications"><IconBell /></button>
+          <button className="icon-btn" aria-label="Soul reminders" title="Soul reminders" onClick={openReminders}><IconBell /></button>
           <GuideTopBarButton />
         </header>
 
@@ -70,13 +86,16 @@ export default function ProfilePage() {
             <div style={{ width: 72, height: 72, borderRadius: "50%", background: "linear-gradient(135deg, rgba(120,60,200,.6) 0%, rgba(80,40,160,.8) 100%)", border: "2px solid rgba(216,168,95,.40)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, position: "relative", zIndex: 1, boxShadow: "0 0 24px rgba(120,60,200,.40)" }}>&#10022;</div>
           </div>
           <h2 style={{ fontSize: 22, fontWeight: 700, fontFamily: "var(--font-display)", color: "var(--text)", letterSpacing: ".02em" }}>{fullName}</h2>
-          <p style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 4 }}>{t.profile.zodiac}</p>
+          <p style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 4 }}>{userProfile?.email || t.profile.zodiac}</p>
+          {userProfile?.birthPlace && (
+            <p style={{ fontSize: 11, color: "var(--muted-2)", marginTop: 3 }}>{userProfile.birthPlace}</p>
+          )}
           <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(216,168,95,.10)", border: "1px solid rgba(216,168,95,.25)", borderRadius: 20, padding: "4px 14px", marginTop: 10, marginBottom: 18 }}>
             <span style={{ fontSize: 12 }}>&#127769;</span>
-            <span style={{ fontSize: 12, color: "var(--gold)", fontWeight: 500 }}>12 {t.profile.streak}</span>
+            <span style={{ fontSize: 12, color: "var(--gold)", fontWeight: 500 }}>Start your streak today</span>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 1, borderTop: "1px solid var(--line-soft)", paddingTop: 18 }}>
-            {[{ val: "12", label: t.profile.days, color: "var(--gold)" }, { val: "18", label: t.profile.cards, color: "var(--rose)" }, { val: "9", label: t.profile.entries, color: "var(--blue)" }].map((s, i) => (
+            {[{ val: "0", label: "days", color: "var(--gold)" }, { val: "0", label: "cards opened", color: "var(--rose)" }, { val: "0", label: "reflections", color: "var(--blue)" }].map((s, i) => (
               <div key={s.label} style={{ textAlign: "center", borderRight: i < 2 ? "1px solid var(--line-soft)" : "none" }}>
                 <div style={{ fontSize: 24, fontWeight: 800, color: s.color, fontFamily: "var(--font-ui)", lineHeight: 1.1 }}>{s.val}</div>
                 <div style={{ fontSize: 11, color: "var(--muted-2)", marginTop: 3 }}>{s.label}</div>
@@ -87,27 +106,22 @@ export default function ProfilePage() {
 
         {/* Path progress */}
         <div style={{ background: "transparent", border: "1px solid rgba(216,168,95,.18)", borderRadius: "var(--radius-lg)", padding: "14px 16px", marginBottom: 20, display: "flex", alignItems: "center", gap: 14, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}>
-          <div style={{ flexShrink: 0, position: "relative", width: 60, height: 60 }}>
-            <svg width="60" height="60" viewBox="0 0 60 60" style={{ transform: "rotate(-90deg)" }}>
-              <defs><linearGradient id="profileProgGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stopColor="#8040c0"/><stop offset="100%" stopColor="#d8a85f"/></linearGradient></defs>
-              <circle cx="30" cy="30" r={r} fill="none" stroke="rgba(255,255,255,.07)" strokeWidth="4"/>
-              <circle cx="30" cy="30" r={r} fill="none" stroke="url(#profileProgGrad)" strokeWidth="4" strokeLinecap="round" strokeDasharray={`${dash} ${circ}`}/>
-            </svg>
-            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "var(--gold)" }}>2/8</div>
+          <div style={{ flexShrink: 0, width: 60, height: 60, borderRadius: "50%", border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", display: "grid", placeItems: "center", color: "var(--gold-2)", fontSize: 22 }}>
+            ✦
           </div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>{t.profile.deepPath}</div>
-            <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>2 {t.nodePath.of} 8 {t.profile.nodesCompleted}</div>
+            <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>Your path begins today</div>
             <div style={{ fontSize: 11, color: "var(--gold)", marginTop: 4, display: "flex", alignItems: "center", gap: 4 }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--gold)", display: "inline-block", boxShadow: "0 0 4px var(--gold)" }}/>
-              {t.profile.next} {t.profile.mercury}
+              Complete one daily practice to open your first signal
             </div>
           </div>
         </div>
 
         {/* Menu */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-          <MenuItem icon={<IconMoon />}     title={t.profile.personalChart}  sub={t.profile.personalChartSub} href="#" />
+          <MenuItem icon={<IconMoon />}     title={t.profile.personalChart}  sub={t.profile.personalChartSub} onClick={openPersonalChart} />
           <MenuItem icon={<IconJournal />}  title={t.profile.journalMenu}    sub={t.profile.journalMenuSub}   href="/journal" />
           <MenuItem icon={<IconSettings />} title={t.profile.settings}       sub={t.profile.settingsSub}      href="/settings" />
         </div>
@@ -127,6 +141,7 @@ export default function ProfilePage() {
 
       </div>
       <BottomNav />
+      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
     </div>
   );
 }

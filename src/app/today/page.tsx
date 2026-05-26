@@ -6,7 +6,8 @@ import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
-import { getMockUser } from "@/lib/mockAuth";
+import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
+import { getCurrentUser } from "@/lib/auth/authAdapter";
 import { getSunSign } from "@/lib/astroCalc";
 import { lifePathNumber } from "@/lib/numerologyCalc";
 import {
@@ -16,6 +17,18 @@ import {
 } from "@/lib/dailyCalc";
 import { ZodiacSign } from "@/lib/astroCalc";
 import { getNodeState } from "@/lib/nodeProgress";
+
+function toIsoDate(value: string) {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  const [day, month, year] = value.split(".");
+  return day && month && year ? `${year}-${month}-${day}` : value;
+}
+
+function toDottedDate(value: string) {
+  if (/^\d{2}\.\d{2}\.\d{4}$/.test(value)) return value;
+  const [year, month, day] = value.split("-");
+  return day && month && year ? `${day}.${month}.${year}` : value;
+}
 
 // ── Moon SVG visual ───────────────────────────────────────────────────────────
 function MoonVisual({ phase }: { phase: number }) {
@@ -120,6 +133,9 @@ export default function TodayPage() {
   const [userName, setUserName]         = useState<string>("");
   const [lifePathNum, setLifePathNum]   = useState<number | null>(null);
   const [discProgress, setDiscProgress] = useState<Record<string, number>>({});
+  const [practiceCompleted, setPracticeCompleted] = useState(false);
+  const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  const practiceKey = `eluna:daily-practice:${new Date().toISOString().slice(0, 10)}`;
 
   useEffect(() => {
     const now = new Date();
@@ -130,16 +146,16 @@ export default function TodayPage() {
     setMoonSign(ms);
     setPlanetDay({ en: pd.en, ru: pd.ru, symbol: pd.symbol });
 
-    const user = getMockUser();
+    void getCurrentUser().then((user) => {
     if (user?.name) setUserName(user.name.split(" ")[0]);
 
     if (user?.birthDate) {
-      const birthISO = user.birthDate.split(".").reverse().join("-"); // DD.MM.YYYY -> YYYY-MM-DD
+      const birthISO = toIsoDate(user.birthDate);
       const ss = getSunSign(birthISO);
       if (ss) {
         setSunSign(ss);
         setForecast(getDailyForecast(ss, mi, ms, lang));
-        const pdn = getPersonalDayNumber(now, user.birthDate);
+        const pdn = getPersonalDayNumber(now, toDottedDate(user.birthDate));
         setPersonalDay(pdn);
         const lp = lifePathNumber(birthISO);
         setLifePathNum(lp.result);
@@ -150,12 +166,28 @@ export default function TodayPage() {
         mi, ms, lang
       ));
     }
+    });
 
     // discipline progress
     const prog: Record<string, number> = {};
     for (const d of DISCIPLINES) prog[d.key] = getDisciplineProgress(d.key, d.total);
     setDiscProgress(prog);
-  }, [lang]);
+    setPracticeCompleted(localStorage.getItem(practiceKey) === "completed");
+  }, [lang, practiceKey]);
+
+  function completePractice() {
+    localStorage.setItem(practiceKey, "completed");
+    setPracticeCompleted(true);
+  }
+
+  function openPreparingNode() {
+    setFeatureInfo({
+      title: "Your next node is preparing",
+      description: "Complete a few daily practices to unlock deeper questions. Your next guided node will appear as your path gathers more signals.",
+      statusLabel: "Preparing",
+      primaryActionLabel: "Got it",
+    });
+  }
 
   const today = new Date();
   const dateLabel = today.toLocaleDateString(ru ? "ru-RU" : "en-US", { weekday: "long", day: "numeric", month: "long" });
@@ -178,14 +210,12 @@ export default function TodayPage() {
           <div>
             <p style={{ fontSize: 12, color: "var(--muted)", textTransform: "capitalize", marginBottom: 2 }}>{dateLabel}</p>
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 600, color: "var(--text)", lineHeight: 1.1 }}>
-              {userName
-                ? (ru ? `Привет, ${userName}` : `Hello, ${userName}`)
-                : (ru ? "Твой день" : "Your day")}
+              {ru ? "Чтение дня" : "Today’s reading"}
             </h1>
             {planetDay && (
               <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 4 }}>
                 <span style={{ color: "var(--gold)", marginRight: 6 }}>{planetDay.symbol}</span>
-                {ru ? `День ${planetDay.ru}` : `Day of ${planetDay.en}`}
+                {userName ? (ru ? `${userName}, ` : `${userName}, `) : ""}{ru ? `тема дня · ${planetDay.ru}` : `daily theme · ${planetDay.en}`}
               </p>
             )}
           </div>
@@ -259,6 +289,31 @@ export default function TodayPage() {
           </div>
         )}
 
+        <div data-tour="today-recommended-actions" style={{ border: "1px solid rgba(216,168,95,.26)", borderRadius: 22, background: "rgba(12,8,28,.70)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", padding: "18px 18px", marginBottom: 14, boxShadow: "0 16px 38px rgba(0,0,0,.28)" }}>
+          <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>
+            {ru ? "Практика дня" : "Today’s practice"}
+          </p>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 8 }}>
+            {ru ? "Заметь главный сигнал дня" : "Notice the signal that appears most often"}
+          </h2>
+          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 16 }}>
+            {ru ? "Удели 3 минуты тому, какой образ, чувство или повторяющаяся мысль чаще всего возвращается сегодня." : "Take 3 minutes to reflect on the signal that appears most often in your day."}
+          </p>
+          {practiceCompleted ? (
+            <div style={{ border: "1px solid rgba(216,168,95,.20)", borderRadius: 18, background: "rgba(216,168,95,.08)", padding: 14 }}>
+              <p style={{ fontSize: 14, color: "var(--gold-2)", fontWeight: 800, marginBottom: 4 }}>{ru ? "Практика завершена" : "Practice completed"}</p>
+              <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.55 }}>{ru ? "Возвращайся завтра, чтобы раскрыть следующий сигнал." : "Come back tomorrow to reveal your next signal."}</p>
+              <button type="button" onClick={openPreparingNode} style={{ marginTop: 12, border: "1px solid rgba(255,255,255,.14)", borderRadius: 999, background: "rgba(255,255,255,.05)", color: "var(--text)", height: 40, padding: "0 16px", fontFamily: "var(--font-ui)", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+                {ru ? "Что дальше?" : "What’s next?"}
+              </button>
+            </div>
+          ) : (
+            <button type="button" onClick={completePractice} style={{ width: "100%", height: 50, border: "none", borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 14, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", boxShadow: "0 10px 28px rgba(90,32,144,.42), inset 0 1px 0 rgba(255,255,255,.12)" }}>
+              {ru ? "Завершить практику дня" : "Complete today’s practice"}
+            </button>
+          )}
+        </div>
+
         {/* Personal day number */}
         <div style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: 20, background: "rgba(14,10,32,.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", padding: "14px 18px", marginBottom: 14, display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{ width: 54, height: 54, borderRadius: "50%", background: "radial-gradient(circle at 40% 35%, rgba(216,168,95,.25), rgba(80,30,160,.6))", border: "1px solid rgba(216,168,95,.5)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 0 18px rgba(216,168,95,.2)" }}>
@@ -277,26 +332,6 @@ export default function TodayPage() {
               <p style={{ fontSize: 20, fontWeight: 700, color: "var(--muted)" }}>{lifePathNum}</p>
             </div>
           )}
-        </div>
-
-        {/* Daily practices row */}
-        <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>
-          {ru ? "На сегодня" : "For today"}
-        </p>
-        <div data-tour="today-recommended-actions" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 18 }}>
-          {[
-            { eyebrow: ru ? "Карта дня" : "Card of day",  img: "/assets/main_screen/card-01.png",       href: "/cards", color: "linear-gradient(135deg,#7030b0,#4a1880)", btn: ru ? "Открыть" : "Open" },
-            { eyebrow: ru ? "Медитация" : "Meditation",    img: "/assets/main_screen/meditation-01.png", href: "/sky/spiritual/1", color: "linear-gradient(135deg,#1a6b6b,#0d4040)", btn: ru ? "Начать" : "Start" },
-            { eyebrow: ru ? "Ритуал" : "Ritual",           img: "/assets/main_screen/candle-01.png",      href: "/today", color: "linear-gradient(135deg,#b07820,#7a5010)", btn: ru ? "Начать" : "Start" },
-          ].map(d => (
-            <Link key={d.eyebrow} href={d.href} style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: 18, background: "rgba(12,8,28,.6)", backdropFilter: "blur(6px)", padding: "10px 7px 10px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, textDecoration: "none" }}>
-              <p style={{ fontSize: 8.5, textTransform: "uppercase", letterSpacing: 1, color: "var(--gold)", textAlign: "center" }}>&#10022; {d.eyebrow}</p>
-              <div style={{ width: "100%", aspectRatio: "1/1", position: "relative" }}>
-                <Image src={d.img} alt={d.eyebrow} fill style={{ objectFit: "contain" }} />
-              </div>
-              <span style={{ display: "block", textAlign: "center", width: "100%", background: d.color, borderRadius: 999, color: "#fff", fontSize: 11, fontWeight: 600, padding: "6px 0" }}>{d.btn}</span>
-            </Link>
-          ))}
         </div>
 
         {/* Overall path progress */}
@@ -333,12 +368,13 @@ export default function TodayPage() {
           </div>
         </div>
 
-        <Link href="/sky" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, height: 52, borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 15, fontWeight: 700, fontFamily: "var(--font-ui)", letterSpacing: ".02em", textDecoration: "none", boxShadow: "0 8px 28px rgba(90,32,144,.4), inset 0 1px 0 rgba(255,255,255,.12)", marginBottom: 4 }}>
+        <Link href="/sky" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, height: 46, borderRadius: 999, border: "1px solid rgba(216,168,95,.26)", background: "rgba(255,255,255,.04)", color: "var(--gold-2)", fontSize: 14, fontWeight: 700, fontFamily: "var(--font-ui)", letterSpacing: ".02em", textDecoration: "none", marginBottom: 4 }}>
           {ru ? "Открыть карту неба" : "Open sky map"} &#8594;
         </Link>
 
       </div>
       <BottomNav />
+      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
     </div>
   );
 }

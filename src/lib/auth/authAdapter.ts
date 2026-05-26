@@ -6,6 +6,7 @@ import {
   setMockUser,
   type MockUserProfile,
 } from "@/lib/mockAuth";
+import type { LaunchContext } from "@/lib/launch/launchContext";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase/client";
 
 export type AuthUserProfile = MockUserProfile & {
@@ -23,6 +24,7 @@ export type RegisterInput = {
   birthTime: string;
   birthTimeUnknown: boolean;
   birthPlace: string;
+  launchContext?: LaunchContext;
 };
 
 export type LoginInput = {
@@ -62,17 +64,31 @@ function mapSupabaseProfile(user: {
   user_metadata?: Record<string, unknown>;
 }, profile?: { full_name?: string | null; avatar_url?: string | null } | null): AuthUserProfile {
   const metadataName = typeof user.user_metadata?.full_name === "string" ? user.user_metadata.full_name : "";
+  const metadata = user.user_metadata ?? {};
+  const launchContext = typeof metadata.launch_context === "object" && metadata.launch_context !== null
+    ? metadata.launch_context as LaunchContext
+    : {
+        source: typeof metadata.source === "string" ? metadata.source : undefined,
+        funnel: typeof metadata.funnel === "string" ? metadata.funnel : undefined,
+        result: typeof metadata.result === "string" ? metadata.result : undefined,
+        gender: typeof metadata.gender === "string" ? metadata.gender : undefined,
+        animal: typeof metadata.animal === "string" ? metadata.animal : undefined,
+        utm_source: typeof metadata.utm_source === "string" ? metadata.utm_source : undefined,
+        utm_campaign: typeof metadata.utm_campaign === "string" ? metadata.utm_campaign : undefined,
+        utm_content: typeof metadata.utm_content === "string" ? metadata.utm_content : undefined,
+      };
   return {
     id: user.id,
     name: profile?.full_name || metadataName || "Путник",
     email: user.email ?? "",
-    gender: "",
-    birthDate: "",
-    birthTime: "",
-    birthTimeUnknown: false,
-    birthPlace: "",
+    gender: typeof metadata.gender === "string" && (metadata.gender === "female" || metadata.gender === "male") ? metadata.gender : "",
+    birthDate: typeof metadata.birth_date === "string" ? metadata.birth_date : "",
+    birthTime: typeof metadata.birth_time === "string" ? metadata.birth_time : "",
+    birthTimeUnknown: Boolean(metadata.birth_time_unknown),
+    birthPlace: typeof metadata.birth_place === "string" ? metadata.birth_place : "",
     createdAt: new Date().toISOString(),
     avatarUrl: profile?.avatar_url ?? null,
+    launchContext,
     provider: "supabase",
   };
 }
@@ -116,6 +132,7 @@ export async function register(input: RegisterInput): Promise<AuthResult> {
       birthTimeUnknown: input.birthTimeUnknown,
       birthPlace: input.birthPlace.trim(),
       createdAt: new Date().toISOString(),
+      launchContext: input.launchContext,
     });
     setMockAuthenticated();
     return { user: mapMockUser(getMockUser()) };
@@ -132,6 +149,14 @@ export async function register(input: RegisterInput): Promise<AuthResult> {
         birth_time: input.birthTimeUnknown ? "" : input.birthTime,
         birth_time_unknown: input.birthTimeUnknown,
         birth_place: input.birthPlace.trim(),
+        source: input.launchContext?.source ?? null,
+        funnel: input.launchContext?.funnel ?? null,
+        result: input.launchContext?.result ?? null,
+        animal: input.launchContext?.animal ?? null,
+        utm_source: input.launchContext?.utm_source ?? null,
+        utm_campaign: input.launchContext?.utm_campaign ?? null,
+        utm_content: input.launchContext?.utm_content ?? null,
+        launch_context: input.launchContext ?? {},
       },
     },
   });

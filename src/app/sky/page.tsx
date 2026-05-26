@@ -6,9 +6,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
-import { getMockUser } from "@/lib/mockAuth";
+import { getCurrentUser } from "@/lib/auth/authAdapter";
 import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
+import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 
 type NodeStatus = "active" | "available" | "premium";
 interface SkyNode { id: string; num: number; status: NodeStatus; emblem: string; deg: number; }
@@ -42,14 +43,42 @@ export default function SkyPage() {
   const TABS = [t.sky.all, t.sky.active, t.sky.available] as const;
   const [tab, setTab] = useState(0);
   const [gender, setGender] = useState<"female"|"male">("female");
-  useEffect(() => { const u = getMockUser(); if (u?.gender === "male") setGender("male"); }, []);
+  const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    void getCurrentUser().then((u) => {
+      if (!cancelled && u?.gender === "male") setGender("male");
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const nodeLabel = (id: string) => ({ astro: t.sky.astrology, numerology: t.sky.numerology, humandesign: t.sky.humanDesign, pastlife: t.sky.pastLife, spiritual: t.sky.spiritual, soulmate: t.sky.soulmate }[id] ?? id);
-  const nodeSub   = (n: SkyNode) => n.status === "active" ? t.sky.currentPath : n.status === "premium" ? t.sky.premium : t.sky.availableLabel;
+  const nodeSub   = (n: SkyNode) => n.status === "active" ? "Open" : n.status === "premium" ? "Unlocks later" : "Explore";
 
   const bgImage = gender === "male" ? "/assets/sky-background/sky-backroung-man.png" : "/assets/sky-background/sky-background-woman.png";
   const activeNode = NODES.find(n => n.status === "active")!;
   const nextLocked = NODES.find(n => n.status === "premium")!;
+  const openReminders = () => setFeatureInfo({
+    title: "Soul reminders",
+    description: "Daily reading reminders and practice notifications will appear here.",
+    statusLabel: "Coming soon",
+    primaryActionLabel: "Got it",
+  });
+  const openMoonMode = () => setFeatureInfo({
+    title: "Moon Mode",
+    description: "Soon you’ll be able to switch between daily rhythm, night focus, and reflection modes.",
+    statusLabel: "Coming soon",
+    primaryActionLabel: "Got it",
+  });
+  const openPremiumInsight = (title: string) => setFeatureInfo({
+    title: "Premium insight",
+    description: `This part of your map opens as your path grows. Complete daily readings to unlock deeper guidance. ${title} will become available later.`,
+    statusLabel: "Available soon",
+    primaryActionLabel: "Continue today’s path",
+    primaryHref: "/today",
+  });
 
   function nodeVisible(n: SkyNode) {
     if (tab === 0) return true;
@@ -66,12 +95,17 @@ export default function SkyPage() {
           <div className="app-topbar__logo"><Logo variant="header" /></div>
           <div className="app-topbar__actions">
             <GuideTopBarButton />
-            <button className="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
-            <button className="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg></button>
+            <button className="icon-btn" aria-label="Soul reminders" title="Soul reminders" onClick={openReminders}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
+            <button className="icon-btn" aria-label="Moon Mode" title="Moon Mode" onClick={openMoonMode}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg></button>
           </div>
         </header>
-        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 38, fontWeight: 400, color: "var(--text)", marginBottom: 4, lineHeight: 1.1 }}>{t.sky.title}</h1>
-        <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 18 }}>{t.sky.subtitle}</p>
+        <section style={{ border: "1px solid rgba(216,168,95,.20)", borderRadius: 22, background: "rgba(12,8,28,.54)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", padding: "18px 18px", marginBottom: 16 }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", marginBottom: 8, lineHeight: 1.05 }}>Your Sky Map</h1>
+          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 16 }}>This map shows the areas of your path. Complete daily practices to unlock deeper insights.</p>
+          <Link href="/today" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minHeight: 44, padding: "0 18px", borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", textDecoration: "none", boxShadow: "0 8px 24px rgba(90,32,144,.38)" }}>
+            Continue today’s path
+          </Link>
+        </section>
 
         <div data-tour="sky-map-filters" style={{ display: "flex", gap: 8, marginBottom: 20 }}>
           {TABS.map((tab_label, i) => (
@@ -115,7 +149,16 @@ export default function SkyPage() {
             </>;
             return (
               <div key={n.id} style={{ position: "absolute", left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%,-50%)", zIndex: 4, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, opacity: dim?.2:1, transition: "opacity .25s" }}>
-                {nodePath ? <Link href={nodePath} style={{ textDecoration: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}><Inner /></Link> : <Inner />}
+                {isPremium ? (
+                  <button
+                    type="button"
+                    onClick={() => openPremiumInsight(nodeLabel(n.id))}
+                    aria-label={`${nodeLabel(n.id)} premium insight`}
+                    style={{ border: "none", background: "transparent", padding: 0, textDecoration: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, cursor: "pointer", fontFamily: "var(--font-ui)" }}
+                  >
+                    <Inner />
+                  </button>
+                ) : nodePath ? <Link href={nodePath} style={{ textDecoration: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}><Inner /></Link> : <Inner />}
               </div>
             );
           })}
@@ -130,11 +173,11 @@ export default function SkyPage() {
                 <Image src={activeNode.emblem} alt={nodeLabel(activeNode.id)} fill style={{ objectFit: "contain" }} />
               </div>
               <div style={{ flex: 1 }}>
-                <p style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 400, color: "var(--text)", lineHeight: 1.1, marginBottom: 2 }}>{nodeLabel(activeNode.id)}</p>
-                <p style={{ fontSize: 12, color: "var(--muted)" }}>{t.sky.moonInScorpio}</p>
+                <p style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 2 }}>{nodeLabel(activeNode.id)}</p>
+                <p style={{ fontSize: 12, color: "var(--muted)" }}>Start with today’s reading before opening deeper map areas.</p>
               </div>
-              <Link href="/today/star-way" style={{ display: "flex", alignItems: "center", gap: 5, border: "1px solid rgba(216,168,95,.35)", borderRadius: 999, padding: "8px 14px", fontSize: 12, color: "var(--gold-2)", fontWeight: 500, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0 }}>
-                <span style={{ fontSize: 10 }}>&#10022;</span> {t.sky.currentPathBtn}
+              <Link href="/today" style={{ display: "flex", alignItems: "center", gap: 5, border: "1px solid rgba(216,168,95,.35)", borderRadius: 999, padding: "8px 14px", fontSize: 12, color: "var(--gold-2)", fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0 }}>
+                <span style={{ fontSize: 10 }}>&#10022;</span> Open
               </Link>
             </div>
           </div>
@@ -151,20 +194,21 @@ export default function SkyPage() {
               </div>
             </div>
             <div>
-              <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--muted)", marginBottom: 8 }}>{t.sky.pathProgress}</p>
+              <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--muted)", marginBottom: 8 }}>Path state</p>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
                 <span style={{ color: "var(--gold-2)", fontSize: 12 }}>&#10022;</span>
-                <div style={{ flex: 1, height: 4, borderRadius: 99, background: "rgba(255,255,255,.08)", overflow: "hidden" }}><div style={{ height: "100%", width: "60%", borderRadius: 99, background: "linear-gradient(90deg, #8040c0, #d8a85f)" }} /></div>
-                <span style={{ fontSize: 11, color: "var(--gold-2)", fontWeight: 600 }}>60%</span>
+                <div style={{ flex: 1, height: 4, borderRadius: 99, background: "rgba(255,255,255,.08)", overflow: "hidden" }}><div style={{ height: "100%", width: "8%", borderRadius: 99, background: "linear-gradient(90deg, #8040c0, #d8a85f)" }} /></div>
+                <span style={{ fontSize: 11, color: "var(--gold-2)", fontWeight: 600 }}>Start</span>
               </div>
-              <p style={{ fontSize: 10, color: "var(--muted-2)" }}>{t.sky.level}</p>
+              <p style={{ fontSize: 10, color: "var(--muted-2)" }}>Your path begins today</p>
             </div>
           </div>
-          <Link href="/today/star-way" style={{ display: "block", textAlign: "center", height: 52, lineHeight: "52px", borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #c04060 100%)", color: "#fff", fontSize: 16, fontWeight: 600, fontFamily: "var(--font-serif)", letterSpacing: ".04em", textDecoration: "none", boxShadow: "0 8px 28px rgba(120,30,80,.4), inset 0 1px 0 rgba(255,255,255,.12)" }}>{t.sky.diveIn}</Link>
+          <Link href="/today" style={{ display: "block", textAlign: "center", height: 52, lineHeight: "52px", borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 15, fontWeight: 800, fontFamily: "var(--font-ui)", textDecoration: "none", boxShadow: "0 8px 28px rgba(90,32,144,.4), inset 0 1px 0 rgba(255,255,255,.12)" }}>Continue today’s path</Link>
         </div>
 
       </div>
       <BottomNav />
+      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
     </div>
   );
 }

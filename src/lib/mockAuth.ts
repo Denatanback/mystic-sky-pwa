@@ -1,3 +1,5 @@
+import type { LaunchContext } from "@/lib/launch/launchContext";
+
 const PROFILE_KEY = "mysticSky.userProfile";
 const AUTH_KEY    = "mysticSky.isAuthenticated";
 
@@ -10,6 +12,7 @@ export type MockUserProfile = {
   birthTimeUnknown: boolean;
   birthPlace: string;
   createdAt: string;
+  launchContext?: LaunchContext;
 };
 
 export function saveMockUser(profile: MockUserProfile): void {

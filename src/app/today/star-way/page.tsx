@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
+import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 
 // Constellation nodes for "Астрология" deep path
 // Arranged like a necklace/constellation around center
@@ -19,6 +23,14 @@ const NODES = [
 const LINES = [[0,1],[0,2],[1,3],[2,5],[3,4],[4,6],[5,7],[4,7],[1,2],[3,6]];
 
 export default function StarWayPage() {
+  const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  const openPreparingNode = () => setFeatureInfo({
+    title: "Your next node is preparing",
+    description: "This guided node is being shaped for the launch version. Complete today’s practice and return tomorrow to reveal your next signal.",
+    statusLabel: "Preparing",
+    primaryActionLabel: "Got it",
+  });
+
   return (
     <div className="app sky-page">
       <StarField orbits={false} />
@@ -159,9 +171,9 @@ export default function StarWayPage() {
               <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 400 }}>Луна</h3>
               <p style={{ fontSize: 13, color: "var(--muted)", marginTop: 3 }}>Эмоции, интуиция, внутренний мир</p>
             </div>
-            <Link href="/today/node" className="btn primary" style={{ width: "auto", padding: "0 18px", height: 40, fontSize: 13 }}>
+            <button type="button" onClick={openPreparingNode} className="btn primary" style={{ width: "auto", padding: "0 18px", height: 40, fontSize: 13 }}>
               Открыть узел
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -191,6 +203,7 @@ export default function StarWayPage() {
 
       </div>
       <BottomNav />
+      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
     </div>
   );
 }

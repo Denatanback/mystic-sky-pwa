@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
+import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 
 const MOON_PHASES = ["\u{1F311}","\u{1F312}","\u{1F313}","\u{1F314}","\u{1F315}","\u{1F316}","\u{1F317}","\u{1F318}"];
 
@@ -17,6 +18,14 @@ export default function JournalPage() {
   const [saved, setSaved] = useState(false);
   const [activeTag, setActiveTag] = useState<"All" | "Insight" | "Node" | "Card">(t.journal.all);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  const noteRef = useRef<HTMLTextAreaElement | null>(null);
+  const openArchive = () => setFeatureInfo({
+    title: "Journal Archive",
+    description: "Your saved reflections and completed practices will appear here as your path grows. Complete your first reflection to start your archive.",
+    statusLabel: "Growing with your path",
+    primaryActionLabel: "Start a reflection",
+  });
 
   const ENTRIES = [
     { id: 1, dayLabel: t.journal.all === "All" ? "Today" : "Сегодня",    title: t.journal.all === "All" ? "Intuition without rush" : "Интуиция без спешки",     text: t.journal.all === "All" ? "I noticed the answer didn't come right away, but after a pause. The body knew before the mind." : "Я заметил/а, что ответ появился не сразу, а после паузы.", tag: t.journal.insight, tagColor: "var(--blue)", moon: MOON_PHASES[4], accentColor: "rgba(131,184,207,.12)", borderColor: "rgba(131,184,207,.25)" },
@@ -35,12 +44,12 @@ export default function JournalPage() {
       <div className="content">
         <header className="header">
           <div className="screen-title"><h1>{t.journal.title}</h1><p>{t.journal.subtitle}</p></div>
-          <button className="icon-btn" aria-label="New entry"><IconPen /></button>
+          <button className="icon-btn" aria-label="New entry" title="New entry" onClick={() => noteRef.current?.focus()}><IconPen /></button>
           <GuideTopBarButton />
         </header>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 20 }}>
-          {[{ val: "12", label: t.journal.daysStreak, color: "var(--gold)" }, { val: "9", label: t.journal.entries, color: "var(--rose)" }, { val: "3", label: t.journal.nodes, color: "var(--blue)" }].map(s => (
+          {[{ val: "0", label: "day streak", color: "var(--gold)" }, { val: "0", label: "reflections", color: "var(--rose)" }, { val: "0", label: "nodes", color: "var(--blue)" }].map(s => (
             <div key={s.label} style={{ background: "transparent", border: "1px solid rgba(216,168,95,.18)", borderRadius: "var(--radius-md)", padding: "12px 10px", textAlign: "center", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}>
               <div style={{ fontSize: 22, fontWeight: 700, color: s.color, fontFamily: "var(--font-serif)", lineHeight: 1.1 }}>{s.val}</div>
               <div style={{ fontSize: 11, color: "var(--muted-2)", marginTop: 3 }}>{s.label}</div>
@@ -53,7 +62,7 @@ export default function JournalPage() {
             <span style={{ color: "var(--gold)", opacity: .7 }}><IconSparkle /></span>
             <span style={{ fontSize: 13, color: "var(--muted)", fontWeight: 500 }}>{t.journal.quickNote}</span>
           </div>
-          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder={t.journal.placeholder} rows={3}
+          <textarea ref={noteRef} value={note} onChange={e => setNote(e.target.value)} placeholder={t.journal.placeholder} rows={3}
             style={{ width: "100%", background: "rgba(255,255,255,.04)", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-sm)", color: "var(--text)", fontSize: 14, lineHeight: 1.6, padding: "12px 14px", resize: "none", outline: "none", transition: "border-color .2s", fontFamily: "var(--font-sans)" }}
             onFocus={e => { (e.target as HTMLTextAreaElement).style.borderColor = "rgba(216,168,95,.4)"; }}
             onBlur={e  => { (e.target as HTMLTextAreaElement).style.borderColor = "var(--line-soft)"; }}
@@ -72,7 +81,7 @@ export default function JournalPage() {
         <section>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
             <h2 style={{ fontSize: 15, fontWeight: 600 }}>{t.journal.recent}</h2>
-            <a href="#" style={{ fontSize: 12, color: "var(--gold)", opacity: .8 }}>{t.journal.archive}</a>
+            <button type="button" onClick={openArchive} style={{ background: "transparent", border: "none", fontSize: 12, color: "var(--gold)", opacity: .8, cursor: "pointer", fontFamily: "var(--font-ui)" }}>{t.journal.archive}</button>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {filtered.map(entry => {
@@ -106,6 +115,7 @@ export default function JournalPage() {
 
       </div>
       <BottomNav />
+      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
     </div>
   );
 }

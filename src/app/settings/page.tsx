@@ -1,9 +1,11 @@
 "use client";
 import Link from "next/link";
+import { useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang, type Lang, ENABLE_RU_LOCALE } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
+import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 
 function IconChevron() {
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>;
@@ -20,6 +22,19 @@ function IconShield() {
 
 export default function SettingsPage() {
   const { t, lang, setLang } = useLang();
+  const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  const openNotifications = () => setFeatureInfo({
+    title: "Soul reminders",
+    description: "Daily reading reminders and practice notifications will appear here.",
+    statusLabel: "Coming soon",
+    primaryActionLabel: "Got it",
+  });
+  const openPrivacy = () => setFeatureInfo({
+    title: "Privacy controls",
+    description: "Account privacy, data export, and deeper account controls will live here as the product matures.",
+    statusLabel: "Coming soon",
+    primaryActionLabel: "Got it",
+  });
   const iconCircle: React.CSSProperties = {
     width: 38, height: 38, borderRadius: "50%", flexShrink: 0,
     background: "rgba(216,168,95,.10)", border: "1px solid rgba(216,168,95,.20)",
@@ -89,30 +104,31 @@ export default function SettingsPage() {
         {/* Notifications */}
         <div style={{ marginBottom: 12 }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", fontWeight: 600, marginBottom: 10 }}>{t.settings.notifications}</p>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: "transparent", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)" }}>
+          <button type="button" onClick={openNotifications} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: "transparent", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)", cursor: "pointer", textAlign: "left", fontFamily: "var(--font-ui)" }}>
             <div style={iconCircle}><IconBell /></div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>{t.settings.notifications}</div>
               <div style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 2 }}>{t.settings.notificationsSub}</div>
             </div>
             <span style={{ color: "var(--muted-2)" }}><IconChevron /></span>
-          </div>
+          </button>
         </div>
 
         {/* Privacy */}
         <div>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", fontWeight: 600, marginBottom: 10 }}>{t.settings.privacy}</p>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: "transparent", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)" }}>
+          <button type="button" onClick={openPrivacy} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: "transparent", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)", cursor: "pointer", textAlign: "left", fontFamily: "var(--font-ui)" }}>
             <div style={iconCircle}><IconShield /></div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>{t.settings.privacy}</div>
               <div style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 2 }}>{t.settings.privacySub}</div>
             </div>
             <span style={{ color: "var(--muted-2)" }}><IconChevron /></span>
-          </div>
+          </button>
         </div>
       </div>
       <BottomNav />
+      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
     </div>
   );
 }

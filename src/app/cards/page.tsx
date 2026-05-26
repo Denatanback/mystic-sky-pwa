@@ -1,19 +1,36 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
+import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 
 const glassCard: React.CSSProperties = { border: "1px solid rgba(216,168,95,.22)", background: "transparent", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", borderRadius: 20 };
 
 export default function CardsPage() {
   const { t } = useLang();
+  const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  const openCardLibrary = () => setFeatureInfo({
+    title: "Card Library",
+    description: "Soon you’ll be able to revisit every card you’ve opened and track recurring symbols.",
+    statusLabel: "Coming soon",
+    primaryActionLabel: "Open today’s card",
+    primaryHref: "/cards",
+  });
+  const openSpreadInfo = (title: string) => setFeatureInfo({
+    title,
+    description: "Guided card spreads are being prepared for deeper reflection. For now, open today's card and save your answer in the journal.",
+    statusLabel: "Coming soon",
+    primaryActionLabel: "Open today’s card",
+    primaryHref: "/cards",
+  });
   const SPREADS = [
-    { href: "#", emblem: "/assets/sky-emblems/sky-astrology-emblem.png",  title: t.cards.oneSymbol,    sub: t.cards.oneSymbolSub,    meta: t.cards.min2 },
-    { href: "#", emblem: "/assets/sky-emblems/sky-soulmate-emblem.png",   title: t.cards.relationships, sub: t.cards.relationshipsSub, meta: t.cards.min5 },
-    { href: "#", emblem: "/assets/sky-emblems/sky-pastlife-emblem.png",   title: t.cards.threeCards,   sub: t.cards.threeCardsSub,   meta: t.cards.min7 },
-    { href: "#", emblem: "/assets/sky-emblems/sky-numerology-emblem.png", title: t.cards.celticCross,  sub: t.cards.celticCrossSub,  meta: t.cards.min15 },
+    { emblem: "/assets/sky-emblems/sky-astrology-emblem.png",  title: t.cards.oneSymbol,    sub: t.cards.oneSymbolSub,    meta: t.cards.min2 },
+    { emblem: "/assets/sky-emblems/sky-soulmate-emblem.png",   title: t.cards.relationships, sub: t.cards.relationshipsSub, meta: t.cards.min5 },
+    { emblem: "/assets/sky-emblems/sky-pastlife-emblem.png",   title: t.cards.threeCards,   sub: t.cards.threeCardsSub,   meta: t.cards.min7 },
+    { emblem: "/assets/sky-emblems/sky-numerology-emblem.png", title: t.cards.celticCross,  sub: t.cards.celticCrossSub,  meta: t.cards.min15 },
   ];
   const RECENT = [
     { name: t.cards.threshold, img: "/assets/main_screen/card-01.png",   day: t.cards.today },
@@ -26,7 +43,7 @@ export default function CardsPage() {
       <div className="content">
         <header className="header">
           <div className="screen-title"><h1>{t.cards.title}</h1><p>{t.cards.subtitle}</p></div>
-          <button className="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+          <button className="icon-btn" aria-label="About card library" title="About card library" onClick={openCardLibrary}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
         </header>
 
         {/* Card of day hero */}
@@ -69,23 +86,24 @@ export default function CardsPage() {
 
         {/* Spreads */}
         <div style={{ marginTop: 22 }}>
-          <div className="section-head"><h2>{t.cards.spreads}</h2><Link href="#" style={{ color: "var(--gold)", fontSize: 13 }}>{t.cards.all}</Link></div>
+          <div className="section-head"><h2>{t.cards.spreads}</h2><button type="button" onClick={openCardLibrary} style={{ background: "transparent", border: "none", color: "var(--gold)", fontSize: 13, cursor: "pointer", fontFamily: "var(--font-ui)" }}>{t.cards.all}</button></div>
           <div className="grid-2" style={{ gap: 12 }}>
             {SPREADS.map(s => (
-              <Link key={s.title} href={s.href} style={{ ...glassCard, display: "flex", flexDirection: "column", padding: 14, textDecoration: "none", transition: "border-color 0.2s, transform 0.2s" }}>
+              <button key={s.title} type="button" onClick={() => openSpreadInfo(s.title)} style={{ ...glassCard, display: "flex", flexDirection: "column", padding: 14, textDecoration: "none", transition: "border-color 0.2s, transform 0.2s", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
                 <div style={{ width: 48, height: 48, marginBottom: 10, position: "relative", flexShrink: 0, filter: "drop-shadow(0 0 8px rgba(216,168,95,.35))" }}>
                   <Image src={s.emblem} alt={s.title} fill style={{ objectFit: "contain" }} />
                 </div>
                 <h3 style={{ fontSize: 14, fontWeight: 500, marginBottom: 4, color: "var(--text)" }}>{s.title}</h3>
                 <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.4, flex: 1 }}>{s.sub}</p>
                 <div style={{ marginTop: 10, color: "var(--gold)", fontSize: 11, letterSpacing: "0.05em" }}>{s.meta}</div>
-              </Link>
+              </button>
             ))}
           </div>
         </div>
         <div style={{ height: 20 }} />
       </div>
       <BottomNav />
+      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
     </div>
   );
 }

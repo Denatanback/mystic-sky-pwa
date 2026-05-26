@@ -257,18 +257,25 @@ export default function LoginPage() {
                 <button
                   key={s}
                   type="button"
+                  disabled
+                  aria-disabled="true"
+                  title="Social sign-in is coming soon"
                   style={{
                     height: 46, borderRadius: 999,
                     background: "rgba(255,255,255,.05)",
                     border: "1px solid rgba(255,255,255,.12)",
                     color: "var(--muted)", fontSize: 14, fontWeight: 500,
-                    cursor: "pointer", transition: "background .2s",
+                    cursor: "not-allowed", transition: "background .2s",
+                    opacity: .62,
                   }}
                 >
                   {s}
                 </button>
               ))}
             </div>
+            <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, textAlign: "center", marginTop: -4 }}>
+              Social sign-in is coming soon. Please use email for now.
+            </p>
 
           </form>
           {resetOpen && (

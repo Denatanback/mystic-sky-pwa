@@ -115,27 +115,9 @@ export function GuideProvider({ children }: { children: React.ReactNode }) {
     storageRef.current = loadStorage();
   }, []);
 
-  // ── Auto-launch first-visit tutorial ─────────────────────────────────────
+  // ── Keep help user-initiated for launch clarity ──────────────────────────
   useEffect(() => {
-    // Clear any pending auto-launch from the previous page
     if (autoTimerRef.current) clearTimeout(autoTimerRef.current);
-
-    if (!guide || !guide.autoLaunchOnFirstVisit) return;
-    if (!currentSection) return;
-
-    const sectionState = storageRef.current.sections[currentSection];
-    if (sectionState?.seen || sectionState?.completed || sectionState?.skipped) return;
-
-    // Wait 700ms before auto-launching (let the page settle)
-    autoTimerRef.current = setTimeout(() => {
-      // Mark as seen so we never auto-launch again for this section
-      storageRef.current = markSection(storageRef.current, currentSection, { seen: true });
-      saveStorage(storageRef.current);
-
-      // Auto-open the sheet (softer than jumping straight to tutorial)
-      setCurrentTone("curious");
-      setSheetOpen(true);
-    }, 700);
 
     return () => {
       if (autoTimerRef.current) clearTimeout(autoTimerRef.current);

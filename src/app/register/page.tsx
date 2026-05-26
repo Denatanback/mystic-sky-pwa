@@ -9,6 +9,7 @@ import { LangToggle } from "@/components/app-shell/LangToggle";
 import { clearProgress } from "@/lib/nodeProgress";
 import { useLang } from "@/lib/i18n";
 import type { PlaceSuggestion } from "@/lib/locations/worldCitySearch";
+import { cleanLaunchContext, isPastLifeContext, saveLaunchContext } from "@/lib/launch/launchContext";
 
 // ─── Masking helpers ─────────────────────────────────────────────────
 
@@ -116,6 +117,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const { t } = useLang();
   const r = t.register;
+  const [launchContext, setLaunchContext] = useState(() => cleanLaunchContext({}));
 
   const [step, setStep] = useState(1);
 
@@ -147,6 +149,23 @@ export default function RegisterPage() {
   const [selected, setSelected] = useState<string[]>(["astro", "practice"]);
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const context = cleanLaunchContext({
+      source: params.get("source"),
+      funnel: params.get("funnel"),
+      result: params.get("result"),
+      gender: params.get("gender"),
+      animal: params.get("animal"),
+      utm_source: params.get("utm_source"),
+      utm_campaign: params.get("utm_campaign"),
+      utm_content: params.get("utm_content"),
+    });
+    setLaunchContext(context);
+    saveLaunchContext(context);
+    if (context.gender === "female" || context.gender === "male") setGender(context.gender);
+  }, []);
 
   function validateBirthDate(val: string): string | null {
     if (!val) return r.birthDateRequired;
@@ -279,13 +298,15 @@ export default function RegisterPage() {
       birthTime,
       birthTimeUnknown: timeUnknown,
       birthPlace,
+      launchContext,
     });
     setLoading(false);
     if (result.error) {
       setAuthError(result.error);
       return;
     }
-    router.push("/home");
+    saveLaunchContext(launchContext);
+    router.push(isPastLifeContext(launchContext) ? "/home?source=pastlife" : "/home");
     router.refresh();
   }
 
