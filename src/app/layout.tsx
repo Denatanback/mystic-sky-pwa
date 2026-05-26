@@ -1,19 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Cormorant_Garamond, Lora, Manrope } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
 import { MascotProvider } from "@/components/mascot/MascotProvider";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-serif",
+  variable: "--font-display",
   display: "swap",
-  weight: ["300", "400", "500", "600"],
-  style: ["normal", "italic"],
+  weight: ["600", "700"],
 });
-const inter = Inter({
+const manrope = Manrope({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-sans",
+  variable: "--font-ui",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+});
+const lora = Lora({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-reading",
   display: "swap",
   weight: ["400", "500", "600"],
 });
@@ -44,7 +49,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
+    <html lang="en" className={`${cormorant.variable} ${manrope.variable} ${lora.variable}`}>
       <body>
         <LanguageProvider><MascotProvider>{children}</MascotProvider></LanguageProvider>
       </body>

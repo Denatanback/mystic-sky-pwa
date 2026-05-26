@@ -19,7 +19,7 @@ export async function GET(request: Request) {
 
     const supabase = await createClient();
 
-    await supabase.auth.exchangeCodeForSession(code);
+    await supabase?.auth.exchangeCodeForSession(code);
 
   }
 
@@ -28,4 +28,3 @@ export async function GET(request: Request) {
   return NextResponse.redirect(new URL(next, request.url));
 
 }
-

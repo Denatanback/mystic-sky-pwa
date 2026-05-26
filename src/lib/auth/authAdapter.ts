@@ -37,6 +37,9 @@ type AuthResult = {
 
 const genericAuthError = "Не удалось выполнить вход. Проверь email и пароль.";
 const genericRegisterError = "Не удалось создать аккаунт. Попробуй ещё раз.";
+const genericResetError = "We could not send a reset link. Please try again.";
+const genericUpdatePasswordError = "We could not update your password. Please try again.";
+export const resetPasswordSuccessMessage = "If an account exists for this email, we’ll send a reset link.";
 
 function friendlyError(message: string | undefined, fallback: string) {
   if (!message) return fallback;
@@ -172,6 +175,46 @@ export async function signOut() {
     await supabase.auth.signOut();
   }
   clearMockAuth();
+}
+
+export async function sendPasswordReset(input: {
+  email: string;
+  redirectTo?: string;
+}): Promise<{ message?: string; error?: string }> {
+  const email = input.email.trim();
+
+  if (!email) {
+    return { error: "Enter your email." };
+  }
+
+  if (!isSupabaseAuthEnabled() || !supabase) {
+    return { message: resetPasswordSuccessMessage };
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: input.redirectTo,
+  });
+
+  if (error) {
+    return { error: friendlyError(error.message, genericResetError) };
+  }
+
+  return { message: resetPasswordSuccessMessage };
+}
+
+export async function updatePassword(password: string): Promise<{ error?: string }> {
+  if (!password || password.length < 8) {
+    return { error: "Use at least 8 characters." };
+  }
+
+  if (!isSupabaseAuthEnabled() || !supabase) {
+    return {};
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { error: friendlyError(error.message, genericUpdatePasswordError) };
+
+  return {};
 }
 
 export async function upsertProfile(input: {

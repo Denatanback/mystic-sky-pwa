@@ -25,7 +25,7 @@ function EnergyRing({ pct, label }: { pct: number; label: string }) {
           strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round" />
       </svg>
       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ fontFamily: "var(--font-serif)", fontSize: 19, color: "var(--gold-2)", lineHeight: 1, fontWeight: 400 }}>{pct}%</span>
+        <span style={{ fontFamily: "var(--font-ui)", fontSize: 19, color: "var(--gold-2)", lineHeight: 1, fontWeight: 800 }}>{pct}%</span>
         <span style={{ fontSize: 9, color: "var(--muted)", marginTop: 3, textTransform: "uppercase", letterSpacing: ".08em" }}>{label}</span>
       </div>
     </div>
@@ -44,7 +44,7 @@ function StreakRing({ days }: { days: number }) {
           strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round" />
       </svg>
       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--gold-2)", fontWeight: 400 }}>{days}</span>
+        <span style={{ fontFamily: "var(--font-ui)", fontSize: 20, color: "var(--gold-2)", fontWeight: 800 }}>{days}</span>
       </div>
     </div>
   );
@@ -93,7 +93,7 @@ export default function HomePage() {
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, #0f0a2e 38%, rgba(10,6,28,.85) 55%, transparent 80%)", pointerEvents: "none" }} />
           <div style={{ position: "relative", padding: "20px 20px 20px", maxWidth: "60%" }}>
             <div className="eyebrow"><span>✦</span> {t.home.today}</div>
-            <p style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", fontWeight: 400, lineHeight: 1.2, marginBottom: 8 }}>24 May 2024</p>
+            <p style={{ fontFamily: "var(--font-display)", fontSize: 22, color: "var(--text)", fontWeight: 600, lineHeight: 1.2, marginBottom: 8 }}>24 May 2024</p>
             <p style={{ fontSize: 13, color: "rgba(220,210,200,.75)", lineHeight: 1.5, marginBottom: 16 }}>{t.home.moonDesc}</p>
             <Link href="/today" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg, #7030b0, #4a1880)", color: "#fff", borderRadius: 999, padding: "10px 20px", fontSize: 13, fontWeight: 600, boxShadow: "0 6px 18px rgba(80,20,130,.5)", textDecoration: "none" }}>
               {t.home.readForecast} <span>&#8594;</span>
@@ -122,7 +122,7 @@ export default function HomePage() {
                 <Image src="/assets/main_screen/card-01.png" alt="Card" fill style={{ objectFit: "cover" }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontFamily: "var(--font-serif)", fontSize: 15, color: "var(--text)", lineHeight: 1.2, marginBottom: 4 }}>{t.home.moonInScorpio}</p>
+                <p style={{ fontFamily: "var(--font-display)", fontSize: 15, color: "var(--text)", lineHeight: 1.2, marginBottom: 4 }}>{t.home.moonInScorpio}</p>
                 <p style={{ fontSize: 10, color: "var(--muted)", lineHeight: 1.4 }}>Depth · Intuition · Transformation</p>
               </div>
             </div>
@@ -159,7 +159,7 @@ export default function HomePage() {
           <StreakRing days={12} />
           <div style={{ flex: 1 }}>
             <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--gold)", marginBottom: 3 }}>{t.home.yourPath}</p>
-            <p style={{ fontFamily: "var(--font-serif)", fontSize: 16, color: "var(--text)", fontWeight: 400 }}>12 {t.home.streakDays}</p>
+            <p style={{ fontFamily: "var(--font-ui)", fontSize: 16, color: "var(--text)", fontWeight: 800 }}>12 {t.home.streakDays}</p>
             <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>{t.home.keepRhythm}</p>
             <div style={{ display: "flex", alignItems: "center", gap: 0, marginTop: 10, position: "relative" }}>
               <div style={{ position: "absolute", left: 0, right: 0, top: "50%", height: 1, background: "linear-gradient(90deg, var(--gold) 62%, rgba(216,168,95,.15) 100%)", transform: "translateY(-50%)" }} />

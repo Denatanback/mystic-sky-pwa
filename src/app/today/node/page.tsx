@@ -73,7 +73,7 @@ export default function NodePage() {
         </div>
 
         {/* Title */}
-        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 52, fontWeight: 300, lineHeight: 1, marginBottom: 4, color: "var(--text)" }}>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 52, fontWeight: 600, lineHeight: 1, marginBottom: 4, color: "var(--text)" }}>
           Луна
         </h1>
         <p style={{ fontSize: 14, color: "var(--muted)", marginBottom: 6 }}>

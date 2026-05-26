@@ -31,7 +31,7 @@ export default function WelcomePage() {
         {/* Tagline */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <h1 style={{
-            fontFamily: "var(--font-serif)", fontSize: 34, fontWeight: 400,
+            fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600,
             lineHeight: 1.15, color: "var(--text)", marginBottom: 12,
             whiteSpace: "pre-line",
           }}>
@@ -56,8 +56,8 @@ export default function WelcomePage() {
             height: 52, borderRadius: 999, display: "flex",
             alignItems: "center", justifyContent: "center", gap: 10,
             background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)",
-            color: "#fff", fontFamily: "var(--font-serif)", fontSize: 18, fontWeight: 500,
-            letterSpacing: ".03em",
+            color: "#fff", fontFamily: "var(--font-ui)", fontSize: 18, fontWeight: 700,
+            letterSpacing: ".02em",
             boxShadow: "0 8px 28px rgba(90,32,144,.5), inset 0 1px 0 rgba(255,255,255,.12)",
             textDecoration: "none",
           }}>
@@ -91,7 +91,7 @@ export default function WelcomePage() {
             }}>
               <strong style={{
                 display: "block", color: "var(--gold-2)", fontSize: 22,
-                fontFamily: "var(--font-serif)", fontWeight: 400,
+                fontFamily: "var(--font-ui)", fontWeight: 800,
               }}>{s.n}</strong>
               <span style={{ fontSize: 11, color: "var(--muted)", marginTop: 3, display: "block" }}>{s.label}</span>
             </div>

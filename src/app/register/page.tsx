@@ -8,6 +8,7 @@ import { register } from "@/lib/auth/authAdapter";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { clearProgress } from "@/lib/nodeProgress";
 import { useLang } from "@/lib/i18n";
+import { findUsCities } from "@/lib/locations/usCities";
 
 // ─── Masking helpers ─────────────────────────────────────────────────
 
@@ -97,14 +98,14 @@ const inputRow: React.CSSProperties = {
 
 const inputBase: React.CSSProperties = {
   flex: 1, background: "transparent", border: "none", outline: "none",
-  color: "var(--text)", fontSize: 14, fontFamily: "var(--font-sans)",
+  color: "var(--text)", fontSize: 14, fontFamily: "var(--font-ui)",
 };
 
 const btnPrimary: React.CSSProperties = {
   height: 52, borderRadius: 999, marginTop: 4,
   background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)",
   color: "#fff", fontSize: 16, fontWeight: 600,
-  fontFamily: "var(--font-serif)", letterSpacing: ".03em",
+  fontFamily: "var(--font-ui)", letterSpacing: ".02em",
   border: "none", cursor: "pointer",
   boxShadow: "0 8px 28px rgba(90,32,144,.45), inset 0 1px 0 rgba(255,255,255,.12)",
 };
@@ -136,6 +137,8 @@ export default function RegisterPage() {
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
   const [birthTimeError, setBirthTimeError] = useState<string | null>(null);
   const [birthPlaceError, setBirthPlaceError] = useState<string | null>(null);
+  const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
+  const [activeCityIndex, setActiveCityIndex] = useState(0);
 
   // Step 3
   const [selected, setSelected] = useState<string[]>(["astro", "practice"]);
@@ -206,6 +209,15 @@ export default function RegisterPage() {
     setPassword(p);
     setShowPass(true);
     setPassError(null);
+  }
+
+  const citySuggestions = findUsCities(birthPlace);
+
+  function selectBirthCity(city: string) {
+    setBirthPlace(city);
+    setBirthPlaceError(null);
+    setCityDropdownOpen(false);
+    setActiveCityIndex(0);
   }
 
   async function finish() {
@@ -307,7 +319,7 @@ export default function RegisterPage() {
         {/* === STEP 1 === */}
         {step === 1 && (
           <>
-            <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 30, fontWeight: 400, color: "var(--text)", marginBottom: 6 }}>
+            <h1 style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 600, color: "var(--text)", marginBottom: 6 }}>
               {r.step1Title}
             </h1>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 24 }}>
@@ -344,7 +356,7 @@ export default function RegisterPage() {
                         background: gender === g ? "rgba(216,168,95,.12)" : "rgba(255,255,255,.04)",
                         color: gender === g ? "var(--gold-2)" : "var(--muted)",
                         fontSize: 13, fontWeight: gender === g ? 600 : 400,
-                        fontFamily: "var(--font-sans)", cursor: "pointer",
+                        fontFamily: "var(--font-ui)", cursor: "pointer",
                         display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
                         transition: "all .18s",
                       }}
@@ -400,7 +412,7 @@ export default function RegisterPage() {
                     alignSelf: "flex-start", background: "none",
                     border: "1px solid rgba(216,168,95,.3)", borderRadius: 999,
                     cursor: "pointer", padding: "5px 12px",
-                    color: "var(--gold)", fontSize: 11, fontFamily: "var(--font-sans)",
+                    color: "var(--gold)", fontSize: 11, fontFamily: "var(--font-ui)",
                     display: "flex", alignItems: "center", gap: 5, marginTop: 2,
                   }}
                 >
@@ -425,7 +437,7 @@ export default function RegisterPage() {
         {/* === STEP 2 === */}
         {step === 2 && (
           <>
-            <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 30, fontWeight: 400, color: "var(--text)", marginBottom: 6 }}>
+            <h1 style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 600, color: "var(--text)", marginBottom: 6 }}>
               {r.step2Title}
             </h1>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 24 }}>
@@ -470,7 +482,7 @@ export default function RegisterPage() {
                     style={{
                       flexShrink: 0, background: "none", border: "none", cursor: "pointer",
                       fontSize: 11, color: timeUnknown ? "var(--gold)" : "var(--muted-2)",
-                      fontFamily: "var(--font-sans)", padding: 0, opacity: 1,
+                      fontFamily: "var(--font-ui)", padding: 0, opacity: 1,
                     }}
                   >
                     {timeUnknown ? r.birthTimeUnknownActive : r.birthTimeUnknown}
@@ -484,17 +496,82 @@ export default function RegisterPage() {
               </FieldWrap>
 
               <FieldWrap label={r.birthPlaceLabel} error={birthPlaceError}>
-                <div style={{ ...inputRow, ...(birthPlaceError ? { border: errBorder } : {}) }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-2)" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Z" /><circle cx="12" cy="9" r="2.5" />
-                  </svg>
-                  <input
-                    value={birthPlace}
-                    onChange={e => { setBirthPlace(e.target.value); if (birthPlaceError) setBirthPlaceError(null); }}
-                    onBlur={() => { if (!birthPlace.trim()) setBirthPlaceError(r.birthPlaceRequired); }}
-                    placeholder={r.birthPlacePlaceholder}
-                    style={inputBase}
-                  />
+                <div style={{ position: "relative" }}>
+                  <div style={{ ...inputRow, ...(birthPlaceError ? { border: errBorder } : {}) }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-2)" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Z" /><circle cx="12" cy="9" r="2.5" />
+                    </svg>
+                    <input
+                      value={birthPlace}
+                      onChange={e => {
+                        setBirthPlace(e.target.value);
+                        setCityDropdownOpen(true);
+                        setActiveCityIndex(0);
+                        if (birthPlaceError) setBirthPlaceError(null);
+                      }}
+                      onFocus={() => setCityDropdownOpen(true)}
+                      onBlur={() => {
+                        window.setTimeout(() => setCityDropdownOpen(false), 120);
+                        if (!birthPlace.trim()) setBirthPlaceError(r.birthPlaceRequired);
+                      }}
+                      onKeyDown={(e) => {
+                        if (!cityDropdownOpen || !citySuggestions.length) return;
+                        if (e.key === "ArrowDown") {
+                          e.preventDefault();
+                          setActiveCityIndex((idx) => (idx + 1) % citySuggestions.length);
+                        }
+                        if (e.key === "ArrowUp") {
+                          e.preventDefault();
+                          setActiveCityIndex((idx) => (idx - 1 + citySuggestions.length) % citySuggestions.length);
+                        }
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          selectBirthCity(citySuggestions[activeCityIndex]);
+                        }
+                        if (e.key === "Escape") setCityDropdownOpen(false);
+                      }}
+                      placeholder={r.birthPlacePlaceholder}
+                      style={inputBase}
+                      role="combobox"
+                      aria-expanded={cityDropdownOpen}
+                      aria-autocomplete="list"
+                    />
+                  </div>
+                  {cityDropdownOpen && citySuggestions.length > 0 && (
+                    <div
+                      style={{
+                        position: "absolute", left: 0, right: 0, top: "calc(100% + 6px)",
+                        maxHeight: 220, overflowY: "auto", zIndex: 40,
+                        borderRadius: "var(--radius-sm)",
+                        border: "1px solid rgba(216,168,95,.24)",
+                        background: "rgba(10,8,28,.98)",
+                        boxShadow: "0 18px 40px rgba(0,0,0,.42)",
+                        padding: 6,
+                      }}
+                      role="listbox"
+                    >
+                      {citySuggestions.map((city, index) => (
+                        <button
+                          key={city}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => selectBirthCity(city)}
+                          style={{
+                            width: "100%", minHeight: 42, border: "none", borderRadius: 10,
+                            background: index === activeCityIndex ? "rgba(216,168,95,.12)" : "transparent",
+                            color: index === activeCityIndex ? "var(--gold-2)" : "var(--text)",
+                            display: "flex", alignItems: "center", padding: "0 11px",
+                            fontSize: 14, fontWeight: 500, textAlign: "left",
+                            fontFamily: "var(--font-ui)", cursor: "pointer",
+                          }}
+                          role="option"
+                          aria-selected={index === activeCityIndex}
+                        >
+                          {city}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 {!birthPlaceError && (
                   <span style={{ fontSize: 11, color: "var(--muted-2)", marginTop: 1 }}>
@@ -513,7 +590,7 @@ export default function RegisterPage() {
         {/* === STEP 3 === */}
         {step === 3 && (
           <>
-            <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 30, fontWeight: 400, color: "var(--text)", marginBottom: 6 }}>
+            <h1 style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 600, color: "var(--text)", marginBottom: 6 }}>
               {r.step3Title}
             </h1>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 24 }}>
@@ -534,7 +611,7 @@ export default function RegisterPage() {
                       border: `1px solid ${active ? "rgba(128,64,192,.60)" : "rgba(255,214,130,.18)"}`,
                       borderRadius: 24,
                       cursor: "pointer", transition: "all .18s",
-                      textAlign: "left", fontFamily: "var(--font-sans)",
+                      textAlign: "left", fontFamily: "var(--font-ui)",
                       backdropFilter: "blur(14px)",
                       WebkitBackdropFilter: "blur(14px)",
                       boxShadow: active ? "0 0 20px rgba(128,64,192,.15)" : "none",
@@ -595,7 +672,7 @@ export default function RegisterPage() {
             </div>
 
             <div style={{ textAlign: "center", marginBottom: 24 }}>
-              <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 32, fontWeight: 400, color: "var(--text)", marginBottom: 8 }}>
+              <h1 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 600, color: "var(--text)", marginBottom: 8 }}>
                 {r.step4Title}
               </h1>
               <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.65, maxWidth: 300, margin: "0 auto" }}>
@@ -639,7 +716,7 @@ export default function RegisterPage() {
                 width: "100%", height: 56, borderRadius: 999,
                 background: loading ? "rgba(128,64,192,.5)" : "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)",
                 color: "#fff", fontSize: 17, fontWeight: 600,
-                fontFamily: "var(--font-serif)", letterSpacing: ".04em",
+                fontFamily: "var(--font-ui)", letterSpacing: ".02em",
                 border: "none", cursor: loading ? "default" : "pointer",
                 boxShadow: "0 10px 32px rgba(90,32,144,.5), inset 0 1px 0 rgba(255,255,255,.15)",
               }}

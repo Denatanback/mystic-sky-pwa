@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { signIn } from "@/lib/auth/authAdapter";
+import { sendPasswordReset, signIn } from "@/lib/auth/authAdapter";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { useLang } from "@/lib/i18n";
 
@@ -16,6 +16,11 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState("");
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetError, setResetError] = useState("");
+  const [resetSuccess, setResetSuccess] = useState("");
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -30,6 +35,32 @@ export default function LoginPage() {
       return;
     }
     router.push("/home");
+  }
+
+  function openResetForm() {
+    setResetEmail(email.trim());
+    setResetError("");
+    setResetSuccess("");
+    setResetOpen(true);
+  }
+
+  async function handleResetPassword(e: React.FormEvent) {
+    e.preventDefault();
+    setResetLoading(true);
+    setResetError("");
+    setResetSuccess("");
+
+    const result = await sendPasswordReset({
+      email: resetEmail,
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+
+    setResetLoading(false);
+    if (result.error) {
+      setResetError(result.error);
+      return;
+    }
+    setResetSuccess(result.message ?? "If an account exists for this email, we’ll send a reset link.");
   }
 
   return (
@@ -86,7 +117,7 @@ export default function LoginPage() {
         {/* title */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <h1 style={{
-            fontFamily: "var(--font-serif)", fontSize: 32, fontWeight: 400,
+            fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 600,
             color: "var(--text)", lineHeight: 1.15, marginBottom: 8,
           }}>{l.title}</h1>
           <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, whiteSpace: "pre-line" }}>
@@ -127,7 +158,7 @@ export default function LoginPage() {
                   required
                   style={{
                     flex: 1, background: "transparent", border: "none", outline: "none",
-                    color: "var(--text)", fontSize: 14, fontFamily: "var(--font-sans)",
+                    color: "var(--text)", fontSize: 14, fontFamily: "var(--font-ui)",
                   }}
                 />
               </div>
@@ -137,7 +168,17 @@ export default function LoginPage() {
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                 <label style={{ fontSize: 12, color: "var(--muted)", letterSpacing: ".04em" }}>{l.passwordLabel}</label>
-                <a href="#" style={{ fontSize: 12, color: "var(--gold)", opacity: .8 }}>{l.forgotPassword}</a>
+                <button
+                  type="button"
+                  onClick={openResetForm}
+                  style={{
+                    background: "transparent", border: "none", padding: "0 2px",
+                    fontSize: 12, color: "var(--gold)", opacity: .86, cursor: "pointer",
+                    fontFamily: "var(--font-ui)",
+                  }}
+                >
+                  {l.forgotPassword}
+                </button>
               </div>
               <div style={{
                 display: "flex", alignItems: "center", gap: 10,
@@ -156,7 +197,7 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   style={{
                     flex: 1, background: "transparent", border: "none", outline: "none",
-                    color: "var(--text)", fontSize: 14, fontFamily: "var(--font-sans)",
+                    color: "var(--text)", fontSize: 14, fontFamily: "var(--font-ui)",
                   }}
                 />
                 <button
@@ -193,7 +234,7 @@ export default function LoginPage() {
                 height: 52, borderRadius: 999,
                 background: loading ? "rgba(128,64,192,.5)" : "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)",
                 color: "#fff", fontSize: 16, fontWeight: 600,
-                fontFamily: "var(--font-serif)", letterSpacing: ".03em",
+                fontFamily: "var(--font-ui)", letterSpacing: ".02em",
                 border: "none", cursor: loading ? "default" : "pointer",
                 boxShadow: loading ? "none" : "0 8px 28px rgba(90,32,144,.45), inset 0 1px 0 rgba(255,255,255,.12)",
                 transition: "all .2s",
@@ -230,6 +271,76 @@ export default function LoginPage() {
             </div>
 
           </form>
+          {resetOpen && (
+            <form
+              onSubmit={handleResetPassword}
+              style={{
+                marginTop: 18, paddingTop: 18, borderTop: "1px solid rgba(216,168,95,.14)",
+                display: "flex", flexDirection: "column", gap: 12,
+              }}
+            >
+              <div>
+                <h2 style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 600, color: "var(--text)", marginBottom: 4 }}>
+                  Reset password
+                </h2>
+                <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.5 }}>
+                  Enter your email and we’ll send a secure reset link.
+                </p>
+              </div>
+              <div>
+                <label style={{ display: "block", fontSize: 12, color: "var(--muted)", marginBottom: 6, letterSpacing: ".04em" }}>Email</label>
+                <div style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  background: "rgba(255,255,255,.05)",
+                  border: "1px solid var(--line-soft)",
+                  borderRadius: "var(--radius-sm)",
+                  padding: "12px 14px",
+                }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-2)" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 7 10-7" />
+                  </svg>
+                  <input
+                    type="email"
+                    value={resetEmail}
+                    onChange={e => setResetEmail(e.target.value)}
+                    placeholder="you@email.com"
+                    required
+                    style={{
+                      flex: 1, background: "transparent", border: "none", outline: "none",
+                      color: "var(--text)", fontSize: 14, fontFamily: "var(--font-ui)",
+                    }}
+                  />
+                </div>
+              </div>
+              {resetError && <p style={{ color: "var(--danger)", fontSize: 12, lineHeight: 1.4, margin: 0 }}>{resetError}</p>}
+              {resetSuccess && <p style={{ color: "var(--gold-2)", fontSize: 12, lineHeight: 1.45, margin: 0 }}>{resetSuccess}</p>}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 10 }}>
+                <button
+                  type="submit"
+                  disabled={resetLoading}
+                  style={{
+                    height: 46, borderRadius: 999, border: "none",
+                    background: resetLoading ? "rgba(128,64,192,.5)" : "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)",
+                    color: "#fff", fontSize: 14, fontWeight: 700, fontFamily: "var(--font-ui)",
+                    cursor: resetLoading ? "default" : "pointer",
+                  }}
+                >
+                  {resetLoading ? "Sending..." : "Send reset link"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setResetOpen(false)}
+                  style={{
+                    height: 46, borderRadius: 999, padding: "0 16px",
+                    border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.04)",
+                    color: "var(--muted)", fontSize: 14, fontWeight: 600, fontFamily: "var(--font-ui)",
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </form>
+          )}
         </div>
 
       </div>

@@ -16,7 +16,7 @@ function FieldError({ msg }: { msg?: string }) {
       color: "#d4744a",
       marginTop: 5,
       paddingLeft: 2,
-      fontFamily: "var(--font-serif)",
+      fontFamily: "var(--font-ui)",
       lineHeight: 1.3,
     }}>
       {msg}
@@ -32,7 +32,7 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
       textTransform: "uppercase",
       color: "rgba(185,143,79,0.7)",
       marginBottom: 5,
-      fontFamily: "var(--font-serif)",
+      fontFamily: "var(--font-ui)",
     }}>
       {children}
     </p>

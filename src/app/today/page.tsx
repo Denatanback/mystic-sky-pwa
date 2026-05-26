@@ -177,7 +177,7 @@ export default function TodayPage() {
         <header style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
           <div>
             <p style={{ fontSize: 12, color: "var(--muted)", textTransform: "capitalize", marginBottom: 2 }}>{dateLabel}</p>
-            <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 30, fontWeight: 400, color: "var(--text)", lineHeight: 1.1 }}>
+            <h1 style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 600, color: "var(--text)", lineHeight: 1.1 }}>
               {userName
                 ? (ru ? `Привет, ${userName}` : `Hello, ${userName}`)
                 : (ru ? "Твой день" : "Your day")}
@@ -202,7 +202,7 @@ export default function TodayPage() {
               <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 6 }}>
                 {ru ? "Луна сегодня" : "Moon today"}
               </p>
-              <p style={{ fontFamily: "var(--font-serif)", fontSize: 22, fontWeight: 400, color: "var(--text)", lineHeight: 1.15, marginBottom: 4 }}>
+              <p style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 600, color: "var(--text)", lineHeight: 1.15, marginBottom: 4 }}>
                 {moonInfo?.name[lang] ?? ""}{" "}
                 {moonSign && <span style={{ color: "var(--gold-2)" }}>{moonSign.symbol}</span>}
               </p>
@@ -262,7 +262,7 @@ export default function TodayPage() {
         {/* Personal day number */}
         <div style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: 20, background: "rgba(14,10,32,.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", padding: "14px 18px", marginBottom: 14, display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{ width: 54, height: 54, borderRadius: "50%", background: "radial-gradient(circle at 40% 35%, rgba(216,168,95,.25), rgba(80,30,160,.6))", border: "1px solid rgba(216,168,95,.5)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 0 18px rgba(216,168,95,.2)" }}>
-            <span style={{ fontFamily: "var(--font-serif)", fontSize: 26, fontWeight: 400, color: "var(--gold-2)" }}>{personalDay}</span>
+            <span style={{ fontFamily: "var(--font-ui)", fontSize: 26, fontWeight: 800, color: "var(--gold-2)" }}>{personalDay}</span>
           </div>
           <div style={{ flex: 1 }}>
             <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 4 }}>
@@ -333,7 +333,7 @@ export default function TodayPage() {
           </div>
         </div>
 
-        <Link href="/sky" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, height: 52, borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 15, fontWeight: 600, fontFamily: "var(--font-serif)", letterSpacing: ".03em", textDecoration: "none", boxShadow: "0 8px 28px rgba(90,32,144,.4), inset 0 1px 0 rgba(255,255,255,.12)", marginBottom: 4 }}>
+        <Link href="/sky" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, height: 52, borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 15, fontWeight: 700, fontFamily: "var(--font-ui)", letterSpacing: ".02em", textDecoration: "none", boxShadow: "0 8px 28px rgba(90,32,144,.4), inset 0 1px 0 rgba(255,255,255,.12)", marginBottom: 4 }}>
           {ru ? "Открыть карту неба" : "Open sky map"} &#8594;
         </Link>
 
