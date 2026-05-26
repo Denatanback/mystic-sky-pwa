@@ -2,60 +2,116 @@
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { getCurrentUser } from "@/lib/auth/authAdapter";
-import { formatToday } from "@/lib/date/formatToday";
 import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchContext } from "@/lib/launch/launchContext";
 
 const cardStyle: CSSProperties = {
-  border: "1px solid rgba(216,168,95,.22)",
+  border: "1px solid rgba(216,168,95,.20)",
   borderRadius: 22,
-  background: "rgba(12,8,28,.58)",
+  background: "rgba(12,8,28,.62)",
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
-  boxShadow: "0 16px 38px rgba(0,0,0,.28)",
+  boxShadow: "0 14px 34px rgba(0,0,0,.24)",
 };
 
-const primaryCtaStyle: CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  minHeight: 48,
-  padding: "0 22px",
+const primaryButtonStyle: CSSProperties = {
+  minHeight: 46,
   borderRadius: 999,
+  border: "none",
   background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)",
   color: "#fff",
   fontSize: 14,
   fontWeight: 800,
   fontFamily: "var(--font-ui)",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "0 18px",
   textDecoration: "none",
-  boxShadow: "0 10px 28px rgba(90,32,144,.42), inset 0 1px 0 rgba(255,255,255,.12)",
+  cursor: "pointer",
+  boxShadow: "0 10px 28px rgba(90,32,144,.40), inset 0 1px 0 rgba(255,255,255,.12)",
 };
 
+type DailyState = {
+  readingOpened: boolean;
+  practiceCompleted: boolean;
+  cardOpened: boolean;
+  affirmationCompleted: boolean;
+};
+
+function dateKey(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function storageKey(dayKey: string, field: keyof DailyState) {
+  return `eluna:daily:${dayKey}:${field}`;
+}
+
+function readDailyState(dayKey: string): DailyState {
+  if (typeof window === "undefined") {
+    return { readingOpened: false, practiceCompleted: false, cardOpened: false, affirmationCompleted: false };
+  }
+  return {
+    readingOpened: localStorage.getItem(storageKey(dayKey, "readingOpened")) === "true",
+    practiceCompleted: localStorage.getItem(storageKey(dayKey, "practiceCompleted")) === "true" || localStorage.getItem(`eluna:daily:${dayKey}:reflectionCompleted`) === "true",
+    cardOpened: localStorage.getItem(storageKey(dayKey, "cardOpened")) === "true",
+    affirmationCompleted: localStorage.getItem(storageKey(dayKey, "affirmationCompleted")) === "true",
+  };
+}
+
+function addDays(date: Date, amount: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + amount);
+  return next;
+}
+
+function deterministicEnergy(dayKey: string) {
+  const values = ["Harmonious", "Reflective", "Focused"] as const;
+  const seed = dayKey.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return values[seed % values.length];
+}
+
+function IconSpark() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3v4" />
+      <path d="M12 17v4" />
+      <path d="M3 12h4" />
+      <path d="M17 12h4" />
+      <path d="m6.2 6.2 2.1 2.1" />
+      <path d="m15.7 15.7 2.1 2.1" />
+      <path d="m17.8 6.2-2.1 2.1" />
+      <path d="m8.3 15.7-2.1 2.1" />
+    </svg>
+  );
+}
+
 export default function HomePage() {
-  const todayLabel = formatToday("en-US");
+  const today = useMemo(() => new Date(), []);
+  const todayKey = dateKey(today);
+  const todayTitle = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(today);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [launchContext, setLaunchContext] = useState<LaunchContext>({});
-  const [practiceCompleted, setPracticeCompleted] = useState(false);
-  const practiceKey = `eluna:daily-practice:${new Date().toISOString().slice(0, 10)}`;
+  const [dailyState, setDailyState] = useState<DailyState>({ readingOpened: false, practiceCompleted: false, cardOpened: false, affirmationCompleted: false });
+  const [activePracticeLabel, setActivePracticeLabel] = useState("Choose your first affirmation");
 
-  const openMoonMode = () => setFeatureInfo({
-    title: "Moon Mode",
-    description: "Soon you’ll be able to switch between daily rhythm, night focus, and reflection modes.",
-    statusLabel: "Coming soon",
-    primaryActionLabel: "Got it",
-  });
-  const openReminders = () => setFeatureInfo({
-    title: "Soul reminders",
-    description: "Daily reading reminders and practice notifications will appear here.",
-    statusLabel: "Coming soon",
-    primaryActionLabel: "Got it",
-  });
+  const completedCount = Number(dailyState.readingOpened) + Number(dailyState.practiceCompleted) + Number(dailyState.cardOpened) + Number(dailyState.affirmationCompleted);
+  const energy = deterministicEnergy(todayKey);
+  const showPastLifeBlock = isPastLifeContext(launchContext);
+
+  const weekDays = useMemo(() => {
+    const current = today.getDay();
+    const mondayOffset = current === 0 ? -6 : 1 - current;
+    return Array.from({ length: 7 }, (_, index) => addDays(today, mondayOffset + index));
+  }, [today]);
+
+  const calendarDays = useMemo(() => Array.from({ length: 5 }, (_, index) => addDays(today, index - 1)), [today]);
 
   useEffect(() => {
     let cancelled = false;
@@ -72,7 +128,15 @@ export default function HomePage() {
     });
     const storedContext = { ...loadLaunchContext(), ...urlContext };
     setLaunchContext(storedContext);
-    setPracticeCompleted(localStorage.getItem(practiceKey) === "completed");
+    setDailyState(readDailyState(todayKey));
+    try {
+      const activeAffirmations = JSON.parse(localStorage.getItem("eluna:activeAffirmations") || "[]");
+      if (Array.isArray(activeAffirmations) && activeAffirmations[0]?.category) {
+        setActivePracticeLabel(`Active practice: ${activeAffirmations[0].category}`);
+      }
+    } catch {
+      setActivePracticeLabel("Choose your first affirmation");
+    }
     void getCurrentUser().then((user) => {
       if (!cancelled && user?.launchContext) {
         setLaunchContext({ ...storedContext, ...user.launchContext });
@@ -81,80 +145,222 @@ export default function HomePage() {
     return () => {
       cancelled = true;
     };
-  }, [practiceKey]);
+  }, [todayKey]);
 
-  const showPastLifeBlock = isPastLifeContext(launchContext);
+  function setDailyField(field: keyof DailyState, value = true) {
+    localStorage.setItem(storageKey(todayKey, field), String(value));
+    setDailyState(readDailyState(todayKey));
+  }
+
+  const openComingSoon = (title: string, description: string, primaryActionLabel = "Got it") => setFeatureInfo({
+    title,
+    description,
+    statusLabel: "Coming soon",
+    primaryActionLabel,
+  });
+
+  function completePractice() {
+    setDailyField("practiceCompleted");
+    localStorage.setItem(`eluna:daily:${todayKey}:reflectionCompleted`, "true");
+  }
+
+  function drawDailyCard() {
+    setDailyField("cardOpened");
+    setFeatureInfo({
+      title: "Daily card",
+      description: "Your symbol for today is saved. Soon you’ll be able to revisit every card you draw and track recurring patterns.",
+      statusLabel: "Drawn today",
+      primaryActionLabel: "Got it",
+    });
+  }
+
+  const nextAction = !dailyState.readingOpened
+    ? { label: "Open today’s reading", type: "link" as const, href: "/today", field: "readingOpened" as const }
+    : !dailyState.practiceCompleted
+      ? { label: "Complete today’s practice", type: "button" as const, action: completePractice }
+      : !dailyState.affirmationCompleted
+        ? { label: "Repeat affirmation", type: "link" as const, href: "/practices?tab=today" }
+      : !dailyState.cardOpened
+        ? { label: "Draw daily card", type: "button" as const, action: drawDailyCard }
+        : { label: "Today is complete", type: "button" as const, action: () => openComingSoon("Tomorrow’s signal", "Your next signal opens tomorrow. Return daily to reveal more of your map.") };
 
   return (
     <div className="app">
       <StarField />
       <div className="content">
-        <header className="app-topbar">
-          <div className="app-topbar__logo"><Logo variant="header" /></div>
-          <div className="app-topbar__actions">
+        <header style={{ display: "grid", gridTemplateColumns: "40px 1fr auto", alignItems: "center", gap: 10, minHeight: 64, padding: "18px 0 10px" }}>
+          <button className="icon-btn" type="button" aria-label="Open menu" title="Menu" onClick={() => openComingSoon("eLuna menu", "A clearer app menu is coming soon. For now, use the bottom navigation to move through your path.")}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+          </button>
+          <div style={{ display: "flex", justifyContent: "center", minWidth: 0 }}>
+            <Logo variant="header" />
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
             <GuideTopBarButton />
-            <button className="icon-btn" aria-label="Moon Mode" title="Moon Mode" onClick={openMoonMode}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg>
-            </button>
-            <button className="icon-btn" aria-label="Soul reminders" title="Soul reminders" onClick={openReminders}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-            </button>
-            <Link data-tour="profile-button" href="/profile" aria-label="Open profile" title="Profile" style={{ width: 38, height: 38, borderRadius: "50%", border: "2px solid rgba(216,168,95,.45)", display: "grid", placeItems: "center", background: "radial-gradient(circle at 40% 35%, rgba(120,60,200,.5), rgba(40,20,80,.8))", flexShrink: 0, textDecoration: "none" }}>
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--muted)" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+            <span title="Streak" style={{ height: 30, borderRadius: 999, border: "1px solid rgba(216,168,95,.26)", background: dailyState.practiceCompleted ? "rgba(216,168,95,.12)" : "rgba(255,255,255,.05)", color: "var(--gold-2)", display: "inline-flex", alignItems: "center", gap: 5, padding: "0 9px", fontSize: 11, fontWeight: 800 }}>
+              <IconSpark /> {dailyState.practiceCompleted ? "1d" : "0d"}
+            </span>
+            <span title="Plan" style={{ height: 30, borderRadius: 999, border: "1px solid rgba(160,130,220,.24)", background: "rgba(160,100,240,.08)", color: "var(--muted)", display: "inline-flex", alignItems: "center", padding: "0 9px", fontSize: 11, fontWeight: 800 }}>Free</span>
+            <Link href="/profile" aria-label="Open profile" title="Profile" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(216,168,95,.36)", display: "grid", placeItems: "center", background: "rgba(255,255,255,.05)", color: "var(--gold-2)", flexShrink: 0 }}>
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
             </Link>
           </div>
         </header>
 
-        <section data-tour="home-today-card" style={{ ...cardStyle, position: "relative", overflow: "hidden", padding: "26px 22px", marginTop: 12, background: "linear-gradient(145deg, rgba(20,12,52,.92), rgba(9,6,24,.82))" }}>
-          <div aria-hidden="true" style={{ position: "absolute", width: 180, height: 180, borderRadius: "50%", right: -58, top: -70, background: "radial-gradient(circle, rgba(216,168,95,.18), rgba(128,64,192,.14) 48%, transparent 70%)" }} />
-          <p style={{ color: "var(--gold)", fontSize: 11, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 10 }}>Start here</p>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 10 }}>Your eLuna path is ready</h1>
-          <p style={{ fontSize: 14, color: "var(--muted)", lineHeight: 1.65, maxWidth: 320, marginBottom: 18 }}>Start with today’s personal reading, then unlock deeper insights as your path unfolds.</p>
-          <Link href="/today" style={primaryCtaStyle}>Start today’s reading</Link>
-          <p style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 12 }}>3 minutes · personalized daily insight</p>
+        <section style={{ ...cardStyle, padding: 14, marginTop: 4 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+            <div>
+              <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 3 }}>Your streak</p>
+              <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.4 }}>{dailyState.practiceCompleted ? "Today is complete" : "Complete one practice to count today"}</p>
+            </div>
+            <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{dailyState.practiceCompleted ? "1 day" : "Start today"}</span>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6 }}>
+            {weekDays.map((day) => {
+              const key = dateKey(day);
+              const isToday = key === todayKey;
+              const completed = readDailyState(key).practiceCompleted;
+              return (
+                <div key={key} style={{ textAlign: "center", minWidth: 0 }}>
+                  <p style={{ fontSize: 10, color: isToday ? "var(--gold-2)" : "var(--muted-2)", fontWeight: isToday ? 800 : 600, marginBottom: 6 }}>{new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(day)}</p>
+                  <span style={{ width: 14, height: 14, borderRadius: "50%", margin: "0 auto", display: "block", border: `1px solid ${isToday ? "rgba(216,168,95,.85)" : "rgba(255,255,255,.16)"}`, background: completed ? "var(--gold-2)" : isToday ? "rgba(216,168,95,.14)" : "rgba(255,255,255,.04)", boxShadow: isToday ? "0 0 0 4px rgba(216,168,95,.08)" : "none" }} />
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         {showPastLifeBlock && (
-          <section style={{ ...cardStyle, padding: "16px 18px", marginTop: 14, borderColor: "rgba(216,168,95,.32)", background: "rgba(60,20,100,.24)" }}>
+          <section style={{ ...cardStyle, padding: 16, marginTop: 12, borderColor: "rgba(216,168,95,.32)", background: "rgba(60,20,100,.24)" }}>
             <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 6 }}>Ready for you</p>
-            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 6 }}>Your Past Life reading is ready</h2>
-            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55, marginBottom: 14 }}>We’ve prepared your first soul pattern from your answers.</p>
-            <Link href="/today" style={{ ...primaryCtaStyle, minHeight: 42, fontSize: 13 }}>Open my reading</Link>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 6 }}>Your Past Life reading is ready</h2>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55, marginBottom: 12 }}>We’ve prepared your first soul pattern from your answers.</p>
+            <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...primaryButtonStyle, minHeight: 40, fontSize: 13 }}>Open my reading</Link>
           </section>
         )}
 
-        <section style={{ ...cardStyle, padding: 18, marginTop: 14 }}>
-          <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Today’s focus</p>
-          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, fontWeight: 600, color: "var(--text)", lineHeight: 1.12, marginBottom: 8 }}>Notice what pulls your attention</h2>
-          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 16 }}>Your reading for {todayLabel} points toward one clear signal: where your energy keeps returning, your next answer is already forming.</p>
-          <Link href="/today" style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 800, textDecoration: "none" }}>Open today’s reading →</Link>
+        <section data-tour="home-today-card" style={{ ...cardStyle, padding: 18, marginTop: 12, borderColor: "rgba(216,168,95,.30)", background: "linear-gradient(145deg, rgba(22,13,54,.82), rgba(10,6,28,.70))" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 10 }}>
+            <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase" }}>Guidance for today</p>
+            <span style={{ fontSize: 11, color: "var(--muted-2)" }}>{todayTitle}</span>
+          </div>
+          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 600, color: "var(--text)", lineHeight: 1.08, marginBottom: 8 }}>Notice what pulls your attention</h1>
+          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 14 }}>The signal that repeats today may point to your next step.</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 16 }}>
+            {["Moon phase", "Daily focus", "Energy"].map((tag) => (
+              <span key={tag} style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 999, color: "var(--gold-2)", background: "rgba(216,168,95,.07)", padding: "5px 9px", fontSize: 11, fontWeight: 700 }}>{tag}</span>
+            ))}
+          </div>
+          <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...primaryButtonStyle, width: "100%" }}>Open today’s reading</Link>
+        </section>
+
+        <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 12 }}>
+          <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...cardStyle, padding: 14, minHeight: 136, display: "flex", flexDirection: "column", textDecoration: "none" }}>
+            <span style={{ color: "var(--gold-2)", marginBottom: 10 }}><IconSpark /></span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Today’s reading</h2>
+            <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>Open your personal insight.</p>
+            <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{dailyState.readingOpened ? "Opened" : "Open"}</span>
+          </Link>
+          <button type="button" onClick={drawDailyCard} style={{ ...cardStyle, padding: 14, minHeight: 136, display: "flex", flexDirection: "column", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
+            <span style={{ color: "var(--gold-2)", marginBottom: 10 }}><IconSpark /></span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Daily card</h2>
+            <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>Reveal today’s symbol.</p>
+            <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{dailyState.cardOpened ? "Drawn" : "Draw"}</span>
+          </button>
+        </section>
+
+        <section style={{ ...cardStyle, padding: 16, marginTop: 12, display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ width: 42, height: 42, borderRadius: "50%", border: "1px solid rgba(216,168,95,.30)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "grid", placeItems: "center", flexShrink: 0 }}>
+            <IconSpark />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 4 }}>Repeat affirmation</p>
+            <p style={{ color: "var(--text)", fontSize: 13, fontWeight: 800, marginBottom: 2 }}>{dailyState.affirmationCompleted ? "Completed" : "Ready"}</p>
+            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.4 }}>{activePracticeLabel}</p>
+          </div>
+          <Link href="/practices?tab=today" style={{ ...primaryButtonStyle, minHeight: 38, fontSize: 12, padding: "0 14px" }}>
+            {dailyState.affirmationCompleted ? "Done" : "Repeat"}
+          </Link>
+        </section>
+
+        <section style={{ marginTop: 14, overflow: "hidden" }}>
+          <div className="no-scrollbar" style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }}>
+            {calendarDays.map((day) => {
+              const key = dateKey(day);
+              const isToday = key === todayKey;
+              const isFuture = day > today;
+              const completed = readDailyState(key).practiceCompleted;
+              return (
+                <div key={key} style={{ minWidth: 66, borderRadius: 18, border: `1px solid ${isToday ? "rgba(216,168,95,.70)" : "rgba(255,255,255,.10)"}`, background: isToday ? "rgba(216,168,95,.10)" : "rgba(255,255,255,.04)", padding: "10px 8px", textAlign: "center", opacity: isFuture ? .62 : 1 }}>
+                  <p style={{ fontSize: 11, color: isToday ? "var(--gold-2)" : "var(--muted)", fontWeight: 800 }}>{new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(day)}</p>
+                  <p style={{ fontSize: 18, color: "var(--text)", fontWeight: 800, marginTop: 2 }}>{new Intl.DateTimeFormat("en-US", { day: "numeric" }).format(day)}</p>
+                  <span style={{ width: 5, height: 5, borderRadius: "50%", display: "block", margin: "6px auto 0", background: completed ? "var(--gold-2)" : "transparent" }} />
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         <section data-tour="home-recommendations" style={{ ...cardStyle, padding: 18, marginTop: 14 }}>
-          <div style={{ width: 46, height: 46, borderRadius: "50%", display: "grid", placeItems: "center", border: "1px solid rgba(216,168,95,.32)", color: "var(--gold-2)", background: "rgba(216,168,95,.08)", marginBottom: 12 }}>✦</div>
-          <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 6 }}>Your next step</p>
-          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, fontWeight: 600, color: "var(--text)", lineHeight: 1.12, marginBottom: 8 }}>Complete one short reflection today to begin your path.</h2>
-          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 16 }}>{practiceCompleted ? "Practice completed. Come back tomorrow to reveal your next signal." : "This is the first simple action that turns your reading into a path."}</p>
-          <Link href="/today" style={primaryCtaStyle}>{practiceCompleted ? "View today’s reading" : "Begin reflection"}</Link>
+          <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>{todayTitle}</p>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, color: "var(--text)", fontWeight: 600, marginBottom: 4 }}>Energy of the day</h2>
+          <p style={{ color: "var(--gold-2)", fontSize: 18, fontWeight: 800, marginBottom: 8 }}>{energy}</p>
+          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 16 }}>Your first step is simple: complete one short reflection.</p>
+          {dailyState.practiceCompleted ? (
+            <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 16, background: "rgba(216,168,95,.08)", padding: 13 }}>
+              <p style={{ color: "var(--gold-2)", fontSize: 14, fontWeight: 800 }}>Practice completed</p>
+              <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginTop: 4 }}>Come back tomorrow to reveal your next signal.</p>
+            </div>
+          ) : (
+            <button type="button" onClick={completePractice} style={{ ...primaryButtonStyle, width: "100%" }}>Complete today’s practice</button>
+          )}
+        </section>
+
+        <section style={{ ...cardStyle, padding: 16, marginTop: 14 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+            <div>
+              <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 4 }}>Today’s progress</p>
+              <p style={{ fontSize: 13, color: "var(--muted)" }}>{completedCount}/4 completed today</p>
+            </div>
+            <span style={{ color: "var(--gold-2)", fontSize: 24, fontWeight: 800 }}>{completedCount}</span>
+          </div>
+          {[
+            ["Reading", dailyState.readingOpened ? "Opened" : "Ready"],
+            ["Practice", dailyState.practiceCompleted ? "Completed" : "Not started"],
+            ["Affirmation", dailyState.affirmationCompleted ? "Completed" : "Ready"],
+            ["Daily card", dailyState.cardOpened ? "Drawn" : "Ready"],
+          ].map(([label, status]) => (
+            <div key={label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "10px 0", borderTop: label === "Reading" ? "none" : "1px solid rgba(255,255,255,.06)" }}>
+              <span style={{ color: "var(--text)", fontSize: 13, fontWeight: 700 }}>{label}</span>
+              <span style={{ color: status === "Not started" ? "var(--muted-2)" : "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{status}</span>
+            </div>
+          ))}
+          {nextAction.type === "link" ? (
+            <Link href={nextAction.href} onClick={() => { if ("field" in nextAction && nextAction.field) setDailyField(nextAction.field); }} style={{ ...primaryButtonStyle, width: "100%", marginTop: 12 }}>{nextAction.label}</Link>
+          ) : (
+            <button type="button" onClick={nextAction.action} style={{ ...primaryButtonStyle, width: "100%", marginTop: 12 }}>{nextAction.label}</button>
+          )}
+          {completedCount === 4 && (
+            <p style={{ textAlign: "center", color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginTop: 10 }}>Your next signal opens tomorrow.</p>
+          )}
         </section>
 
         <section style={{ ...cardStyle, marginTop: 14, padding: 16 }}>
-          <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--gold)", fontWeight: 800, marginBottom: 12 }}>Your next unlocks</p>
+          <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--gold)", fontWeight: 800, marginBottom: 6 }}>Next unlocks</p>
+          <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 10 }}>Return daily to reveal more of your map.</p>
           {[
             ["Day 2", "Personal card pattern"],
             ["Day 3", "Past-life signal"],
             ["Day 5", "Relationship insight"],
             ["Day 7", "Weekly soul report"],
           ].map(([day, label]) => (
-            <div key={day} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderTop: day === "Day 2" ? "none" : "1px solid rgba(255,255,255,.06)" }}>
+            <div key={day} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderTop: day === "Day 2" ? "none" : "1px solid rgba(255,255,255,.06)" }}>
               <span style={{ minWidth: 50, fontSize: 11, color: "var(--gold-2)", fontWeight: 800 }}>{day}</span>
               <span style={{ flex: 1, fontSize: 13, color: "var(--text)" }}>{label}</span>
-              <span style={{ fontSize: 11, color: "var(--muted-2)" }}>Unlocks later</span>
+              <span style={{ fontSize: 11, color: "var(--muted-2)" }}>Locked</span>
             </div>
           ))}
         </section>
-
-        <p style={{ textAlign: "center", fontSize: 12, color: "var(--muted-2)", marginTop: 16 }}>Your path begins today</p>
       </div>
       <BottomNav />
       {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
