@@ -4,7 +4,7 @@
 
 - Password reset was decorative on login; it now has a real Supabase/mock-safe flow, but the email recovery link flow should still be tested against the production Supabase email template.
 - Supabase server helpers previously assumed env values were always present; this can break mock/local development. Middleware and server client creation are now env-gated.
-- Registration relied on free-form birth place input only; US-first onboarding now has local city suggestions while preserving manual entry.
+- Registration birth place autocomplete is now worldwide through a server route. It preserves manual entry and falls back to a local popular global city list when the provider env is missing.
 
 ## 2. UX issues
 
@@ -28,7 +28,7 @@
 
 - Mobile shell is coherent and focused, with a controlled max-width app frame on desktop.
 - Auth pages have enough top spacing for the logo, but longer localized copy should be rechecked before RU locale is re-enabled.
-- City autocomplete is constrained inside the registration card width and uses a mobile-friendly list height.
+- City autocomplete is constrained inside the registration card width, uses a mobile-friendly list height, and supports worldwide search with loading/empty states.
 
 ## 6. Suggested next steps
 
@@ -37,3 +37,10 @@
 - Add explicit empty/loading/error states for profile data and locked path content.
 - Add a small visual QA pass for desktop width, especially `/home`, `/today/node`, and deep sky node pages.
 - Add Playwright smoke tests for login mock flow, register mock flow, city autocomplete, and reset-password form.
+
+## Birth city autocomplete note
+
+- Provider: GeoNames through the product server route with `featureClass=P` for populated places.
+- API route: `/api/places/search?q=...`.
+- Server env needed in Vercel: `GEONAMES_USERNAME`.
+- Fallback: `src/lib/locations/worldCitySearch.ts` contains a small popular worldwide city list used when `GEONAMES_USERNAME` is absent, GeoNames fails, or GeoNames returns an error/limit status.

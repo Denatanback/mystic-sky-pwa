@@ -1,6 +1,6 @@
 "use client";
 import { Logo } from "@/components/Logo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { StarField } from "@/components/app-shell/StarField";
@@ -8,7 +8,7 @@ import { register } from "@/lib/auth/authAdapter";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { clearProgress } from "@/lib/nodeProgress";
 import { useLang } from "@/lib/i18n";
-import { findUsCities } from "@/lib/locations/usCities";
+import type { PlaceSuggestion } from "@/lib/locations/worldCitySearch";
 
 // ─── Masking helpers ─────────────────────────────────────────────────
 
@@ -139,6 +139,9 @@ export default function RegisterPage() {
   const [birthPlaceError, setBirthPlaceError] = useState<string | null>(null);
   const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
   const [activeCityIndex, setActiveCityIndex] = useState(0);
+  const [citySuggestions, setCitySuggestions] = useState<PlaceSuggestion[]>([]);
+  const [cityLoading, setCityLoading] = useState(false);
+  const [cityQuerySearched, setCityQuerySearched] = useState(false);
 
   // Step 3
   const [selected, setSelected] = useState<string[]>(["astro", "practice"]);
@@ -211,10 +214,49 @@ export default function RegisterPage() {
     setPassError(null);
   }
 
-  const citySuggestions = findUsCities(birthPlace);
+  useEffect(() => {
+    const query = birthPlace.trim();
 
-  function selectBirthCity(city: string) {
-    setBirthPlace(city);
+    if (!cityDropdownOpen || query.length < 2) {
+      setCitySuggestions([]);
+      setCityLoading(false);
+      setCityQuerySearched(false);
+      setActiveCityIndex(0);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timeout = window.setTimeout(async () => {
+      setCityLoading(true);
+      setCityQuerySearched(false);
+
+      try {
+        const response = await fetch(`/api/places/search?q=${encodeURIComponent(query)}`, {
+          signal: controller.signal,
+        });
+        const places = response.ok ? ((await response.json()) as PlaceSuggestion[]) : [];
+        setCitySuggestions(places);
+        setActiveCityIndex(0);
+      } catch (error) {
+        if (!(error instanceof DOMException && error.name === "AbortError")) {
+          setCitySuggestions([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setCityLoading(false);
+          setCityQuerySearched(true);
+        }
+      }
+    }, 300);
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timeout);
+    };
+  }, [birthPlace, cityDropdownOpen]);
+
+  function selectBirthCity(place: PlaceSuggestion) {
+    setBirthPlace(place.label);
     setBirthPlaceError(null);
     setCityDropdownOpen(false);
     setActiveCityIndex(0);
@@ -515,7 +557,12 @@ export default function RegisterPage() {
                         if (!birthPlace.trim()) setBirthPlaceError(r.birthPlaceRequired);
                       }}
                       onKeyDown={(e) => {
-                        if (!cityDropdownOpen || !citySuggestions.length) return;
+                        if (!cityDropdownOpen) return;
+                        if (e.key === "Escape") {
+                          setCityDropdownOpen(false);
+                          return;
+                        }
+                        if (!citySuggestions.length) return;
                         if (e.key === "ArrowDown") {
                           e.preventDefault();
                           setActiveCityIndex((idx) => (idx + 1) % citySuggestions.length);
@@ -528,7 +575,6 @@ export default function RegisterPage() {
                           e.preventDefault();
                           selectBirthCity(citySuggestions[activeCityIndex]);
                         }
-                        if (e.key === "Escape") setCityDropdownOpen(false);
                       }}
                       placeholder={r.birthPlacePlaceholder}
                       style={inputBase}
@@ -537,10 +583,10 @@ export default function RegisterPage() {
                       aria-autocomplete="list"
                     />
                   </div>
-                  {cityDropdownOpen && citySuggestions.length > 0 && (
+                  {cityDropdownOpen && birthPlace.trim().length >= 2 && (
                     <div
                       style={{
-                        position: "absolute", left: 0, right: 0, top: "calc(100% + 6px)",
+                        position: "relative", marginTop: 6,
                         maxHeight: 220, overflowY: "auto", zIndex: 40,
                         borderRadius: "var(--radius-sm)",
                         border: "1px solid rgba(216,168,95,.24)",
@@ -550,26 +596,40 @@ export default function RegisterPage() {
                       }}
                       role="listbox"
                     >
-                      {citySuggestions.map((city, index) => (
+                      {cityLoading && (
+                        <div style={{ minHeight: 42, display: "flex", alignItems: "center", padding: "0 11px", color: "var(--muted)", fontSize: 13 }}>
+                          Searching cities...
+                        </div>
+                      )}
+                      {!cityLoading && citySuggestions.map((place, index) => (
                         <button
-                          key={city}
+                          key={`${place.label}-${place.countryCode}-${index}`}
                           type="button"
                           onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => selectBirthCity(city)}
+                          onClick={() => selectBirthCity(place)}
                           style={{
-                            width: "100%", minHeight: 42, border: "none", borderRadius: 10,
+                            width: "100%", minHeight: 50, border: "none", borderRadius: 10,
                             background: index === activeCityIndex ? "rgba(216,168,95,.12)" : "transparent",
                             color: index === activeCityIndex ? "var(--gold-2)" : "var(--text)",
-                            display: "flex", alignItems: "center", padding: "0 11px",
-                            fontSize: 14, fontWeight: 500, textAlign: "left",
+                            display: "flex", flexDirection: "column", justifyContent: "center",
+                            alignItems: "flex-start", padding: "7px 11px",
+                            fontSize: 14, fontWeight: 600, textAlign: "left",
                             fontFamily: "var(--font-ui)", cursor: "pointer",
                           }}
                           role="option"
                           aria-selected={index === activeCityIndex}
                         >
-                          {city}
+                          <span>{place.city}</span>
+                          <span style={{ color: "var(--muted-2)", fontSize: 12, fontWeight: 500, marginTop: 2 }}>
+                            {[place.region, place.country].filter(Boolean).join(", ")}
+                          </span>
                         </button>
                       ))}
+                      {!cityLoading && cityQuerySearched && citySuggestions.length === 0 && (
+                        <div style={{ minHeight: 46, display: "flex", alignItems: "center", padding: "0 11px", color: "var(--muted)", fontSize: 13, lineHeight: 1.4 }}>
+                          Keep typing or enter your city manually
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
