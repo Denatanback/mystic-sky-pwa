@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { OrnateButton } from "@/components/ui/OrnateButton";
-import { getMockUser, saveMockUser, setMockAuthenticated } from "@/lib/mockAuth";
+import { register as registerUser, signIn } from "@/lib/auth/authAdapter";
 
 /* ─── Shared ─────────────────────────────────────────────── */
 
@@ -16,7 +16,7 @@ function FieldError({ msg }: { msg?: string }) {
       color: "#d4744a",
       marginTop: 5,
       paddingLeft: 2,
-      fontFamily: "var(--font-serif)",
+      fontFamily: "var(--font-ui)",
       lineHeight: 1.3,
     }}>
       {msg}
@@ -32,7 +32,7 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
       textTransform: "uppercase",
       color: "rgba(185,143,79,0.7)",
       marginBottom: 5,
-      fontFamily: "var(--font-serif)",
+      fontFamily: "var(--font-ui)",
     }}>
       {children}
     </p>
@@ -48,6 +48,7 @@ export function LoginForm() {
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
   const [errors,   setErrors]   = useState<LoginErrors>({});
+  const [authError, setAuthError] = useState("");
   const [loading,  setLoading]  = useState(false);
 
   const clearErr = (k: keyof LoginErrors) =>
@@ -61,23 +62,17 @@ export function LoginForm() {
     return e;
   };
 
-  const handleSubmit = (ev: React.FormEvent) => {
+  const handleSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
     const e = validate();
     if (Object.keys(e).length) { setErrors(e); return; }
     setLoading(true);
-    setMockAuthenticated();
-    if (!getMockUser()) {
-      saveMockUser({
-        name: "Путник",
-        email: email.trim(),
-        gender: "",
-        birthDate: "",
-        birthTime: "",
-        birthTimeUnknown: false,
-        birthPlace: "",
-        createdAt: new Date().toISOString(),
-      });
+    setAuthError("");
+    const result = await signIn({ email, password });
+    setLoading(false);
+    if (result.error) {
+      setAuthError(result.error);
+      return;
     }
     router.push("/today");
   };
@@ -111,6 +106,7 @@ export function LoginForm() {
       <div style={{ marginTop: 4 }}>
         <OrnateButton type="submit">{loading ? "Входим..." : "Войти"}</OrnateButton>
       </div>
+      <FieldError msg={authError} />
 
       <p style={{ textAlign: "center", fontSize: 13, color: "rgba(231,213,181,0.6)", marginTop: 4 }}>
         Нет профиля?{" "}
@@ -141,6 +137,7 @@ export function RegisterForm() {
   const [birthTimeUnknown, setBirthTimeUnknown] = useState(false);
   const [birthPlace,       setBirthPlace]       = useState("");
   const [errors,           setErrors]           = useState<RegErrors>({});
+  const [authError,        setAuthError]        = useState("");
   const [loading,          setLoading]          = useState(false);
 
   const clearErr = (k: keyof RegErrors) =>
@@ -159,22 +156,26 @@ export function RegisterForm() {
     return e;
   };
 
-  const handleSubmit = (ev: React.FormEvent) => {
+  const handleSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
     const e = validate();
     if (Object.keys(e).length) { setErrors(e); return; }
     setLoading(true);
-    saveMockUser({
-      name: name.trim(),
-      email: email.trim(),
-      gender: "",
+    setAuthError("");
+    const result = await registerUser({
+      name,
+      email,
+      password,
       birthDate,
-      birthTime: birthTimeUnknown ? "" : birthTime,
+      birthTime,
       birthTimeUnknown,
-      birthPlace: birthPlace.trim(),
-      createdAt: new Date().toISOString(),
+      birthPlace,
     });
-    setMockAuthenticated();
+    setLoading(false);
+    if (result.error) {
+      setAuthError(result.error);
+      return;
+    }
     router.push("/today");
   };
 
@@ -283,6 +284,7 @@ export function RegisterForm() {
       <div style={{ marginTop: 6 }}>
         <OrnateButton type="submit">{loading ? "Создаем небо..." : "Создать небо"}</OrnateButton>
       </div>
+      <FieldError msg={authError} />
 
       <p style={{ textAlign: "center", fontSize: 13, color: "rgba(231,213,181,0.6)", marginTop: 4 }}>
         Уже есть профиль?{" "}

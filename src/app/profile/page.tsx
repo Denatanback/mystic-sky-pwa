@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
-import { createClient } from "@/lib/supabase/client";
+import { getCurrentUser, signOut } from "@/lib/auth/authAdapter";
 import { useLang } from "@/lib/i18n";
 import { MascotTopBarButton } from "@/components/mascot/MascotTopBarButton";
 
@@ -30,44 +30,20 @@ export default function ProfilePage() {
   const [confirmLogout, setConfirmLogout] = useState(false);
   useEffect(() => {
     let cancelled = false;
-
-    async function loadProfile() {
-      const supabase = createClient();
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
+    void getCurrentUser().then((user) => {
       if (!user) {
         router.push("/welcome");
         return;
       }
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .single();
-
-      const name =
-        profile?.full_name ||
-        user.user_metadata?.full_name ||
-        user.email?.split("@")[0] ||
-        "...";
-
-      if (!cancelled) setFullName(name.trim());
-    }
-
-    loadProfile();
-
+      if (!cancelled && user?.name) setFullName(user.name.trim());
+    });
     return () => {
       cancelled = true;
     };
   }, [router]);
 
   async function handleLogout() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await signOut();
     router.push("/welcome");
     router.refresh();
   }
@@ -93,7 +69,7 @@ export default function ProfilePage() {
             <div style={{ position: "absolute", inset: -6, borderRadius: "50%", border: "1px solid rgba(216,168,95,.25)" }} />
             <div style={{ width: 72, height: 72, borderRadius: "50%", background: "linear-gradient(135deg, rgba(120,60,200,.6) 0%, rgba(80,40,160,.8) 100%)", border: "2px solid rgba(216,168,95,.40)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, position: "relative", zIndex: 1, boxShadow: "0 0 24px rgba(120,60,200,.40)" }}>&#10022;</div>
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 700, fontFamily: "var(--font-serif)", color: "var(--text)", letterSpacing: ".02em" }}>{fullName}</h2>
+          <h2 style={{ fontSize: 22, fontWeight: 700, fontFamily: "var(--font-display)", color: "var(--text)", letterSpacing: ".02em" }}>{fullName}</h2>
           <p style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 4 }}>{t.profile.zodiac}</p>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(216,168,95,.10)", border: "1px solid rgba(216,168,95,.25)", borderRadius: 20, padding: "4px 14px", marginTop: 10, marginBottom: 18 }}>
             <span style={{ fontSize: 12 }}>&#127769;</span>
@@ -102,7 +78,7 @@ export default function ProfilePage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 1, borderTop: "1px solid var(--line-soft)", paddingTop: 18 }}>
             {[{ val: "12", label: t.profile.days, color: "var(--gold)" }, { val: "18", label: t.profile.cards, color: "var(--rose)" }, { val: "9", label: t.profile.entries, color: "var(--blue)" }].map((s, i) => (
               <div key={s.label} style={{ textAlign: "center", borderRight: i < 2 ? "1px solid var(--line-soft)" : "none" }}>
-                <div style={{ fontSize: 24, fontWeight: 700, color: s.color, fontFamily: "var(--font-serif)", lineHeight: 1.1 }}>{s.val}</div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: s.color, fontFamily: "var(--font-ui)", lineHeight: 1.1 }}>{s.val}</div>
                 <div style={{ fontSize: 11, color: "var(--muted-2)", marginTop: 3 }}>{s.label}</div>
               </div>
             ))}

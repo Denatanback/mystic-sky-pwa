@@ -15,7 +15,7 @@ html {
 body {
   min-height: 100%;
   color: var(--text);
-  font-family: var(--font-sans);
+  font-family: var(--font-ui), var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background:
@@ -28,9 +28,29 @@ body {
 }
 
 a { color: inherit; text-decoration: none; }
-button, input, textarea, select { font: inherit; cursor: pointer; }
+button, input, textarea, select { font-family: var(--font-ui), var(--font-sans); cursor: pointer; }
 input, textarea { cursor: text; }
 ::selection { background: rgba(216,168,95,.28); }
+
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid rgba(247, 217, 139, .92);
+  outline-offset: 3px;
+  box-shadow:
+    0 0 0 5px rgba(11, 6, 24, .82),
+    0 0 0 7px rgba(176, 132, 255, .28),
+    0 0 18px rgba(247, 217, 139, .26);
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.reading-text {
+  font-family: var(--font-reading), var(--font-copy);
+}
 
 /* ─── App shell ─────────────────────────────────────────── */
 .app {
@@ -89,12 +109,12 @@ input, textarea { cursor: text; }
 
 /* ─── Typography ─────────────────────────────────────────── */
 .brand {
-  font-family: var(--font-serif);
-  font-size: 36px; line-height: 1; font-weight: 400;
+  font-family: var(--font-display), var(--font-serif);
+  font-size: 36px; line-height: 1; font-weight: 600;
   letter-spacing: .05em; color: var(--text);
 }
 .brand .mark, .mark { color: var(--gold-2); }
-.title-serif { font-family: var(--font-serif); font-weight: 400; }
+.title-serif { font-family: var(--font-display), var(--font-serif); font-weight: 600; }
 .muted  { color: var(--muted); }
 .small  { font-size: 13px; line-height: 1.45; }
 .text   { font-size: 15px; line-height: 1.58; color: #ddd4c9; }
@@ -105,7 +125,7 @@ input, textarea { cursor: text; }
   align-items: flex-start; margin-bottom: 20px;
 }
 .header-title h1, .screen-title h1 {
-  font-family: var(--font-serif); font-weight: 400;
+  font-family: var(--font-display), var(--font-serif); font-weight: 600;
   font-size: 32px; line-height: 1.1;
 }
 .header-title p, .screen-title p {
@@ -117,7 +137,7 @@ input, textarea { cursor: text; }
   display: flex; justify-content: space-between; align-items: center;
   margin: 0 2px 12px;
 }
-.section-head h2 { font-family: var(--font-serif); font-weight: 400; font-size: 20px; }
+.section-head h2 { font-family: var(--font-display), var(--font-serif); font-weight: 600; font-size: 20px; }
 .section-head a, .section-head span { font-size: 12px; color: var(--gold); letter-spacing: .04em; }
 .stack    { display: grid; gap: 12px; }
 .stack-lg { display: grid; gap: 16px; }
@@ -187,7 +207,7 @@ input, textarea { cursor: text; }
 .btn.primary {
   background: linear-gradient(135deg, #8040c0 0%, #5a2090 100%);
   color: #fff; border-color: rgba(160,100,240,.5);
-  font-family: var(--font-serif); font-size: 17px; font-weight: 500; letter-spacing: .03em;
+  font-family: var(--font-ui), var(--font-sans); font-size: 17px; font-weight: 700; letter-spacing: .02em;
   box-shadow: 0 8px 24px rgba(90,32,144,.45), inset 0 1px 0 rgba(255,255,255,.12);
 }
 .btn.primary:hover { box-shadow: 0 12px 32px rgba(90,32,144,.6), inset 0 1px 0 rgba(255,255,255,.15); }
@@ -308,7 +328,7 @@ input, textarea { cursor: text; }
 }
 .stat strong {
   display: block; color: var(--gold-2); font-size: 22px;
-  font-family: var(--font-serif); font-weight: 400;
+  font-family: var(--font-ui), var(--font-sans); font-weight: 700;
 }
 .stat span { font-size: 11px; color: var(--muted); margin-top: 2px; display: block; }
 

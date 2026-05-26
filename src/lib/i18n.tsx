@@ -221,7 +221,7 @@ const T = {
       birthTimeUnknownActive: "✓ Don't know",
       birthTimeNote: "Optional. Refines ascendant and houses.",
       birthPlaceLabel: "Place of birth",
-      birthPlacePlaceholder: "Moscow, Russia",
+      birthPlacePlaceholder: "New York, NY",
       birthPlaceRequired: "Enter place of birth",
       birthPlaceNote: "Start with a city. Country can be added if needed.",
       step3Title: "What resonates with you?",
