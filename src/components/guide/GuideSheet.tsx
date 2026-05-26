@@ -1,11 +1,9 @@
 "use client";
 import { useState } from "react";
-import type { GuideTone } from "./guideAssets";
 import type { SectionGuide, QuickHelpItem } from "./guideGuides";
 
 interface GuideSheetProps {
   guide:          SectionGuide;
-  tone:           GuideTone;
   onClose:        () => void;
   onStartTutorial:() => void;
 }
@@ -67,7 +65,7 @@ function GuideMark() {
       display: "grid", placeItems: "center", color: "var(--gold-2)",
       flexShrink: 0,
     }}>
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 3v4" /><path d="M12 17v4" /><path d="M3 12h4" /><path d="M17 12h4" />
         <path d="m5.8 5.8 2.4 2.4" /><path d="m15.8 15.8 2.4 2.4" />
         <path d="m18.2 5.8-2.4 2.4" /><path d="m8.2 15.8-2.4 2.4" />

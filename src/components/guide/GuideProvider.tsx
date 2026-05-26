@@ -221,7 +221,6 @@ export function GuideProvider({ children }: { children: React.ReactNode }) {
       {sheetOpen && guide && (
         <GuideSheet
           guide={guide}
-          tone={currentTone}
           onClose={() => setSheetOpen(false)}
           onStartTutorial={() => startTutorial()}
         />
