@@ -8,6 +8,8 @@ import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
+import { PlanChip } from "@/components/subscription/PlanChip";
+import { markDailyActionCompleted } from "@/lib/progress/dailyProgress";
 
 type Tab = "today" | "my" | "library";
 type DailyPracticeKey = "affirmationCompleted" | "reflectionCompleted" | "ritualCompleted";
@@ -165,7 +167,10 @@ export default function PracticesPage() {
   function completePractice(key: DailyPracticeKey) {
     localStorage.setItem(dailyKey(todayKey, key), "true");
     if (key === "reflectionCompleted") {
-      localStorage.setItem(`eluna:daily:${todayKey}:practiceCompleted`, "true");
+      markDailyActionCompleted("practiceCompleted", todayKey);
+    }
+    if (key === "affirmationCompleted") {
+      markDailyActionCompleted("affirmationCompleted", todayKey);
     }
     setCompleted((current) => ({ ...current, [key]: true }));
   }
@@ -231,6 +236,7 @@ export default function PracticesPage() {
           <div className="app-topbar__logo"><Logo variant="header" /></div>
           <div className="app-topbar__actions">
             <GuideTopBarButton />
+            <PlanChip />
             <Link href="/profile" aria-label="Open profile" title="Profile" className="icon-btn">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
             </Link>

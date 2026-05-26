@@ -7,6 +7,8 @@ import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
+import { PlanChip } from "@/components/subscription/PlanChip";
+import { getTodayKey, getTodayProgress, markDailyActionCompleted } from "@/lib/progress/dailyProgress";
 import { getCurrentUser } from "@/lib/auth/authAdapter";
 import { getSunSign } from "@/lib/astroCalc";
 import { lifePathNumber } from "@/lib/numerologyCalc";
@@ -135,7 +137,7 @@ export default function TodayPage() {
   const [discProgress, setDiscProgress] = useState<Record<string, number>>({});
   const [practiceCompleted, setPracticeCompleted] = useState(false);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
-  const practiceKey = `eluna:daily-practice:${new Date().toISOString().slice(0, 10)}`;
+  const todayKey = getTodayKey();
 
   useEffect(() => {
     const now = new Date();
@@ -172,11 +174,11 @@ export default function TodayPage() {
     const prog: Record<string, number> = {};
     for (const d of DISCIPLINES) prog[d.key] = getDisciplineProgress(d.key, d.total);
     setDiscProgress(prog);
-    setPracticeCompleted(localStorage.getItem(practiceKey) === "completed");
-  }, [lang, practiceKey]);
+    setPracticeCompleted(getTodayProgress(todayKey).practiceCompleted);
+  }, [lang, todayKey]);
 
   function completePractice() {
-    localStorage.setItem(practiceKey, "completed");
+    markDailyActionCompleted("practiceCompleted", todayKey);
     setPracticeCompleted(true);
   }
 
@@ -219,7 +221,10 @@ export default function TodayPage() {
               </p>
             )}
           </div>
-          <GuideTopBarButton />
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <GuideTopBarButton />
+            <PlanChip />
+          </div>
         </header>
 
         {/* Moon hero card */}
@@ -302,10 +307,10 @@ export default function TodayPage() {
           {practiceCompleted ? (
             <div style={{ border: "1px solid rgba(216,168,95,.20)", borderRadius: 18, background: "rgba(216,168,95,.08)", padding: 14 }}>
               <p style={{ fontSize: 14, color: "var(--gold-2)", fontWeight: 800, marginBottom: 4 }}>{ru ? "Практика завершена" : "Practice completed"}</p>
-              <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.55 }}>{ru ? "Возвращайся завтра, чтобы раскрыть следующий сигнал." : "Come back tomorrow to reveal your next signal."}</p>
-              <button type="button" onClick={openPreparingNode} style={{ marginTop: 12, border: "1px solid rgba(255,255,255,.14)", borderRadius: 999, background: "rgba(255,255,255,.05)", color: "var(--text)", height: 40, padding: "0 16px", fontFamily: "var(--font-ui)", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
-                {ru ? "Что дальше?" : "What’s next?"}
-              </button>
+              <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.55 }}>{ru ? "Первый сигнал твоего пути открыт." : "Your first path signal is unlocked."}</p>
+              <Link href="/path" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", marginTop: 12, border: "1px solid rgba(216,168,95,.30)", borderRadius: 999, background: "rgba(216,168,95,.08)", color: "var(--gold-2)", height: 40, padding: "0 16px", fontFamily: "var(--font-ui)", fontSize: 13, fontWeight: 800, textDecoration: "none" }}>
+                {ru ? "Открыть первый сигнал" : "Open first signal"}
+              </Link>
             </div>
           ) : (
             <button type="button" onClick={completePractice} style={{ width: "100%", height: 50, border: "none", borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 14, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", boxShadow: "0 10px 28px rgba(90,32,144,.42), inset 0 1px 0 rgba(255,255,255,.12)" }}>

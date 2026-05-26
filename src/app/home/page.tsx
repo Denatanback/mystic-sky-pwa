@@ -8,8 +8,10 @@ import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
+import { PlanChip } from "@/components/subscription/PlanChip";
 import { getCurrentUser } from "@/lib/auth/authAdapter";
 import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchContext } from "@/lib/launch/launchContext";
+import { getDailyActionKey, getTodayKey, getTodayProgress, markDailyActionCompleted, type DailyAction, type DailyProgress } from "@/lib/progress/dailyProgress";
 
 const cardStyle: CSSProperties = {
   border: "1px solid rgba(216,168,95,.20)",
@@ -37,33 +39,6 @@ const primaryButtonStyle: CSSProperties = {
   cursor: "pointer",
   boxShadow: "0 10px 28px rgba(90,32,144,.40), inset 0 1px 0 rgba(255,255,255,.12)",
 };
-
-type DailyState = {
-  readingOpened: boolean;
-  practiceCompleted: boolean;
-  cardOpened: boolean;
-  affirmationCompleted: boolean;
-};
-
-function dateKey(date: Date) {
-  return date.toISOString().slice(0, 10);
-}
-
-function storageKey(dayKey: string, field: keyof DailyState) {
-  return `eluna:daily:${dayKey}:${field}`;
-}
-
-function readDailyState(dayKey: string): DailyState {
-  if (typeof window === "undefined") {
-    return { readingOpened: false, practiceCompleted: false, cardOpened: false, affirmationCompleted: false };
-  }
-  return {
-    readingOpened: localStorage.getItem(storageKey(dayKey, "readingOpened")) === "true",
-    practiceCompleted: localStorage.getItem(storageKey(dayKey, "practiceCompleted")) === "true" || localStorage.getItem(`eluna:daily:${dayKey}:reflectionCompleted`) === "true",
-    cardOpened: localStorage.getItem(storageKey(dayKey, "cardOpened")) === "true",
-    affirmationCompleted: localStorage.getItem(storageKey(dayKey, "affirmationCompleted")) === "true",
-  };
-}
 
 function addDays(date: Date, amount: number) {
   const next = new Date(date);
@@ -94,14 +69,14 @@ function IconSpark() {
 
 export default function HomePage() {
   const today = useMemo(() => new Date(), []);
-  const todayKey = dateKey(today);
+  const todayKey = getTodayKey(today);
   const todayTitle = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(today);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [launchContext, setLaunchContext] = useState<LaunchContext>({});
-  const [dailyState, setDailyState] = useState<DailyState>({ readingOpened: false, practiceCompleted: false, cardOpened: false, affirmationCompleted: false });
+  const [dailyState, setDailyState] = useState<DailyProgress>({ readingOpened: false, practiceCompleted: false, cardOpened: false, affirmationCompleted: false, completedCount: 0, totalCount: 4 });
   const [activePracticeLabel, setActivePracticeLabel] = useState("Choose your first affirmation");
 
-  const completedCount = Number(dailyState.readingOpened) + Number(dailyState.practiceCompleted) + Number(dailyState.cardOpened) + Number(dailyState.affirmationCompleted);
+  const completedCount = dailyState.completedCount;
   const energy = deterministicEnergy(todayKey);
   const showPastLifeBlock = isPastLifeContext(launchContext);
 
@@ -128,7 +103,7 @@ export default function HomePage() {
     });
     const storedContext = { ...loadLaunchContext(), ...urlContext };
     setLaunchContext(storedContext);
-    setDailyState(readDailyState(todayKey));
+    setDailyState(getTodayProgress(todayKey));
     try {
       const activeAffirmations = JSON.parse(localStorage.getItem("eluna:activeAffirmations") || "[]");
       if (Array.isArray(activeAffirmations) && activeAffirmations[0]?.category) {
@@ -147,9 +122,13 @@ export default function HomePage() {
     };
   }, [todayKey]);
 
-  function setDailyField(field: keyof DailyState, value = true) {
-    localStorage.setItem(storageKey(todayKey, field), String(value));
-    setDailyState(readDailyState(todayKey));
+  function setDailyField(field: DailyAction, value = true) {
+    if (value) {
+      setDailyState(markDailyActionCompleted(field, todayKey));
+    } else {
+      localStorage.setItem(getDailyActionKey(field, todayKey), "false");
+      setDailyState(getTodayProgress(todayKey));
+    }
   }
 
   const openComingSoon = (title: string, description: string, primaryActionLabel = "Got it") => setFeatureInfo({
@@ -161,7 +140,6 @@ export default function HomePage() {
 
   function completePractice() {
     setDailyField("practiceCompleted");
-    localStorage.setItem(`eluna:daily:${todayKey}:reflectionCompleted`, "true");
   }
 
   function drawDailyCard() {
@@ -182,7 +160,7 @@ export default function HomePage() {
         ? { label: "Repeat affirmation", type: "link" as const, href: "/practices?tab=today" }
       : !dailyState.cardOpened
         ? { label: "Draw daily card", type: "button" as const, action: drawDailyCard }
-        : { label: "Today is complete", type: "button" as const, action: () => openComingSoon("Tomorrow’s signal", "Your next signal opens tomorrow. Return daily to reveal more of your map.") };
+        : { label: "Open first signal", type: "link" as const, href: "/path" };
 
   return (
     <div className="app">
@@ -200,7 +178,7 @@ export default function HomePage() {
             <span title="Streak" style={{ height: 30, borderRadius: 999, border: "1px solid rgba(216,168,95,.26)", background: dailyState.practiceCompleted ? "rgba(216,168,95,.12)" : "rgba(255,255,255,.05)", color: "var(--gold-2)", display: "inline-flex", alignItems: "center", gap: 5, padding: "0 9px", fontSize: 11, fontWeight: 800 }}>
               <IconSpark /> {dailyState.practiceCompleted ? "1d" : "0d"}
             </span>
-            <span title="Plan" style={{ height: 30, borderRadius: 999, border: "1px solid rgba(160,130,220,.24)", background: "rgba(160,100,240,.08)", color: "var(--muted)", display: "inline-flex", alignItems: "center", padding: "0 9px", fontSize: 11, fontWeight: 800 }}>Free</span>
+            <PlanChip />
             <Link href="/profile" aria-label="Open profile" title="Profile" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(216,168,95,.36)", display: "grid", placeItems: "center", background: "rgba(255,255,255,.05)", color: "var(--gold-2)", flexShrink: 0 }}>
               <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
             </Link>
@@ -217,9 +195,9 @@ export default function HomePage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6 }}>
             {weekDays.map((day) => {
-              const key = dateKey(day);
+              const key = getTodayKey(day);
               const isToday = key === todayKey;
-              const completed = readDailyState(key).practiceCompleted;
+              const completed = getTodayProgress(key).practiceCompleted;
               return (
                 <div key={key} style={{ textAlign: "center", minWidth: 0 }}>
                   <p style={{ fontSize: 10, color: isToday ? "var(--gold-2)" : "var(--muted-2)", fontWeight: isToday ? 800 : 600, marginBottom: 6 }}>{new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(day)}</p>
@@ -286,10 +264,10 @@ export default function HomePage() {
         <section style={{ marginTop: 14, overflow: "hidden" }}>
           <div className="no-scrollbar" style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }}>
             {calendarDays.map((day) => {
-              const key = dateKey(day);
+              const key = getTodayKey(day);
               const isToday = key === todayKey;
               const isFuture = day > today;
-              const completed = readDailyState(key).practiceCompleted;
+              const completed = getTodayProgress(key).practiceCompleted;
               return (
                 <div key={key} style={{ minWidth: 66, borderRadius: 18, border: `1px solid ${isToday ? "rgba(216,168,95,.70)" : "rgba(255,255,255,.10)"}`, background: isToday ? "rgba(216,168,95,.10)" : "rgba(255,255,255,.04)", padding: "10px 8px", textAlign: "center", opacity: isFuture ? .62 : 1 }}>
                   <p style={{ fontSize: 11, color: isToday ? "var(--gold-2)" : "var(--muted)", fontWeight: 800 }}>{new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(day)}</p>
@@ -308,8 +286,9 @@ export default function HomePage() {
           <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 16 }}>Your first step is simple: complete one short reflection.</p>
           {dailyState.practiceCompleted ? (
             <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 16, background: "rgba(216,168,95,.08)", padding: 13 }}>
-              <p style={{ color: "var(--gold-2)", fontSize: 14, fontWeight: 800 }}>Practice completed</p>
-              <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginTop: 4 }}>Come back tomorrow to reveal your next signal.</p>
+              <p style={{ color: "var(--gold-2)", fontSize: 14, fontWeight: 800 }}>First signal unlocked</p>
+              <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginTop: 4 }}>Your completed practice opened the first point of your path.</p>
+              <Link href="/path" style={{ display: "inline-flex", marginTop: 10, color: "var(--gold-2)", fontSize: 12, fontWeight: 800, textDecoration: "none" }}>Open first signal →</Link>
             </div>
           ) : (
             <button type="button" onClick={completePractice} style={{ ...primaryButtonStyle, width: "100%" }}>Complete today’s practice</button>
@@ -341,7 +320,7 @@ export default function HomePage() {
             <button type="button" onClick={nextAction.action} style={{ ...primaryButtonStyle, width: "100%", marginTop: 12 }}>{nextAction.label}</button>
           )}
           {completedCount === 4 && (
-            <p style={{ textAlign: "center", color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginTop: 10 }}>Your next signal opens tomorrow.</p>
+            <p style={{ textAlign: "center", color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginTop: 10 }}>Today is complete. Your first path signal is unlocked.</p>
           )}
         </section>
 
@@ -349,15 +328,16 @@ export default function HomePage() {
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--gold)", fontWeight: 800, marginBottom: 6 }}>Next unlocks</p>
           <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 10 }}>Return daily to reveal more of your map.</p>
           {[
-            ["Day 2", "Personal card pattern"],
-            ["Day 3", "Past-life signal"],
-            ["Day 5", "Relationship insight"],
-            ["Day 7", "Weekly soul report"],
-          ].map(([day, label]) => (
-            <div key={day} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderTop: day === "Day 2" ? "none" : "1px solid rgba(255,255,255,.06)" }}>
+            ["Day 1", "First signal", dailyState.practiceCompleted ? "Unlocked" : "Locked"],
+            ["Day 2", "Personal card pattern", "Locked"],
+            ["Day 3", "Past-life signal", "Locked"],
+            ["Day 5", "Relationship insight", "Locked"],
+            ["Day 7", "Weekly soul report", "Locked"],
+          ].map(([day, label, status]) => (
+            <div key={day} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderTop: day === "Day 1" ? "none" : "1px solid rgba(255,255,255,.06)" }}>
               <span style={{ minWidth: 50, fontSize: 11, color: "var(--gold-2)", fontWeight: 800 }}>{day}</span>
               <span style={{ flex: 1, fontSize: 13, color: "var(--text)" }}>{label}</span>
-              <span style={{ fontSize: 11, color: "var(--muted-2)" }}>Locked</span>
+              <span style={{ fontSize: 11, color: status === "Unlocked" ? "var(--gold-2)" : "var(--muted-2)" }}>{status}</span>
             </div>
           ))}
         </section>

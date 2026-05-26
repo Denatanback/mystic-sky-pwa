@@ -9,6 +9,9 @@ import type { AuthUserProfile } from "@/lib/auth/authAdapter";
 import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
+import { getZodiacSign } from "@/lib/astrology/zodiac";
+import { PlanChip } from "@/components/subscription/PlanChip";
+import { getDeepPathState, type DeepPathState } from "@/lib/progress/dailyProgress";
 
 function IconMoon() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4a7 7 0 1 0 11.5 11.5Z"/></svg>; }
 function IconJournal() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M6 3h12v18H6z"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>; }
@@ -30,8 +33,12 @@ export default function ProfilePage() {
   const { t } = useLang();
   const [fullName, setFullName] = useState("...");
   const [userProfile, setUserProfile] = useState<AuthUserProfile | null>(null);
+  const [deepPathState, setDeepPathState] = useState<DeepPathState>(() => getDeepPathState());
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  const zodiac = getZodiacSign(userProfile?.birthDate);
+  const zodiacLine = zodiac.key === "unknown" ? "Mystic profile" : `${zodiac.name} · ${zodiac.dateRange}`;
+  const personalChartSub = zodiac.key === "unknown" ? "Add birth date to reveal your sign" : `Sun sign: ${zodiac.name}`;
   const openReminders = () => setFeatureInfo({
     title: "Soul reminders",
     description: "Daily reading reminders and practice notifications will appear here.",
@@ -53,6 +60,7 @@ export default function ProfilePage() {
       }
       if (!cancelled && user) {
         setUserProfile(user);
+        setDeepPathState(getDeepPathState());
         if (user.name) setFullName(user.name.trim());
       }
     });
@@ -75,6 +83,7 @@ export default function ProfilePage() {
           <div className="screen-title"><h1>{t.profile.title}</h1><p>{t.profile.subtitle}</p></div>
           <button className="icon-btn" aria-label="Soul reminders" title="Soul reminders" onClick={openReminders}><IconBell /></button>
           <GuideTopBarButton />
+          <PlanChip />
         </header>
 
         {/* Avatar hero */}
@@ -83,9 +92,10 @@ export default function ProfilePage() {
           <div style={{ position: "relative", display: "inline-block", marginBottom: 16 }}>
             <div style={{ position: "absolute", inset: -12, borderRadius: "50%", background: "radial-gradient(circle, rgba(120,60,200,.22) 0%, transparent 70%)" }} />
             <div style={{ position: "absolute", inset: -6, borderRadius: "50%", border: "1px solid rgba(216,168,95,.25)" }} />
-            <div style={{ width: 72, height: 72, borderRadius: "50%", background: "linear-gradient(135deg, rgba(120,60,200,.6) 0%, rgba(80,40,160,.8) 100%)", border: "2px solid rgba(216,168,95,.40)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, position: "relative", zIndex: 1, boxShadow: "0 0 24px rgba(120,60,200,.40)" }}>&#10022;</div>
+            <div style={{ width: 78, height: 78, borderRadius: "50%", background: "radial-gradient(circle at 35% 28%, rgba(247,217,139,.20), rgba(128,64,192,.52) 56%, rgba(28,14,58,.96))", border: "2px solid rgba(216,168,95,.44)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: zodiac.key === "unknown" ? 38 : 46, lineHeight: 1, color: "var(--gold-2)", position: "relative", zIndex: 1, boxShadow: "0 0 28px rgba(120,60,200,.42), inset 0 1px 0 rgba(255,255,255,.12)", textShadow: "0 0 18px rgba(247,217,139,.28)" }}>{zodiac.glyph}</div>
           </div>
           <h2 style={{ fontSize: 22, fontWeight: 700, fontFamily: "var(--font-display)", color: "var(--text)", letterSpacing: ".02em" }}>{fullName}</h2>
+          <p style={{ fontSize: 12, color: "var(--gold-2)", marginTop: 5, fontWeight: 700 }}>{zodiacLine}</p>
           <p style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 4 }}>{userProfile?.email || t.profile.zodiac}</p>
           {userProfile?.birthPlace && (
             <p style={{ fontSize: 11, color: "var(--muted-2)", marginTop: 3 }}>{userProfile.birthPlace}</p>
@@ -106,22 +116,27 @@ export default function ProfilePage() {
 
         {/* Path progress */}
         <div style={{ background: "transparent", border: "1px solid rgba(216,168,95,.18)", borderRadius: "var(--radius-lg)", padding: "14px 16px", marginBottom: 20, display: "flex", alignItems: "center", gap: 14, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}>
-          <div style={{ flexShrink: 0, width: 60, height: 60, borderRadius: "50%", border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", display: "grid", placeItems: "center", color: "var(--gold-2)", fontSize: 22 }}>
+          <div style={{ flexShrink: 0, width: 60, height: 60, borderRadius: "50%", border: `1px solid ${deepPathState.firstSignalUnlocked ? "rgba(216,168,95,.54)" : "rgba(216,168,95,.28)"}`, background: deepPathState.firstSignalUnlocked ? "rgba(216,168,95,.14)" : "rgba(216,168,95,.08)", display: "grid", placeItems: "center", color: "var(--gold-2)", fontSize: 22, boxShadow: deepPathState.firstSignalUnlocked ? "0 0 18px rgba(216,168,95,.18)" : "none" }}>
             ✦
           </div>
-          <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>{t.profile.deepPath}</div>
-            <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>Your path begins today</div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>{deepPathState.title}</div>
+            <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>{deepPathState.text}</div>
             <div style={{ fontSize: 11, color: "var(--gold)", marginTop: 4, display: "flex", alignItems: "center", gap: 4 }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--gold)", display: "inline-block", boxShadow: "0 0 4px var(--gold)" }}/>
-              Complete one daily practice to open your first signal
+              {deepPathState.firstSignalUnlocked ? "First signal unlocked" : "Locked"}
             </div>
           </div>
+          {deepPathState.firstSignalUnlocked && (
+            <Link href="/path" style={{ border: "1px solid rgba(216,168,95,.32)", borderRadius: 999, color: "var(--gold-2)", padding: "8px 12px", fontSize: 12, fontWeight: 800, textDecoration: "none", whiteSpace: "nowrap" }}>
+              Open
+            </Link>
+          )}
         </div>
 
         {/* Menu */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-          <MenuItem icon={<IconMoon />}     title={t.profile.personalChart}  sub={t.profile.personalChartSub} onClick={openPersonalChart} />
+          <MenuItem icon={<IconMoon />}     title={t.profile.personalChart}  sub={personalChartSub} onClick={openPersonalChart} />
           <MenuItem icon={<IconJournal />}  title={t.profile.journalMenu}    sub={t.profile.journalMenuSub}   href="/journal" />
           <MenuItem icon={<IconSettings />} title={t.profile.settings}       sub={t.profile.settingsSub}      href="/settings" />
         </div>

@@ -10,6 +10,8 @@ import { getCurrentUser } from "@/lib/auth/authAdapter";
 import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
+import { PlanChip } from "@/components/subscription/PlanChip";
+import { SubscriptionModal } from "@/components/subscription/SubscriptionModal";
 
 type NodeStatus = "active" | "available" | "premium";
 interface SkyNode { id: string; num: number; status: NodeStatus; emblem: string; deg: number; }
@@ -44,6 +46,7 @@ export default function SkyPage() {
   const [tab, setTab] = useState(0);
   const [gender, setGender] = useState<"female"|"male">("female");
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  const [subscriptionOpen, setSubscriptionOpen] = useState(false);
   useEffect(() => {
     let cancelled = false;
     void getCurrentUser().then((u) => {
@@ -72,13 +75,7 @@ export default function SkyPage() {
     statusLabel: "Coming soon",
     primaryActionLabel: "Got it",
   });
-  const openPremiumInsight = (title: string) => setFeatureInfo({
-    title: "Premium insight",
-    description: `This part of your map opens as your path grows. Complete daily readings to unlock deeper guidance. ${title} will become available later.`,
-    statusLabel: "Available soon",
-    primaryActionLabel: "Continue today’s path",
-    primaryHref: "/today",
-  });
+  const openPremiumInsight = (_title: string) => setSubscriptionOpen(true);
 
   function nodeVisible(n: SkyNode) {
     if (tab === 0) return true;
@@ -95,6 +92,7 @@ export default function SkyPage() {
           <div className="app-topbar__logo"><Logo variant="header" /></div>
           <div className="app-topbar__actions">
             <GuideTopBarButton />
+            <PlanChip />
             <button className="icon-btn" aria-label="Soul reminders" title="Soul reminders" onClick={openReminders}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
             <button className="icon-btn" aria-label="Moon Mode" title="Moon Mode" onClick={openMoonMode}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg></button>
           </div>
@@ -209,6 +207,7 @@ export default function SkyPage() {
       </div>
       <BottomNav />
       {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
+      <SubscriptionModal isOpen={subscriptionOpen} onClose={() => setSubscriptionOpen(false)} contextTitle="Unlock premium insight" />
     </div>
   );
 }
