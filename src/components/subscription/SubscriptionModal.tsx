@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type PlanId = "free" | "trial_3_day" | "premium_monthly";
+type PlanId = "free" | "trial_3_day_1_usd" | "premium_monthly_2999" | "premium_3_month_5999" | "premium_6_month_8999";
 
 export type SubscriptionModalProps = {
   isOpen: boolean;
@@ -15,10 +15,50 @@ const plans: Array<{
   label: string;
   badge?: string;
   price: string;
+  equivalent?: string;
+  billingNote?: string;
   description: string;
   includes: string[];
   cta: string;
 }> = [
+  {
+    id: "trial_3_day_1_usd",
+    label: "3-day trial",
+    badge: "Best start",
+    price: "$1.00 today",
+    billingNote: "Full access for 3 days. Then $29.99/month unless canceled.",
+    description: "Try the full eLuna experience and unlock your first deeper readings.",
+    includes: ["Full daily readings", "Daily card and symbols", "Past-life signal preview", "Practices and affirmations", "Sky Map progression", "Weekly soul report preview"],
+    cta: "Start 3-day trial",
+  },
+  {
+    id: "premium_monthly_2999",
+    label: "Monthly Premium",
+    price: "$29.99/month",
+    description: "Continue your path with deeper insights and monthly reports.",
+    includes: ["Unlimited daily readings", "Full practice library", "Personal chart insights", "Past-life and relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
+    cta: "Continue with Premium",
+  },
+  {
+    id: "premium_3_month_5999",
+    label: "3-Month Premium",
+    badge: "Save 33%",
+    price: "$59.99 every 3 months",
+    equivalent: "$19.99/month equivalent",
+    description: "Best value for starting your path.",
+    includes: ["Full daily readings", "Full practice library", "Personal chart insights", "Past-life insights", "Relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
+    cta: "Choose 3 Months",
+  },
+  {
+    id: "premium_6_month_8999",
+    label: "6-Month Premium",
+    badge: "Save 50%",
+    price: "$89.99 every 6 months",
+    equivalent: "$14.99/month equivalent",
+    description: "Deep transformation plan.",
+    includes: ["Full daily readings", "Full practice library", "Personal chart insights", "Past-life insights", "Relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
+    cta: "Choose 6 Months",
+  },
   {
     id: "free",
     label: "Free",
@@ -27,30 +67,15 @@ const plans: Array<{
     includes: ["Basic daily guidance", "1 daily card preview", "Limited practices", "Basic Sky Map preview"],
     cta: "Current plan",
   },
-  {
-    id: "trial_3_day",
-    label: "3-day trial",
-    badge: "Best start",
-    price: "$1.00 today",
-    description: "Try the full eLuna experience and unlock your first deeper readings.",
-    includes: ["Full daily readings", "Daily card and symbols", "Past-life signal preview", "Practices and affirmations", "Sky Map progression", "Weekly soul report preview"],
-    cta: "Start 3-day trial",
-  },
-  {
-    id: "premium_monthly",
-    label: "Premium",
-    price: "$29.99 / month",
-    description: "Continue your path with deeper insights and monthly reports.",
-    includes: ["Unlimited daily readings", "Full practice library", "Personal chart insights", "Past-life and relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
-    cta: "Continue with Premium",
-  },
 ];
 
 export function SubscriptionModal({ isOpen, onClose, contextTitle }: SubscriptionModalProps) {
   const [notice, setNotice] = useState<"free" | "checkout-unavailable" | null>(null);
+  const [selectedPlanId, setSelectedPlanId] = useState<PlanId | null>(null);
   if (!isOpen) return null;
 
   function choosePlan(planId: PlanId) {
+    setSelectedPlanId(planId);
     if (planId === "free") {
       localStorage.setItem("eluna:plan", "free");
       setNotice("free");
@@ -62,7 +87,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle }: Subscriptio
   return (
     <>
       <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(4,2,14,.68)", backdropFilter: "blur(3px)", WebkitBackdropFilter: "blur(3px)", zIndex: 240 }} />
-      <section role="dialog" aria-modal="true" aria-labelledby="subscription-title" style={{ position: "fixed", left: "50%", bottom: 0, transform: "translateX(-50%)", width: "min(100vw, 430px)", maxHeight: "92dvh", overflowY: "auto", zIndex: 241, borderRadius: "26px 26px 0 0", border: "1px solid rgba(216,168,95,.26)", borderBottom: "none", background: "rgba(10,6,28,.98)", boxShadow: "0 -16px 54px rgba(0,0,0,.62), 0 0 32px rgba(128,64,192,.16)", padding: "10px 18px 24px" }}>
+      <section role="dialog" aria-modal="true" aria-labelledby="subscription-title" style={{ position: "fixed", left: "50%", bottom: 0, transform: "translateX(-50%)", width: "min(100vw, 430px)", maxHeight: "92dvh", overflowY: "auto", zIndex: 241, borderRadius: "26px 26px 0 0", border: "1px solid rgba(216,168,95,.26)", borderBottom: "none", background: "rgba(10,6,28,.98)", boxShadow: "0 -16px 54px rgba(0,0,0,.62), 0 0 32px rgba(128,64,192,.16)", padding: "10px 18px calc(92px + env(safe-area-inset-bottom))" }}>
         <div style={{ display: "flex", justifyContent: "center", paddingBottom: 12 }}>
           <div style={{ width: 36, height: 4, borderRadius: 999, background: "rgba(255,255,255,.12)" }} />
         </div>
@@ -84,34 +109,44 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle }: Subscriptio
         {notice === "checkout-unavailable" && (
           <div style={{ border: "1px solid rgba(216,168,95,.24)", borderRadius: 18, background: "rgba(216,168,95,.08)", padding: 13, marginBottom: 12 }}>
             <p style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 800, marginBottom: 4 }}>Secure checkout is being prepared</p>
-            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Payment checkout needs to be connected before this plan can be purchased.</p>
+            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Payment provider must be connected before purchase.</p>
+            {selectedPlanId && <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, marginTop: 6 }}>Selected plan: {selectedPlanId}</p>}
           </div>
         )}
 
         <div style={{ display: "grid", gap: 12 }}>
-          {plans.map((plan) => (
-            <article key={plan.id} style={{ border: `1px solid ${plan.id === "trial_3_day" ? "rgba(216,168,95,.46)" : "rgba(216,168,95,.18)"}`, borderRadius: 22, background: plan.id === "trial_3_day" ? "rgba(60,20,100,.28)" : "rgba(255,255,255,.04)", padding: 15 }}>
+          {plans.map((plan, index) => {
+            const isTrial = plan.id === "trial_3_day_1_usd";
+            const isFree = plan.id === "free";
+            const compact = index > 0 && !isFree;
+            return (
+            <article key={plan.id} style={{ border: `1px solid ${isTrial ? "rgba(216,168,95,.50)" : "rgba(216,168,95,.18)"}`, borderRadius: isTrial ? 22 : 18, background: isTrial ? "linear-gradient(135deg, rgba(60,20,100,.38), rgba(216,168,95,.08))" : "rgba(255,255,255,.04)", padding: compact ? 13 : 15 }}>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
                 <div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 600, color: "var(--text)", lineHeight: 1.1 }}>{plan.label}</h3>
-                  <p style={{ color: "var(--gold-2)", fontSize: 16, fontWeight: 800, marginTop: 3 }}>{plan.price}</p>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: compact ? 21 : 24, fontWeight: 600, color: "var(--text)", lineHeight: 1.1 }}>{plan.label}</h3>
+                  <p style={{ color: "var(--gold-2)", fontSize: compact ? 14 : 16, fontWeight: 800, marginTop: 3 }}>{plan.price}</p>
+                  {plan.equivalent && <p style={{ color: "var(--muted-2)", fontSize: 12, fontWeight: 700, marginTop: 2 }}>{plan.equivalent}</p>}
                 </div>
                 {plan.badge && <span style={{ border: "1px solid rgba(216,168,95,.32)", borderRadius: 999, color: "var(--gold-2)", background: "rgba(216,168,95,.08)", padding: "5px 9px", fontSize: 10, fontWeight: 800 }}>{plan.badge}</span>}
               </div>
               <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 10 }}>{plan.description}</p>
+              {plan.billingNote && <p style={{ color: "var(--gold-2)", fontSize: 11, lineHeight: 1.45, fontWeight: 700, marginBottom: 10 }}>{plan.billingNote}</p>}
+              {index === 1 && <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", margin: "4px 0 2px" }}>Choose your plan</p>}
               <div style={{ display: "grid", gap: 6, marginBottom: 12 }}>
-                {plan.includes.map((item) => (
+                {(compact ? plan.includes.slice(0, 4) : plan.includes).map((item) => (
                   <div key={item} style={{ display: "flex", gap: 8, alignItems: "flex-start", color: "var(--text)", fontSize: 12, lineHeight: 1.35 }}>
                     <span style={{ color: "var(--gold-2)", flexShrink: 0 }}>✦</span>
                     <span>{item}</span>
                   </div>
                 ))}
+                {compact && <div style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.35 }}>Includes reports, saved history, and progress.</div>}
               </div>
-              <button type="button" onClick={() => choosePlan(plan.id)} style={{ width: "100%", height: 44, borderRadius: 999, border: plan.id === "free" ? "1px solid rgba(216,168,95,.30)" : "none", background: plan.id === "free" ? "rgba(255,255,255,.05)" : "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: plan.id === "free" ? "var(--gold-2)" : "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", boxShadow: plan.id === "free" ? "none" : "0 8px 24px rgba(90,32,144,.38)" }}>
+              <button type="button" onClick={() => choosePlan(plan.id)} style={{ width: "100%", height: 44, borderRadius: 999, border: isFree ? "1px solid rgba(216,168,95,.30)" : "none", background: isFree ? "rgba(255,255,255,.05)" : "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: isFree ? "var(--gold-2)" : "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", boxShadow: isFree ? "none" : "0 8px 24px rgba(90,32,144,.38)" }}>
                 {plan.cta}
               </button>
             </article>
-          ))}
+          );
+          })}
         </div>
 
         <section style={{ marginTop: 14, border: "1px solid rgba(216,168,95,.14)", borderRadius: 20, background: "rgba(255,255,255,.035)", padding: 14 }}>
