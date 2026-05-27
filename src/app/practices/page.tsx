@@ -506,7 +506,12 @@ export default function PracticesPage() {
       )}
 
       {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
-      <SubscriptionModal isOpen={subscriptionOpen} onClose={() => setSubscriptionOpen(false)} contextTitle="Unlock full practice library" />
+      <SubscriptionModal
+        isOpen={subscriptionOpen}
+        onClose={() => setSubscriptionOpen(false)}
+        contextTitle="Unlock full practice library"
+        contextDescription="Start your 3-day trial to unlock advanced affirmations, premium categories, and the full daily practice library."
+      />
     </div>
   );
 }

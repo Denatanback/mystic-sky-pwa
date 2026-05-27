@@ -67,6 +67,7 @@ export default function SkyPage() {
   const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
   const [howOpen, setHowOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<SkyNode | null>(null);
+  const [paywallContext, setPaywallContext] = useState<{ title: string; description: string } | null>(null);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
 
@@ -109,6 +110,14 @@ export default function SkyPage() {
     statusLabel: "Coming soon",
     primaryActionLabel: "Got it",
   });
+
+  function openNodePaywall(node: SkyNode) {
+    setPaywallContext({
+      title: `Unlock ${node.title}`,
+      description: `Start your 3-day trial to unlock this insight and continue your path. ${node.description}`,
+    });
+    setSubscriptionOpen(true);
+  }
 
   function nodeVisible(node: SkyNode) {
     return visibleNodes.some((visible) => visible.id === node.id);
@@ -271,8 +280,8 @@ export default function SkyPage() {
 
       <BottomNav />
       {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
-      <NodePreviewSheet node={selectedNode} onClose={() => setSelectedNode(null)} onOpenSubscription={() => setSubscriptionOpen(true)} />
-      <SubscriptionModal isOpen={subscriptionOpen} onClose={() => setSubscriptionOpen(false)} contextTitle="Unlock this insight" />
+      <NodePreviewSheet node={selectedNode} onClose={() => setSelectedNode(null)} onOpenSubscription={openNodePaywall} />
+      <SubscriptionModal isOpen={subscriptionOpen} onClose={() => setSubscriptionOpen(false)} contextTitle={paywallContext?.title ?? "Unlock this Sky Map node"} contextDescription={paywallContext?.description ?? "Start your 3-day trial to unlock this insight and continue your path."} />
     </div>
   );
 }

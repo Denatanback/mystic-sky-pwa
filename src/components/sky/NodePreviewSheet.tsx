@@ -7,7 +7,7 @@ import type { SkyNode } from "@/lib/sky/skyNodes";
 type NodePreviewSheetProps = {
   node: SkyNode | null;
   onClose: () => void;
-  onOpenSubscription: () => void;
+  onOpenSubscription: (node: SkyNode) => void;
 };
 
 const actionStyle: CSSProperties = {
@@ -81,7 +81,7 @@ export function NodePreviewSheet({ node, onClose, onOpenSubscription }: NodePrev
         </div>
 
         {isPremium ? (
-          <button type="button" onClick={() => { onClose(); onOpenSubscription(); }} style={{ ...actionStyle, width: "100%" }}>
+          <button type="button" onClick={() => { onClose(); onOpenSubscription(node); }} style={{ ...actionStyle, width: "100%" }}>
             {primaryLabel}
           </button>
         ) : (
