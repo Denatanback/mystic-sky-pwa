@@ -4,14 +4,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
-import { getCurrentUser, signOut } from "@/lib/auth/authAdapter";
-import type { AuthUserProfile } from "@/lib/auth/authAdapter";
+import { signOut } from "@/lib/auth/authAdapter";
 import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { getZodiacSign } from "@/lib/astrology/zodiac";
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { getDeepPathState, type DeepPathState } from "@/lib/progress/dailyProgress";
+import { getCurrentProfile, type CurrentProfile } from "@/lib/profile/currentProfile";
 
 function IconMoon() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4a7 7 0 1 0 11.5 11.5Z"/></svg>; }
 function IconJournal() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M6 3h12v18H6z"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>; }
@@ -32,13 +32,13 @@ export default function ProfilePage() {
   const router = useRouter();
   const { t } = useLang();
   const [fullName, setFullName] = useState("...");
-  const [userProfile, setUserProfile] = useState<AuthUserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<CurrentProfile | null>(null);
   const [deepPathState, setDeepPathState] = useState<DeepPathState>(() => getDeepPathState());
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const zodiac = getZodiacSign(userProfile?.birthDate);
   const zodiacLine = zodiac.key === "unknown" ? "Mystic profile" : `${zodiac.name} · ${zodiac.dateRange}`;
-  const personalChartSub = zodiac.key === "unknown" ? "Add birth date to reveal your sign" : `Sun sign: ${zodiac.name}`;
+  const personalChartSub = zodiac.key === "unknown" ? "Complete setup to reveal your chart" : `Sun sign: ${zodiac.name}${userProfile?.birthPlace ? ` · ${userProfile.birthPlace}` : ""}`;
   const openReminders = () => setFeatureInfo({
     title: "Soul reminders",
     description: "Daily reading reminders and practice notifications will appear here.",
@@ -53,15 +53,19 @@ export default function ProfilePage() {
   });
   useEffect(() => {
     let cancelled = false;
-    void getCurrentUser().then((user) => {
+    void getCurrentProfile().then((user) => {
       if (!user) {
         router.push("/welcome");
+        return;
+      }
+      if (!user.onboardingCompleted) {
+        router.replace("/onboarding");
         return;
       }
       if (!cancelled && user) {
         setUserProfile(user);
         setDeepPathState(getDeepPathState());
-        if (user.name) setFullName(user.name.trim());
+        if (user.fullName) setFullName(user.fullName.trim());
       }
     });
     return () => {
@@ -137,6 +141,7 @@ export default function ProfilePage() {
         {/* Menu */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
           <MenuItem icon={<IconMoon />}     title={t.profile.personalChart}  sub={personalChartSub} onClick={openPersonalChart} />
+          <MenuItem icon={<IconSettings />} title="Edit birth data" sub="Update your chart source" href="/onboarding?step=birth&mode=edit" />
           <MenuItem icon={<IconJournal />}  title={t.profile.journalMenu}    sub={t.profile.journalMenuSub}   href="/journal" />
           <MenuItem icon={<IconSettings />} title={t.profile.settings}       sub={t.profile.settingsSub}      href="/settings" />
         </div>

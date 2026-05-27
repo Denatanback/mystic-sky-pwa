@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { NodePage } from "@/components/sky/NodePage";
 import { useLang } from "@/lib/i18n";
-import { getMockUser } from "@/lib/mockAuth";
 import { getSunSign, SUN_TRAITS, ZODIAC, ELEMENT_TRAITS } from "@/lib/astroCalc";
 import { startNode, completeNode, getNodeState, isNodeLocked } from "@/lib/nodeProgress";
+import { getCurrentProfile, type CurrentProfile } from "@/lib/profile/currentProfile";
 
 const TOTAL = 8;
 const DISCIPLINE = "astrology";
@@ -34,13 +34,16 @@ function AstroNode1() {
   const [step, setStep] = useState(0);
   const [flipped, setFlipped] = useState<boolean[]>([false, false, false]);
   const [allFlipped, setAllFlipped] = useState(false);
+  const [user, setUser] = useState<CurrentProfile | null>(null);
 
-  const user = typeof window !== "undefined" ? getMockUser() : null;
   const sign = user?.birthDate ? getSunSign(user.birthDate) : null;
   const traits = sign ? (SUN_TRAITS[sign.key] ?? []) : [];
   const elementTraits = sign ? (ELEMENT_TRAITS[sign.element] ?? null) : null;
 
-  useEffect(() => { startNode(DISCIPLINE, 1); }, []);
+  useEffect(() => {
+    startNode(DISCIPLINE, 1);
+    void getCurrentProfile().then(setUser);
+  }, []);
 
   const flip = (i: number) => {
     const next = flipped.map((v, idx) => idx === i ? true : v);
@@ -57,8 +60,9 @@ function AstroNode1() {
 
   if (!user?.birthDate) return (
     <div style={{ textAlign: "center", padding: "40px 20px" }}>
-      <p style={{ color: "var(--muted)", marginBottom: 20 }}>{lang === "ru" ? "Укажи дату рождения в профиле" : "Please add your birth date in profile"}</p>
-      <button onClick={() => router.push("/profile")} style={{ padding: "12px 28px", borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>{lang === "ru" ? "Открыть профиль" : "Open profile"}</button>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", marginBottom: 8 }}>{lang === "ru" ? "Заверши персональную настройку" : "Complete your personal setup"}</h2>
+      <p style={{ color: "var(--muted)", marginBottom: 20 }}>{lang === "ru" ? "Дата рождения нужна, чтобы рассчитать эту часть пути." : "Your birth date is needed to calculate this part of your path."}</p>
+      <button onClick={() => router.push("/onboarding?step=birth")} style={{ padding: "12px 28px", borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>{lang === "ru" ? "Продолжить настройку" : "Continue setup"}</button>
     </div>
   );
 
@@ -164,8 +168,7 @@ function AstroNode2() {
   const { lang } = useLang();
   const router = useRouter();
   const [revealed, setRevealed] = useState(false);
-
-  const user = typeof window !== "undefined" ? getMockUser() : null;
+  const [user, setUser] = useState<CurrentProfile | null>(null);
 
   // Approximate moon sign: moon cycles ~27.3 days, use day-of-year offset
   const moonSign = (() => {
@@ -180,7 +183,10 @@ function AstroNode2() {
 
   const archetype = moonSign ? MOON_ARCHETYPE[moonSign.key] : null;
 
-  useEffect(() => { startNode(DISCIPLINE, 2); }, []);
+  useEffect(() => {
+    startNode(DISCIPLINE, 2);
+    void getCurrentProfile().then(setUser);
+  }, []);
 
   const handleComplete = () => {
     completeNode(DISCIPLINE, 2, { moonSign: moonSign?.key });
@@ -191,7 +197,9 @@ function AstroNode2() {
 
   if (!user?.birthDate) return (
     <div style={{ textAlign: "center", padding: "40px 20px" }}>
-      <p style={{ color: "var(--muted)" }}>{lang === "ru" ? "Укажи дату рождения в профиле" : "Add birth date in profile"}</p>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", marginBottom: 8 }}>{lang === "ru" ? "Заверши персональную настройку" : "Complete your personal setup"}</h2>
+      <p style={{ color: "var(--muted)", marginBottom: 20 }}>{lang === "ru" ? "Дата рождения нужна, чтобы рассчитать эту часть пути." : "Your birth date is needed to calculate this part of your path."}</p>
+      <button onClick={() => router.push("/onboarding?step=birth")} style={{ padding: "12px 28px", borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>{lang === "ru" ? "Продолжить настройку" : "Continue setup"}</button>
     </div>
   );
 

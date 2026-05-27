@@ -3,9 +3,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { NodePage } from "@/components/sky/NodePage";
 import { useLang } from "@/lib/i18n";
-import { getMockUser } from "@/lib/mockAuth";
 import { lifePathNumber, soulNumber, NUMBER_TRAITS } from "@/lib/numerologyCalc";
 import { startNode, completeNode, getNodeState, isNodeLocked } from "@/lib/nodeProgress";
+import { getCurrentProfile, type CurrentProfile } from "@/lib/profile/currentProfile";
 
 const TOTAL = 8;
 const DISCIPLINE = "numerology";
@@ -16,12 +16,15 @@ function NumNode1() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [animIdx, setAnimIdx] = useState(-1);
+  const [user, setUser] = useState<CurrentProfile | null>(null);
 
-  const user = typeof window !== "undefined" ? getMockUser() : null;
   const calc = user?.birthDate ? lifePathNumber(user.birthDate) : null;
   const traits = calc ? (NUMBER_TRAITS[calc.result] ?? null) : null;
 
-  useEffect(() => { startNode(DISCIPLINE, 1); }, []);
+  useEffect(() => {
+    startNode(DISCIPLINE, 1);
+    void getCurrentProfile().then(setUser);
+  }, []);
 
   // Animate steps one by one
   const startAnim = () => {
@@ -43,8 +46,9 @@ function NumNode1() {
 
   if (!user?.birthDate) return (
     <div style={{ textAlign: "center", padding: "40px 16px" }}>
-      <p style={{ color: "var(--muted)", marginBottom: 16 }}>{lang === "ru" ? "Укажи дату рождения в профиле" : "Add your birth date in profile"}</p>
-      <button onClick={() => router.push("/profile")} style={{ padding: "12px 28px", borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>{lang === "ru" ? "Открыть профиль" : "Open profile"}</button>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", marginBottom: 8 }}>{lang === "ru" ? "Заверши персональную настройку" : "Complete your personal setup"}</h2>
+      <p style={{ color: "var(--muted)", marginBottom: 16 }}>{lang === "ru" ? "Дата рождения нужна, чтобы рассчитать эту часть пути." : "Your birth date is needed to calculate this part of your path."}</p>
+      <button onClick={() => router.push("/onboarding?step=birth")} style={{ padding: "12px 28px", borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>{lang === "ru" ? "Продолжить настройку" : "Continue setup"}</button>
     </div>
   );
 
@@ -123,13 +127,16 @@ function NumNode2() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [highlightIdx, setHighlightIdx] = useState(-1);
+  const [user, setUser] = useState<CurrentProfile | null>(null);
 
-  const user = typeof window !== "undefined" ? getMockUser() : null;
-  const firstName = user?.name?.split(" ")[0] ?? "";
+  const firstName = user?.fullName?.split(" ")[0] ?? "";
   const calc = firstName ? soulNumber(firstName) : null;
   const traits = calc ? (NUMBER_TRAITS[calc.result] ?? null) : null;
 
-  useEffect(() => { startNode(DISCIPLINE, 2); }, []);
+  useEffect(() => {
+    startNode(DISCIPLINE, 2);
+    void getCurrentProfile().then(setUser);
+  }, []);
 
   const animateVowels = () => {
     setStep(1);
@@ -152,7 +159,7 @@ function NumNode2() {
   const PYTH_MAP: Record<string, number> = { A:1,E:5,I:9,O:6,U:3,Y:7 };
   const VOWELS_SET = new Set(["A","E","I","O","U","Y"]);
 
-  if (!user?.name) return (
+  if (!user?.fullName) return (
     <div style={{ textAlign: "center", padding: "40px 16px" }}>
       <p style={{ color: "var(--muted)" }}>{lang === "ru" ? "Укажи имя в профиле" : "Add your name in profile"}</p>
     </div>

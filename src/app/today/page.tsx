@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
@@ -9,7 +10,7 @@ import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { getTodayKey, getTodayProgress, markDailyActionCompleted } from "@/lib/progress/dailyProgress";
-import { getCurrentUser } from "@/lib/auth/authAdapter";
+import { getCurrentProfile } from "@/lib/profile/currentProfile";
 import { getSunSign } from "@/lib/astroCalc";
 import { lifePathNumber } from "@/lib/numerologyCalc";
 import {
@@ -124,6 +125,7 @@ function getDisciplineProgress(key: string, total: number): number {
 // ── Main page ─────────────────────────────────────────────────────────────────
 export default function TodayPage() {
   const { lang } = useLang();
+  const router = useRouter();
   const ru = lang === "ru";
 
   const [moonInfo, setMoonInfo]         = useState<MoonPhaseInfo | null>(null);
@@ -148,8 +150,12 @@ export default function TodayPage() {
     setMoonSign(ms);
     setPlanetDay({ en: pd.en, ru: pd.ru, symbol: pd.symbol });
 
-    void getCurrentUser().then((user) => {
-    if (user?.name) setUserName(user.name.split(" ")[0]);
+    void getCurrentProfile().then((user) => {
+    if (user && !user.onboardingCompleted) {
+      router.replace("/onboarding");
+      return;
+    }
+    if (user?.fullName) setUserName(user.fullName.split(" ")[0]);
 
     if (user?.birthDate) {
       const birthISO = toIsoDate(user.birthDate);
@@ -175,7 +181,7 @@ export default function TodayPage() {
     for (const d of DISCIPLINES) prog[d.key] = getDisciplineProgress(d.key, d.total);
     setDiscProgress(prog);
     setPracticeCompleted(getTodayProgress(todayKey).practiceCompleted);
-  }, [lang, todayKey]);
+  }, [lang, todayKey, router]);
 
   function completePractice() {
     markDailyActionCompleted("practiceCompleted", todayKey);

@@ -6,12 +6,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
-import { getCurrentUser } from "@/lib/auth/authAdapter";
 import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { SubscriptionModal } from "@/components/subscription/SubscriptionModal";
+import { getCurrentProfile } from "@/lib/profile/currentProfile";
 
 type NodeStatus = "active" | "available" | "premium";
 interface SkyNode { id: string; num: number; status: NodeStatus; emblem: string; deg: number; }
@@ -49,7 +49,11 @@ export default function SkyPage() {
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
   useEffect(() => {
     let cancelled = false;
-    void getCurrentUser().then((u) => {
+    void getCurrentProfile().then((u) => {
+      if (!cancelled && u && !u.onboardingCompleted) {
+        window.location.assign("/onboarding");
+        return;
+      }
       if (!cancelled && u?.gender === "male") setGender("male");
     });
     return () => {

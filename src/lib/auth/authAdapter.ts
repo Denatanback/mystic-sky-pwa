@@ -20,10 +20,10 @@ export type RegisterInput = {
   email: string;
   password: string;
   gender?: MockUserProfile["gender"];
-  birthDate: string;
-  birthTime: string;
-  birthTimeUnknown: boolean;
-  birthPlace: string;
+  birthDate?: string;
+  birthTime?: string;
+  birthTimeUnknown?: boolean;
+  birthPlace?: string;
   launchContext?: LaunchContext;
 };
 
@@ -82,10 +82,10 @@ function mapSupabaseProfile(user: {
     name: profile?.full_name || metadataName || "Путник",
     email: user.email ?? "",
     gender: typeof metadata.gender === "string" && (metadata.gender === "female" || metadata.gender === "male") ? metadata.gender : "",
-    birthDate: typeof metadata.birth_date === "string" ? metadata.birth_date : "",
-    birthTime: typeof metadata.birth_time === "string" ? metadata.birth_time : "",
+    birthDate: typeof metadata.birth_date === "string" ? metadata.birth_date : typeof metadata.birthDate === "string" ? metadata.birthDate : typeof metadata.dateOfBirth === "string" ? metadata.dateOfBirth : typeof metadata.date_of_birth === "string" ? metadata.date_of_birth : "",
+    birthTime: typeof metadata.birth_time === "string" ? metadata.birth_time : typeof metadata.birthTime === "string" ? metadata.birthTime : "",
     birthTimeUnknown: Boolean(metadata.birth_time_unknown),
-    birthPlace: typeof metadata.birth_place === "string" ? metadata.birth_place : "",
+    birthPlace: typeof metadata.birth_place === "string" ? metadata.birth_place : typeof metadata.birthPlace === "string" ? metadata.birthPlace : "",
     createdAt: new Date().toISOString(),
     avatarUrl: profile?.avatar_url ?? null,
     launchContext,
@@ -127,10 +127,10 @@ export async function register(input: RegisterInput): Promise<AuthResult> {
       name,
       email,
       gender: input.gender ?? "",
-      birthDate: input.birthDate,
-      birthTime: input.birthTimeUnknown ? "" : input.birthTime,
-      birthTimeUnknown: input.birthTimeUnknown,
-      birthPlace: input.birthPlace.trim(),
+      birthDate: input.birthDate ?? "",
+      birthTime: input.birthTimeUnknown ? "" : input.birthTime ?? "",
+      birthTimeUnknown: Boolean(input.birthTimeUnknown),
+      birthPlace: input.birthPlace?.trim() ?? "",
       createdAt: new Date().toISOString(),
       launchContext: input.launchContext,
     });
@@ -145,10 +145,10 @@ export async function register(input: RegisterInput): Promise<AuthResult> {
       data: {
         full_name: name,
         gender: input.gender ?? "",
-        birth_date: input.birthDate,
-        birth_time: input.birthTimeUnknown ? "" : input.birthTime,
-        birth_time_unknown: input.birthTimeUnknown,
-        birth_place: input.birthPlace.trim(),
+        birth_date: input.birthDate ?? "",
+        birth_time: input.birthTimeUnknown ? "" : input.birthTime ?? "",
+        birth_time_unknown: Boolean(input.birthTimeUnknown),
+        birth_place: input.birthPlace?.trim() ?? "",
         source: input.launchContext?.source ?? null,
         funnel: input.launchContext?.funnel ?? null,
         result: input.launchContext?.result ?? null,

@@ -3,15 +3,16 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
-import { getCurrentUser } from "@/lib/auth/authAdapter";
 import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchContext } from "@/lib/launch/launchContext";
 import { getDailyActionKey, getTodayKey, getTodayProgress, markDailyActionCompleted, type DailyAction, type DailyProgress } from "@/lib/progress/dailyProgress";
+import { getCurrentProfile } from "@/lib/profile/currentProfile";
 
 const cardStyle: CSSProperties = {
   border: "1px solid rgba(216,168,95,.20)",
@@ -68,6 +69,7 @@ function IconSpark() {
 }
 
 export default function HomePage() {
+  const router = useRouter();
   const today = useMemo(() => new Date(), []);
   const todayKey = getTodayKey(today);
   const todayTitle = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(today);
@@ -112,7 +114,11 @@ export default function HomePage() {
     } catch {
       setActivePracticeLabel("Choose your first affirmation");
     }
-    void getCurrentUser().then((user) => {
+    void getCurrentProfile().then((user) => {
+      if (!cancelled && user && !user.onboardingCompleted) {
+        router.replace("/onboarding");
+        return;
+      }
       if (!cancelled && user?.launchContext) {
         setLaunchContext({ ...storedContext, ...user.launchContext });
       }
@@ -120,7 +126,7 @@ export default function HomePage() {
     return () => {
       cancelled = true;
     };
-  }, [todayKey]);
+  }, [todayKey, router]);
 
   function setDailyField(field: DailyAction, value = true) {
     if (value) {
