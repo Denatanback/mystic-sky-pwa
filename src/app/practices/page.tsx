@@ -9,74 +9,27 @@ import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
+import { SubscriptionModal } from "@/components/subscription/SubscriptionModal";
 import { GuidedDailyPractice, type GuidedPracticeResult } from "@/components/practices/GuidedDailyPractice";
-import { getTodayPracticeReflection, markDailyActionCompleted, markPracticeCompleted, type PracticeReflection } from "@/lib/progress/dailyProgress";
+import {
+  getTodayAffirmationRepeat,
+  getTodayKey,
+  getTodayPracticeReflection,
+  getTodayProgress,
+  isGroundingCompleted,
+  markAffirmationRepeated,
+  markGroundingCompleted,
+  markPracticeCompleted,
+  type AffirmationRepeat,
+  type PracticeReflection,
+} from "@/lib/progress/dailyProgress";
+import { affirmationCategories, type AffirmationCategory, type AffirmationItem } from "@/lib/practices/affirmations";
 
 type Tab = "today" | "my" | "library";
-type DailyPracticeKey = "affirmationCompleted" | "reflectionCompleted" | "ritualCompleted";
-type ActiveAffirmation = { id: string; category: string; text: string };
-type Category = {
-  id: string;
-  title: string;
-  description: string;
-  affirmations: string[];
-};
+type PlanAccess = "free" | "trial" | "premium";
+type ActiveAffirmation = { id: string; categoryId?: string; category: string; text: string };
 
 const ACTIVE_AFFIRMATIONS_KEY = "eluna:activeAffirmations";
-const MAX_ACTIVE_AFFIRMATIONS = 3;
-
-const categories: Category[] = [
-  {
-    id: "self-worth",
-    title: "Self-worth & boundaries",
-    description: "Magnetic self-respect, inner support, and energetic boundaries.",
-    affirmations: [
-      "I honor my energy and choose what supports me.",
-      "My boundaries protect the life I am building.",
-      "I do not chase what is not aligned with me.",
-    ],
-  },
-  {
-    id: "love",
-    title: "Love & relationships",
-    description: "Warmth, attraction, emotional clarity, and trust.",
-    affirmations: [
-      "I welcome love that feels calm, honest, and mutual.",
-      "My heart opens without abandoning myself.",
-      "I attract connection that respects my truth.",
-    ],
-  },
-  {
-    id: "money",
-    title: "Money & abundance",
-    description: "Permission to receive, stability, and resource flow.",
-    affirmations: [
-      "I allow support, resources, and opportunity to reach me.",
-      "My energy is worthy of stable abundance.",
-      "I build safety through clear choices.",
-    ],
-  },
-  {
-    id: "body",
-    title: "Body & health",
-    description: "Softness, care, grounding, and body trust.",
-    affirmations: [
-      "My body is not an obstacle; it is my home.",
-      "I return to softness without losing strength.",
-      "I listen to my body with patience.",
-    ],
-  },
-  {
-    id: "protection",
-    title: "Protection & grounding",
-    description: "Inner strength, energetic protection, and calm.",
-    affirmations: [
-      "My energy is clear, grounded, and protected.",
-      "I release what does not belong to me.",
-      "I am safe to move at my own rhythm.",
-    ],
-  },
-];
 
 const cardStyle: CSSProperties = {
   border: "1px solid rgba(216,168,95,.20)",
@@ -105,12 +58,33 @@ const primaryButtonStyle: CSSProperties = {
   boxShadow: "0 8px 24px rgba(90,32,144,.38), inset 0 1px 0 rgba(255,255,255,.12)",
 };
 
-function dateKey(date: Date) {
-  return date.toISOString().slice(0, 10);
+const secondaryButtonStyle: CSSProperties = {
+  minHeight: 40,
+  borderRadius: 999,
+  border: "1px solid rgba(216,168,95,.28)",
+  background: "rgba(216,168,95,.08)",
+  color: "var(--gold-2)",
+  fontSize: 12,
+  fontWeight: 800,
+  fontFamily: "var(--font-ui)",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "0 14px",
+  textDecoration: "none",
+  cursor: "pointer",
+};
+
+function readPlan(): PlanAccess {
+  if (typeof window === "undefined") return "free";
+  const stored = localStorage.getItem("eluna:plan");
+  if (stored === "trial") return "trial";
+  if (stored === "premium") return "premium";
+  return "free";
 }
 
-function dailyKey(dayKey: string, key: DailyPracticeKey) {
-  return `eluna:daily:${dayKey}:${key}`;
+function hasFullAccess(plan: PlanAccess) {
+  return plan === "trial" || plan === "premium";
 }
 
 function readActiveAffirmations(): ActiveAffirmation[] {
@@ -122,6 +96,10 @@ function readActiveAffirmations(): ActiveAffirmation[] {
   } catch {
     return [];
   }
+}
+
+function writeActiveAffirmations(items: ActiveAffirmation[]) {
+  localStorage.setItem(ACTIVE_AFFIRMATIONS_KEY, JSON.stringify(items));
 }
 
 function IconSpark() {
@@ -139,52 +117,110 @@ function IconSpark() {
   );
 }
 
+function isAffirmationRepeatedToday(item: ActiveAffirmation, repeat: AffirmationRepeat, completed: boolean) {
+  if (!completed) return false;
+  return repeat.text ? repeat.text === item.text : true;
+}
+
+function canOpenCategory(category: AffirmationCategory, plan: PlanAccess) {
+  if (hasFullAccess(plan)) return true;
+  return category.freeAccess !== "locked";
+}
+
+function canActivateAffirmation(category: AffirmationCategory, affirmation: AffirmationItem, plan: PlanAccess, index: number) {
+  if (hasFullAccess(plan)) return true;
+  if (category.freeAccess === "full") return true;
+  if (category.freeAccess === "preview") return index < 2;
+  return false;
+}
+
 export default function PracticesPage() {
-  const todayKey = useMemo(() => dateKey(new Date()), []);
+  const todayKey = useMemo(() => getTodayKey(), []);
   const [tab, setTab] = useState<Tab>("today");
-  const [completed, setCompleted] = useState<Record<DailyPracticeKey, boolean>>({
-    affirmationCompleted: false,
-    reflectionCompleted: false,
-    ritualCompleted: false,
-  });
+  const [plan, setPlan] = useState<PlanAccess>("free");
+  const [affirmationCompleted, setAffirmationCompleted] = useState(false);
+  const [reflectionCompleted, setReflectionCompleted] = useState(false);
+  const [groundingCompleted, setGroundingCompleted] = useState(false);
+  const [affirmationRepeat, setAffirmationRepeat] = useState<AffirmationRepeat>({ text: "", category: "" });
   const [activeAffirmations, setActiveAffirmations] = useState<ActiveAffirmation[]>([]);
   const [practiceReflection, setPracticeReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<AffirmationCategory | null>(null);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  const [subscriptionOpen, setSubscriptionOpen] = useState(false);
+
+  const activeLimit = hasFullAccess(plan) ? 3 : 1;
+  const firstActiveAffirmation = activeAffirmations[0] ?? null;
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const initialTab = params.get("tab");
     if (initialTab === "my" || initialTab === "library" || initialTab === "today") setTab(initialTab);
-    setCompleted({
-      affirmationCompleted: localStorage.getItem(dailyKey(todayKey, "affirmationCompleted")) === "true",
-      reflectionCompleted: localStorage.getItem(dailyKey(todayKey, "reflectionCompleted")) === "true",
-      ritualCompleted: localStorage.getItem(dailyKey(todayKey, "ritualCompleted")) === "true",
-    });
+    const currentProgress = getTodayProgress(todayKey);
+    setPlan(readPlan());
+    setAffirmationCompleted(currentProgress.affirmationCompleted);
+    setReflectionCompleted(currentProgress.practiceCompleted);
+    setGroundingCompleted(isGroundingCompleted(todayKey));
+    setAffirmationRepeat(getTodayAffirmationRepeat(todayKey));
     setPracticeReflection(getTodayPracticeReflection(todayKey));
     setActiveAffirmations(readActiveAffirmations());
   }, [todayKey]);
 
-  const activeCount = Number(completed.affirmationCompleted) + Number(completed.reflectionCompleted) + Number(completed.ritualCompleted);
+  function refreshDailyState() {
+    const currentProgress = getTodayProgress(todayKey);
+    setAffirmationCompleted(currentProgress.affirmationCompleted);
+    setReflectionCompleted(currentProgress.practiceCompleted);
+    setGroundingCompleted(isGroundingCompleted(todayKey));
+    setAffirmationRepeat(getTodayAffirmationRepeat(todayKey));
+    setPracticeReflection(getTodayPracticeReflection(todayKey));
+  }
 
-  function completePractice(key: DailyPracticeKey) {
-    localStorage.setItem(dailyKey(todayKey, key), "true");
-    if (key === "affirmationCompleted") {
-      markDailyActionCompleted("affirmationCompleted", todayKey);
-    }
-    setCompleted((current) => ({ ...current, [key]: true }));
+  function openSubscription() {
+    setSelectedCategory(null);
+    setSubscriptionOpen(true);
+  }
+
+  function repeatAffirmation(item: ActiveAffirmation) {
+    markAffirmationRepeated({ text: item.text, category: item.category }, todayKey);
+    refreshDailyState();
+    setFeatureInfo({
+      title: "Affirmation repeated",
+      description: "Your path moved forward today.",
+      statusLabel: "Repeated today",
+      primaryActionLabel: "Got it",
+    });
   }
 
   function completeReflectionPractice(result: GuidedPracticeResult) {
     markPracticeCompleted(result, todayKey);
-    setPracticeReflection(getTodayPracticeReflection(todayKey));
-    setCompleted((current) => ({ ...current, reflectionCompleted: true }));
+    refreshDailyState();
   }
 
-  function activateAffirmation(category: Category, text: string) {
-    const nextAffirmation = { id: `${category.id}:${text}`, category: category.title, text };
+  function completeGroundingRitual() {
+    markGroundingCompleted(todayKey);
+    setGroundingCompleted(true);
+    setFeatureInfo({
+      title: "Grounding ritual completed",
+      description: "You returned to your body and cleared space for the rest of your day.",
+      statusLabel: "Completed",
+      primaryActionLabel: "Got it",
+    });
+  }
+
+  function activateAffirmation(category: AffirmationCategory, affirmation: AffirmationItem, index: number) {
+    if (!canActivateAffirmation(category, affirmation, plan, index)) {
+      openSubscription();
+      return;
+    }
+
+    const nextAffirmation: ActiveAffirmation = {
+      id: affirmation.id,
+      categoryId: category.id,
+      category: category.title,
+      text: affirmation.text,
+    };
     const current = readActiveAffirmations();
-    if (current.some((item) => item.id === nextAffirmation.id)) {
+
+    if (current.some((item) => item.id === nextAffirmation.id || item.text === nextAffirmation.text)) {
       setFeatureInfo({
         title: "Already active",
         description: "This affirmation is already part of your active practice set.",
@@ -192,7 +228,12 @@ export default function PracticesPage() {
       });
       return;
     }
-    if (current.length >= MAX_ACTIVE_AFFIRMATIONS) {
+
+    if (current.length >= activeLimit) {
+      if (!hasFullAccess(plan)) {
+        setSubscriptionOpen(true);
+        return;
+      }
       setFeatureInfo({
         title: "Active practice limit",
         description: "You can keep up to 3 active affirmations at a time so your daily path stays focused.",
@@ -201,38 +242,27 @@ export default function PracticesPage() {
       });
       return;
     }
+
     const next = [...current, nextAffirmation];
-    localStorage.setItem(ACTIVE_AFFIRMATIONS_KEY, JSON.stringify(next));
+    writeActiveAffirmations(next);
     setActiveAffirmations(next);
     setFeatureInfo({
       title: "Affirmation activated",
-      description: "This affirmation now appears in My practices.",
+      description: "This affirmation now appears in My practices and on your daily path.",
       statusLabel: "Active",
       primaryActionLabel: "View my practices",
       primaryHref: "/practices?tab=my",
     });
   }
 
-  const todayCards = [
-    {
-      key: "affirmationCompleted" as const,
-      title: "Today’s affirmation",
-      text: "Repeat one phrase that anchors your energy for today.",
-      cta: "Repeat affirmation",
-    },
-    {
-      key: "reflectionCompleted" as const,
-      title: "Reflection practice",
-      text: "Take 3 minutes to notice the signal repeating in your day.",
-      cta: "Start reflection",
-    },
-    {
-      key: "ritualCompleted" as const,
-      title: "Grounding ritual",
-      text: "Return to your body before the day pulls you away.",
-      cta: "Begin ritual",
-    },
-  ];
+  function renderInfoBlock(title: string, text: string) {
+    return (
+      <div style={{ border: "1px solid rgba(216,168,95,.14)", borderRadius: 16, background: "rgba(255,255,255,.035)", padding: 12 }}>
+        <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 6 }}>{title}</p>
+        <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.55 }}>{text}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="app">
@@ -253,7 +283,7 @@ export default function PracticesPage() {
           <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 6 }}>Practices</h1>
           <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.55 }}>Small daily actions that keep your path active.</p>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "1px solid rgba(216,168,95,.24)", borderRadius: 999, background: "rgba(216,168,95,.08)", color: "var(--gold-2)", padding: "7px 12px", fontSize: 12, fontWeight: 800, marginTop: 12 }}>
-            <IconSpark /> Active: {activeCount} / 3
+            <IconSpark /> Active: {activeAffirmations.length} / {activeLimit}
           </div>
         </section>
 
@@ -267,38 +297,59 @@ export default function PracticesPage() {
 
         {tab === "today" && (
           <div style={{ display: "grid", gap: 12 }}>
-            {todayCards.map((card) => {
-              const isDone = completed[card.key];
-              if (card.key === "reflectionCompleted") {
-                return (
-                  <GuidedDailyPractice
-                    key={card.key}
-                    completed={isDone}
-                    initialSignalName={practiceReflection.signalName}
-                    initialResponseAction={practiceReflection.responseAction}
-                    onComplete={completeReflectionPractice}
-                    variant="practices"
-                  />
-                );
-              }
-              return (
-                <section key={card.key} style={{ ...cardStyle, padding: 16 }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                    <div style={{ width: 42, height: 42, borderRadius: "50%", border: "1px solid rgba(216,168,95,.30)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "grid", placeItems: "center", flexShrink: 0 }}>
-                      <IconSpark />
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 6 }}>{card.title}</h2>
-                      <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>{card.text}</p>
-                      <button type="button" disabled={isDone} onClick={() => completePractice(card.key)} style={{ ...primaryButtonStyle, minHeight: 40, opacity: isDone ? .75 : 1, cursor: isDone ? "default" : "pointer" }}>
-                        {isDone ? "Completed" : card.cta}
+            <section style={{ ...cardStyle, padding: 16 }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                <div style={{ width: 42, height: 42, borderRadius: "50%", border: "1px solid rgba(216,168,95,.30)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "grid", placeItems: "center", flexShrink: 0 }}>
+                  <IconSpark />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 6 }}>Today's affirmation</h2>
+                  {firstActiveAffirmation ? (
+                    <>
+                      <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 7 }}>{firstActiveAffirmation.category}</p>
+                      <p style={{ color: "var(--text)", fontSize: 14, lineHeight: 1.55, marginBottom: 12 }}>{firstActiveAffirmation.text}</p>
+                      <button type="button" disabled={affirmationCompleted} onClick={() => repeatAffirmation(firstActiveAffirmation)} style={{ ...primaryButtonStyle, minHeight: 40, opacity: affirmationCompleted ? .75 : 1, cursor: affirmationCompleted ? "default" : "pointer" }}>
+                        {affirmationCompleted ? "Repeated today" : "Repeat today"}
                       </button>
-                      {isDone && <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 700, marginTop: 9 }}>Your path moved forward today.</p>}
-                    </div>
+                      {affirmationCompleted && <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 700, marginTop: 9 }}>Your path moved forward today.</p>}
+                    </>
+                  ) : (
+                    <>
+                      <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>Choose your first affirmation to anchor your energy for today.</p>
+                      <button type="button" onClick={() => setTab("library")} style={{ ...primaryButtonStyle, minHeight: 40 }}>Open library</button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            <GuidedDailyPractice
+              completed={reflectionCompleted}
+              initialSignalName={practiceReflection.signalName}
+              initialResponseAction={practiceReflection.responseAction}
+              onComplete={completeReflectionPractice}
+              variant="practices"
+            />
+
+            <section style={{ ...cardStyle, padding: 16 }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                <div style={{ width: 42, height: 42, borderRadius: "50%", border: "1px solid rgba(216,168,95,.30)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "grid", placeItems: "center", flexShrink: 0 }}>
+                  <IconSpark />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 4 }}>Grounding ritual</h2>
+                  <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 8 }}>2 minutes</p>
+                  <div style={{ display: "grid", gap: 6, marginBottom: 12 }}>
+                    {["Place both feet on the floor.", "Name three things you can see.", "Breathe out what does not belong to you."].map((step, index) => (
+                      <p key={step} style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.45 }}><span style={{ color: "var(--gold-2)", fontWeight: 900 }}>Step {index + 1}.</span> {step}</p>
+                    ))}
                   </div>
-                </section>
-              );
-            })}
+                  <button type="button" disabled={groundingCompleted} onClick={completeGroundingRitual} style={{ ...primaryButtonStyle, minHeight: 40, opacity: groundingCompleted ? .75 : 1, cursor: groundingCompleted ? "default" : "pointer" }}>
+                    {groundingCompleted ? "Completed" : "Begin ritual"}
+                  </button>
+                </div>
+              </div>
+            </section>
           </div>
         )}
 
@@ -312,12 +363,21 @@ export default function PracticesPage() {
               </>
             ) : (
               <div style={{ display: "grid", gap: 10 }}>
-                {activeAffirmations.map((item) => (
-                  <div key={item.id} style={{ border: "1px solid rgba(216,168,95,.16)", borderRadius: 18, background: "rgba(255,255,255,.04)", padding: 14 }}>
-                    <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 7 }}>{item.category}</p>
-                    <p style={{ color: "var(--text)", fontSize: 14, lineHeight: 1.55 }}>{item.text}</p>
-                  </div>
-                ))}
+                {activeAffirmations.map((item) => {
+                  const repeated = isAffirmationRepeatedToday(item, affirmationRepeat, affirmationCompleted);
+                  return (
+                    <div key={item.id} style={{ border: "1px solid rgba(216,168,95,.16)", borderRadius: 18, background: "rgba(255,255,255,.04)", padding: 14 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start", marginBottom: 7 }}>
+                        <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase" }}>{item.category}</p>
+                        <span style={{ color: repeated ? "var(--gold-2)" : "var(--muted-2)", fontSize: 11, fontWeight: 800 }}>{repeated ? "Repeated today" : "Active"}</span>
+                      </div>
+                      <p style={{ color: "var(--text)", fontSize: 14, lineHeight: 1.55, marginBottom: 12 }}>{item.text}</p>
+                      <button type="button" disabled={repeated} onClick={() => repeatAffirmation(item)} style={{ ...secondaryButtonStyle, opacity: repeated ? .75 : 1, cursor: repeated ? "default" : "pointer" }}>
+                        {repeated ? "Done" : "Repeat today"}
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </section>
@@ -325,13 +385,20 @@ export default function PracticesPage() {
 
         {tab === "library" && (
           <div style={{ display: "grid", gap: 12 }}>
-            {categories.map((category) => (
-              <button key={category.id} type="button" onClick={() => setSelectedCategory(category)} style={{ ...cardStyle, padding: 16, textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
-                <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 7 }}>Affirmation library</p>
-                <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 6 }}>{category.title}</h2>
-                <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>{category.description}</p>
-              </button>
-            ))}
+            {affirmationCategories.map((category) => {
+              const locked = !canOpenCategory(category, plan);
+              const preview = !hasFullAccess(plan) && category.freeAccess === "preview";
+              return (
+                <button key={category.id} type="button" onClick={() => setSelectedCategory(category)} style={{ ...cardStyle, padding: 16, textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)", opacity: locked ? .82 : 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 7 }}>
+                    <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase" }}>{category.tag}</p>
+                    <span style={{ border: "1px solid rgba(216,168,95,.24)", borderRadius: 999, color: category.premium || preview ? "var(--gold-2)" : "var(--muted-2)", background: "rgba(216,168,95,.07)", padding: "4px 8px", fontSize: 10, fontWeight: 900 }}>{locked ? "Premium" : preview ? "Preview" : "Free"}</span>
+                  </div>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 6 }}>{category.title}</h2>
+                  <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>{category.description}</p>
+                </button>
+              );
+            })}
           </div>
         )}
 
@@ -357,27 +424,67 @@ export default function PracticesPage() {
       {selectedCategory && (
         <>
           <div onClick={() => setSelectedCategory(null)} style={{ position: "fixed", inset: 0, background: "rgba(4,2,14,.62)", backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)", zIndex: 220 }} />
-          <section role="dialog" aria-modal="true" aria-labelledby="affirmation-category-title" style={{ position: "fixed", left: "50%", bottom: 0, transform: "translateX(-50%)", width: "min(100vw, 430px)", zIndex: 221, borderRadius: "24px 24px 0 0", border: "1px solid rgba(216,168,95,.24)", borderBottom: "none", background: "rgba(10,6,28,.97)", boxShadow: "0 -12px 46px rgba(0,0,0,.58)", padding: "18px 20px 24px" }}>
+          <section role="dialog" aria-modal="true" aria-labelledby="affirmation-category-title" style={{ position: "fixed", left: "50%", bottom: 0, transform: "translateX(-50%)", width: "min(100vw, 430px)", maxHeight: "88dvh", overflowY: "auto", zIndex: 221, borderRadius: "24px 24px 0 0", border: "1px solid rgba(216,168,95,.24)", borderBottom: "none", background: "rgba(10,6,28,.97)", boxShadow: "0 -12px 46px rgba(0,0,0,.58)", padding: "18px 20px calc(92px + env(safe-area-inset-bottom))" }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", marginBottom: 14 }}>
               <div>
-                <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 6 }}>Choose affirmation</p>
+                <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 6 }}>{selectedCategory.premium ? "Premium practice" : selectedCategory.freeAccess === "preview" && !hasFullAccess(plan) ? "Preview practice" : "Affirmation practice"}</p>
                 <h2 id="affirmation-category-title" style={{ fontFamily: "var(--font-display)", fontSize: 25, color: "var(--text)", fontWeight: 600, lineHeight: 1.1 }}>{selectedCategory.title}</h2>
               </div>
-              <button type="button" aria-label="Close" onClick={() => setSelectedCategory(null)} style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(255,255,255,.1)", background: "rgba(255,255,255,.06)", color: "var(--muted-2)", display: "grid", placeItems: "center", cursor: "pointer", flexShrink: 0 }}>×</button>
+              <button type="button" aria-label="Close" onClick={() => setSelectedCategory(null)} style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(255,255,255,.1)", background: "rgba(255,255,255,.06)", color: "var(--muted-2)", display: "grid", placeItems: "center", cursor: "pointer", flexShrink: 0 }}>x</button>
             </div>
+
+            <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6, marginBottom: 12 }}>{selectedCategory.description}</p>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8, marginBottom: 10 }}>
+              <span style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 999, color: "var(--gold-2)", background: "rgba(216,168,95,.07)", padding: "6px 10px", fontSize: 11, fontWeight: 800 }}>{selectedCategory.theme}</span>
+              <span style={{ border: "1px solid rgba(160,130,220,.22)", borderRadius: 999, color: selectedCategory.premium ? "var(--gold-2)" : "var(--muted)", background: "rgba(160,100,240,.07)", padding: "6px 10px", fontSize: 11, fontWeight: 800 }}>{selectedCategory.premium ? "Premium" : "Practice"}</span>
+            </div>
+
+            <div style={{ display: "grid", gap: 9, marginBottom: 12 }}>
+              {renderInfoBlock("When to use", selectedCategory.whenToUse)}
+              {renderInfoBlock("Emotional benefit", selectedCategory.emotionalBenefit)}
+              {(!selectedCategory.premium || hasFullAccess(plan)) && renderInfoBlock("Morning practice", selectedCategory.morningInstruction)}
+              {(!selectedCategory.premium || hasFullAccess(plan)) && renderInfoBlock("Evening reflection", selectedCategory.eveningInstruction)}
+            </div>
+
             <div style={{ display: "grid", gap: 10 }}>
-              {selectedCategory.affirmations.map((text) => (
-                <div key={text} style={{ border: "1px solid rgba(216,168,95,.16)", borderRadius: 18, background: "rgba(255,255,255,.04)", padding: 14 }}>
-                  <p style={{ color: "var(--text)", fontSize: 14, lineHeight: 1.55, marginBottom: 12 }}>{text}</p>
-                  <button type="button" onClick={() => activateAffirmation(selectedCategory, text)} style={{ ...primaryButtonStyle, minHeight: 38 }}>Activate</button>
-                </div>
-              ))}
+              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase" }}>Affirmations</p>
+              {selectedCategory.affirmations.map((affirmation, index) => {
+                const allowed = canActivateAffirmation(selectedCategory, affirmation, plan, index);
+                const active = activeAffirmations.some((item) => item.id === affirmation.id || item.text === affirmation.text);
+                const repeated = activeAffirmations.some((item) => item.text === affirmation.text) && isAffirmationRepeatedToday({ id: affirmation.id, category: selectedCategory.title, text: affirmation.text }, affirmationRepeat, affirmationCompleted);
+                const locked = !allowed;
+                const showLockedPreview = selectedCategory.freeAccess === "locked" && index < 2;
+                return (
+                  <div key={affirmation.id} style={{ border: "1px solid rgba(216,168,95,.16)", borderRadius: 18, background: locked ? "rgba(255,255,255,.025)" : "rgba(255,255,255,.04)", padding: 14, opacity: locked ? .72 : 1 }}>
+                    <p style={{ color: "var(--text)", fontSize: 14, lineHeight: 1.55, marginBottom: 12 }}>{locked && !showLockedPreview ? "Locked affirmation" : affirmation.text}</p>
+                    {locked ? (
+                      <button type="button" onClick={openSubscription} style={{ ...secondaryButtonStyle, width: "100%" }}>Unlock full practice library</button>
+                    ) : (
+                      <button type="button" disabled={active} onClick={() => activateAffirmation(selectedCategory, affirmation, index)} style={{ ...primaryButtonStyle, minHeight: 38, opacity: active ? .75 : 1, cursor: active ? "default" : "pointer" }}>
+                        {repeated ? "Repeated today" : active ? "Active" : "Activate"}
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
+
+            <div style={{ marginTop: 12 }}>
+              {renderInfoBlock("Reflection question", selectedCategory.reflectionQuestion)}
+            </div>
+
+            {!hasFullAccess(plan) && selectedCategory.freeAccess !== "full" && (
+              <button type="button" onClick={openSubscription} style={{ ...primaryButtonStyle, width: "100%", marginTop: 14 }}>
+                Unlock full practice library
+              </button>
+            )}
           </section>
         </>
       )}
 
       {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
+      <SubscriptionModal isOpen={subscriptionOpen} onClose={() => setSubscriptionOpen(false)} contextTitle="Unlock full practice library" />
     </div>
   );
 }

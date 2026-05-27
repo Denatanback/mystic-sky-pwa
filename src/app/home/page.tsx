@@ -11,8 +11,10 @@ import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchContext } from "@/lib/launch/launchContext";
-import { getDailyActionKey, getFirstSignalState, getTodayKey, getTodayPracticeReflection, getTodayProgress, markDailyActionCompleted, type DailyAction, type DailyProgress, type FirstSignalState, type PracticeReflection } from "@/lib/progress/dailyProgress";
+import { getDailyActionKey, getFirstSignalState, getTodayKey, getTodayPracticeReflection, getTodayProgress, markAffirmationRepeated, markDailyActionCompleted, type DailyAction, type DailyProgress, type FirstSignalState, type PracticeReflection } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
+
+type ActiveAffirmation = { id: string; categoryId?: string; category: string; text: string };
 
 const cardStyle: CSSProperties = {
   border: "1px solid rgba(216,168,95,.20)",
@@ -133,7 +135,7 @@ export default function HomePage() {
   const [dailyState, setDailyState] = useState<DailyProgress>({ readingOpened: false, practiceCompleted: false, cardOpened: false, affirmationCompleted: false, completedCount: 0, totalCount: 4 });
   const [practiceReflection, setPracticeReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
   const [firstSignalState, setFirstSignalState] = useState<FirstSignalState>({ unlocked: false, integrated: false, reflection: "", signalName: "Attention", responseAction: "" });
-  const [activePracticeLabel, setActivePracticeLabel] = useState("Choose your first affirmation");
+  const [activeAffirmation, setActiveAffirmation] = useState<ActiveAffirmation | null>(null);
 
   const completedCount = dailyState.completedCount;
   const energy = deterministicEnergy(todayKey);
@@ -167,11 +169,9 @@ export default function HomePage() {
     setFirstSignalState(getFirstSignalState(todayKey));
     try {
       const activeAffirmations = JSON.parse(localStorage.getItem("eluna:activeAffirmations") || "[]");
-      if (Array.isArray(activeAffirmations) && activeAffirmations[0]?.category) {
-        setActivePracticeLabel(`Active practice: ${activeAffirmations[0].category}`);
-      }
+      if (Array.isArray(activeAffirmations) && activeAffirmations[0]?.category && activeAffirmations[0]?.text) setActiveAffirmation(activeAffirmations[0]);
     } catch {
-      setActivePracticeLabel("Choose your first affirmation");
+      setActiveAffirmation(null);
     }
     void getCurrentProfile().then((user) => {
       if (!cancelled && user && !user.onboardingCompleted) {
@@ -194,6 +194,20 @@ export default function HomePage() {
       localStorage.setItem(getDailyActionKey(field, todayKey), "false");
       setDailyState(getTodayProgress(todayKey));
     }
+  }
+
+  function repeatActiveAffirmation() {
+    if (!activeAffirmation) {
+      router.push("/practices?tab=library");
+      return;
+    }
+    setDailyState(markAffirmationRepeated({ text: activeAffirmation.text, category: activeAffirmation.category }, todayKey));
+    setFeatureInfo({
+      title: "Affirmation repeated",
+      description: "Your path moved forward today.",
+      statusLabel: "Repeated today",
+      primaryActionLabel: "Got it",
+    });
   }
 
   const openComingSoon = (title: string, description: string, primaryActionLabel = "Got it") => setFeatureInfo({
@@ -313,11 +327,20 @@ export default function HomePage() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 4 }}>Repeat affirmation</p>
             <p style={{ color: "var(--text)", fontSize: 13, fontWeight: 800, marginBottom: 2 }}>{dailyState.affirmationCompleted ? "Completed" : "Ready"}</p>
-            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.4 }}>{activePracticeLabel}</p>
+            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.4 }}>
+              {activeAffirmation ? `Active affirmation: ${activeAffirmation.category}` : "Choose your first affirmation"}
+            </p>
+            {activeAffirmation && <p style={{ color: "var(--text)", fontSize: 12, lineHeight: 1.45, marginTop: 5 }}>{activeAffirmation.text}</p>}
           </div>
-          <Link href="/practices?tab=today" style={{ ...primaryButtonStyle, minHeight: 38, fontSize: 12, padding: "0 14px" }}>
-            {dailyState.affirmationCompleted ? "Done" : "Repeat"}
-          </Link>
+          {activeAffirmation ? (
+            <button type="button" disabled={dailyState.affirmationCompleted} onClick={repeatActiveAffirmation} style={{ ...primaryButtonStyle, minHeight: 38, fontSize: 12, padding: "0 14px", opacity: dailyState.affirmationCompleted ? .75 : 1, cursor: dailyState.affirmationCompleted ? "default" : "pointer" }}>
+              {dailyState.affirmationCompleted ? "Done" : "Repeat"}
+            </button>
+          ) : (
+            <Link href="/practices?tab=library" style={{ ...primaryButtonStyle, minHeight: 38, fontSize: 12, padding: "0 14px" }}>
+              Open practices
+            </Link>
+          )}
         </section>
 
         <section style={{ marginTop: 14, overflow: "hidden" }}>

@@ -28,6 +28,11 @@ export type FirstSignalState = {
   responseAction: string;
 };
 
+export type AffirmationRepeat = {
+  text: string;
+  category: string;
+};
+
 const actions: DailyAction[] = ["readingOpened", "practiceCompleted", "affirmationCompleted", "cardOpened"];
 
 export function getTodayKey(date = new Date()) {
@@ -44,6 +49,14 @@ export function getPracticeReflectionKey(field: keyof PracticeReflection, dayKey
 
 export function getFirstSignalKey(field: "reflection" | "nextStepCompleted", dayKey = getTodayKey()) {
   return `eluna:daily:${dayKey}:${field === "reflection" ? "firstSignalReflection" : "firstSignalNextStepCompleted"}`;
+}
+
+export function getAffirmationRepeatKey(field: keyof AffirmationRepeat, dayKey = getTodayKey()) {
+  return `eluna:daily:${dayKey}:${field === "text" ? "affirmationText" : "affirmationCategory"}`;
+}
+
+export function getGroundingCompletedKey(dayKey = getTodayKey()) {
+  return `eluna:daily:${dayKey}:groundingCompleted`;
 }
 
 function isBrowser() {
@@ -98,6 +111,33 @@ export function markPracticeCompleted(input: Partial<PracticeReflection> = {}, d
   if (signalName) localStorage.setItem(getPracticeReflectionKey("signalName", dayKey), signalName);
   if (responseAction) localStorage.setItem(getPracticeReflectionKey("responseAction", dayKey), responseAction);
   return markDailyActionCompleted("practiceCompleted", dayKey);
+}
+
+export function markAffirmationRepeated(input: Partial<AffirmationRepeat> = {}, dayKey = getTodayKey()) {
+  if (!isBrowser()) return getTodayProgress(dayKey);
+  const text = input.text?.trim();
+  const category = input.category?.trim();
+  if (text) localStorage.setItem(getAffirmationRepeatKey("text", dayKey), text);
+  if (category) localStorage.setItem(getAffirmationRepeatKey("category", dayKey), category);
+  return markDailyActionCompleted("affirmationCompleted", dayKey);
+}
+
+export function getTodayAffirmationRepeat(dayKey = getTodayKey()): AffirmationRepeat {
+  if (!isBrowser()) return { text: "", category: "" };
+  return {
+    text: localStorage.getItem(getAffirmationRepeatKey("text", dayKey)) ?? "",
+    category: localStorage.getItem(getAffirmationRepeatKey("category", dayKey)) ?? "",
+  };
+}
+
+export function markGroundingCompleted(dayKey = getTodayKey()) {
+  if (!isBrowser()) return false;
+  localStorage.setItem(getGroundingCompletedKey(dayKey), "true");
+  return true;
+}
+
+export function isGroundingCompleted(dayKey = getTodayKey()) {
+  return isBrowser() && localStorage.getItem(getGroundingCompletedKey(dayKey)) === "true";
 }
 
 export function getTodayPracticeReflection(dayKey = getTodayKey()): PracticeReflection {
