@@ -2,7 +2,8 @@ import { getCurrentUser, isSupabaseAuthEnabled, upsertProfile } from "@/lib/auth
 import { getMockUser, saveMockUser } from "@/lib/mockAuth";
 import { supabase } from "@/lib/supabase/client";
 import type { LaunchContext } from "@/lib/launch/launchContext";
-import { getZodiacSign, getZodiacSignByKey, type ZodiacSignInfo, type ZodiacSignKey } from "@/lib/astrology/zodiac";
+import { getZodiacSignByKey, type ZodiacSignInfo, type ZodiacSignKey } from "@/lib/astrology/zodiac";
+import { resolveUserZodiac } from "@/lib/astrology/resolveZodiac";
 
 export type CurrentProfile = {
   id?: string;
@@ -105,7 +106,7 @@ export async function getCurrentProfile(): Promise<CurrentProfile | null> {
   const birthPlace = firstString(user.birthPlace, metadata.birth_place, metadata.birthPlace, birthData.birthPlace, birthData.birth_place);
   const storedZodiacKey = validZodiacKey(metadata.zodiac_sign) || validZodiacKey(metadata.zodiacSign) || validZodiacKey(birthData.zodiacSign) || validZodiacKey(birthData.zodiac_sign) || validZodiacKey(typeof window !== "undefined" ? localStorage.getItem(ZODIAC_SIGN_KEY) : "");
   const zodiacOverride = readBoolean(metadata.zodiac_override) || readBoolean(metadata.zodiacOverride) || readBoolean(birthData.zodiacOverride) || readBoolean(birthData.zodiac_override) || readStorageBoolean(ZODIAC_OVERRIDE_KEY);
-  const zodiacSign = zodiacOverride && storedZodiacKey ? getZodiacSignByKey(storedZodiacKey) : getZodiacSign(birthDate);
+  const zodiacSign = resolveUserZodiac({ birthDate, zodiacOverride, zodiacSign: storedZodiacKey });
 
   return {
     id: user.id,
@@ -117,7 +118,7 @@ export async function getCurrentProfile(): Promise<CurrentProfile | null> {
     birthTimeUnknown,
     birthPlace,
     zodiacSign,
-    zodiacOverride,
+    zodiacOverride: zodiacSign.source === "manual",
     focusAreas,
     practicePreferences,
     onboardingCompleted: isCompleted({ birthDate, birthPlace, focusAreas, practicePreferences, explicit: onboardingCompleted || metadata.onboarding_completed === true || metadata.onboardingCompleted === true }),

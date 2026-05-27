@@ -11,6 +11,7 @@ import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/Fe
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { getDeepPathState, type DeepPathState } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile, type CurrentProfile } from "@/lib/profile/currentProfile";
+import { resolveUserZodiac } from "@/lib/astrology/resolveZodiac";
 
 function IconMoon() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4a7 7 0 1 0 11.5 11.5Z"/></svg>; }
 function IconJournal() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M6 3h12v18H6z"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>; }
@@ -35,9 +36,9 @@ export default function ProfilePage() {
   const [deepPathState, setDeepPathState] = useState<DeepPathState>(() => getDeepPathState());
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
-  const zodiac = userProfile?.zodiacSign ?? { key: "unknown", name: "Unknown sign", glyph: "✦", dateRange: null };
-  const zodiacLine = zodiac.key === "unknown" ? "Mystic profile" : `${zodiac.name} · ${userProfile?.zodiacOverride ? "selected manually" : zodiac.dateRange}`;
-  const personalChartSub = zodiac.key === "unknown" ? "Complete setup to reveal your chart" : `Sun sign: ${zodiac.name}${userProfile?.zodiacOverride ? " · selected manually" : userProfile?.birthPlace ? ` · ${userProfile.birthPlace}` : ""}`;
+  const zodiac = resolveUserZodiac(userProfile);
+  const zodiacLine = zodiac.key === "unknown" ? "Mystic profile" : `${zodiac.name} · ${zodiac.source === "manual" ? "selected manually" : zodiac.dateRange}`;
+  const personalChartSub = zodiac.key === "unknown" ? "Complete setup to reveal your chart" : `Sun sign: ${zodiac.name}${zodiac.source === "manual" ? " · selected manually" : userProfile?.birthPlace ? ` · ${userProfile.birthPlace}` : ""}`;
   const openReminders = () => setFeatureInfo({
     title: "Soul reminders",
     description: "Daily reading reminders and practice notifications will appear here.",

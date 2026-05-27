@@ -11,7 +11,8 @@ import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/Fe
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { getTodayKey, getTodayProgress, markDailyActionCompleted } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
-import { getSunSign } from "@/lib/astroCalc";
+import { resolveUserZodiac } from "@/lib/astrology/resolveZodiac";
+import { ZODIAC } from "@/lib/astroCalc";
 import { lifePathNumber } from "@/lib/numerologyCalc";
 import {
   getMoonPhaseInfo, getTodayMoonSign, getPlanetaryDay,
@@ -159,7 +160,8 @@ export default function TodayPage() {
 
     if (user?.birthDate) {
       const birthISO = toIsoDate(user.birthDate);
-      const ss = getSunSign(birthISO);
+      const resolvedZodiac = resolveUserZodiac(user);
+      const ss = ZODIAC.find((sign) => sign.key === resolvedZodiac.key) ?? null;
       if (ss) {
         setSunSign(ss);
         setForecast(getDailyForecast(ss, mi, ms, lang));

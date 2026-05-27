@@ -7,6 +7,7 @@ import { useLang } from "@/lib/i18n";
 import { getSunSign, SUN_TRAITS, ZODIAC, ELEMENT_TRAITS } from "@/lib/astroCalc";
 import { startNode, completeNode, getNodeState, isNodeLocked } from "@/lib/nodeProgress";
 import { getCurrentProfile, type CurrentProfile } from "@/lib/profile/currentProfile";
+import { resolveUserZodiac } from "@/lib/astrology/resolveZodiac";
 
 const TOTAL = 8;
 const DISCIPLINE = "astrology";
@@ -37,7 +38,7 @@ function AstroNode1() {
   const [user, setUser] = useState<CurrentProfile | null>(null);
 
   const sign = user?.birthDate
-    ? (user.zodiacOverride ? ZODIAC.find((item) => item.key === user.zodiacSign.key) ?? null : getSunSign(user.birthDate))
+    ? ZODIAC.find((item) => item.key === resolveUserZodiac(user).key) ?? getSunSign(user.birthDate)
     : null;
   const traits = sign ? (SUN_TRAITS[sign.key] ?? []) : [];
   const elementTraits = sign ? (ELEMENT_TRAITS[sign.element] ?? null) : null;
