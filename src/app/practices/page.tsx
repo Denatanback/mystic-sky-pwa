@@ -23,6 +23,7 @@ import {
   type AffirmationRepeat,
   type PracticeReflection,
 } from "@/lib/progress/dailyProgress";
+import { getTodayDailyCard, type DailyCardState } from "@/lib/cards/dailyCardProgress";
 import { affirmationCategories, type AffirmationCategory, type AffirmationItem } from "@/lib/practices/affirmations";
 
 type Tab = "today" | "my" | "library";
@@ -141,6 +142,7 @@ export default function PracticesPage() {
   const [affirmationCompleted, setAffirmationCompleted] = useState(false);
   const [reflectionCompleted, setReflectionCompleted] = useState(false);
   const [groundingCompleted, setGroundingCompleted] = useState(false);
+  const [dailyCardState, setDailyCardState] = useState<DailyCardState>({ drawn: false, card: null, reflection: "" });
   const [affirmationRepeat, setAffirmationRepeat] = useState<AffirmationRepeat>({ text: "", category: "" });
   const [activeAffirmations, setActiveAffirmations] = useState<ActiveAffirmation[]>([]);
   const [practiceReflection, setPracticeReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
@@ -160,6 +162,7 @@ export default function PracticesPage() {
     setAffirmationCompleted(currentProgress.affirmationCompleted);
     setReflectionCompleted(currentProgress.practiceCompleted);
     setGroundingCompleted(isGroundingCompleted(todayKey));
+    setDailyCardState(getTodayDailyCard(todayKey));
     setAffirmationRepeat(getTodayAffirmationRepeat(todayKey));
     setPracticeReflection(getTodayPracticeReflection(todayKey));
     setActiveAffirmations(readActiveAffirmations());
@@ -170,6 +173,7 @@ export default function PracticesPage() {
     setAffirmationCompleted(currentProgress.affirmationCompleted);
     setReflectionCompleted(currentProgress.practiceCompleted);
     setGroundingCompleted(isGroundingCompleted(todayKey));
+    setDailyCardState(getTodayDailyCard(todayKey));
     setAffirmationRepeat(getTodayAffirmationRepeat(todayKey));
     setPracticeReflection(getTodayPracticeReflection(todayKey));
   }
@@ -347,6 +351,24 @@ export default function PracticesPage() {
                   <button type="button" disabled={groundingCompleted} onClick={completeGroundingRitual} style={{ ...primaryButtonStyle, minHeight: 40, opacity: groundingCompleted ? .75 : 1, cursor: groundingCompleted ? "default" : "pointer" }}>
                     {groundingCompleted ? "Completed" : "Begin ritual"}
                   </button>
+                </div>
+              </div>
+            </section>
+
+            <section style={{ ...cardStyle, padding: 16 }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                <div style={{ width: 42, height: 42, borderRadius: "50%", border: "1px solid rgba(216,168,95,.30)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "grid", placeItems: "center", flexShrink: 0 }}>
+                  <IconSpark />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 4 }}>Daily card</h2>
+                  <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 8 }}>{dailyCardState.drawn ? "Drawn" : "Ready"}</p>
+                  <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>
+                    {dailyCardState.card ? `${dailyCardState.card.title} · ${dailyCardState.card.theme}` : "Draw one symbol for today and save what it mirrors."}
+                  </p>
+                  <Link href="/today#daily-card" style={{ ...primaryButtonStyle, minHeight: 40 }}>
+                    {dailyCardState.drawn ? "View card" : "Draw"}
+                  </Link>
                 </div>
               </div>
             </section>

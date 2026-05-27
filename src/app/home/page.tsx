@@ -13,6 +13,7 @@ import { PlanChip } from "@/components/subscription/PlanChip";
 import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchContext } from "@/lib/launch/launchContext";
 import { getDailyActionKey, getFirstSignalState, getTodayKey, getTodayPracticeReflection, getTodayProgress, markAffirmationRepeated, markDailyActionCompleted, type DailyAction, type DailyProgress, type FirstSignalState, type PracticeReflection } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
+import { drawDailyCard as drawDailyCardForToday, getTodayDailyCard, type DailyCardState } from "@/lib/cards/dailyCardProgress";
 
 type ActiveAffirmation = { id: string; categoryId?: string; category: string; text: string };
 
@@ -136,6 +137,7 @@ export default function HomePage() {
   const [practiceReflection, setPracticeReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
   const [firstSignalState, setFirstSignalState] = useState<FirstSignalState>({ unlocked: false, integrated: false, reflection: "", signalName: "Attention", responseAction: "" });
   const [activeAffirmation, setActiveAffirmation] = useState<ActiveAffirmation | null>(null);
+  const [dailyCardState, setDailyCardState] = useState<DailyCardState>({ drawn: false, card: null, reflection: "" });
 
   const completedCount = dailyState.completedCount;
   const energy = deterministicEnergy(todayKey);
@@ -167,6 +169,7 @@ export default function HomePage() {
     setDailyState(getTodayProgress(todayKey));
     setPracticeReflection(getTodayPracticeReflection(todayKey));
     setFirstSignalState(getFirstSignalState(todayKey));
+    setDailyCardState(getTodayDailyCard(todayKey));
     try {
       const activeAffirmations = JSON.parse(localStorage.getItem("eluna:activeAffirmations") || "[]");
       if (Array.isArray(activeAffirmations) && activeAffirmations[0]?.category && activeAffirmations[0]?.text) setActiveAffirmation(activeAffirmations[0]);
@@ -218,12 +221,15 @@ export default function HomePage() {
   });
 
   function drawDailyCard() {
-    setDailyField("cardOpened");
+    const cardState = drawDailyCardForToday(todayKey);
+    setDailyCardState(cardState);
+    setDailyState(getTodayProgress(todayKey));
     setFeatureInfo({
-      title: "Daily card",
-      description: "Your symbol for today is saved. Soon you’ll be able to revisit every card you draw and track recurring patterns.",
+      title: cardState.card?.title ?? "Daily card",
+      description: cardState.card ? `${cardState.card.theme}. ${cardState.card.meaning}` : "Your symbol for today is saved.",
       statusLabel: "Drawn today",
-      primaryActionLabel: "Got it",
+      primaryActionLabel: "View card",
+      primaryHref: "/today#daily-card",
     });
   }
 
@@ -315,8 +321,10 @@ export default function HomePage() {
           <button type="button" onClick={drawDailyCard} style={{ ...cardStyle, padding: 14, minHeight: 136, display: "flex", flexDirection: "column", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
             <span style={{ color: "var(--gold-2)", marginBottom: 10 }}><IconSpark /></span>
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Daily card</h2>
-            <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>Reveal today’s symbol.</p>
-            <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{dailyState.cardOpened ? "Drawn" : "Draw"}</span>
+            <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>
+              {dailyCardState.card ? `${dailyCardState.card.title} · ${dailyCardState.card.theme}` : "Reveal today’s symbol."}
+            </p>
+            <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{dailyState.cardOpened ? "View card" : "Draw card"}</span>
           </button>
         </section>
 

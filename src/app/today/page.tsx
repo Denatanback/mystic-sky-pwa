@@ -11,6 +11,7 @@ import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/Fe
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { GuidedDailyPractice, type GuidedPracticeResult } from "@/components/practices/GuidedDailyPractice";
 import { getTodayKey, getTodayPracticeReflection, getTodayProgress, markPracticeCompleted, type PracticeReflection } from "@/lib/progress/dailyProgress";
+import { drawDailyCard, getTodayDailyCard, saveDailyCardReflection, type DailyCardState } from "@/lib/cards/dailyCardProgress";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
 import { resolveUserZodiac } from "@/lib/astrology/resolveZodiac";
 import { ZODIAC } from "@/lib/astroCalc";
@@ -141,6 +142,9 @@ export default function TodayPage() {
   const [discProgress, setDiscProgress] = useState<Record<string, number>>({});
   const [practiceCompleted, setPracticeCompleted] = useState(false);
   const [practiceReflection, setPracticeReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
+  const [dailyCardState, setDailyCardState] = useState<DailyCardState>({ drawn: false, card: null, reflection: "" });
+  const [cardReflectionText, setCardReflectionText] = useState("");
+  const [cardReflectionSaved, setCardReflectionSaved] = useState(false);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const todayKey = getTodayKey();
 
@@ -186,6 +190,9 @@ export default function TodayPage() {
     setDiscProgress(prog);
     setPracticeCompleted(getTodayProgress(todayKey).practiceCompleted);
     setPracticeReflection(getTodayPracticeReflection(todayKey));
+    const cardState = getTodayDailyCard(todayKey);
+    setDailyCardState(cardState);
+    setCardReflectionText(cardState.reflection);
   }, [lang, todayKey, router]);
 
   function completePractice(result: GuidedPracticeResult) {
@@ -201,6 +208,19 @@ export default function TodayPage() {
       statusLabel: "Preparing",
       primaryActionLabel: "Got it",
     });
+  }
+
+  function drawTodayCard() {
+    const cardState = drawDailyCard(todayKey);
+    setDailyCardState(cardState);
+    setCardReflectionText(cardState.reflection);
+  }
+
+  function saveCardReflection() {
+    const value = saveDailyCardReflection(cardReflectionText, todayKey);
+    setDailyCardState(getTodayDailyCard(todayKey));
+    setCardReflectionText(value);
+    setCardReflectionSaved(Boolean(value));
   }
 
   const today = new Date();
@@ -314,6 +334,54 @@ export default function TodayPage() {
             onComplete={completePractice}
           />
         </div>
+
+        <section id="daily-card" style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 24, background: "linear-gradient(145deg, rgba(22,13,54,.78), rgba(10,6,28,.66))", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", padding: 18, marginBottom: 14 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+            <div>
+              <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 6 }}>{ru ? "Карта дня" : "Today’s card"}</p>
+              <h2 style={{ fontFamily: "var(--font-display)", fontSize: 26, color: "var(--text)", fontWeight: 600, lineHeight: 1.08 }}>{dailyCardState.card?.title ?? (ru ? "Вытяни карту дня" : "Draw today’s card")}</h2>
+            </div>
+            <div style={{ width: 46, height: 46, borderRadius: "50%", border: "1px solid rgba(216,168,95,.34)", background: "radial-gradient(circle at 35% 30%, rgba(247,217,139,.18), rgba(128,64,192,.22) 58%, rgba(10,6,28,.82))", color: "var(--gold-2)", display: "grid", placeItems: "center", flexShrink: 0, fontSize: 21 }}>✦</div>
+          </div>
+
+          {!dailyCardState.drawn || !dailyCardState.card ? (
+            <>
+              <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6, marginBottom: 14 }}>{ru ? "Вытяни одну карту, чтобы увидеть символ дня." : "Draw one card to reveal the symbol moving through your day."}</p>
+              <button type="button" onClick={drawTodayCard} style={{ width: "100%", minHeight: 46, borderRadius: 999, border: "none", background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 14, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", boxShadow: "0 8px 24px rgba(90,32,144,.38)" }}>
+                {ru ? "Вытянуть карту" : "Draw today’s card"}
+              </button>
+            </>
+          ) : (
+            <>
+              <span style={{ display: "inline-flex", border: "1px solid rgba(216,168,95,.24)", borderRadius: 999, color: "var(--gold-2)", background: "rgba(216,168,95,.08)", padding: "5px 10px", fontSize: 11, fontWeight: 900, marginBottom: 12 }}>{dailyCardState.card.theme}</span>
+              <div style={{ display: "grid", gap: 10, marginBottom: 14 }}>
+                <div style={{ border: "1px solid rgba(216,168,95,.14)", borderRadius: 16, background: "rgba(255,255,255,.035)", padding: 13 }}>
+                  <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 7 }}>{ru ? "Значение" : "Meaning"}</p>
+                  <p style={{ color: "var(--text)", fontSize: 13, lineHeight: 1.6 }}>{dailyCardState.card.meaning}</p>
+                </div>
+                <div style={{ border: "1px solid rgba(216,168,95,.14)", borderRadius: 16, background: "rgba(255,255,255,.035)", padding: 13 }}>
+                  <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 7 }}>{ru ? "Действие" : "Action"}</p>
+                  <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>{dailyCardState.card.action}</p>
+                </div>
+                <div style={{ border: "1px solid rgba(160,130,220,.16)", borderRadius: 16, background: "rgba(160,100,240,.05)", padding: 13 }}>
+                  <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 7 }}>{ru ? "Вопрос" : "Reflection question"}</p>
+                  <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>{dailyCardState.card.reflection}</p>
+                </div>
+              </div>
+
+              <label style={{ display: "grid", gap: 8 }}>
+                <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{ru ? "Сохрани отражение карты" : "Save a card reflection"}</span>
+                <textarea value={cardReflectionText} onChange={(event) => { setCardReflectionText(event.target.value); setCardReflectionSaved(false); }} placeholder={ru ? "Что эта карта отразила сегодня?" : "What did this card mirror today?"} rows={3} style={{ width: "100%", borderRadius: 16, border: "1px solid rgba(216,168,95,.22)", background: "rgba(255,255,255,.05)", color: "var(--text)", padding: "12px 13px", fontSize: 13, lineHeight: 1.5, resize: "vertical", fontFamily: "var(--font-ui)" }} />
+              </label>
+              <button type="button" onClick={saveCardReflection} style={{ width: "100%", minHeight: 42, borderRadius: 999, border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", marginTop: 10 }}>
+                {dailyCardState.reflection || cardReflectionSaved ? (ru ? "Отражение сохранено" : "Card reflection saved") : (ru ? "Сохранить отражение" : "Save reflection")}
+              </button>
+              <button type="button" onClick={() => setFeatureInfo({ title: "Card pattern history", description: "Card pattern history unlocks with Trial/Premium. Soon you’ll be able to track recurring symbols and themes across your path.", statusLabel: "Premium preview", primaryActionLabel: "Got it" })} style={{ width: "100%", minHeight: 38, borderRadius: 999, border: "none", background: "transparent", color: "var(--muted)", fontSize: 12, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", marginTop: 8 }}>
+                {ru ? "История карт откроется позже" : "Card pattern history unlocks with Trial/Premium"}
+              </button>
+            </>
+          )}
+        </section>
 
         {/* Personal day number */}
         <div style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: 20, background: "rgba(14,10,32,.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", padding: "14px 18px", marginBottom: 14, display: "flex", alignItems: "center", gap: 16 }}>
