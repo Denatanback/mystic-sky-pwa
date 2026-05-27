@@ -4,9 +4,15 @@ export const LAUNCH_CONTEXT_KEYS = [
   "result",
   "gender",
   "animal",
+  "archetype",
+  "element",
+  "answer",
   "utm_source",
   "utm_campaign",
   "utm_content",
+  "utm_medium",
+  "ad_id",
+  "campaign_id",
 ] as const;
 
 export type LaunchContextKey = typeof LAUNCH_CONTEXT_KEYS[number];

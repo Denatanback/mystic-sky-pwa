@@ -12,6 +12,7 @@ import { PlanChip } from "@/components/subscription/PlanChip";
 import { GuidedDailyPractice, type GuidedPracticeResult } from "@/components/practices/GuidedDailyPractice";
 import { getTodayKey, getTodayPracticeReflection, getTodayProgress, markPracticeCompleted, type PracticeReflection } from "@/lib/progress/dailyProgress";
 import { drawDailyCard, getTodayDailyCard, saveDailyCardReflection, type DailyCardState } from "@/lib/cards/dailyCardProgress";
+import { getPrelandContext, getPrelandExperience, getPrelandKind, savePrelandContext, type PrelandContext, type PrelandExperience } from "@/lib/funnel/prelandContext";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
 import { resolveUserZodiac } from "@/lib/astrology/resolveZodiac";
 import { ZODIAC } from "@/lib/astroCalc";
@@ -145,6 +146,8 @@ export default function TodayPage() {
   const [dailyCardState, setDailyCardState] = useState<DailyCardState>({ drawn: false, card: null, reflection: "" });
   const [cardReflectionText, setCardReflectionText] = useState("");
   const [cardReflectionSaved, setCardReflectionSaved] = useState(false);
+  const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
+  const [prelandExperience, setPrelandExperience] = useState<PrelandExperience | null>(null);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const todayKey = getTodayKey();
 
@@ -156,6 +159,12 @@ export default function TodayPage() {
     setMoonInfo(mi);
     setMoonSign(ms);
     setPlanetDay({ en: pd.en, ru: pd.ru, symbol: pd.symbol });
+    const params = new URLSearchParams(window.location.search);
+    const contextParam = params.get("context");
+    const storedPreland = getPrelandContext();
+    const effectivePreland = contextParam ? savePrelandContext({ ...storedPreland, source: contextParam, funnel: contextParam }) : storedPreland;
+    setPrelandContext(effectivePreland);
+    setPrelandExperience(getPrelandExperience(effectivePreland));
 
     void getCurrentProfile().then((user) => {
     if (user && !user.onboardingCompleted) {
@@ -228,6 +237,8 @@ export default function TodayPage() {
 
   const moonSignDesc = moonSign ? (MOON_IN_SIGN[moonSign.key]?.[lang] ?? "") : "";
   const personalDayInfo = PERSONAL_DAY[personalDay] ?? PERSONAL_DAY[1];
+  const prelandKind = getPrelandKind(prelandContext);
+  const showPrelandBlock = Boolean(prelandExperience);
 
   // Total progress across all disciplines
   const totalNodes = DISCIPLINES.reduce((s, d) => s + d.total, 0);
@@ -326,7 +337,31 @@ export default function TodayPage() {
           </div>
         )}
 
-        <div data-tour="today-recommended-actions" style={{ marginBottom: 14 }}>
+        {showPrelandBlock && (
+          <section style={{ border: "1px solid rgba(216,168,95,.24)", borderRadius: 22, background: "rgba(60,20,100,.20)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", padding: 16, marginBottom: 14 }}>
+            <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 7 }}>{prelandKind === "soulmate" ? "Soulmate signal" : prelandKind === "pastlife" ? "Past-life signal" : "Personal signal"}</p>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 8 }}>{prelandExperience?.label}</h2>
+            <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6, marginBottom: 8 }}>
+              {prelandKind === "soulmate"
+                ? "Your relationship pattern may appear today through attraction, memory, longing, or emotional repetition."
+                : prelandKind === "pastlife"
+                  ? "Your result points to a repeating emotional pattern. Today, notice where this pattern appears in your reactions, attachments, or choices."
+                  : "Your quiz answers are now part of today’s reading. Notice what repeats in your choices, emotions, and attention."}
+            </p>
+            <p style={{ color: "var(--text)", fontSize: 13, lineHeight: 1.55, marginBottom: 13 }}>{prelandExperience?.todayText}</p>
+            {practiceCompleted ? (
+              <Link href={`/path?context=${prelandKind ?? "personal"}`} style={{ minHeight: 42, borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "0 16px", textDecoration: "none", boxShadow: "0 8px 24px rgba(90,32,144,.36)" }}>
+                Open first signal
+              </Link>
+            ) : (
+              <a href="#practice" style={{ minHeight: 42, borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "0 16px", textDecoration: "none", boxShadow: "0 8px 24px rgba(90,32,144,.36)" }}>
+                Complete today’s practice to open this signal
+              </a>
+            )}
+          </section>
+        )}
+
+        <div id="practice" data-tour="today-recommended-actions" style={{ marginBottom: 14 }}>
           <GuidedDailyPractice
             completed={practiceCompleted}
             initialSignalName={practiceReflection.signalName}

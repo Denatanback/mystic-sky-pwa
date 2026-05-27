@@ -9,6 +9,7 @@ import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { getDeepPathState, getFirstSignalState, markFirstSignalNextStepCompleted, saveFirstSignalReflection, type DeepPathState, type FirstSignalState } from "@/lib/progress/dailyProgress";
+import { getPrelandContext, getPrelandExperience, getPrelandKind, savePrelandContext, type PrelandContext, type PrelandExperience } from "@/lib/funnel/prelandContext";
 
 const cardStyle: CSSProperties = {
   border: "1px solid rgba(216,168,95,.22)",
@@ -40,16 +41,36 @@ export default function PathPage() {
   const [firstSignal, setFirstSignal] = useState<FirstSignalState>(() => getFirstSignalState());
   const [reflectionText, setReflectionText] = useState("");
   const [reflectionSaved, setReflectionSaved] = useState(false);
+  const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
+  const [prelandExperience, setPrelandExperience] = useState<PrelandExperience | null>(null);
 
   useEffect(() => {
     setDeepPathState(getDeepPathState());
     const state = getFirstSignalState();
     setFirstSignal(state);
     setReflectionText(state.reflection);
+    const params = new URLSearchParams(window.location.search);
+    const contextParam = params.get("context");
+    const storedPreland = getPrelandContext();
+    const effectivePreland = contextParam ? savePrelandContext({ ...storedPreland, source: contextParam, funnel: contextParam }) : storedPreland;
+    setPrelandContext(effectivePreland);
+    setPrelandExperience(getPrelandExperience(effectivePreland));
   }, []);
 
   const unlocked = deepPathState.firstSignalUnlocked;
-  const signalName = firstSignal.signalName || "Attention";
+  const prelandKind = getPrelandKind(prelandContext);
+  const isContextualSignal = Boolean(prelandExperience);
+  const signalName = isContextualSignal ? prelandExperience?.pathSignal ?? firstSignal.signalName ?? "Attention" : firstSignal.signalName || "Attention";
+  const pageTitle = prelandKind === "pastlife" ? "Your Past Life signal" : prelandKind === "soulmate" ? "Your Soulmate signal" : "Your first signal";
+  const pageSubtitle = prelandKind === "pastlife" ? "Opened from your quiz and today’s practice" : prelandKind === "soulmate" ? "Opened from your quiz and today’s practice" : "Opened from today’s practice";
+  const heroText = prelandKind === "pastlife"
+    ? "Today’s practice opened the first bridge between your quiz result and your daily path."
+    : prelandKind === "soulmate"
+      ? "Today’s practice opened the first relationship signal from your quiz and current path."
+      : "Today’s completed practice opened the first point of your path. Notice what repeated in your thoughts, choices, or emotions today.";
+  const meaningText = prelandExperience?.pathMeaning ?? "This signal is not a prediction. It is a mirror. It shows where your energy keeps returning, even when your mind tries to move past it.";
+  const whereText = prelandExperience?.pathWhere ?? (firstSignal.signalName ? `Look for moments today where ${signalName} appeared in your thoughts, emotions, choices, or conversations.` : "Look for the moment that repeated emotionally, even if the outside situation changed.");
+  const nextStepText = prelandExperience?.pathNext ?? (firstSignal.responseAction ? "Follow the response you chose today. Keep it small enough that you can actually do it." : "Choose one small action that respects what you noticed.");
 
   function completeNextStep() {
     markFirstSignalNextStepCompleted();
@@ -88,15 +109,15 @@ export default function PathPage() {
         {unlocked ? (
           <>
             <section style={{ ...cardStyle, padding: "22px 20px", marginTop: 10, background: "linear-gradient(145deg, rgba(22,13,54,.82), rgba(10,6,28,.70))" }}>
-              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 9 }}>{firstSignal.integrated ? "Integrated today" : "Opened from today’s practice"}</p>
-              <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 10 }}>Your first signal</h1>
-              <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>Today’s completed practice opened the first point of your path. Notice what repeated in your thoughts, choices, or emotions today.</p>
+              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 9 }}>{firstSignal.integrated ? "Integrated today" : pageSubtitle}</p>
+              <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 10 }}>{pageTitle}</h1>
+              <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>{heroText}</p>
             </section>
 
             <section style={{ ...cardStyle, padding: 18, marginTop: 14, borderColor: "rgba(216,168,95,.34)", background: "radial-gradient(circle at 25% 0%, rgba(216,168,95,.14), rgba(12,8,28,.68) 58%)" }}>
               <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Signal</p>
               <h2 style={{ fontFamily: "var(--font-display)", fontSize: 34, color: "var(--text)", fontWeight: 600, lineHeight: 1.05, marginBottom: 8 }}>{signalName}</h2>
-              <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>What repeatedly pulled your attention today may be pointing to the first visible part of your path.</p>
+              <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>{isContextualSignal ? meaningText : "What repeatedly pulled your attention today may be pointing to the first visible part of your path."}</p>
             </section>
 
             <section style={{ display: "grid", gridTemplateColumns: "1fr auto", alignItems: "center", gap: 10, marginTop: 12, border: "1px solid rgba(216,168,95,.16)", borderRadius: 18, background: "rgba(255,255,255,.035)", padding: 12 }}>
@@ -104,13 +125,13 @@ export default function PathPage() {
               <span style={{ color: firstSignal.integrated ? "var(--gold-2)" : "var(--muted)", fontSize: 11, fontWeight: 800 }}>{firstSignal.integrated ? "Integrated" : "Open"}</span>
             </section>
 
-            {block("What this signal means", "This signal is not a prediction. It is a mirror. It shows where your energy keeps returning, even when your mind tries to move past it.")}
+            {block(isContextualSignal ? "What this pattern means" : "What this signal means", meaningText)}
 
-            {block("Where it appeared today", firstSignal.signalName ? `Look for moments today where ${signalName} appeared in your thoughts, emotions, choices, or conversations.` : "Look for the moment that repeated emotionally, even if the outside situation changed.")}
+            {block(isContextualSignal ? "Where it may appear today" : "Where it appeared today", whereText)}
 
             <section style={{ ...cardStyle, padding: 16, marginTop: 12 }}>
               <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 7 }}>Your next step</p>
-              <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6, marginBottom: 12 }}>{firstSignal.responseAction ? "Follow the response you chose today. Keep it small enough that you can actually do it." : "Choose one small action that respects what you noticed."}</p>
+              <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6, marginBottom: 12 }}>{nextStepText}</p>
               {firstSignal.responseAction ? (
                 <div style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: 16, background: "rgba(216,168,95,.07)", padding: 13, marginBottom: 12 }}>
                   <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 5 }}>Your chosen response</p>

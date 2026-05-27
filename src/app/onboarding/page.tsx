@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
 import type { PlaceSuggestion } from "@/lib/locations/worldCitySearch";
+import { getPrelandContext, getPrelandExperience, isPastLifePrelandContext, type PrelandExperience } from "@/lib/funnel/prelandContext";
 import { getCurrentProfile, saveOnboardingData } from "@/lib/profile/currentProfile";
 import { getZodiacSign, getZodiacSignByKey, ZODIAC_SIGNS, type ZodiacSignKey } from "@/lib/astrology/zodiac";
 
@@ -77,6 +78,8 @@ export default function OnboardingPage() {
   const [cityOpen, setCityOpen] = useState(false);
   const [citySuggestions, setCitySuggestions] = useState<PlaceSuggestion[]>([]);
   const [cityLoading, setCityLoading] = useState(false);
+  const [prelandExperience, setPrelandExperience] = useState<PrelandExperience | null>(null);
+  const [isPastLifePreland, setIsPastLifePreland] = useState(false);
   const autoZodiac = birthDate.length === 10 ? getZodiacSign(birthDate) : getZodiacSign(null);
   const selectedZodiac = zodiacOverride && manualZodiac ? getZodiacSignByKey(manualZodiac) : autoZodiac;
 
@@ -84,6 +87,9 @@ export default function OnboardingPage() {
     const params = new URLSearchParams(window.location.search);
     setMode(params.get("mode") === "edit" ? "edit" : "new");
     if (params.get("step") === "birth") setStep(1);
+    const prelandContext = getPrelandContext();
+    setPrelandExperience(getPrelandExperience(prelandContext));
+    setIsPastLifePreland(isPastLifePrelandContext(prelandContext));
 
     void getCurrentProfile().then((profile) => {
       if (!profile) {
@@ -199,6 +205,13 @@ export default function OnboardingPage() {
           <>
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: 31, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Build your personal chart</h1>
             <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6, marginBottom: 20 }}>Your birth data powers your Sky Map, profile sign, and daily calculations.</p>
+            {isPastLifePreland && (
+              <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 18, background: "rgba(216,168,95,.08)", padding: "12px 14px", marginBottom: 14 }}>
+                <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 5 }}>Quiz result saved</p>
+                <p style={{ color: "var(--text)", fontSize: 13, fontWeight: 800, marginBottom: 4 }}>{prelandExperience?.label ?? "Past-life archetype: The Hidden Pattern"}</p>
+                <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Your Past Life result will be prepared after setup.</p>
+              </div>
+            )}
             <div style={{ ...cardStyle, display: "grid", gap: 14 }}>
               <label style={{ display: "grid", gap: 6, color: "var(--muted)", fontSize: 12 }}>Date of birth
                 <div style={inputRow}><input value={birthDate} onChange={(e) => setBirthDate(formatBirthDateInput(e.target.value))} placeholder="DD.MM.YYYY" maxLength={10} inputMode="numeric" style={inputBase} /></div>

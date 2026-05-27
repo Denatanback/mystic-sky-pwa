@@ -12,6 +12,7 @@ export type SubscriptionModalProps = {
   onClose: () => void;
   contextTitle?: string;
   contextDescription?: string;
+  trialCtaLabel?: string;
 };
 
 const unlocks = [
@@ -108,7 +109,7 @@ function readPlan() {
   return plan === "trial" || plan === "premium" ? plan : "free";
 }
 
-export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescription }: SubscriptionModalProps) {
+export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescription, trialCtaLabel }: SubscriptionModalProps) {
   const [notice, setNotice] = useState<"free" | "checkout-unavailable" | "legal" | null>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<PlanId | null>(null);
   const currentPlan = readPlan();
@@ -254,7 +255,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
                     ))}
                   </div>
                   <button type="button" onClick={() => choosePlan(plan.id)} style={{ width: "100%", height: 44, borderRadius: 999, border: isFree ? "1px solid rgba(216,168,95,.30)" : "none", background: isFree ? "rgba(255,255,255,.05)" : "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: isFree ? "var(--gold-2)" : "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", boxShadow: isFree ? "none" : "0 8px 24px rgba(90,32,144,.38)" }}>
-                    {isFree && currentPlan === "free" ? "Current plan" : plan.cta}
+                    {isFree && currentPlan === "free" ? "Current plan" : isTrial && trialCtaLabel ? trialCtaLabel : plan.cta}
                   </button>
                 </article>
               </div>

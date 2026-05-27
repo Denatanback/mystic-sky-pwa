@@ -24,6 +24,7 @@ import {
   type PracticeReflection,
 } from "@/lib/progress/dailyProgress";
 import { getTodayDailyCard, type DailyCardState } from "@/lib/cards/dailyCardProgress";
+import { getPrelandContext, getPrelandExperience, type PrelandExperience } from "@/lib/funnel/prelandContext";
 import { affirmationCategories, type AffirmationCategory, type AffirmationItem } from "@/lib/practices/affirmations";
 
 type Tab = "today" | "my" | "library";
@@ -147,6 +148,7 @@ export default function PracticesPage() {
   const [activeAffirmations, setActiveAffirmations] = useState<ActiveAffirmation[]>([]);
   const [practiceReflection, setPracticeReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
   const [selectedCategory, setSelectedCategory] = useState<AffirmationCategory | null>(null);
+  const [prelandExperience, setPrelandExperience] = useState<PrelandExperience | null>(null);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
 
@@ -166,6 +168,7 @@ export default function PracticesPage() {
     setAffirmationRepeat(getTodayAffirmationRepeat(todayKey));
     setPracticeReflection(getTodayPracticeReflection(todayKey));
     setActiveAffirmations(readActiveAffirmations());
+    setPrelandExperience(getPrelandExperience(getPrelandContext()));
   }, [todayKey]);
 
   function refreshDailyState() {
@@ -509,8 +512,9 @@ export default function PracticesPage() {
       <SubscriptionModal
         isOpen={subscriptionOpen}
         onClose={() => setSubscriptionOpen(false)}
-        contextTitle="Unlock full practice library"
-        contextDescription="Start your 3-day trial to unlock advanced affirmations, premium categories, and the full daily practice library."
+        contextTitle={prelandExperience?.paywallTitle ?? "Unlock full practice library"}
+        contextDescription={prelandExperience?.paywallDescription ?? "Start your 3-day trial to unlock advanced affirmations, premium categories, and the full daily practice library."}
+        trialCtaLabel={prelandExperience ? "Unlock for $1" : undefined}
       />
     </div>
   );

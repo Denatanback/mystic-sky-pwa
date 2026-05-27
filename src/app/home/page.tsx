@@ -11,6 +11,7 @@ import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchContext } from "@/lib/launch/launchContext";
+import { getPrelandContext, getPrelandExperience, getPrelandKind, parsePrelandContext, savePrelandContext, type PrelandContext, type PrelandExperience } from "@/lib/funnel/prelandContext";
 import { getDailyActionKey, getFirstSignalState, getTodayKey, getTodayPracticeReflection, getTodayProgress, markAffirmationRepeated, markDailyActionCompleted, type DailyAction, type DailyProgress, type FirstSignalState, type PracticeReflection } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
 import { drawDailyCard as drawDailyCardForToday, getTodayDailyCard, type DailyCardState } from "@/lib/cards/dailyCardProgress";
@@ -133,6 +134,8 @@ export default function HomePage() {
   const todayTitle = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(today);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [launchContext, setLaunchContext] = useState<LaunchContext>({});
+  const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
+  const [prelandExperience, setPrelandExperience] = useState<PrelandExperience | null>(null);
   const [dailyState, setDailyState] = useState<DailyProgress>({ readingOpened: false, practiceCompleted: false, cardOpened: false, affirmationCompleted: false, completedCount: 0, totalCount: 4 });
   const [practiceReflection, setPracticeReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
   const [firstSignalState, setFirstSignalState] = useState<FirstSignalState>({ unlocked: false, integrated: false, reflection: "", signalName: "Attention", responseAction: "" });
@@ -141,7 +144,12 @@ export default function HomePage() {
 
   const completedCount = dailyState.completedCount;
   const energy = deterministicEnergy(todayKey);
-  const showPastLifeBlock = isPastLifeContext(launchContext);
+  const prelandKind = getPrelandKind(prelandContext);
+  const showPrelandBlock = Boolean(prelandExperience) || isPastLifeContext(launchContext);
+  const continuationTitle = prelandExperience?.title ?? "Your Past Life reading is ready";
+  const continuationText = prelandExperience?.shortText ?? "We’ve prepared your first soul pattern from your quiz answers.";
+  const continuationLabel = prelandExperience?.label ?? "Past-life archetype: The Hidden Pattern";
+  const continuationContext = prelandKind && prelandKind !== "generic" ? prelandKind : isPastLifeContext(launchContext) ? "pastlife" : "personal";
 
   const weekDays = useMemo(() => {
     const current = today.getDay();
@@ -160,12 +168,22 @@ export default function HomePage() {
       result: params.get("result"),
       gender: params.get("gender"),
       animal: params.get("animal"),
+      archetype: params.get("archetype"),
+      element: params.get("element"),
+      answer: params.get("answer"),
       utm_source: params.get("utm_source"),
       utm_campaign: params.get("utm_campaign"),
       utm_content: params.get("utm_content"),
+      utm_medium: params.get("utm_medium"),
+      ad_id: params.get("ad_id"),
+      campaign_id: params.get("campaign_id"),
     });
+    const urlPreland = parsePrelandContext(params);
+    const storedPreland = Object.keys(urlPreland).length > 0 ? savePrelandContext(urlPreland) : getPrelandContext();
     const storedContext = { ...loadLaunchContext(), ...urlContext };
     setLaunchContext(storedContext);
+    setPrelandContext(storedPreland);
+    setPrelandExperience(getPrelandExperience(storedPreland));
     setDailyState(getTodayProgress(todayKey));
     setPracticeReflection(getTodayPracticeReflection(todayKey));
     setFirstSignalState(getFirstSignalState(todayKey));
@@ -287,12 +305,18 @@ export default function HomePage() {
           </div>
         </section>
 
-        {showPastLifeBlock && (
+        {showPrelandBlock && (
           <section style={{ ...cardStyle, padding: 16, marginTop: 12, borderColor: "rgba(216,168,95,.32)", background: "rgba(60,20,100,.24)" }}>
             <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 6 }}>Ready for you</p>
-            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 6 }}>Your Past Life reading is ready</h2>
-            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55, marginBottom: 12 }}>We’ve prepared your first soul pattern from your answers.</p>
-            <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...primaryButtonStyle, minHeight: 40, fontSize: 13 }}>Open my reading</Link>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 6 }}>{continuationTitle}</h2>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55, marginBottom: 10 }}>{continuationText}</p>
+            <div style={{ border: "1px solid rgba(216,168,95,.20)", borderRadius: 16, background: "rgba(216,168,95,.07)", padding: 12, marginBottom: 12 }}>
+              <p style={{ color: "var(--gold-2)", fontSize: 12, lineHeight: 1.45, fontWeight: 900 }}>{continuationLabel}</p>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 9 }}>
+              <Link href={`/today?context=${continuationContext}`} onClick={() => setDailyField("readingOpened")} style={{ ...primaryButtonStyle, minHeight: 40, fontSize: 13 }}>{prelandKind === "soulmate" ? "Open my signal" : prelandKind === "generic" ? "Open today’s reading" : "Open my reading"}</Link>
+              <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, textAlign: "center", textDecoration: "none" }}>Continue today’s path</Link>
+            </div>
           </section>
         )}
 

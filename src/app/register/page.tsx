@@ -8,6 +8,7 @@ import { StarField } from "@/components/app-shell/StarField";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { register } from "@/lib/auth/authAdapter";
 import { cleanLaunchContext, saveLaunchContext } from "@/lib/launch/launchContext";
+import { parsePrelandContext, savePrelandContext, type PrelandContext } from "@/lib/funnel/prelandContext";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 
@@ -62,6 +63,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [launchContext, setLaunchContext] = useState(() => cleanLaunchContext({}));
+  const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -71,12 +73,21 @@ export default function RegisterPage() {
       result: params.get("result"),
       gender: params.get("gender"),
       animal: params.get("animal"),
+      archetype: params.get("archetype"),
+      element: params.get("element"),
+      answer: params.get("answer"),
       utm_source: params.get("utm_source"),
       utm_campaign: params.get("utm_campaign"),
       utm_content: params.get("utm_content"),
+      utm_medium: params.get("utm_medium"),
+      ad_id: params.get("ad_id"),
+      campaign_id: params.get("campaign_id"),
     });
+    const preland = parsePrelandContext(params);
     setLaunchContext(context);
+    setPrelandContext(preland);
     saveLaunchContext(context);
+    savePrelandContext(preland);
 
     void getCurrentProfile().then((profile) => {
       if (!profile) return;
@@ -91,6 +102,7 @@ export default function RegisterPage() {
     if (password.length < 8) return setError("Use at least 8 characters for password.");
 
     setLoading(true);
+    savePrelandContext(prelandContext);
     const result = await register({ name, email, password, launchContext });
     setLoading(false);
 
@@ -99,6 +111,7 @@ export default function RegisterPage() {
       return;
     }
     saveLaunchContext(launchContext);
+    savePrelandContext(prelandContext);
     router.push("/onboarding");
     router.refresh();
   }
