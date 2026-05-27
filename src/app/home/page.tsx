@@ -11,7 +11,7 @@ import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchContext } from "@/lib/launch/launchContext";
-import { getDailyActionKey, getTodayKey, getTodayPracticeReflection, getTodayProgress, markDailyActionCompleted, type DailyAction, type DailyProgress, type PracticeReflection } from "@/lib/progress/dailyProgress";
+import { getDailyActionKey, getFirstSignalState, getTodayKey, getTodayPracticeReflection, getTodayProgress, markDailyActionCompleted, type DailyAction, type DailyProgress, type FirstSignalState, type PracticeReflection } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
 
 const cardStyle: CSSProperties = {
@@ -132,6 +132,7 @@ export default function HomePage() {
   const [launchContext, setLaunchContext] = useState<LaunchContext>({});
   const [dailyState, setDailyState] = useState<DailyProgress>({ readingOpened: false, practiceCompleted: false, cardOpened: false, affirmationCompleted: false, completedCount: 0, totalCount: 4 });
   const [practiceReflection, setPracticeReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
+  const [firstSignalState, setFirstSignalState] = useState<FirstSignalState>({ unlocked: false, integrated: false, reflection: "", signalName: "Attention", responseAction: "" });
   const [activePracticeLabel, setActivePracticeLabel] = useState("Choose your first affirmation");
 
   const completedCount = dailyState.completedCount;
@@ -163,6 +164,7 @@ export default function HomePage() {
     setLaunchContext(storedContext);
     setDailyState(getTodayProgress(todayKey));
     setPracticeReflection(getTodayPracticeReflection(todayKey));
+    setFirstSignalState(getFirstSignalState(todayKey));
     try {
       const activeAffirmations = JSON.parse(localStorage.getItem("eluna:activeAffirmations") || "[]");
       if (Array.isArray(activeAffirmations) && activeAffirmations[0]?.category) {
@@ -343,10 +345,10 @@ export default function HomePage() {
           <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 16 }}>Your first step is simple: complete one short reflection.</p>
           {dailyState.practiceCompleted ? (
             <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 16, background: "rgba(216,168,95,.08)", padding: 13 }}>
-              <p style={{ color: "var(--gold-2)", fontSize: 14, fontWeight: 800 }}>First signal unlocked</p>
+              <p style={{ color: "var(--gold-2)", fontSize: 14, fontWeight: 800 }}>{firstSignalState.integrated ? "First signal integrated" : "First signal unlocked"}</p>
               <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginTop: 4 }}>Your completed practice opened the first point of your path.</p>
               {practiceReflection.signalName && <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginTop: 7 }}>Signal: {practiceReflection.signalName}</p>}
-              <Link href="/path" style={{ display: "inline-flex", marginTop: 10, color: "var(--gold-2)", fontSize: 12, fontWeight: 800, textDecoration: "none" }}>Open first signal →</Link>
+              <Link href="/path" style={{ display: "inline-flex", marginTop: 10, color: "var(--gold-2)", fontSize: 12, fontWeight: 800, textDecoration: "none" }}>{firstSignalState.integrated ? "View your path →" : "Open first signal →"}</Link>
             </div>
           ) : (
             <Link href="/today#practice" style={{ ...primaryButtonStyle, width: "100%" }}>Start practice</Link>
@@ -389,8 +391,8 @@ export default function HomePage() {
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--gold)", fontWeight: 800, marginBottom: 6 }}>Next unlocks</p>
           <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 10 }}>Return daily to reveal more of your map.</p>
           {[
-            ["Day 1", "First signal", dailyState.practiceCompleted ? "Unlocked" : "Locked"],
-            ["Day 2", "Personal card pattern", "Locked"],
+            ["Day 1", "First signal", firstSignalState.integrated ? "Integrated" : dailyState.practiceCompleted ? "Unlocked" : "Locked"],
+            ["Day 2", "Personal card pattern", "Opens tomorrow"],
             ["Day 3", "Past-life signal", "Locked"],
             ["Day 5", "Relationship insight", "Locked"],
             ["Day 7", "Weekly soul report", "Locked"],
@@ -398,7 +400,7 @@ export default function HomePage() {
             <div key={day} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderTop: day === "Day 1" ? "none" : "1px solid rgba(255,255,255,.06)" }}>
               <span style={{ minWidth: 50, fontSize: 11, color: "var(--gold-2)", fontWeight: 800 }}>{day}</span>
               <span style={{ flex: 1, fontSize: 13, color: "var(--text)" }}>{label}</span>
-              <span style={{ fontSize: 11, color: status === "Unlocked" ? "var(--gold-2)" : "var(--muted-2)" }}>{status}</span>
+              <span style={{ fontSize: 11, color: status === "Unlocked" || status === "Integrated" ? "var(--gold-2)" : "var(--muted-2)" }}>{status}</span>
             </div>
           ))}
         </section>

@@ -9,7 +9,7 @@ import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
-import { getDeepPathState, type DeepPathState } from "@/lib/progress/dailyProgress";
+import { getDeepPathState, getFirstSignalState, type DeepPathState, type FirstSignalState } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile, type CurrentProfile } from "@/lib/profile/currentProfile";
 import { resolveUserZodiac } from "@/lib/astrology/resolveZodiac";
 
@@ -39,6 +39,7 @@ export default function ProfilePage() {
   const [fullName, setFullName] = useState("...");
   const [userProfile, setUserProfile] = useState<CurrentProfile | null>(null);
   const [deepPathState, setDeepPathState] = useState<DeepPathState>(() => getDeepPathState());
+  const [firstSignalState, setFirstSignalState] = useState<FirstSignalState>(() => getFirstSignalState());
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const zodiac = resolveUserZodiac(userProfile);
@@ -70,6 +71,7 @@ export default function ProfilePage() {
       if (!cancelled && user) {
         setUserProfile(user);
         setDeepPathState(getDeepPathState());
+        setFirstSignalState(getFirstSignalState());
         if (user.fullName) setFullName(user.fullName.trim());
       }
     });
@@ -133,12 +135,12 @@ export default function ProfilePage() {
             <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>{deepPathState.text}</div>
             <div style={{ fontSize: 11, color: "var(--gold)", marginTop: 4, display: "flex", alignItems: "center", gap: 4 }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--gold)", display: "inline-block", boxShadow: "0 0 4px var(--gold)" }}/>
-              {deepPathState.firstSignalUnlocked ? "First signal unlocked" : "Locked"}
+              {firstSignalState.integrated ? "First signal integrated" : deepPathState.firstSignalUnlocked ? "First signal unlocked" : "Locked"}
             </div>
           </div>
           {deepPathState.firstSignalUnlocked && (
             <Link href="/path" style={{ border: "1px solid rgba(216,168,95,.32)", borderRadius: 999, color: "var(--gold-2)", padding: "8px 12px", fontSize: 12, fontWeight: 800, textDecoration: "none", whiteSpace: "nowrap" }}>
-              Open
+              {firstSignalState.integrated ? "View" : "Open"}
             </Link>
           )}
         </div>

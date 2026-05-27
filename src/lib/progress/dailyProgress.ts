@@ -20,6 +20,14 @@ export type PracticeReflection = {
   responseAction: string;
 };
 
+export type FirstSignalState = {
+  unlocked: boolean;
+  integrated: boolean;
+  reflection: string;
+  signalName: string;
+  responseAction: string;
+};
+
 const actions: DailyAction[] = ["readingOpened", "practiceCompleted", "affirmationCompleted", "cardOpened"];
 
 export function getTodayKey(date = new Date()) {
@@ -32,6 +40,10 @@ export function getDailyActionKey(action: DailyAction, dayKey = getTodayKey()) {
 
 export function getPracticeReflectionKey(field: keyof PracticeReflection, dayKey = getTodayKey()) {
   return `eluna:daily:${dayKey}:${field === "signalName" ? "practiceSignalName" : "practiceResponseAction"}`;
+}
+
+export function getFirstSignalKey(field: "reflection" | "nextStepCompleted", dayKey = getTodayKey()) {
+  return `eluna:daily:${dayKey}:${field === "reflection" ? "firstSignalReflection" : "firstSignalNextStepCompleted"}`;
 }
 
 function isBrowser() {
@@ -96,6 +108,35 @@ export function getTodayPracticeReflection(dayKey = getTodayKey()): PracticeRefl
   };
 }
 
+export function saveFirstSignalReflection(text: string, dayKey = getTodayKey()) {
+  if (!isBrowser()) return "";
+  const value = text.trim();
+  if (value) localStorage.setItem(getFirstSignalKey("reflection", dayKey), value);
+  return value;
+}
+
+export function markFirstSignalNextStepCompleted(dayKey = getTodayKey()) {
+  if (!isBrowser()) return false;
+  localStorage.setItem(getFirstSignalKey("nextStepCompleted", dayKey), "true");
+  return true;
+}
+
+export function isFirstSignalIntegrated(dayKey = getTodayKey()) {
+  return isBrowser() && localStorage.getItem(getFirstSignalKey("nextStepCompleted", dayKey)) === "true";
+}
+
+export function getFirstSignalState(dayKey = getTodayKey()): FirstSignalState {
+  const practice = getTodayPracticeReflection(dayKey);
+  const unlocked = isTodayPracticeCompleted(dayKey);
+  return {
+    unlocked,
+    integrated: isFirstSignalIntegrated(dayKey),
+    reflection: isBrowser() ? localStorage.getItem(getFirstSignalKey("reflection", dayKey)) ?? "" : "",
+    signalName: practice.signalName || "Attention",
+    responseAction: practice.responseAction,
+  };
+}
+
 export function isTodayPracticeCompleted(dayKey = getTodayKey()) {
   return getTodayProgress(dayKey).practiceCompleted;
 }
@@ -112,8 +153,21 @@ export function isTodayComplete(dayKey = getTodayKey()) {
 export function getDeepPathState(dayKey = getTodayKey()): DeepPathState {
   const progress = getTodayProgress(dayKey);
   const firstSignalUnlocked = progress.practiceCompleted;
+  const firstSignalIntegrated = isFirstSignalIntegrated(dayKey);
   const unlocked = firstSignalUnlocked || progress.completedCount >= 1;
   const todayComplete = progress.completedCount === progress.totalCount;
+
+  if (firstSignalIntegrated) {
+    return {
+      unlocked,
+      firstSignalUnlocked,
+      todayComplete,
+      completedCount: progress.completedCount,
+      title: "Deep Path",
+      text: "Your first signal is integrated. Your path continues tomorrow.",
+      cta: "View first signal",
+    };
+  }
 
   if (todayComplete) {
     return {
