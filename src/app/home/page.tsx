@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
@@ -65,6 +65,61 @@ function IconSpark() {
       <path d="m17.8 6.2-2.1 2.1" />
       <path d="m8.3 15.7-2.1 2.1" />
     </svg>
+  );
+}
+
+function StreakChip({ completed }: { completed: boolean }) {
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const popoverId = "home-streak-popover";
+  const streakDays = completed ? 1 : 0;
+
+  useEffect(() => {
+    if (!open) return;
+    function onPointerDown(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) setOpen(false);
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div ref={wrapperRef} style={{ position: "relative", flexShrink: 0 }}>
+      <button
+        type="button"
+        aria-label={`Your streak: ${streakDays} ${streakDays === 1 ? "day" : "days"}`}
+        aria-expanded={open}
+        aria-controls={popoverId}
+        onClick={() => setOpen((value) => !value)}
+        onMouseEnter={() => setOpen(true)}
+        onFocus={() => setOpen(true)}
+        style={{ height: 30, borderRadius: 999, border: "1px solid rgba(216,168,95,.26)", background: completed ? "rgba(216,168,95,.12)" : "rgba(255,255,255,.05)", color: "var(--gold-2)", display: "inline-flex", alignItems: "center", gap: 5, padding: "0 9px", fontSize: 11, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer" }}
+      >
+        <IconSpark /> {completed ? "1d" : "0d"}
+      </button>
+      {open && (
+        <div
+          id={popoverId}
+          role="dialog"
+          aria-label="Your streak"
+          onMouseLeave={() => setOpen(false)}
+          style={{ position: "absolute", right: 0, top: 38, width: 260, zIndex: 30, border: "1px solid rgba(216,168,95,.30)", borderRadius: 18, background: "rgba(10,6,28,.98)", boxShadow: "0 18px 46px rgba(0,0,0,.48), 0 0 22px rgba(128,64,192,.18)", padding: 14, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}
+        >
+          <p style={{ color: "var(--gold-2)", fontSize: 14, fontWeight: 900, marginBottom: 6 }}>Your streak</p>
+          <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 9 }}>Complete at least one daily practice to keep your streak active. A longer streak helps unlock deeper parts of your path.</p>
+          <p style={{ color: "var(--text)", fontSize: 12, fontWeight: 800, marginBottom: 5 }}>Current streak: {streakDays} {streakDays === 1 ? "day" : "days"}</p>
+          <p style={{ color: completed ? "var(--gold-2)" : "var(--muted-2)", fontSize: 12, lineHeight: 1.45 }}>{completed ? "Today is complete. Your streak is safe." : streakDays === 0 ? "Start your streak by completing today’s practice." : "Complete one practice today to keep your streak."}</p>
+          <button type="button" onClick={() => setOpen(false)} style={{ marginTop: 11, height: 34, borderRadius: 999, border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", padding: "0 14px", fontSize: 12, fontWeight: 900, fontFamily: "var(--font-ui)", cursor: "pointer" }}>Got it</button>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -181,9 +236,7 @@ export default function HomePage() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
             <GuideTopBarButton />
-            <span title="Streak" style={{ height: 30, borderRadius: 999, border: "1px solid rgba(216,168,95,.26)", background: dailyState.practiceCompleted ? "rgba(216,168,95,.12)" : "rgba(255,255,255,.05)", color: "var(--gold-2)", display: "inline-flex", alignItems: "center", gap: 5, padding: "0 9px", fontSize: 11, fontWeight: 800 }}>
-              <IconSpark /> {dailyState.practiceCompleted ? "1d" : "0d"}
-            </span>
+            <StreakChip completed={dailyState.practiceCompleted} />
             <PlanChip />
             <Link href="/profile" aria-label="Open profile" title="Profile" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(216,168,95,.36)", display: "grid", placeItems: "center", background: "rgba(255,255,255,.05)", color: "var(--gold-2)", flexShrink: 0 }}>
               <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>

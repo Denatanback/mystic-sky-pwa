@@ -4,6 +4,9 @@ import { useState } from "react";
 
 type PlanId = "free" | "trial_3_day_1_usd" | "premium_monthly_2999" | "premium_3_month_5999" | "premium_6_month_8999";
 
+const SUPPORT_EMAIL = "support@myeluna.com";
+const SUPPORT_MAILTO = "mailto:support@myeluna.com?subject=eLuna%20Support%20Request";
+
 export type SubscriptionModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -16,6 +19,9 @@ const plans: Array<{
   badge?: string;
   price: string;
   equivalent?: string;
+  valueLabel?: string;
+  savingsText?: string;
+  comparison?: { monthly: string; price: string; savings: string };
   billingNote?: string;
   description: string;
   includes: string[];
@@ -32,12 +38,17 @@ const plans: Array<{
     cta: "Start 3-day trial",
   },
   {
-    id: "premium_monthly_2999",
-    label: "Monthly Premium",
-    price: "$29.99/month",
-    description: "Continue your path with deeper insights and monthly reports.",
-    includes: ["Unlimited daily readings", "Full practice library", "Personal chart insights", "Past-life and relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
-    cta: "Continue with Premium",
+    id: "premium_6_month_8999",
+    label: "6-Month Premium",
+    badge: "Save 50%",
+    price: "$89.99 every 6 months",
+    equivalent: "$14.99/month equivalent",
+    valueLabel: "Maximum savings",
+    savingsText: "You save $89.95 vs monthly",
+    comparison: { monthly: "$179.94", price: "$89.99", savings: "$89.95" },
+    description: "Deep transformation plan.",
+    includes: ["Full daily readings", "Full practice library", "Personal chart insights", "Past-life insights", "Relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
+    cta: "Choose 6 Months",
   },
   {
     id: "premium_3_month_5999",
@@ -45,19 +56,21 @@ const plans: Array<{
     badge: "Save 33%",
     price: "$59.99 every 3 months",
     equivalent: "$19.99/month equivalent",
+    valueLabel: "Best value",
+    savingsText: "You save $29.98 vs monthly",
+    comparison: { monthly: "$89.97", price: "$59.99", savings: "$29.98" },
     description: "Best value for starting your path.",
     includes: ["Full daily readings", "Full practice library", "Personal chart insights", "Past-life insights", "Relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
     cta: "Choose 3 Months",
   },
   {
-    id: "premium_6_month_8999",
-    label: "6-Month Premium",
-    badge: "Save 50%",
-    price: "$89.99 every 6 months",
-    equivalent: "$14.99/month equivalent",
-    description: "Deep transformation plan.",
-    includes: ["Full daily readings", "Full practice library", "Personal chart insights", "Past-life insights", "Relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
-    cta: "Choose 6 Months",
+    id: "premium_monthly_2999",
+    label: "Monthly Premium",
+    price: "$29.99/month",
+    equivalent: "Flexible monthly access",
+    description: "Continue your path with deeper insights and monthly reports.",
+    includes: ["Unlimited daily readings", "Full practice library", "Personal chart insights", "Past-life and relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
+    cta: "Continue with Premium",
   },
   {
     id: "free",
@@ -119,19 +132,46 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle }: Subscriptio
             const isTrial = plan.id === "trial_3_day_1_usd";
             const isFree = plan.id === "free";
             const compact = index > 0 && !isFree;
+            const isSixMonth = plan.id === "premium_6_month_8999";
+            const isLongPlan = plan.id === "premium_6_month_8999" || plan.id === "premium_3_month_5999";
+            const borderColor = isTrial ? "rgba(216,168,95,.50)" : isSixMonth ? "rgba(247,217,139,.62)" : isLongPlan ? "rgba(216,168,95,.42)" : "rgba(216,168,95,.18)";
+            const background = isTrial
+              ? "linear-gradient(135deg, rgba(60,20,100,.38), rgba(216,168,95,.08))"
+              : isSixMonth
+                ? "linear-gradient(145deg, rgba(216,168,95,.15), rgba(80,30,140,.25), rgba(255,255,255,.04))"
+                : isLongPlan
+                  ? "linear-gradient(145deg, rgba(216,168,95,.10), rgba(255,255,255,.04))"
+                  : "rgba(255,255,255,.04)";
             return (
-            <article key={plan.id} style={{ border: `1px solid ${isTrial ? "rgba(216,168,95,.50)" : "rgba(216,168,95,.18)"}`, borderRadius: isTrial ? 22 : 18, background: isTrial ? "linear-gradient(135deg, rgba(60,20,100,.38), rgba(216,168,95,.08))" : "rgba(255,255,255,.04)", padding: compact ? 13 : 15 }}>
+            <div key={plan.id} style={{ display: "grid", gap: 8 }}>
+            {index === 1 && <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", margin: "4px 0 0" }}>Choose your plan</p>}
+            <article key={plan.id} style={{ border: `1px solid ${borderColor}`, borderRadius: isTrial || isLongPlan ? 22 : 18, background, padding: compact ? 13 : 15, boxShadow: isSixMonth ? "0 0 22px rgba(216,168,95,.14)" : isLongPlan ? "0 0 16px rgba(216,168,95,.08)" : "none" }}>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
                 <div>
+                  {plan.valueLabel && <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 5 }}>{isSixMonth ? "✦ " : ""}{plan.valueLabel}</p>}
                   <h3 style={{ fontFamily: "var(--font-display)", fontSize: compact ? 21 : 24, fontWeight: 600, color: "var(--text)", lineHeight: 1.1 }}>{plan.label}</h3>
                   <p style={{ color: "var(--gold-2)", fontSize: compact ? 14 : 16, fontWeight: 800, marginTop: 3 }}>{plan.price}</p>
                   {plan.equivalent && <p style={{ color: "var(--muted-2)", fontSize: 12, fontWeight: 700, marginTop: 2 }}>{plan.equivalent}</p>}
                 </div>
-                {plan.badge && <span style={{ border: "1px solid rgba(216,168,95,.32)", borderRadius: 999, color: "var(--gold-2)", background: "rgba(216,168,95,.08)", padding: "5px 9px", fontSize: 10, fontWeight: 800 }}>{plan.badge}</span>}
+                {plan.badge && <span style={{ border: "1px solid rgba(216,168,95,.40)", borderRadius: 999, color: "var(--gold-2)", background: isLongPlan ? "rgba(216,168,95,.16)" : "rgba(216,168,95,.08)", padding: "5px 9px", fontSize: 10, fontWeight: 900, boxShadow: isLongPlan ? "0 0 12px rgba(216,168,95,.16)" : "none" }}>{plan.badge}</span>}
               </div>
               <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 10 }}>{plan.description}</p>
+              {plan.savingsText && <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 900, marginBottom: 9 }}>{plan.savingsText}</p>}
+              {plan.comparison && (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 6, border: "1px solid rgba(216,168,95,.18)", borderRadius: 14, background: "rgba(8,6,22,.34)", padding: "9px 8px", marginBottom: 10 }}>
+                  {[
+                    ["Monthly price", plan.comparison.monthly],
+                    ["Your price", plan.comparison.price],
+                    ["Savings", plan.comparison.savings],
+                  ].map(([label, value]) => (
+                    <div key={label} style={{ minWidth: 0 }}>
+                      <p style={{ color: "var(--muted-2)", fontSize: 9, lineHeight: 1.2 }}>{label}</p>
+                      <p style={{ color: label === "Savings" ? "var(--gold-2)" : "var(--text)", fontSize: 11, fontWeight: 900, marginTop: 3 }}>{value}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
               {plan.billingNote && <p style={{ color: "var(--gold-2)", fontSize: 11, lineHeight: 1.45, fontWeight: 700, marginBottom: 10 }}>{plan.billingNote}</p>}
-              {index === 1 && <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", margin: "4px 0 2px" }}>Choose your plan</p>}
               <div style={{ display: "grid", gap: 6, marginBottom: 12 }}>
                 {(compact ? plan.includes.slice(0, 4) : plan.includes).map((item) => (
                   <div key={item} style={{ display: "flex", gap: 8, alignItems: "flex-start", color: "var(--text)", fontSize: 12, lineHeight: 1.35 }}>
@@ -145,6 +185,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle }: Subscriptio
                 {plan.cta}
               </button>
             </article>
+            </div>
           );
           })}
         </div>
@@ -160,6 +201,12 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle }: Subscriptio
               <span key={label} style={{ color: "var(--gold-2)", fontSize: 11, fontWeight: 700 }}>{label}</span>
             ))}
           </div>
+          <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, marginTop: 12 }}>
+            Need help with billing?{" "}
+            <a href={SUPPORT_MAILTO} style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>
+              {SUPPORT_EMAIL}
+            </a>
+          </p>
         </section>
       </section>
     </>

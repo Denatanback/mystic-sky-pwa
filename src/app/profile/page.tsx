@@ -19,11 +19,16 @@ function IconSettings() { return <svg width="18" height="18" viewBox="0 0 24 24"
 function IconBell() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>; }
 function IconChevron() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>; }
 function IconLogout() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>; }
+function IconSupport() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 5.8 1c-.5 1.2-1.9 1.7-2.5 2.7-.2.3-.3.7-.3 1.3"/><path d="M12 17h.01"/></svg>; }
+
+const SUPPORT_EMAIL = "support@myeluna.com";
+const SUPPORT_MAILTO = "mailto:support@myeluna.com?subject=eLuna%20Support%20Request";
 
 function MenuItem({ icon, title, sub, href, onClick, danger=false }: { icon: React.ReactNode; title: string; sub: string; href?: string; onClick?: () => void; danger?: boolean; }) {
   const itemStyle: React.CSSProperties = { display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: danger ? "rgba(206,116,109,.07)" : "transparent", border: `1px solid ${danger ? "rgba(206,116,109,.22)" : "var(--line-soft)"}`, borderRadius: "var(--radius-md)", cursor: "pointer", width: "100%", textAlign: "left" as const };
   const iconCircle: React.CSSProperties = { width: 38, height: 38, borderRadius: "50%", flexShrink: 0, background: danger ? "rgba(206,116,109,.15)" : "rgba(216,168,95,.10)", border: `1px solid ${danger ? "rgba(206,116,109,.30)" : "rgba(216,168,95,.20)"}`, display: "flex", alignItems: "center", justifyContent: "center", color: danger ? "var(--danger)" : "var(--gold)" };
   const content = (<><div style={iconCircle}>{icon}</div><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 14, fontWeight: 600, color: danger ? "var(--danger)" : "var(--text)" }}>{title}</div><div style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 2 }}>{sub}</div></div><span style={{ color: "var(--muted-2)", flexShrink: 0 }}><IconChevron /></span></>);
+  if (href?.startsWith("mailto:")) return <a href={href} style={{ display: "block", textDecoration: "none" }}><div style={itemStyle}>{content}</div></a>;
   if (href) return <Link href={href} style={{ display: "block", textDecoration: "none" }}><div style={itemStyle}>{content}</div></Link>;
   return <button onClick={onClick} style={{ ...itemStyle, fontFamily: "inherit" }}>{content}</button>;
 }
@@ -144,6 +149,16 @@ export default function ProfilePage() {
           <MenuItem icon={<IconSettings />} title="Edit birth data" sub="Update your chart source" href="/onboarding?step=birth&mode=edit" />
           <MenuItem icon={<IconJournal />}  title={t.profile.journalMenu}    sub={t.profile.journalMenuSub}   href="/journal" />
           <MenuItem icon={<IconSettings />} title={t.profile.settings}       sub={t.profile.settingsSub}      href="/settings" />
+          <MenuItem icon={<IconSupport />} title="Support" sub="Questions about your account, trial, or subscription." href={SUPPORT_MAILTO} />
+        </div>
+
+        <div style={{ border: "1px solid rgba(216,168,95,.16)", borderRadius: "var(--radius-md)", background: "rgba(255,255,255,.035)", padding: "12px 14px", marginBottom: 16 }}>
+          <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>
+            Need help?{" "}
+            <a href={SUPPORT_MAILTO} style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>
+              {SUPPORT_EMAIL}
+            </a>
+          </p>
         </div>
 
         {/* Logout */}

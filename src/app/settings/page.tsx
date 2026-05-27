@@ -19,6 +19,12 @@ function IconBell() {
 function IconShield() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
 }
+function IconSupport() {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 5.8 1c-.5 1.2-1.9 1.7-2.5 2.7-.2.3-.3.7-.3 1.3"/><path d="M12 17h.01"/></svg>;
+}
+
+const SUPPORT_EMAIL = "support@myeluna.com";
+const SUPPORT_MAILTO = "mailto:support@myeluna.com?subject=eLuna%20Support%20Request";
 
 export default function SettingsPage() {
   const { t, lang, setLang } = useLang();
@@ -115,7 +121,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Privacy */}
-        <div>
+        <div style={{ marginBottom: 12 }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", fontWeight: 600, marginBottom: 10 }}>{t.settings.privacy}</p>
           <button type="button" onClick={openPrivacy} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: "transparent", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)", cursor: "pointer", textAlign: "left", fontFamily: "var(--font-ui)" }}>
             <div style={iconCircle}><IconShield /></div>
@@ -125,6 +131,19 @@ export default function SettingsPage() {
             </div>
             <span style={{ color: "var(--muted-2)" }}><IconChevron /></span>
           </button>
+        </div>
+
+        {/* Support */}
+        <div>
+          <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", fontWeight: 600, marginBottom: 10 }}>Account & billing</p>
+          <a href={SUPPORT_MAILTO} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: "transparent", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)", textDecoration: "none" }}>
+            <div style={iconCircle}><IconSupport /></div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>Support email</div>
+              <div style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 2 }}>{SUPPORT_EMAIL}</div>
+            </div>
+            <span style={{ color: "var(--muted-2)" }}><IconChevron /></span>
+          </a>
         </div>
       </div>
       <BottomNav />
