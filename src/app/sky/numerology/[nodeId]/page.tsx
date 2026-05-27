@@ -1,6 +1,7 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { NodePage } from "@/components/sky/NodePage";
 import { useLang } from "@/lib/i18n";
 import { lifePathNumber, soulNumber, NUMBER_TRAITS } from "@/lib/numerologyCalc";
@@ -246,6 +247,17 @@ const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; r
   "2": { en: "Soul Number", ru: "Число души",  sub: { en: "Inner world", ru: "Внутренний мир" } },
 };
 
+const NODE_CONTEXT: Record<string, { en: string; ru: string }> = {
+  "1": {
+    en: "Your Life Path number shows the rhythm behind your choices, challenges, and recurring direction.",
+    ru: "Число жизненного пути показывает ритм твоих выборов, вызовов и повторяющегося направления.",
+  },
+  "2": {
+    en: "Your Soul Number points to the inner desire underneath your choices and emotional direction.",
+    ru: "Число души указывает на внутреннее желание под твоими выборами и эмоциональным направлением.",
+  },
+};
+
 export default function NumerologyNodePage() {
   const params = useParams();
   const nodeId = String(params?.nodeId ?? "1");
@@ -276,8 +288,21 @@ export default function NumerologyNodePage() {
       backHref="/sky/numerology"
       badge={state.status === "completed" ? "completed" : undefined}
     >
+      <div style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: 16, background: "rgba(12,8,28,.48)", padding: 14, marginBottom: 16 }}>
+        <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 7 }}>{lang === "ru" ? "Часть Sky Map" : "Part of your Sky Map"}</p>
+        <h2 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: 22, fontWeight: 600, lineHeight: 1.1, marginBottom: 6 }}>{lang === "ru" ? "Почему этот узел важен" : "Why this node matters"}</h2>
+        <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>{lang === "ru" ? NODE_CONTEXT[nodeId].ru : NODE_CONTEXT[nodeId].en}</p>
+      </div>
       {nodeId === "1" && <NumNode1 />}
       {nodeId === "2" && <NumNode2 />}
+      <div style={{ display: "grid", gap: 10, marginTop: 18 }}>
+        <Link href="/sky" style={{ height: 46, borderRadius: 999, border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)" }}>
+          {lang === "ru" ? "Вернуться к Sky Map" : "Return to Sky Map"}
+        </Link>
+        <Link href="/today" style={{ height: 48, borderRadius: 999, border: "none", background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", fontSize: 14, fontWeight: 800, fontFamily: "var(--font-ui)", boxShadow: "0 8px 24px rgba(110,30,130,.40)" }}>
+          {lang === "ru" ? "Продолжить сегодняшний путь" : "Continue today’s path"}
+        </Link>
+      </div>
     </NodePage>
   );
 }
