@@ -8,7 +8,7 @@ import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { PlanChip } from "@/components/subscription/PlanChip";
-import { getDeepPathState, type DeepPathState } from "@/lib/progress/dailyProgress";
+import { getDeepPathState, getTodayPracticeReflection, type DeepPathState, type PracticeReflection } from "@/lib/progress/dailyProgress";
 
 const cardStyle: CSSProperties = {
   border: "1px solid rgba(216,168,95,.22)",
@@ -37,12 +37,15 @@ const ctaStyle: CSSProperties = {
 
 export default function PathPage() {
   const [deepPathState, setDeepPathState] = useState<DeepPathState>(() => getDeepPathState());
+  const [reflection, setReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
 
   useEffect(() => {
     setDeepPathState(getDeepPathState());
+    setReflection(getTodayPracticeReflection());
   }, []);
 
   const unlocked = deepPathState.firstSignalUnlocked;
+  const signalName = reflection.signalName || "Attention";
 
   return (
     <div className="app">
@@ -65,9 +68,15 @@ export default function PathPage() {
             </section>
 
             <section style={{ ...cardStyle, padding: 18, marginTop: 14 }}>
-              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Signal: Attention</p>
-              <h2 style={{ fontFamily: "var(--font-display)", fontSize: 26, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 8 }}>What repeatedly pulls your attention may be pointing to the next part of your map.</h2>
+              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Signal: {signalName}</p>
+              <h2 style={{ fontFamily: "var(--font-display)", fontSize: 26, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 8 }}>What repeatedly pulled your attention today may be pointing to the first visible part of your path.</h2>
               <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6, marginBottom: 16 }}>Look for the theme that returned more than once today. A repeated thought, feeling, desire, or hesitation is the first thread.</p>
+              {reflection.responseAction && (
+                <div style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: 16, background: "rgba(216,168,95,.07)", padding: 13, marginBottom: 16 }}>
+                  <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 5 }}>Your response</p>
+                  <p style={{ color: "var(--text)", fontSize: 13, lineHeight: 1.55 }}>{reflection.responseAction}</p>
+                </div>
+              )}
               <Link href="/sky" style={{ ...ctaStyle, width: "100%" }}>Continue to Sky Map</Link>
             </section>
           </>

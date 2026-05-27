@@ -11,7 +11,7 @@ import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchContext } from "@/lib/launch/launchContext";
-import { getDailyActionKey, getTodayKey, getTodayProgress, markDailyActionCompleted, type DailyAction, type DailyProgress } from "@/lib/progress/dailyProgress";
+import { getDailyActionKey, getTodayKey, getTodayPracticeReflection, getTodayProgress, markDailyActionCompleted, type DailyAction, type DailyProgress, type PracticeReflection } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
 
 const cardStyle: CSSProperties = {
@@ -131,6 +131,7 @@ export default function HomePage() {
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [launchContext, setLaunchContext] = useState<LaunchContext>({});
   const [dailyState, setDailyState] = useState<DailyProgress>({ readingOpened: false, practiceCompleted: false, cardOpened: false, affirmationCompleted: false, completedCount: 0, totalCount: 4 });
+  const [practiceReflection, setPracticeReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
   const [activePracticeLabel, setActivePracticeLabel] = useState("Choose your first affirmation");
 
   const completedCount = dailyState.completedCount;
@@ -161,6 +162,7 @@ export default function HomePage() {
     const storedContext = { ...loadLaunchContext(), ...urlContext };
     setLaunchContext(storedContext);
     setDailyState(getTodayProgress(todayKey));
+    setPracticeReflection(getTodayPracticeReflection(todayKey));
     try {
       const activeAffirmations = JSON.parse(localStorage.getItem("eluna:activeAffirmations") || "[]");
       if (Array.isArray(activeAffirmations) && activeAffirmations[0]?.category) {
@@ -199,10 +201,6 @@ export default function HomePage() {
     primaryActionLabel,
   });
 
-  function completePractice() {
-    setDailyField("practiceCompleted");
-  }
-
   function drawDailyCard() {
     setDailyField("cardOpened");
     setFeatureInfo({
@@ -216,7 +214,7 @@ export default function HomePage() {
   const nextAction = !dailyState.readingOpened
     ? { label: "Open today’s reading", type: "link" as const, href: "/today", field: "readingOpened" as const }
     : !dailyState.practiceCompleted
-      ? { label: "Complete today’s practice", type: "button" as const, action: completePractice }
+      ? { label: "Start practice", type: "link" as const, href: "/today#practice" }
       : !dailyState.affirmationCompleted
         ? { label: "Repeat affirmation", type: "link" as const, href: "/practices?tab=today" }
       : !dailyState.cardOpened
@@ -347,10 +345,11 @@ export default function HomePage() {
             <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 16, background: "rgba(216,168,95,.08)", padding: 13 }}>
               <p style={{ color: "var(--gold-2)", fontSize: 14, fontWeight: 800 }}>First signal unlocked</p>
               <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginTop: 4 }}>Your completed practice opened the first point of your path.</p>
+              {practiceReflection.signalName && <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginTop: 7 }}>Signal: {practiceReflection.signalName}</p>}
               <Link href="/path" style={{ display: "inline-flex", marginTop: 10, color: "var(--gold-2)", fontSize: 12, fontWeight: 800, textDecoration: "none" }}>Open first signal →</Link>
             </div>
           ) : (
-            <button type="button" onClick={completePractice} style={{ ...primaryButtonStyle, width: "100%" }}>Complete today’s practice</button>
+            <Link href="/today#practice" style={{ ...primaryButtonStyle, width: "100%" }}>Start practice</Link>
           )}
         </section>
 
@@ -373,6 +372,9 @@ export default function HomePage() {
               <span style={{ color: status === "Not started" ? "var(--muted-2)" : "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{status}</span>
             </div>
           ))}
+          {dailyState.practiceCompleted && practiceReflection.signalName && (
+            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginTop: 4 }}>Signal: <span style={{ color: "var(--gold-2)", fontWeight: 800 }}>{practiceReflection.signalName}</span></p>
+          )}
           {nextAction.type === "link" ? (
             <Link href={nextAction.href} onClick={() => { if ("field" in nextAction && nextAction.field) setDailyField(nextAction.field); }} style={{ ...primaryButtonStyle, width: "100%", marginTop: 12 }}>{nextAction.label}</Link>
           ) : (

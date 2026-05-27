@@ -9,7 +9,8 @@ import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
-import { getTodayKey, getTodayProgress, markDailyActionCompleted } from "@/lib/progress/dailyProgress";
+import { GuidedDailyPractice, type GuidedPracticeResult } from "@/components/practices/GuidedDailyPractice";
+import { getTodayKey, getTodayPracticeReflection, getTodayProgress, markPracticeCompleted, type PracticeReflection } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
 import { resolveUserZodiac } from "@/lib/astrology/resolveZodiac";
 import { ZODIAC } from "@/lib/astroCalc";
@@ -139,6 +140,7 @@ export default function TodayPage() {
   const [lifePathNum, setLifePathNum]   = useState<number | null>(null);
   const [discProgress, setDiscProgress] = useState<Record<string, number>>({});
   const [practiceCompleted, setPracticeCompleted] = useState(false);
+  const [practiceReflection, setPracticeReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const todayKey = getTodayKey();
 
@@ -183,11 +185,13 @@ export default function TodayPage() {
     for (const d of DISCIPLINES) prog[d.key] = getDisciplineProgress(d.key, d.total);
     setDiscProgress(prog);
     setPracticeCompleted(getTodayProgress(todayKey).practiceCompleted);
+    setPracticeReflection(getTodayPracticeReflection(todayKey));
   }, [lang, todayKey, router]);
 
-  function completePractice() {
-    markDailyActionCompleted("practiceCompleted", todayKey);
+  function completePractice(result: GuidedPracticeResult) {
+    markPracticeCompleted(result, todayKey);
     setPracticeCompleted(true);
+    setPracticeReflection(getTodayPracticeReflection(todayKey));
   }
 
   function openPreparingNode() {
@@ -302,29 +306,13 @@ export default function TodayPage() {
           </div>
         )}
 
-        <div data-tour="today-recommended-actions" style={{ border: "1px solid rgba(216,168,95,.26)", borderRadius: 22, background: "rgba(12,8,28,.70)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", padding: "18px 18px", marginBottom: 14, boxShadow: "0 16px 38px rgba(0,0,0,.28)" }}>
-          <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>
-            {ru ? "Практика дня" : "Today’s practice"}
-          </p>
-          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 8 }}>
-            {ru ? "Заметь главный сигнал дня" : "Notice the signal that appears most often"}
-          </h2>
-          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 16 }}>
-            {ru ? "Удели 3 минуты тому, какой образ, чувство или повторяющаяся мысль чаще всего возвращается сегодня." : "Take 3 minutes to reflect on the signal that appears most often in your day."}
-          </p>
-          {practiceCompleted ? (
-            <div style={{ border: "1px solid rgba(216,168,95,.20)", borderRadius: 18, background: "rgba(216,168,95,.08)", padding: 14 }}>
-              <p style={{ fontSize: 14, color: "var(--gold-2)", fontWeight: 800, marginBottom: 4 }}>{ru ? "Практика завершена" : "Practice completed"}</p>
-              <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.55 }}>{ru ? "Первый сигнал твоего пути открыт." : "Your first path signal is unlocked."}</p>
-              <Link href="/path" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", marginTop: 12, border: "1px solid rgba(216,168,95,.30)", borderRadius: 999, background: "rgba(216,168,95,.08)", color: "var(--gold-2)", height: 40, padding: "0 16px", fontFamily: "var(--font-ui)", fontSize: 13, fontWeight: 800, textDecoration: "none" }}>
-                {ru ? "Открыть первый сигнал" : "Open first signal"}
-              </Link>
-            </div>
-          ) : (
-            <button type="button" onClick={completePractice} style={{ width: "100%", height: 50, border: "none", borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 14, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", boxShadow: "0 10px 28px rgba(90,32,144,.42), inset 0 1px 0 rgba(255,255,255,.12)" }}>
-              {ru ? "Завершить практику дня" : "Complete today’s practice"}
-            </button>
-          )}
+        <div data-tour="today-recommended-actions" style={{ marginBottom: 14 }}>
+          <GuidedDailyPractice
+            completed={practiceCompleted}
+            initialSignalName={practiceReflection.signalName}
+            initialResponseAction={practiceReflection.responseAction}
+            onComplete={completePractice}
+          />
         </div>
 
         {/* Personal day number */}

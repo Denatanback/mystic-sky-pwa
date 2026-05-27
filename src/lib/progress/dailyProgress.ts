@@ -15,6 +15,11 @@ export type DeepPathState = {
   cta: string;
 };
 
+export type PracticeReflection = {
+  signalName: string;
+  responseAction: string;
+};
+
 const actions: DailyAction[] = ["readingOpened", "practiceCompleted", "affirmationCompleted", "cardOpened"];
 
 export function getTodayKey(date = new Date()) {
@@ -23,6 +28,10 @@ export function getTodayKey(date = new Date()) {
 
 export function getDailyActionKey(action: DailyAction, dayKey = getTodayKey()) {
   return `eluna:daily:${dayKey}:${action}`;
+}
+
+export function getPracticeReflectionKey(field: keyof PracticeReflection, dayKey = getTodayKey()) {
+  return `eluna:daily:${dayKey}:${field === "signalName" ? "practiceSignalName" : "practiceResponseAction"}`;
 }
 
 function isBrowser() {
@@ -68,6 +77,23 @@ export function markDailyActionCompleted(action: DailyAction, dayKey = getTodayK
   }
 
   return getTodayProgress(dayKey);
+}
+
+export function markPracticeCompleted(input: Partial<PracticeReflection> = {}, dayKey = getTodayKey()) {
+  if (!isBrowser()) return getTodayProgress(dayKey);
+  const signalName = input.signalName?.trim();
+  const responseAction = input.responseAction?.trim();
+  if (signalName) localStorage.setItem(getPracticeReflectionKey("signalName", dayKey), signalName);
+  if (responseAction) localStorage.setItem(getPracticeReflectionKey("responseAction", dayKey), responseAction);
+  return markDailyActionCompleted("practiceCompleted", dayKey);
+}
+
+export function getTodayPracticeReflection(dayKey = getTodayKey()): PracticeReflection {
+  if (!isBrowser()) return { signalName: "", responseAction: "" };
+  return {
+    signalName: localStorage.getItem(getPracticeReflectionKey("signalName", dayKey)) ?? "",
+    responseAction: localStorage.getItem(getPracticeReflectionKey("responseAction", dayKey)) ?? "",
+  };
 }
 
 export function isTodayPracticeCompleted(dayKey = getTodayKey()) {

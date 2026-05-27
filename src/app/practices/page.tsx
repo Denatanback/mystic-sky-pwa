@@ -9,7 +9,8 @@ import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
-import { markDailyActionCompleted } from "@/lib/progress/dailyProgress";
+import { GuidedDailyPractice, type GuidedPracticeResult } from "@/components/practices/GuidedDailyPractice";
+import { getTodayPracticeReflection, markDailyActionCompleted, markPracticeCompleted, type PracticeReflection } from "@/lib/progress/dailyProgress";
 
 type Tab = "today" | "my" | "library";
 type DailyPracticeKey = "affirmationCompleted" | "reflectionCompleted" | "ritualCompleted";
@@ -147,6 +148,7 @@ export default function PracticesPage() {
     ritualCompleted: false,
   });
   const [activeAffirmations, setActiveAffirmations] = useState<ActiveAffirmation[]>([]);
+  const [practiceReflection, setPracticeReflection] = useState<PracticeReflection>({ signalName: "", responseAction: "" });
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
 
@@ -159,6 +161,7 @@ export default function PracticesPage() {
       reflectionCompleted: localStorage.getItem(dailyKey(todayKey, "reflectionCompleted")) === "true",
       ritualCompleted: localStorage.getItem(dailyKey(todayKey, "ritualCompleted")) === "true",
     });
+    setPracticeReflection(getTodayPracticeReflection(todayKey));
     setActiveAffirmations(readActiveAffirmations());
   }, [todayKey]);
 
@@ -166,13 +169,16 @@ export default function PracticesPage() {
 
   function completePractice(key: DailyPracticeKey) {
     localStorage.setItem(dailyKey(todayKey, key), "true");
-    if (key === "reflectionCompleted") {
-      markDailyActionCompleted("practiceCompleted", todayKey);
-    }
     if (key === "affirmationCompleted") {
       markDailyActionCompleted("affirmationCompleted", todayKey);
     }
     setCompleted((current) => ({ ...current, [key]: true }));
+  }
+
+  function completeReflectionPractice(result: GuidedPracticeResult) {
+    markPracticeCompleted(result, todayKey);
+    setPracticeReflection(getTodayPracticeReflection(todayKey));
+    setCompleted((current) => ({ ...current, reflectionCompleted: true }));
   }
 
   function activateAffirmation(category: Category, text: string) {
@@ -263,6 +269,18 @@ export default function PracticesPage() {
           <div style={{ display: "grid", gap: 12 }}>
             {todayCards.map((card) => {
               const isDone = completed[card.key];
+              if (card.key === "reflectionCompleted") {
+                return (
+                  <GuidedDailyPractice
+                    key={card.key}
+                    completed={isDone}
+                    initialSignalName={practiceReflection.signalName}
+                    initialResponseAction={practiceReflection.responseAction}
+                    onComplete={completeReflectionPractice}
+                    variant="practices"
+                  />
+                );
+              }
               return (
                 <section key={card.key} style={{ ...cardStyle, padding: 16 }}>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
