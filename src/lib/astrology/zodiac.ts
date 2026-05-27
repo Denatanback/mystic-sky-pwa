@@ -42,6 +42,18 @@ const signs: Array<ZodiacSignInfo & { start: [number, number]; end: [number, num
   { key: "pisces", name: "Pisces", glyph: "♓", dateRange: "Feb 19 – Mar 20", start: [2, 19], end: [3, 20] },
 ];
 
+export const ZODIAC_SIGNS: ZodiacSignInfo[] = signs.map(({ key, name, glyph, dateRange }) => ({
+  key,
+  name,
+  glyph,
+  dateRange,
+}));
+
+export function getZodiacSignByKey(key: string | null | undefined): ZodiacSignInfo {
+  const sign = ZODIAC_SIGNS.find((item) => item.key === key);
+  return sign ?? fallbackSign;
+}
+
 function parseBirthDate(birthDate: string | Date | null | undefined) {
   if (!birthDate) return null;
   if (birthDate instanceof Date) {

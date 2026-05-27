@@ -7,6 +7,7 @@ import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
 import type { PlaceSuggestion } from "@/lib/locations/worldCitySearch";
 import { getCurrentProfile, saveOnboardingData } from "@/lib/profile/currentProfile";
+import { getZodiacSign, getZodiacSignByKey, ZODIAC_SIGNS, type ZodiacSignKey } from "@/lib/astrology/zodiac";
 
 const focusOptions = ["Love & relationships", "Past life", "Money & abundance", "Purpose", "Intuition", "Body & energy", "Protection & grounding"];
 const practiceOptions = ["Daily readings", "Affirmations", "Rituals", "Cards", "Reflection journal"];
@@ -64,7 +65,11 @@ export default function OnboardingPage() {
   const [mode, setMode] = useState<"new" | "edit">("new");
   const [birthDate, setBirthDate] = useState("");
   const [birthTime, setBirthTime] = useState("");
+  const [birthTimeUnknown, setBirthTimeUnknown] = useState(false);
   const [birthPlace, setBirthPlace] = useState("");
+  const [showZodiacSelector, setShowZodiacSelector] = useState(false);
+  const [zodiacOverride, setZodiacOverride] = useState(false);
+  const [manualZodiac, setManualZodiac] = useState<ZodiacSignKey | "">("");
   const [focusAreas, setFocusAreas] = useState<string[]>([]);
   const [practicePreferences, setPracticePreferences] = useState<string[]>([]);
   const [error, setError] = useState("");
@@ -72,6 +77,8 @@ export default function OnboardingPage() {
   const [cityOpen, setCityOpen] = useState(false);
   const [citySuggestions, setCitySuggestions] = useState<PlaceSuggestion[]>([]);
   const [cityLoading, setCityLoading] = useState(false);
+  const autoZodiac = birthDate.length === 10 ? getZodiacSign(birthDate) : getZodiacSign(null);
+  const selectedZodiac = zodiacOverride && manualZodiac ? getZodiacSignByKey(manualZodiac) : autoZodiac;
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -85,7 +92,13 @@ export default function OnboardingPage() {
       }
       if (profile.birthDate) setBirthDate(profile.birthDate.includes("-") ? profile.birthDate.split("-").reverse().join(".") : profile.birthDate);
       if (profile.birthTime) setBirthTime(profile.birthTime);
+      setBirthTimeUnknown(profile.birthTimeUnknown);
       if (profile.birthPlace) setBirthPlace(profile.birthPlace);
+      if (profile.zodiacOverride && profile.zodiacSign.key !== "unknown") {
+        setZodiacOverride(true);
+        setShowZodiacSelector(true);
+        setManualZodiac(profile.zodiacSign.key);
+      }
       setFocusAreas(profile.focusAreas);
       setPracticePreferences(profile.practicePreferences);
       if (profile.onboardingCompleted && params.get("mode") !== "edit") router.replace("/home");
@@ -126,6 +139,8 @@ export default function OnboardingPage() {
 
   function validateBirth() {
     if (!birthDate || birthDate.length < 10) return "Enter date of birth.";
+    if (getZodiacSign(birthDate).key === "unknown") return "Enter a valid date to reveal your sign.";
+    if (!birthTimeUnknown && !birthTime.trim()) return "Add your birth time or choose 'I don’t know'.";
     if (!birthPlace.trim()) return "Enter place of birth.";
     return "";
   }
@@ -151,8 +166,11 @@ export default function OnboardingPage() {
     setSaving(true);
     const result = await saveOnboardingData({
       birthDate: toIsoDate(birthDate),
-      birthTime,
+      birthTime: birthTimeUnknown ? null : birthTime,
+      birthTimeUnknown,
       birthPlace,
+      zodiacSign: zodiacOverride ? manualZodiac : "",
+      zodiacOverride,
       focusAreas,
       practicePreferences,
     });
@@ -185,8 +203,65 @@ export default function OnboardingPage() {
               <label style={{ display: "grid", gap: 6, color: "var(--muted)", fontSize: 12 }}>Date of birth
                 <div style={inputRow}><input value={birthDate} onChange={(e) => setBirthDate(formatBirthDateInput(e.target.value))} placeholder="DD.MM.YYYY" maxLength={10} inputMode="numeric" style={inputBase} /></div>
               </label>
+              {birthDate.length === 10 && autoZodiac.key !== "unknown" && (
+                <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 18, background: "linear-gradient(135deg, rgba(216,168,95,.10), rgba(128,64,192,.14))", padding: "13px 14px", display: "grid", gap: 10 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ width: 52, height: 52, borderRadius: "50%", display: "grid", placeItems: "center", color: "var(--gold-2)", fontSize: 32, background: "rgba(216,168,95,.10)", border: "1px solid rgba(216,168,95,.30)", boxShadow: "0 0 18px rgba(128,64,192,.18)" }}>{selectedZodiac.glyph}</div>
+                    <div>
+                      <div style={{ color: "var(--muted-2)", fontSize: 11, fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase" }}>{zodiacOverride ? "Your selected sun sign" : "Your sun sign"}</div>
+                      <div style={{ color: "var(--text)", fontSize: 17, fontWeight: 800, marginTop: 2 }}>{selectedZodiac.name}</div>
+                      <div style={{ color: "var(--muted)", fontSize: 12 }}>{zodiacOverride ? "Selected manually" : selectedZodiac.dateRange}</div>
+                    </div>
+                  </div>
+                  <p style={{ color: "var(--muted-2)", fontSize: 12, lineHeight: 1.5, margin: 0 }}>{zodiacOverride ? "Your birth date stays saved for numerology and life path calculations." : "Based on your birth date"}</p>
+                  <button type="button" onClick={() => setShowZodiacSelector((value) => !value)} style={{ justifySelf: "start", border: "none", background: "transparent", color: "var(--gold-2)", fontSize: 12, fontWeight: 800, padding: 0, fontFamily: "var(--font-ui)", cursor: "pointer" }}>
+                    This isn’t my zodiac sign
+                  </button>
+                  <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, margin: 0 }}>Born near a zodiac transition? You can choose your sign manually.</p>
+                  {showZodiacSelector && (
+                    <label style={{ display: "grid", gap: 7, color: "var(--muted)", fontSize: 12 }}>Choose your zodiac sign manually
+                      <select
+                        value={manualZodiac}
+                        onChange={(event) => {
+                          const value = event.target.value as ZodiacSignKey;
+                          setManualZodiac(value);
+                          setZodiacOverride(Boolean(value));
+                        }}
+                        style={{ height: 46, borderRadius: 14, border: "1px solid rgba(216,168,95,.28)", background: "rgba(10,8,28,.95)", color: "var(--text)", padding: "0 12px", fontFamily: "var(--font-ui)", fontWeight: 700 }}
+                      >
+                        <option value="">Use calculated sign</option>
+                        {ZODIAC_SIGNS.map((sign) => (
+                          <option key={sign.key} value={sign.key}>{sign.glyph} {sign.name}</option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+                </div>
+              )}
+              {birthDate.length === 10 && autoZodiac.key === "unknown" && (
+                <p style={{ color: "var(--danger)", fontSize: 12, lineHeight: 1.45, margin: 0 }}>Enter a valid date to reveal your sign.</p>
+              )}
               <label style={{ display: "grid", gap: 6, color: "var(--muted)", fontSize: 12 }}>Time of birth
-                <div style={inputRow}><input value={birthTime} onChange={(e) => setBirthTime(formatBirthTimeInput(e.target.value))} placeholder="14:30" maxLength={5} inputMode="numeric" style={inputBase} /></div>
+                <div style={{ display: "grid", gap: 9 }}>
+                  <div style={{ ...inputRow, opacity: birthTimeUnknown ? .55 : 1 }}>
+                    <input value={birthTime} onChange={(e) => setBirthTime(formatBirthTimeInput(e.target.value))} disabled={birthTimeUnknown} placeholder="14:30" maxLength={5} inputMode="numeric" style={inputBase} />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBirthTimeUnknown((value) => {
+                        if (!value) setBirthTime("");
+                        return !value;
+                      });
+                    }}
+                    style={{ justifySelf: "start", display: "inline-flex", alignItems: "center", gap: 8, border: "1px solid rgba(216,168,95,.24)", borderRadius: 999, background: birthTimeUnknown ? "rgba(216,168,95,.14)" : "rgba(255,255,255,.04)", color: birthTimeUnknown ? "var(--gold-2)" : "var(--muted)", padding: "7px 11px", fontSize: 12, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer" }}
+                    aria-pressed={birthTimeUnknown}
+                  >
+                    <span style={{ width: 14, height: 14, borderRadius: 4, border: "1px solid rgba(216,168,95,.42)", display: "grid", placeItems: "center", fontSize: 10 }}>{birthTimeUnknown ? "✓" : ""}</span>
+                    I don’t know my birth time
+                  </button>
+                  <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, margin: 0 }}>Optional. If you don’t remember it, we’ll still build your basic chart.</p>
+                </div>
               </label>
               <label style={{ display: "grid", gap: 6, color: "var(--muted)", fontSize: 12 }}>Place of birth
                 <div style={{ position: "relative" }}>

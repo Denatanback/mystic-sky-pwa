@@ -11,6 +11,8 @@ export type MockUserProfile = {
   birthTime: string;
   birthTimeUnknown: boolean;
   birthPlace: string;
+  zodiacSign?: string;
+  zodiacOverride?: boolean;
   createdAt: string;
   launchContext?: LaunchContext;
 };

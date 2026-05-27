@@ -36,7 +36,9 @@ function AstroNode1() {
   const [allFlipped, setAllFlipped] = useState(false);
   const [user, setUser] = useState<CurrentProfile | null>(null);
 
-  const sign = user?.birthDate ? getSunSign(user.birthDate) : null;
+  const sign = user?.birthDate
+    ? (user.zodiacOverride ? ZODIAC.find((item) => item.key === user.zodiacSign.key) ?? null : getSunSign(user.birthDate))
+    : null;
   const traits = sign ? (SUN_TRAITS[sign.key] ?? []) : [];
   const elementTraits = sign ? (ELEMENT_TRAITS[sign.element] ?? null) : null;
 

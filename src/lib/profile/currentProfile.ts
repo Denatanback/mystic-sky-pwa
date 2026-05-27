@@ -2,6 +2,7 @@ import { getCurrentUser, isSupabaseAuthEnabled, upsertProfile } from "@/lib/auth
 import { getMockUser, saveMockUser } from "@/lib/mockAuth";
 import { supabase } from "@/lib/supabase/client";
 import type { LaunchContext } from "@/lib/launch/launchContext";
+import { getZodiacSign, getZodiacSignByKey, type ZodiacSignInfo, type ZodiacSignKey } from "@/lib/astrology/zodiac";
 
 export type CurrentProfile = {
   id?: string;
@@ -10,7 +11,10 @@ export type CurrentProfile = {
   gender: "female" | "male" | "";
   birthDate: string;
   birthTime: string;
+  birthTimeUnknown: boolean;
   birthPlace: string;
+  zodiacSign: ZodiacSignInfo;
+  zodiacOverride: boolean;
   focusAreas: string[];
   practicePreferences: string[];
   onboardingCompleted: boolean;
@@ -26,13 +30,19 @@ export type CurrentProfile = {
 
 export type OnboardingInput = {
   birthDate: string;
-  birthTime: string;
+  birthTime: string | null;
+  birthTimeUnknown: boolean;
   birthPlace: string;
+  zodiacSign?: ZodiacSignKey | "";
+  zodiacOverride?: boolean;
   focusAreas: string[];
   practicePreferences: string[];
 };
 
 const BIRTH_DATA_KEY = "eluna:birthData";
+const BIRTH_TIME_UNKNOWN_KEY = "eluna:birthTimeUnknown";
+const ZODIAC_SIGN_KEY = "eluna:zodiacSign";
+const ZODIAC_OVERRIDE_KEY = "eluna:zodiacOverride";
 const FOCUS_AREAS_KEY = "eluna:focusAreas";
 const PRACTICE_PREFERENCES_KEY = "eluna:practicePreferences";
 const ONBOARDING_COMPLETED_KEY = "eluna:onboardingCompleted";
@@ -55,6 +65,20 @@ function normalizeArray(value: unknown): string[] {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
 }
 
+function readBoolean(value: unknown) {
+  return value === true || value === "true";
+}
+
+function readStorageBoolean(key: string) {
+  return typeof window !== "undefined" && localStorage.getItem(key) === "true";
+}
+
+function validZodiacKey(value: unknown): ZodiacSignKey | "" {
+  if (typeof value !== "string") return "";
+  const sign = getZodiacSignByKey(value);
+  return sign.key === "unknown" ? "" : sign.key;
+}
+
 function isCompleted(input: { birthDate: string; birthPlace: string; focusAreas: string[]; practicePreferences: string[]; explicit?: boolean }) {
   return Boolean(input.explicit || (input.birthDate && input.birthPlace && (input.focusAreas.length > 0 || input.practicePreferences.length > 0)));
 }
@@ -69,15 +93,19 @@ export async function getCurrentProfile(): Promise<CurrentProfile | null> {
     metadata = data.user?.user_metadata ?? {};
   }
 
-  const birthData = parseJson<{ birthDate?: string; birth_date?: string; dateOfBirth?: string; date_of_birth?: string; birthTime?: string; birth_time?: string; birthPlace?: string; birth_place?: string }>(BIRTH_DATA_KEY, {});
+  const birthData = parseJson<{ birthDate?: string; birth_date?: string; dateOfBirth?: string; date_of_birth?: string; birthTime?: string | null; birth_time?: string | null; birthTimeUnknown?: boolean; birth_time_unknown?: boolean; birthPlace?: string; birth_place?: string; zodiacSign?: string; zodiac_sign?: string; zodiacOverride?: boolean; zodiac_override?: boolean }>(BIRTH_DATA_KEY, {});
   const focusAreas = normalizeArray(metadata.focus_areas).length ? normalizeArray(metadata.focus_areas) : normalizeArray(metadata.focusAreas).length ? normalizeArray(metadata.focusAreas) : parseJson<string[]>(FOCUS_AREAS_KEY, []);
   const practicePreferences = normalizeArray(metadata.practice_preferences).length ? normalizeArray(metadata.practice_preferences) : normalizeArray(metadata.practicePreferences).length ? normalizeArray(metadata.practicePreferences) : parseJson<string[]>(PRACTICE_PREFERENCES_KEY, []);
-  const onboardingCompleted = typeof window !== "undefined" && localStorage.getItem(ONBOARDING_COMPLETED_KEY) === "true";
+  const onboardingCompleted = readStorageBoolean(ONBOARDING_COMPLETED_KEY);
   const launchContext = user.launchContext ?? {};
 
   const birthDate = firstString(user.birthDate, metadata.birth_date, metadata.birthDate, metadata.dateOfBirth, metadata.date_of_birth, birthData.birthDate, birthData.birth_date, birthData.dateOfBirth, birthData.date_of_birth);
-  const birthTime = firstString(user.birthTime, metadata.birth_time, metadata.birthTime, birthData.birthTime, birthData.birth_time);
+  const birthTimeUnknown = Boolean(user.birthTimeUnknown) || readBoolean(metadata.birth_time_unknown) || readBoolean(metadata.birthTimeUnknown) || readBoolean(birthData.birthTimeUnknown) || readBoolean(birthData.birth_time_unknown) || readStorageBoolean(BIRTH_TIME_UNKNOWN_KEY);
+  const birthTime = birthTimeUnknown ? "" : firstString(user.birthTime, metadata.birth_time, metadata.birthTime, birthData.birthTime, birthData.birth_time);
   const birthPlace = firstString(user.birthPlace, metadata.birth_place, metadata.birthPlace, birthData.birthPlace, birthData.birth_place);
+  const storedZodiacKey = validZodiacKey(metadata.zodiac_sign) || validZodiacKey(metadata.zodiacSign) || validZodiacKey(birthData.zodiacSign) || validZodiacKey(birthData.zodiac_sign) || validZodiacKey(typeof window !== "undefined" ? localStorage.getItem(ZODIAC_SIGN_KEY) : "");
+  const zodiacOverride = readBoolean(metadata.zodiac_override) || readBoolean(metadata.zodiacOverride) || readBoolean(birthData.zodiacOverride) || readBoolean(birthData.zodiac_override) || readStorageBoolean(ZODIAC_OVERRIDE_KEY);
+  const zodiacSign = zodiacOverride && storedZodiacKey ? getZodiacSignByKey(storedZodiacKey) : getZodiacSign(birthDate);
 
   return {
     id: user.id,
@@ -86,7 +114,10 @@ export async function getCurrentProfile(): Promise<CurrentProfile | null> {
     gender: user.gender,
     birthDate,
     birthTime,
+    birthTimeUnknown,
     birthPlace,
+    zodiacSign,
+    zodiacOverride,
     focusAreas,
     practicePreferences,
     onboardingCompleted: isCompleted({ birthDate, birthPlace, focusAreas, practicePreferences, explicit: onboardingCompleted || metadata.onboarding_completed === true || metadata.onboardingCompleted === true }),
@@ -106,8 +137,15 @@ export async function saveOnboardingData(input: OnboardingInput): Promise<{ erro
     localStorage.setItem(BIRTH_DATA_KEY, JSON.stringify({
       birthDate: input.birthDate,
       birthTime: input.birthTime,
+      birthTimeUnknown: input.birthTimeUnknown,
       birthPlace: input.birthPlace,
+      zodiacSign: input.zodiacSign,
+      zodiacOverride: Boolean(input.zodiacOverride),
     }));
+    localStorage.setItem(BIRTH_TIME_UNKNOWN_KEY, input.birthTimeUnknown ? "true" : "false");
+    if (input.zodiacSign) localStorage.setItem(ZODIAC_SIGN_KEY, input.zodiacSign);
+    else localStorage.removeItem(ZODIAC_SIGN_KEY);
+    localStorage.setItem(ZODIAC_OVERRIDE_KEY, input.zodiacOverride ? "true" : "false");
     localStorage.setItem(FOCUS_AREAS_KEY, JSON.stringify(input.focusAreas));
     localStorage.setItem(PRACTICE_PREFERENCES_KEY, JSON.stringify(input.practicePreferences));
     localStorage.setItem(ONBOARDING_COMPLETED_KEY, "true");
@@ -117,8 +155,11 @@ export async function saveOnboardingData(input: OnboardingInput): Promise<{ erro
       saveMockUser({
         ...mockUser,
         birthDate: input.birthDate,
-        birthTime: input.birthTime,
+        birthTime: input.birthTime ?? "",
+        birthTimeUnknown: input.birthTimeUnknown,
         birthPlace: input.birthPlace,
+        zodiacSign: input.zodiacSign || undefined,
+        zodiacOverride: Boolean(input.zodiacOverride),
       });
     }
   }
@@ -133,8 +174,14 @@ export async function saveOnboardingData(input: OnboardingInput): Promise<{ erro
         birthDate: input.birthDate,
         birth_time: input.birthTime,
         birthTime: input.birthTime,
+        birth_time_unknown: input.birthTimeUnknown,
+        birthTimeUnknown: input.birthTimeUnknown,
         birth_place: input.birthPlace,
         birthPlace: input.birthPlace,
+        zodiac_sign: input.zodiacSign || null,
+        zodiacSign: input.zodiacSign || null,
+        zodiac_override: Boolean(input.zodiacOverride),
+        zodiacOverride: Boolean(input.zodiacOverride),
         focus_areas: input.focusAreas,
         focusAreas: input.focusAreas,
         practice_preferences: input.practicePreferences,
@@ -161,6 +208,9 @@ export function getOnboardingStorageKeys() {
   return {
     onboardingCompleted: ONBOARDING_COMPLETED_KEY,
     birthData: BIRTH_DATA_KEY,
+    birthTimeUnknown: BIRTH_TIME_UNKNOWN_KEY,
+    zodiacSign: ZODIAC_SIGN_KEY,
+    zodiacOverride: ZODIAC_OVERRIDE_KEY,
     focusAreas: FOCUS_AREAS_KEY,
     practicePreferences: PRACTICE_PREFERENCES_KEY,
   };

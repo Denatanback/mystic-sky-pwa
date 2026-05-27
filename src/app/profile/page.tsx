@@ -8,7 +8,6 @@ import { signOut } from "@/lib/auth/authAdapter";
 import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
-import { getZodiacSign } from "@/lib/astrology/zodiac";
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { getDeepPathState, type DeepPathState } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile, type CurrentProfile } from "@/lib/profile/currentProfile";
@@ -36,9 +35,9 @@ export default function ProfilePage() {
   const [deepPathState, setDeepPathState] = useState<DeepPathState>(() => getDeepPathState());
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
-  const zodiac = getZodiacSign(userProfile?.birthDate);
-  const zodiacLine = zodiac.key === "unknown" ? "Mystic profile" : `${zodiac.name} · ${zodiac.dateRange}`;
-  const personalChartSub = zodiac.key === "unknown" ? "Complete setup to reveal your chart" : `Sun sign: ${zodiac.name}${userProfile?.birthPlace ? ` · ${userProfile.birthPlace}` : ""}`;
+  const zodiac = userProfile?.zodiacSign ?? { key: "unknown", name: "Unknown sign", glyph: "✦", dateRange: null };
+  const zodiacLine = zodiac.key === "unknown" ? "Mystic profile" : `${zodiac.name} · ${userProfile?.zodiacOverride ? "selected manually" : zodiac.dateRange}`;
+  const personalChartSub = zodiac.key === "unknown" ? "Complete setup to reveal your chart" : `Sun sign: ${zodiac.name}${userProfile?.zodiacOverride ? " · selected manually" : userProfile?.birthPlace ? ` · ${userProfile.birthPlace}` : ""}`;
   const openReminders = () => setFeatureInfo({
     title: "Soul reminders",
     description: "Daily reading reminders and practice notifications will appear here.",
