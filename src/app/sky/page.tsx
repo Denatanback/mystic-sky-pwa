@@ -26,6 +26,16 @@ const OCY = (CY / CH) * 100;
 const ORX = (ORB / CW) * 100;
 const ORY = (ORB / CH) * 100;
 
+const orbitalNodePositions: Record<string, { x: number; y: number }> = {
+  "sun-sign": { x: 50, y: 13 },
+  "life-path": { x: 20, y: 29 },
+  "energy-rhythm": { x: 80, y: 29 },
+  "past-life-signal": { x: 20, y: 55 },
+  "soulmate-pattern": { x: 80, y: 55 },
+  "weekly-report": { x: 28, y: 79 },
+  "grounding-practice": { x: 68, y: 79 },
+};
+
 const cardStyle = {
   border: "1px solid rgba(216,168,95,.20)",
   borderRadius: 22,
@@ -38,6 +48,10 @@ const cardStyle = {
 function polar(deg: number) {
   const rad = (deg - 90) * (Math.PI / 180);
   return { x: ((CX + ORB * Math.cos(rad)) / CW) * 100, y: ((CY + ORB * Math.sin(rad)) / CH) * 100 };
+}
+
+function getOrbitalPosition(node: SkyNode) {
+  return orbitalNodePositions[node.id] ?? polar(node.deg);
 }
 
 function readPlanAccess() {
@@ -213,32 +227,32 @@ export default function SkyPage() {
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle, transparent 28%, rgba(6,4,15,.7) 65%, rgba(6,4,15,.97) 100%)" }} />
           </div>
           {[286, 246, 206].map((size, index) => <div key={size} style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%,-50%)", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(216,168,95,${0.05 + index * 0.03})`, pointerEvents: "none", zIndex: 2 }} />)}
-          <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 3 }} viewBox="0 0 100 100" preserveAspectRatio="none">
+          <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 3, pointerEvents: "none" }} viewBox="0 0 100 100" preserveAspectRatio="none">
             <ellipse cx={OCX} cy={OCY} rx={ORX} ry={ORY} fill="none" stroke="rgba(216,168,95,.28)" strokeWidth={0.35} strokeDasharray="1.2 1.2" />
             {nodes.map((node) => {
-              const p = polar(node.deg);
+              const p = getOrbitalPosition(node);
               const dim = !nodeVisible(node);
               return <line key={node.id} x1={OCX} y1={OCY} x2={p.x} y2={p.y} stroke={dim ? "rgba(120,100,180,.1)" : "rgba(216,168,95,.18)"} strokeWidth={0.4} />;
             })}
           </svg>
           {nodes.map((node) => {
-            const pos = polar(node.deg);
+            const pos = getOrbitalPosition(node);
             const dim = !nodeVisible(node);
             const isActive = node.status === "active";
             const isPremium = node.status === "premium";
             const isLocked = node.status === "locked";
-            const size = isActive ? 84 : 72;
+            const size = isActive ? 64 : 56;
             return (
-              <div key={node.id} style={{ position: "absolute", left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%,-50%)", zIndex: 4, opacity: dim ? .22 : 1, transition: "opacity .25s" }}>
-                <button type="button" onClick={() => setSelectedNode(node)} aria-label={`${node.title} node preview`} style={{ border: "none", background: "transparent", padding: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, cursor: "pointer", fontFamily: "var(--font-ui)" }}>
+              <div key={node.id} style={{ position: "absolute", left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%,-50%)", zIndex: isActive ? 8 : 4 + node.num, opacity: dim ? .22 : 1, transition: "opacity .25s", pointerEvents: dim ? "none" : "auto" }}>
+                <button type="button" onClick={() => setSelectedNode(node)} aria-label={`${node.title} node preview`} style={{ border: "none", background: "transparent", padding: 0, width: 82, minHeight: 88, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, cursor: "pointer", fontFamily: "var(--font-ui)", touchAction: "manipulation" }}>
                   <div style={{ width: size, height: size, borderRadius: "50%", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", flexShrink: 0 }}>
                     <Image src={node.emblem} alt={node.title} fill style={{ objectFit: "contain", opacity: isLocked || isPremium ? .56 : 1 }} />
-                    {isActive && <div style={{ position: "absolute", top: -6, left: "50%", transform: "translateX(-50%)", width: 20, height: 20, borderRadius: "50%", background: "linear-gradient(135deg, #d8a85f, #8040c0)", border: "1.5px solid rgba(216,168,95,.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, zIndex: 5, boxShadow: "0 0 8px rgba(216,168,95,.5)" }}>★</div>}
-                    {(isLocked || isPremium) && <div style={{ position: "absolute", bottom: 6, right: 6, zIndex: 5, lineHeight: 0, filter: "drop-shadow(0 1px 3px rgba(0,0,0,.8))" }}><Image src="/assets/icons/icon-lock.png" alt="Locked" width={30} height={30} style={{ objectFit: "contain" }} /></div>}
+                    {isActive && <div style={{ position: "absolute", top: -4, left: "50%", transform: "translateX(-50%)", width: 16, height: 16, borderRadius: "50%", background: "linear-gradient(135deg, #d8a85f, #8040c0)", border: "1.5px solid rgba(216,168,95,.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, zIndex: 5, boxShadow: "0 0 8px rgba(216,168,95,.5)" }}>★</div>}
+                    {(isLocked || isPremium) && <div style={{ position: "absolute", bottom: 4, right: 4, zIndex: 5, lineHeight: 0, filter: "drop-shadow(0 1px 3px rgba(0,0,0,.8))" }}><Image src="/assets/icons/icon-lock.png" alt="Locked" width={24} height={24} style={{ objectFit: "contain" }} /></div>}
                   </div>
                   <div style={{ textAlign: "center", lineHeight: 1.25 }}>
-                    <div style={{ fontSize: isActive ? 12 : 10.5, fontWeight: isActive ? 700 : 600, color: isActive ? "var(--gold-2)" : isPremium ? "var(--muted-2)" : "var(--text)", textShadow: isActive ? "0 0 8px rgba(216,168,95,.5)" : "none", whiteSpace: "nowrap" }}>{node.num}. {node.title}</div>
-                    <div style={{ fontSize: 9.5, color: statusColor(node.status) }}>{statusCopy(node.status).label}</div>
+                    <div style={{ fontSize: isActive ? 10.5 : 9.5, fontWeight: isActive ? 800 : 700, color: isActive ? "var(--gold-2)" : isPremium ? "var(--muted-2)" : "var(--text)", textShadow: isActive ? "0 0 8px rgba(216,168,95,.5)" : "none", overflowWrap: "anywhere" }}>{node.num}. {node.title}</div>
+                    <div style={{ fontSize: 8.5, color: statusColor(node.status), fontWeight: 800 }}>{statusCopy(node.status).label}</div>
                   </div>
                 </button>
               </div>

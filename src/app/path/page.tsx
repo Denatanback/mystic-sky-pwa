@@ -37,8 +37,9 @@ const ctaStyle: CSSProperties = {
 };
 
 export default function PathPage() {
-  const [deepPathState, setDeepPathState] = useState<DeepPathState>(() => getDeepPathState());
-  const [firstSignal, setFirstSignal] = useState<FirstSignalState>(() => getFirstSignalState());
+  const [isClientReady, setIsClientReady] = useState(false);
+  const [deepPathState, setDeepPathState] = useState<DeepPathState | null>(null);
+  const [firstSignal, setFirstSignal] = useState<FirstSignalState | null>(null);
   const [reflectionText, setReflectionText] = useState("");
   const [reflectionSaved, setReflectionSaved] = useState(false);
   const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
@@ -55,12 +56,13 @@ export default function PathPage() {
     const effectivePreland = contextParam ? savePrelandContext({ ...storedPreland, source: contextParam, funnel: contextParam }) : storedPreland;
     setPrelandContext(effectivePreland);
     setPrelandExperience(getPrelandExperience(effectivePreland));
+    setIsClientReady(true);
   }, []);
 
-  const unlocked = deepPathState.firstSignalUnlocked;
+  const unlocked = Boolean(deepPathState?.firstSignalUnlocked);
   const prelandKind = getPrelandKind(prelandContext);
   const isContextualSignal = Boolean(prelandExperience);
-  const signalName = isContextualSignal ? prelandExperience?.pathSignal ?? firstSignal.signalName ?? "Attention" : firstSignal.signalName || "Attention";
+  const signalName = isContextualSignal ? prelandExperience?.pathSignal ?? firstSignal?.signalName ?? "Attention" : firstSignal?.signalName || "Attention";
   const pageTitle = prelandKind === "pastlife" ? "Your Past Life signal" : prelandKind === "soulmate" ? "Your Soulmate signal" : "Your first signal";
   const pageSubtitle = prelandKind === "pastlife" ? "Opened from your quiz and today’s practice" : prelandKind === "soulmate" ? "Opened from your quiz and today’s practice" : "Opened from today’s practice";
   const heroText = prelandKind === "pastlife"
@@ -69,8 +71,8 @@ export default function PathPage() {
       ? "Today’s practice opened the first relationship signal from your quiz and current path."
       : "Today’s completed practice opened the first point of your path. Notice what repeated in your thoughts, choices, or emotions today.";
   const meaningText = prelandExperience?.pathMeaning ?? "This signal is not a prediction. It is a mirror. It shows where your energy keeps returning, even when your mind tries to move past it.";
-  const whereText = prelandExperience?.pathWhere ?? (firstSignal.signalName ? `Look for moments today where ${signalName} appeared in your thoughts, emotions, choices, or conversations.` : "Look for the moment that repeated emotionally, even if the outside situation changed.");
-  const nextStepText = prelandExperience?.pathNext ?? (firstSignal.responseAction ? "Follow the response you chose today. Keep it small enough that you can actually do it." : "Choose one small action that respects what you noticed.");
+  const whereText = prelandExperience?.pathWhere ?? (firstSignal?.signalName ? `Look for moments today where ${signalName} appeared in your thoughts, emotions, choices, or conversations.` : "Look for the moment that repeated emotionally, even if the outside situation changed.");
+  const nextStepText = prelandExperience?.pathNext ?? (firstSignal?.responseAction ? "Follow the response you chose today. Keep it small enough that you can actually do it." : "Choose one small action that respects what you noticed.");
 
   function completeNextStep() {
     markFirstSignalNextStepCompleted();
@@ -91,7 +93,7 @@ export default function PathPage() {
     </section>
   );
 
-  return (
+  const shell = (content: ReactNode) => (
     <div className="app">
       <StarField />
       <div className="content">
@@ -105,7 +107,24 @@ export default function PathPage() {
             <PlanChip />
           </div>
         </header>
+        {content}
+      </div>
+      <BottomNav />
+    </div>
+  );
 
+  if (!isClientReady || !deepPathState || !firstSignal) {
+    return shell(
+      <section style={{ ...cardStyle, padding: "22px 20px", marginTop: 10 }}>
+        <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 9 }}>Path</p>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 10 }}>Loading your path...</h1>
+        <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>Preparing today’s signal and progress state.</p>
+      </section>
+    );
+  }
+
+  return shell(
+    <>
         {unlocked ? (
           <>
             <section style={{ ...cardStyle, padding: "22px 20px", marginTop: 10, background: "linear-gradient(145deg, rgba(22,13,54,.82), rgba(10,6,28,.70))" }}>
@@ -168,8 +187,6 @@ export default function PathPage() {
             <Link href="/today#practice" style={{ ...ctaStyle, width: "100%" }}>Go to today’s practice</Link>
           </section>
         )}
-      </div>
-      <BottomNav />
-    </div>
+    </>
   );
 }
