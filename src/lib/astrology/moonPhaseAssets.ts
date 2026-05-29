@@ -70,6 +70,7 @@ function crescentKey(illumination: number, waxing: boolean): MoonPhaseAssetKey {
 }
 
 function gibbousKey(illumination: number, waxing: boolean): MoonPhaseAssetKey {
+  if (illumination >= 98) return "full-moon";
   if (waxing) {
     if (illumination >= 89) return "waxing-gibbous-near-full";
     if (illumination >= 73) return "waxing-gibbous";
@@ -95,7 +96,9 @@ export function getMoonPhaseAssetKey(params: {
   if (phaseName.includes("waxing gibbous")) return gibbousKey(illumination, true);
   if (phaseName.includes("waning gibbous")) return gibbousKey(illumination, false);
   if (phaseName.includes("waning crescent")) return crescentKey(illumination, false);
-  if (phaseName.includes("full")) return illumination >= 99 ? "full-moon-bright" : "full-moon";
+  if (phaseName === "full" || phaseName.includes("full moon")) {
+    return illumination >= 99 ? "full-moon-bright" : "full-moon";
+  }
 
   if (illumination <= 3) return "new-moon";
   if (illumination >= 98) return "full-moon";

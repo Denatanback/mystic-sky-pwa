@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { getMoonPhaseAsset } from "@/lib/astrology/moonPhaseAssets";
+import { getMoonPhaseAssetKey, moonPhaseAssets } from "@/lib/astrology/moonPhaseAssets";
 
 type PremiumMoonPhaseProps = {
   phaseName?: string;
@@ -25,8 +25,18 @@ export function PremiumMoonPhase({
   className,
 }: PremiumMoonPhaseProps) {
   const dimension = sizes[size];
-  const asset = getMoonPhaseAsset({ phaseName, illumination, waxing });
+  const assetKey = getMoonPhaseAssetKey({ phaseName, illumination, waxing });
+  const asset = moonPhaseAssets[assetKey];
   const alt = phaseName || "Moon phase";
+
+  if (process.env.NODE_ENV === "development") {
+    console.debug("[PremiumMoonPhase]", {
+      phaseName,
+      illumination,
+      waxing,
+      assetKey,
+    });
+  }
 
   return (
     <div
@@ -39,36 +49,52 @@ export function PremiumMoonPhase({
         display: "grid",
         placeItems: "center",
         flexShrink: 0,
-        background: "radial-gradient(circle, rgba(216,168,95,.12), rgba(128,64,192,.10) 48%, rgba(10,6,28,0) 72%)",
-        filter: "drop-shadow(0 0 18px rgba(216,168,95,.20)) drop-shadow(0 0 28px rgba(128,64,192,.16))",
       }}
     >
       <div
         aria-hidden="true"
         style={{
           position: "absolute",
-          inset: "10%",
+          inset: "8%",
           borderRadius: "50%",
-          boxShadow: "0 0 28px rgba(216,168,95,.20), inset 0 0 18px rgba(255,255,255,.04)",
+          background: "radial-gradient(circle, rgba(216,168,95,.16), rgba(128,64,192,.12) 46%, rgba(10,6,28,0) 72%)",
+          filter: "blur(10px)",
+          boxShadow: "0 0 30px rgba(216,168,95,.20), 0 0 42px rgba(128,64,192,.18)",
           pointerEvents: "none",
         }}
       />
-      <Image
-        src={asset}
-        alt={alt}
-        width={dimension}
-        height={dimension}
-        sizes={`${dimension}px`}
-        priority={false}
-        unoptimized
+      <div
         style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "contain",
+          width: Math.round(dimension * 0.9),
+          height: Math.round(dimension * 0.9),
+          borderRadius: "50%",
+          overflow: "hidden",
+          clipPath: "circle(45% at 50% 50%)",
           position: "relative",
           zIndex: 1,
+          display: "grid",
+          placeItems: "center",
+          background: "transparent",
+          boxShadow: "0 0 22px rgba(216,168,95,.16)",
         }}
-      />
+      >
+        <Image
+          src={asset}
+          alt={alt}
+          width={dimension}
+          height={dimension}
+          sizes={`${dimension}px`}
+          priority={false}
+          unoptimized
+          style={{
+            width: "128%",
+            height: "128%",
+            objectFit: "cover",
+            transform: "scale(1.04)",
+            position: "relative",
+          }}
+        />
+      </div>
     </div>
   );
 }
