@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { PremiumMoonPhase } from "@/components/astrology/PremiumMoonPhase";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
@@ -35,59 +36,6 @@ function toDottedDate(value: string) {
   if (/^\d{2}\.\d{2}\.\d{4}$/.test(value)) return value;
   const [year, month, day] = value.split("-");
   return day && month && year ? `${day}.${month}.${year}` : value;
-}
-
-// ── Moon SVG visual ───────────────────────────────────────────────────────────
-function MoonVisual({ phase }: { phase: number }) {
-  // phase 0 = new, 0.5 = full
-  // We draw a circle with a dynamic crescent/full shape
-  const isWaxing = phase < 0.5;
-  const phasePct = phase < 0.5 ? phase * 2 : (1 - phase) * 2; // 0-1 within half
-  const cx = 60, cy = 60, r = 46;
-  // The "cover" disc shifts from fully covering (new) to uncovering (full)
-  const coverX = isWaxing
-    ? cx - r + phasePct * r * 2
-    : cx - r + phasePct * r * 2;
-  const coverRx = r * Math.abs(1 - phasePct * 2 + 0.01);
-
-  const glowOpacity = 0.15 + phase * (phase < 0.5 ? phase : 1 - phase) * 0.8;
-
-  return (
-    <svg width={120} height={120} viewBox="0 0 120 120">
-      <defs>
-        <radialGradient id="moonGrad" cx="38%" cy="32%" r="60%">
-          <stop offset="0%" stopColor="rgba(220,190,130,.9)" />
-          <stop offset="60%" stopColor="rgba(160,120,80,.7)" />
-          <stop offset="100%" stopColor="rgba(60,30,100,.8)" />
-        </radialGradient>
-        <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="rgba(216,168,95,.35)" />
-          <stop offset="100%" stopColor="rgba(216,168,95,0)" />
-        </radialGradient>
-        <clipPath id="moonClip">
-          <circle cx={cx} cy={cy} r={r} />
-        </clipPath>
-      </defs>
-      {/* Glow */}
-      <circle cx={cx} cy={cy} r={r + 18} fill="url(#glowGrad)" opacity={glowOpacity} />
-      {/* Moon body */}
-      <circle cx={cx} cy={cy} r={r} fill="url(#moonGrad)" />
-      {/* Shadow overlay for crescent */}
-      <g clipPath="url(#moonClip)">
-        <ellipse
-          cx={coverX}
-          cy={cy}
-          rx={Math.max(coverRx, 0.5)}
-          ry={r}
-          fill="rgba(8,4,22,.9)"
-        />
-      </g>
-      {/* Subtle crater dots */}
-      {[{x:52,y:48,r:4},{x:68,y:62,r:2.5},{x:44,y:66,r:3}].map((c,i) => (
-        <circle key={i} cx={c.x} cy={c.y} r={c.r} fill="rgba(0,0,0,.18)" clipPath="url(#moonClip)" />
-      ))}
-    </svg>
-  );
 }
 
 // ── Energy bar ────────────────────────────────────────────────────────────────
@@ -274,7 +222,14 @@ export default function TodayPage() {
         <div data-tour="today-moon-card" style={{ border: "1px solid rgba(216,168,95,.25)", borderRadius: 24, background: "rgba(12,8,28,.65)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", padding: "20px 20px 18px", marginBottom: 14, overflow: "hidden", position: "relative" }}>
           <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
             <div style={{ flexShrink: 0 }}>
-              {moonInfo && <MoonVisual phase={moonInfo.phase} />}
+              {moonInfo && (
+                <PremiumMoonPhase
+                  phaseName={moonInfo.name.en}
+                  illumination={moonInfo.illumination}
+                  waxing={moonInfo.phase < 0.5}
+                  size="lg"
+                />
+              )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 6 }}>
