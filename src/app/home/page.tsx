@@ -12,7 +12,7 @@ import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/Fe
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchContext } from "@/lib/launch/launchContext";
 import { getPrelandContext, getPrelandExperience, getPrelandKind, parsePrelandContext, savePrelandContext, type PrelandContext, type PrelandExperience } from "@/lib/funnel/prelandContext";
-import { getDailyActionKey, getFirstSignalState, getTodayKey, getTodayPracticeReflection, getTodayProgress, markAffirmationRepeated, markDailyActionCompleted, type DailyAction, type DailyProgress, type FirstSignalState, type PracticeReflection } from "@/lib/progress/dailyProgress";
+import { DAILY_PROGRESS_UPDATED_EVENT, getCurrentStreak, getDailyActionKey, getFirstSignalState, getTodayKey, getTodayPracticeReflection, getTodayProgress, getWeeklyStreakState, isDailyActive, markAffirmationRepeated, markDailyActionCompleted, notifyDailyProgressUpdated, type DailyAction, type DailyProgress, type FirstSignalState, type PracticeReflection, type WeeklyStreakDay } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
 import { drawDailyCard as drawDailyCardForToday, getTodayDailyCard, type DailyCardState } from "@/lib/cards/dailyCardProgress";
 
@@ -72,11 +72,42 @@ function IconSpark() {
   );
 }
 
-function StreakChip({ completed }: { completed: boolean }) {
+function StreakChip({ streakDays, todayActive }: { streakDays: number; todayActive: boolean }) {
   const [open, setOpen] = useState(false);
+  const [isRu, setIsRu] = useState(false);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const popoverId = "home-streak-popover";
-  const streakDays = completed ? 1 : 0;
+
+  useEffect(() => {
+    setIsRu((navigator.language || "").toLowerCase().startsWith("ru"));
+  }, []);
+
+  const dayLabel = isRu
+    ? streakDays === 1
+      ? "день"
+      : streakDays > 1 && streakDays < 5
+        ? "дня"
+        : "дней"
+    : streakDays === 1
+      ? "day"
+      : "days";
+  const compactLabel = isRu ? `${streakDays}д` : `${streakDays}d`;
+  const title = isRu ? "Ваша серия" : "Your streak";
+  const intro = isRu
+    ? streakDays === 0
+      ? "Выполните хотя бы одно ежедневное упражнение, чтобы начать серию."
+      : "Выполняйте хотя бы одно ежедневное упражнение, чтобы поддерживать свою серию активных занятий."
+    : streakDays === 0
+      ? "Complete at least one daily action to start your streak."
+      : "Complete at least one daily action to keep your streak active.";
+  const status = isRu ? `Текущая серия: ${streakDays} ${dayLabel}` : `Current streak: ${streakDays} ${dayLabel}`;
+  const hint = isRu
+    ? todayActive
+      ? "Сегодня выполнено. Ваша серия сохранена."
+      : "Начните свою серию, выполнив сегодняшнюю практику."
+    : todayActive
+      ? "Today is active. Your streak is safe."
+      : "Start your streak by completing today’s practice.";
 
   useEffect(() => {
     if (!open) return;
@@ -98,29 +129,29 @@ function StreakChip({ completed }: { completed: boolean }) {
     <div ref={wrapperRef} style={{ position: "relative", flexShrink: 0 }}>
       <button
         type="button"
-        aria-label={`Your streak: ${streakDays} ${streakDays === 1 ? "day" : "days"}`}
+        aria-label={`${title}: ${streakDays} ${dayLabel}`}
         aria-expanded={open}
         aria-controls={popoverId}
         onClick={() => setOpen((value) => !value)}
         onMouseEnter={() => setOpen(true)}
         onFocus={() => setOpen(true)}
-        style={{ height: 30, borderRadius: 999, border: "1px solid rgba(216,168,95,.26)", background: completed ? "rgba(216,168,95,.12)" : "rgba(255,255,255,.05)", color: "var(--gold-2)", display: "inline-flex", alignItems: "center", gap: 5, padding: "0 9px", fontSize: 11, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer" }}
+        style={{ height: 30, borderRadius: 999, border: "1px solid rgba(216,168,95,.26)", background: todayActive ? "rgba(216,168,95,.12)" : "rgba(255,255,255,.05)", color: "var(--gold-2)", display: "inline-flex", alignItems: "center", gap: 5, padding: "0 9px", fontSize: 11, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer" }}
       >
-        <IconSpark /> {completed ? "1d" : "0d"}
+        <IconSpark /> {compactLabel}
       </button>
       {open && (
         <div
           id={popoverId}
           role="dialog"
-          aria-label="Your streak"
+          aria-label={title}
           onMouseLeave={() => setOpen(false)}
           style={{ position: "absolute", right: 0, top: 38, width: 260, zIndex: 30, border: "1px solid rgba(216,168,95,.30)", borderRadius: 18, background: "rgba(10,6,28,.98)", boxShadow: "0 18px 46px rgba(0,0,0,.48), 0 0 22px rgba(128,64,192,.18)", padding: 14, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}
         >
-          <p style={{ color: "var(--gold-2)", fontSize: 14, fontWeight: 900, marginBottom: 6 }}>Your streak</p>
-          <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 9 }}>Complete at least one daily practice to keep your streak active. A longer streak helps unlock deeper parts of your path.</p>
-          <p style={{ color: "var(--text)", fontSize: 12, fontWeight: 800, marginBottom: 5 }}>Current streak: {streakDays} {streakDays === 1 ? "day" : "days"}</p>
-          <p style={{ color: completed ? "var(--gold-2)" : "var(--muted-2)", fontSize: 12, lineHeight: 1.45 }}>{completed ? "Today is complete. Your streak is safe." : streakDays === 0 ? "Start your streak by completing today’s practice." : "Complete one practice today to keep your streak."}</p>
-          <button type="button" onClick={() => setOpen(false)} style={{ marginTop: 11, height: 34, borderRadius: 999, border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", padding: "0 14px", fontSize: 12, fontWeight: 900, fontFamily: "var(--font-ui)", cursor: "pointer" }}>Got it</button>
+          <p style={{ color: "var(--gold-2)", fontSize: 14, fontWeight: 900, marginBottom: 6 }}>{title}</p>
+          <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 9 }}>{intro}</p>
+          <p style={{ color: "var(--text)", fontSize: 12, fontWeight: 800, marginBottom: 5 }}>{status}</p>
+          <p style={{ color: todayActive ? "var(--gold-2)" : "var(--muted-2)", fontSize: 12, lineHeight: 1.45 }}>{hint}</p>
+          <button type="button" onClick={() => setOpen(false)} style={{ marginTop: 11, height: 34, borderRadius: 999, border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", padding: "0 14px", fontSize: 12, fontWeight: 900, fontFamily: "var(--font-ui)", cursor: "pointer" }}>{isRu ? "Понятно" : "Got it"}</button>
         </div>
       )}
     </div>
@@ -141,6 +172,9 @@ export default function HomePage() {
   const [firstSignalState, setFirstSignalState] = useState<FirstSignalState>({ unlocked: false, integrated: false, reflection: "", signalName: "Attention", responseAction: "" });
   const [activeAffirmation, setActiveAffirmation] = useState<ActiveAffirmation | null>(null);
   const [dailyCardState, setDailyCardState] = useState<DailyCardState>({ drawn: false, card: null, reflection: "" });
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [todayActive, setTodayActive] = useState(false);
+  const [weeklyStreak, setWeeklyStreak] = useState<WeeklyStreakDay[]>([]);
 
   const completedCount = dailyState.completedCount;
   const energy = deterministicEnergy(todayKey);
@@ -150,12 +184,6 @@ export default function HomePage() {
   const continuationText = prelandExperience?.shortText ?? "We’ve prepared your first soul pattern from your quiz answers.";
   const continuationLabel = prelandExperience?.label ?? "Past-life archetype: The Hidden Pattern";
   const continuationContext = prelandKind && prelandKind !== "generic" ? prelandKind : isPastLifeContext(launchContext) ? "pastlife" : "personal";
-
-  const weekDays = useMemo(() => {
-    const current = today.getDay();
-    const mondayOffset = current === 0 ? -6 : 1 - current;
-    return Array.from({ length: 7 }, (_, index) => addDays(today, mondayOffset + index));
-  }, [today]);
 
   const calendarDays = useMemo(() => Array.from({ length: 5 }, (_, index) => addDays(today, index - 1)), [today]);
 
@@ -184,10 +212,19 @@ export default function HomePage() {
     setLaunchContext(storedContext);
     setPrelandContext(storedPreland);
     setPrelandExperience(getPrelandExperience(storedPreland));
-    setDailyState(getTodayProgress(todayKey));
-    setPracticeReflection(getTodayPracticeReflection(todayKey));
-    setFirstSignalState(getFirstSignalState(todayKey));
-    setDailyCardState(getTodayDailyCard(todayKey));
+    function refreshProgressState() {
+      setDailyState(getTodayProgress(todayKey));
+      setPracticeReflection(getTodayPracticeReflection(todayKey));
+      setFirstSignalState(getFirstSignalState(todayKey));
+      setDailyCardState(getTodayDailyCard(todayKey));
+      setTodayActive(isDailyActive(todayKey));
+      setCurrentStreak(getCurrentStreak(today));
+      setWeeklyStreak(getWeeklyStreakState(today));
+    }
+
+    refreshProgressState();
+    window.addEventListener(DAILY_PROGRESS_UPDATED_EVENT, refreshProgressState);
+    window.addEventListener("storage", refreshProgressState);
     try {
       const activeAffirmations = JSON.parse(localStorage.getItem("eluna:activeAffirmations") || "[]");
       if (Array.isArray(activeAffirmations) && activeAffirmations[0]?.category && activeAffirmations[0]?.text) setActiveAffirmation(activeAffirmations[0]);
@@ -205,8 +242,10 @@ export default function HomePage() {
     });
     return () => {
       cancelled = true;
+      window.removeEventListener(DAILY_PROGRESS_UPDATED_EVENT, refreshProgressState);
+      window.removeEventListener("storage", refreshProgressState);
     };
-  }, [todayKey, router]);
+  }, [todayKey, today, router]);
 
   function setDailyField(field: DailyAction, value = true) {
     if (value) {
@@ -214,6 +253,7 @@ export default function HomePage() {
     } else {
       localStorage.setItem(getDailyActionKey(field, todayKey), "false");
       setDailyState(getTodayProgress(todayKey));
+      notifyDailyProgressUpdated();
     }
   }
 
@@ -274,7 +314,7 @@ export default function HomePage() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
             <GuideTopBarButton />
-            <StreakChip completed={dailyState.practiceCompleted} />
+            <StreakChip streakDays={currentStreak} todayActive={todayActive} />
             <PlanChip />
             <Link href="/profile" aria-label="Open profile" title="Profile" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(216,168,95,.36)", display: "grid", placeItems: "center", background: "rgba(255,255,255,.05)", color: "var(--gold-2)", flexShrink: 0 }}>
               <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
@@ -286,19 +326,16 @@ export default function HomePage() {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
             <div>
               <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 3 }}>Your streak</p>
-              <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.4 }}>{dailyState.practiceCompleted ? "Today is complete" : "Complete one practice to count today"}</p>
+              <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.4 }}>{todayActive ? "Today is active" : "Complete one daily action to count today"}</p>
             </div>
-            <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{dailyState.practiceCompleted ? "1 day" : "Start today"}</span>
+            <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{currentStreak > 0 ? `${currentStreak} ${currentStreak === 1 ? "day" : "days"}` : "Start today"}</span>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6 }}>
-            {weekDays.map((day) => {
-              const key = getTodayKey(day);
-              const isToday = key === todayKey;
-              const completed = getTodayProgress(key).practiceCompleted;
+            {weeklyStreak.map((day) => {
               return (
-                <div key={key} style={{ textAlign: "center", minWidth: 0 }}>
-                  <p style={{ fontSize: 10, color: isToday ? "var(--gold-2)" : "var(--muted-2)", fontWeight: isToday ? 800 : 600, marginBottom: 6 }}>{new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(day)}</p>
-                  <span style={{ width: 14, height: 14, borderRadius: "50%", margin: "0 auto", display: "block", border: `1px solid ${isToday ? "rgba(216,168,95,.85)" : "rgba(255,255,255,.16)"}`, background: completed ? "var(--gold-2)" : isToday ? "rgba(216,168,95,.14)" : "rgba(255,255,255,.04)", boxShadow: isToday ? "0 0 0 4px rgba(216,168,95,.08)" : "none" }} />
+                <div key={day.dateKey} style={{ textAlign: "center", minWidth: 0 }}>
+                  <p style={{ fontSize: 10, color: day.isToday ? "var(--gold-2)" : "var(--muted-2)", fontWeight: day.isToday ? 800 : 600, marginBottom: 6 }}>{day.label}</p>
+                  <span style={{ width: 14, height: 14, borderRadius: "50%", margin: "0 auto", display: "block", border: `1px solid ${day.isToday ? "rgba(216,168,95,.85)" : "rgba(255,255,255,.16)"}`, background: day.active ? "var(--gold-2)" : day.isToday ? "rgba(216,168,95,.14)" : "rgba(255,255,255,.04)", boxShadow: day.isToday ? "0 0 0 4px rgba(216,168,95,.08)" : "none" }} />
                 </div>
               );
             })}

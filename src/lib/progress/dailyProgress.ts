@@ -33,10 +33,25 @@ export type AffirmationRepeat = {
   category: string;
 };
 
+export type WeeklyStreakDay = {
+  dateKey: string;
+  label: string;
+  isToday: boolean;
+  active: boolean;
+};
+
 const actions: DailyAction[] = ["readingOpened", "practiceCompleted", "affirmationCompleted", "cardOpened"];
+export const DAILY_PROGRESS_UPDATED_EVENT = "eluna:daily-progress-updated";
+
+export function getLocalDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 export function getTodayKey(date = new Date()) {
-  return date.toISOString().slice(0, 10);
+  return getLocalDateKey(date);
 }
 
 export function getDailyActionKey(action: DailyAction, dayKey = getTodayKey()) {
@@ -63,14 +78,24 @@ function isBrowser() {
   return typeof window !== "undefined";
 }
 
+export function notifyDailyProgressUpdated() {
+  if (!isBrowser()) return;
+  window.dispatchEvent(new Event(DAILY_PROGRESS_UPDATED_EVENT));
+}
+
+function isTrueLike(value: string | null) {
+  if (!value) return false;
+  return ["true", "1", "yes", "completed"].includes(value.toLowerCase());
+}
+
 function readAction(action: DailyAction, dayKey: string) {
   if (!isBrowser()) return false;
-  if (localStorage.getItem(getDailyActionKey(action, dayKey)) === "true") return true;
+  if (isTrueLike(localStorage.getItem(getDailyActionKey(action, dayKey)))) return true;
 
   if (action === "practiceCompleted") {
     return (
-      localStorage.getItem(`eluna:daily:${dayKey}:reflectionCompleted`) === "true" ||
-      localStorage.getItem(`eluna:daily-practice:${dayKey}`) === "completed"
+      isTrueLike(localStorage.getItem(`eluna:daily:${dayKey}:reflectionCompleted`)) ||
+      isTrueLike(localStorage.getItem(`eluna:daily-practice:${dayKey}`))
     );
   }
 
@@ -101,7 +126,9 @@ export function markDailyActionCompleted(action: DailyAction, dayKey = getTodayK
     localStorage.setItem(`eluna:daily-practice:${dayKey}`, "completed");
   }
 
-  return getTodayProgress(dayKey);
+  const progress = getTodayProgress(dayKey);
+  notifyDailyProgressUpdated();
+  return progress;
 }
 
 export function markPracticeCompleted(input: Partial<PracticeReflection> = {}, dayKey = getTodayKey()) {
@@ -133,11 +160,12 @@ export function getTodayAffirmationRepeat(dayKey = getTodayKey()): AffirmationRe
 export function markGroundingCompleted(dayKey = getTodayKey()) {
   if (!isBrowser()) return false;
   localStorage.setItem(getGroundingCompletedKey(dayKey), "true");
+  notifyDailyProgressUpdated();
   return true;
 }
 
 export function isGroundingCompleted(dayKey = getTodayKey()) {
-  return isBrowser() && localStorage.getItem(getGroundingCompletedKey(dayKey)) === "true";
+  return isBrowser() && isTrueLike(localStorage.getItem(getGroundingCompletedKey(dayKey)));
 }
 
 export function getTodayPracticeReflection(dayKey = getTodayKey()): PracticeReflection {
@@ -158,11 +186,12 @@ export function saveFirstSignalReflection(text: string, dayKey = getTodayKey()) 
 export function markFirstSignalNextStepCompleted(dayKey = getTodayKey()) {
   if (!isBrowser()) return false;
   localStorage.setItem(getFirstSignalKey("nextStepCompleted", dayKey), "true");
+  notifyDailyProgressUpdated();
   return true;
 }
 
 export function isFirstSignalIntegrated(dayKey = getTodayKey()) {
-  return isBrowser() && localStorage.getItem(getFirstSignalKey("nextStepCompleted", dayKey)) === "true";
+  return isBrowser() && isTrueLike(localStorage.getItem(getFirstSignalKey("nextStepCompleted", dayKey)));
 }
 
 export function getFirstSignalState(dayKey = getTodayKey()): FirstSignalState {
@@ -242,4 +271,51 @@ export function getDeepPathState(dayKey = getTodayKey()): DeepPathState {
     text: "Complete one daily practice to open your first signal.",
     cta: "Locked",
   };
+}
+
+export function isDailyActive(dayKey = getTodayKey()) {
+  if (!isBrowser()) return false;
+  return (
+    readAction("practiceCompleted", dayKey) ||
+    readAction("affirmationCompleted", dayKey) ||
+    readAction("cardOpened", dayKey) ||
+    isGroundingCompleted(dayKey) ||
+    isFirstSignalIntegrated(dayKey)
+  );
+}
+
+function addDays(date: Date, amount: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + amount);
+  return next;
+}
+
+export function getCurrentStreak(date = new Date()) {
+  if (!isBrowser()) return 0;
+  if (!isDailyActive(getLocalDateKey(date))) return 0;
+
+  let streak = 0;
+  let cursor = new Date(date);
+
+  while (isDailyActive(getLocalDateKey(cursor))) {
+    streak += 1;
+    cursor = addDays(cursor, -1);
+  }
+
+  return streak;
+}
+
+export function getWeeklyStreakState(date = new Date()): WeeklyStreakDay[] {
+  const todayKey = getLocalDateKey(date);
+
+  return Array.from({ length: 7 }, (_, index) => {
+    const day = addDays(date, index - 6);
+    const dateKey = getLocalDateKey(day);
+    return {
+      dateKey,
+      label: new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(day),
+      isToday: dateKey === todayKey,
+      active: isDailyActive(dateKey),
+    };
+  });
 }
