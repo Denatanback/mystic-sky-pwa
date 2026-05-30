@@ -31,13 +31,13 @@ export default function SettingsPage() {
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const openNotifications = () => setFeatureInfo({
     title: "Soul reminders",
-    description: "Daily reading reminders and practice notifications will appear here.",
+    description: "This section is being prepared for the full release. For alpha, return to Home to continue your daily path.",
     statusLabel: "Coming soon",
     primaryActionLabel: "Got it",
   });
   const openPrivacy = () => setFeatureInfo({
     title: "Privacy controls",
-    description: "Account privacy, data export, and deeper account controls will live here as the product matures.",
+    description: "This section is being prepared for the full release. Account privacy, data export, and deeper controls should be connected before a wider launch.",
     statusLabel: "Coming soon",
     primaryActionLabel: "Got it",
   });

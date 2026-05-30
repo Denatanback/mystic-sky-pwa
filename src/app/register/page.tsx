@@ -119,7 +119,7 @@ export default function RegisterPage() {
   function socialSoon() {
     setFeatureInfo({
       title: "Social sign-in",
-      description: "Social sign-in is coming soon. Please use email for now.",
+      description: "This sign-in option is being prepared for the full release. Please use email for this alpha test.",
       statusLabel: "Coming soon",
       primaryActionLabel: "Got it",
     });

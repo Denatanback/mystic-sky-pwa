@@ -169,7 +169,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
         {notice === "legal" && (
           <div style={{ border: "1px solid rgba(216,168,95,.24)", borderRadius: 18, background: "rgba(216,168,95,.08)", padding: 13, marginBottom: 12 }}>
             <p style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 800, marginBottom: 4 }}>Legal pages are being prepared</p>
-            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Terms, billing details, and money-back policy pages should be connected before paid traffic launch.</p>
+            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>This section is being prepared for the full release. Terms, billing details, and money-back policy pages must be connected before paid traffic or live checkout.</p>
           </div>
         )}
 

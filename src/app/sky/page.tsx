@@ -117,13 +117,13 @@ export default function SkyPage() {
 
   const openReminders = () => setFeatureInfo({
     title: "Soul reminders",
-    description: "Daily reading reminders and practice notifications will appear here.",
+    description: "This section is being prepared for the full release. For alpha, return to Home to continue your daily path.",
     statusLabel: "Coming soon",
     primaryActionLabel: "Got it",
   });
   const openMoonMode = () => setFeatureInfo({
     title: "Moon Mode",
-    description: "Soon you’ll be able to switch between daily rhythm, night focus, and reflection modes.",
+    description: "This section is being prepared for the full release. It is not unlocked by payment in the current alpha build.",
     statusLabel: "Coming soon",
     primaryActionLabel: "Got it",
   });

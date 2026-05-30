@@ -259,7 +259,7 @@ export default function LoginPage() {
                   type="button"
                   disabled
                   aria-disabled="true"
-                  title="Social sign-in is coming soon"
+                  title="Social sign-in is being prepared for the full release"
                   style={{
                     height: 46, borderRadius: 999,
                     background: "rgba(255,255,255,.05)",
@@ -274,7 +274,7 @@ export default function LoginPage() {
               ))}
             </div>
             <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, textAlign: "center", marginTop: -4 }}>
-              Social sign-in is coming soon. Please use email for now.
+              Social sign-in is being prepared for the full release. Please use email for this alpha test.
             </p>
 
           </form>

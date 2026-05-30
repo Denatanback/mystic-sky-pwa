@@ -306,7 +306,7 @@ export default function HomePage() {
       <StarField />
       <div className="content">
         <header style={{ display: "grid", gridTemplateColumns: "40px 1fr auto", alignItems: "center", gap: 10, minHeight: 64, padding: "18px 0 10px" }}>
-          <button className="icon-btn" type="button" aria-label="Open menu" title="Menu" onClick={() => openComingSoon("eLuna menu", "A clearer app menu is coming soon. For now, use the bottom navigation to move through your path.")}>
+          <button className="icon-btn" type="button" aria-label="Open menu" title="Menu" onClick={() => openComingSoon("eLuna menu", "This section is being prepared for the full release. For alpha, use the bottom navigation to move through your path.")}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
           </button>
           <div style={{ display: "flex", justifyContent: "center", minWidth: 0 }}>
@@ -482,10 +482,13 @@ export default function HomePage() {
         <section style={{ ...cardStyle, marginTop: 14, padding: 16 }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--gold)", fontWeight: 800, marginBottom: 6 }}>Next unlocks</p>
           <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 10 }}>Return daily to reveal more of your map.</p>
+          {prelandKind === "pastlife" && (
+            <p style={{ color: "var(--gold-2)", fontSize: 12, lineHeight: 1.5, marginBottom: 10 }}>Your first Past Life signal is open today. A deeper layer unlocks on Day 3.</p>
+          )}
           {[
             ["Day 1", "First signal", firstSignalState.integrated ? "Integrated" : dailyState.practiceCompleted ? "Unlocked" : "Locked"],
             ["Day 2", "Personal card pattern", "Opens tomorrow"],
-            ["Day 3", "Past-life signal", "Locked"],
+            ["Day 3", prelandKind === "pastlife" ? "Deeper past-life signal" : "Past-life signal", "Locked"],
             ["Day 5", "Relationship insight", "Locked"],
             ["Day 7", "Weekly soul report", "Locked"],
           ].map(([day, label, status]) => (

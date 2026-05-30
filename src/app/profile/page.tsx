@@ -47,13 +47,13 @@ export default function ProfilePage() {
   const personalChartSub = zodiac.key === "unknown" ? "Complete setup to reveal your chart" : `Sun sign: ${zodiac.name}${zodiac.source === "manual" ? " · selected manually" : userProfile?.birthPlace ? ` · ${userProfile.birthPlace}` : ""}`;
   const openReminders = () => setFeatureInfo({
     title: "Soul reminders",
-    description: "Daily reading reminders and practice notifications will appear here.",
+    description: "This section is being prepared for the full release. For alpha, return to Home to continue your daily path.",
     statusLabel: "Coming soon",
     primaryActionLabel: "Got it",
   });
   const openPersonalChart = () => setFeatureInfo({
     title: "Personal Chart",
-    description: "Your personal chart will combine your birth data, daily rhythm, and completed practices into one evolving map.",
+    description: "This section is being prepared for the full release. For alpha, your zodiac sign, birth place, and setup are saved in Profile.",
     statusLabel: "Coming soon",
     primaryActionLabel: "Continue exploring",
   });

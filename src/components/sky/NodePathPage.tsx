@@ -131,7 +131,7 @@ export function NodePathPage({ discipline, disciplineKey, nodes, lines }: Props)
               </div>
             </div>
             <div style={{ padding: "0 16px 16px" }}>
-              <Link href={disciplineKey ? "/sky/" + disciplineKey + "/" + currentNode.num : "#"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, height: 48, borderRadius: 999, background: "linear-gradient(135deg, #7030b0 0%, #b03060 100%)", color: "#fff", fontSize: 15, fontWeight: 600, textDecoration: "none", boxShadow: "0 6px 22px rgba(110,30,130,.4)" }}>
+              <Link href={disciplineKey ? "/sky/" + disciplineKey + "/" + currentNode.num : "/sky"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, height: 48, borderRadius: 999, background: "linear-gradient(135deg, #7030b0 0%, #b03060 100%)", color: "#fff", fontSize: 15, fontWeight: 600, textDecoration: "none", boxShadow: "0 6px 22px rgba(110,30,130,.4)" }}>
                 {t.nodePath.openNode} <span style={{ opacity: 0.8 }}>&#8594;</span>
               </Link>
             </div>

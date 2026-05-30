@@ -14,14 +14,14 @@ export default function CardsPage() {
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const openCardLibrary = () => setFeatureInfo({
     title: "Card Library",
-    description: "Soon you’ll be able to revisit every card you’ve opened and track recurring symbols.",
+    description: "This section is being prepared for the full release. For alpha, use Today to open and reflect on your daily card.",
     statusLabel: "Coming soon",
     primaryActionLabel: "Open today’s card",
     primaryHref: "/cards",
   });
   const openSpreadInfo = (title: string) => setFeatureInfo({
     title,
-    description: "Guided card spreads are being prepared for deeper reflection. For now, open today's card and save your answer in the journal.",
+    description: "This section is being prepared for the full release. For alpha, open today's card and save your reflection from Today.",
     statusLabel: "Coming soon",
     primaryActionLabel: "Open today’s card",
     primaryHref: "/cards",
