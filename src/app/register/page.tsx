@@ -166,6 +166,13 @@ export default function RegisterPage() {
             <button type="button" onClick={socialSoon} style={{ height: 44, borderRadius: 999, border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.04)", color: "var(--muted)", fontWeight: 700 }}>Google</button>
             <button type="button" onClick={socialSoon} style={{ height: 44, borderRadius: 999, border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.04)", color: "var(--muted)", fontWeight: 700 }}>Apple</button>
           </div>
+          <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.5, textAlign: "center" }}>
+            By creating an account, you agree to eLuna&apos;s{" "}
+            <Link href="/terms" style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>Terms of Use</Link>
+            {" "}and acknowledge the{" "}
+            <Link href="/privacy" style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>Privacy Policy</Link>
+            .
+          </p>
         </div>
 
         <p style={{ textAlign: "center", fontSize: 13, color: "var(--muted-2)", marginTop: 20 }}>

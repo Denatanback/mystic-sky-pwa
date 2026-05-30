@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 type PlanId = "free" | "trial_3_day_1_usd" | "premium_monthly_2999" | "premium_3_month_5999" | "premium_6_month_8999";
@@ -110,7 +111,7 @@ function readPlan() {
 }
 
 export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescription, trialCtaLabel }: SubscriptionModalProps) {
-  const [notice, setNotice] = useState<"free" | "checkout-unavailable" | "legal" | null>(null);
+  const [notice, setNotice] = useState<"free" | "checkout-unavailable" | null>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<PlanId | null>(null);
   const currentPlan = readPlan();
   const hasPaidAccess = currentPlan === "trial" || currentPlan === "premium";
@@ -163,13 +164,6 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
             <p style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 800, marginBottom: 4 }}>Secure checkout is being prepared</p>
             <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Payment checkout needs to be connected before this plan can be purchased.</p>
             {selectedPlanId && <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, marginTop: 6 }}>Selected plan: {selectedPlanId}</p>}
-          </div>
-        )}
-
-        {notice === "legal" && (
-          <div style={{ border: "1px solid rgba(216,168,95,.24)", borderRadius: 18, background: "rgba(216,168,95,.08)", padding: 13, marginBottom: 12 }}>
-            <p style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 800, marginBottom: 4 }}>Legal pages are being prepared</p>
-            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>This section is being prepared for the full release. Terms, billing details, and money-back policy pages must be connected before paid traffic or live checkout.</p>
           </div>
         )}
 
@@ -257,6 +251,15 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
                   <button type="button" onClick={() => choosePlan(plan.id)} style={{ width: "100%", height: 44, borderRadius: 999, border: isFree ? "1px solid rgba(216,168,95,.30)" : "none", background: isFree ? "rgba(255,255,255,.05)" : "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: isFree ? "var(--gold-2)" : "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", boxShadow: isFree ? "none" : "0 8px 24px rgba(90,32,144,.38)" }}>
                     {isFree && currentPlan === "free" ? "Current plan" : isTrial && trialCtaLabel ? trialCtaLabel : plan.cta}
                   </button>
+                  {isTrial && (
+                    <p style={{ color: "var(--muted-2)", fontSize: 10.5, lineHeight: 1.45, textAlign: "center", marginTop: 8 }}>
+                      Trial and subscription terms are governed by{" "}
+                      <Link href="/billing" target="_blank" style={{ color: "var(--gold-2)", fontWeight: 900, textDecoration: "none" }}>
+                        Billing Terms
+                      </Link>
+                      .
+                    </p>
+                  )}
                 </article>
               </div>
             );
@@ -290,8 +293,13 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
           ))}
           <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, marginTop: 12 }}>Your plan can be managed from your account settings.</p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 10 }}>
-            {["Terms of Use", "Billing Terms", "Money-Back Policy"].map((label) => (
-              <button key={label} type="button" onClick={() => setNotice("legal")} style={{ border: "none", background: "transparent", padding: 0, color: "var(--gold-2)", fontSize: 11, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer" }}>{label}</button>
+            {[
+              ["Terms of Use", "/terms"],
+              ["Billing Terms", "/billing"],
+              ["Money-Back Policy", "/money-back"],
+              ["Privacy Policy", "/privacy"],
+            ].map(([label, href]) => (
+              <Link key={label} href={href} target="_blank" style={{ color: "var(--gold-2)", fontSize: 11, fontWeight: 800, textDecoration: "none" }}>{label}</Link>
             ))}
           </div>
           <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, marginTop: 12 }}>

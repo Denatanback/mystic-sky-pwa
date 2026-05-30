@@ -134,6 +134,26 @@ export default function SettingsPage() {
         </div>
 
         {/* Support */}
+        <div style={{ marginBottom: 12 }}>
+          <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", fontWeight: 600, marginBottom: 10 }}>Legal</p>
+          <div style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: "var(--radius-md)", overflow: "hidden" }}>
+            {[
+              ["Privacy Policy", "/privacy"],
+              ["Terms of Use", "/terms"],
+              ["Billing Terms", "/billing"],
+              ["Money-Back Policy", "/money-back"],
+            ].map(([label, href], index) => (
+              <Link key={label} href={href} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, minHeight: 44, padding: "0 16px", color: "var(--text)", textDecoration: "none", borderTop: index === 0 ? "none" : "1px solid rgba(255,255,255,.06)" }}>
+                <span style={{ fontSize: 13, fontWeight: 700 }}>{label}</span>
+                <span style={{ color: "var(--muted-2)" }}><IconChevron /></span>
+              </Link>
+            ))}
+          </div>
+          <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.5, marginTop: 10 }}>
+            eLuna guidance is for reflection and self-awareness. It is not medical, legal, financial, or crisis advice.
+          </p>
+        </div>
+
         <div>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", fontWeight: 600, marginBottom: 10 }}>Account & billing</p>
           <a href={SUPPORT_MAILTO} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: "transparent", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)", textDecoration: "none" }}>
