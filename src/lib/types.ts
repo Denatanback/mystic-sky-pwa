@@ -1,4 +1,4 @@
-export type PathId = "astrology" | "numerology" | "human-design" | "past-life" | "spiritual-practices";
+﻿export type PathId = "astrology" | "numerology" | "human-design" | "past-life" | "spiritual-practices" | "soulmate";
 
 export type SkyPath = {
   id: PathId;
@@ -20,7 +20,7 @@ export type SkyStar = {
   status: "opened" | "available" | "locked";
 };
 
-export type UserLevel = "Новичок" | "Искатель" | "Слушающий" | "Видящий" | "Проводник" | "Оракул";
+export type UserLevel = "Beginner" | "Seeker" | "Listener" | "Seer" | "Guide" | "Oracle";
 
 export type UserProfile = {
   name: string;
@@ -55,3 +55,5 @@ export type JournalEntry = {
   description: string;
   date: string;
 };
+
+

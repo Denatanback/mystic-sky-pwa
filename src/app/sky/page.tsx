@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
@@ -80,7 +79,6 @@ export default function SkyPage() {
   const [birthDate, setBirthDate] = useState<string | null>(null);
   const [completedCount, setCompletedCount] = useState(0);
   const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
-  const [howOpen, setHowOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<SkyNode | null>(null);
   const [paywallContext, setPaywallContext] = useState<{ title: string; description: string } | null>(null);
   const [prelandExperience, setPrelandExperience] = useState<PrelandExperience | null>(null);
@@ -162,50 +160,6 @@ export default function SkyPage() {
           </div>
         </header>
 
-        <section style={{ ...cardStyle, padding: "18px 18px", marginBottom: 12 }}>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", marginBottom: 8, lineHeight: 1.05 }}>Your Sky Map</h1>
-          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 16 }}>This map shows the areas of your path. Complete daily practices to unlock deeper insights.</p>
-          <Link href="/today" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minHeight: 44, padding: "0 18px", borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", textDecoration: "none", boxShadow: "0 8px 24px rgba(90,32,144,.38)" }}>
-            Continue today’s path
-          </Link>
-        </section>
-
-        <section style={{ ...cardStyle, padding: 15, marginBottom: 12 }}>
-          <button type="button" onClick={() => setHowOpen((value) => !value)} aria-expanded={howOpen} style={{ width: "100%", border: "none", background: "transparent", color: "inherit", padding: 0, display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
-            <div>
-              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 6 }}>How your Sky Map works</p>
-              <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>Your Sky Map is the long-term map of your personal path. Daily readings, practices, cards, and reflections open new points over time.</p>
-            </div>
-            <span style={{ color: "var(--gold-2)", fontSize: 18, lineHeight: 1 }}>{howOpen ? "−" : "+"}</span>
-          </button>
-          <div style={{ display: "grid", gap: 7, marginTop: 12 }}>
-            {["Complete daily actions to open signals.", "Signals unlock deeper nodes in your map.", "Premium nodes reveal past-life, relationship, and deeper chart insights."].map((item) => (
-              <p key={item} style={{ color: "var(--text)", fontSize: 12, lineHeight: 1.45 }}><span style={{ color: "var(--gold-2)", fontWeight: 900 }}>✦</span> {item}</p>
-            ))}
-          </div>
-          {howOpen && (
-            <div style={{ border: "1px solid rgba(216,168,95,.14)", borderRadius: 16, background: "rgba(255,255,255,.035)", padding: 12, marginTop: 12 }}>
-              <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 5 }}>Learn how unlocks work</p>
-              <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Free gives you a preview of your map. Trial and Premium unlock deeper nodes, full readings, reports, and saved progress.</p>
-            </div>
-          )}
-        </section>
-
-        <section style={{ ...cardStyle, padding: 13, marginBottom: 14 }}>
-          <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 10 }}>Node status legend</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-            {(["active", "available", "locked", "premium", "completed"] as SkyNodeStatus[]).map((status) => {
-              const copy = statusCopy(status);
-              return (
-                <div key={status} style={{ border: "1px solid rgba(216,168,95,.12)", borderRadius: 14, background: "rgba(255,255,255,.03)", padding: 9 }}>
-                  <p style={{ color: statusColor(status), fontSize: 11, fontWeight: 900, marginBottom: 3 }}>{copy.label}</p>
-                  <p style={{ color: "var(--muted-2)", fontSize: 10, lineHeight: 1.35 }}>{copy.text}</p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
         <div data-tour="sky-map-filters" style={{ display: "flex", gap: 8, marginBottom: 14 }}>
           {([
             ["all", "All"],
@@ -260,25 +214,6 @@ export default function SkyPage() {
           })}
         </div>
 
-        <section style={{ ...cardStyle, padding: 16, marginBottom: 14 }}>
-          <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 12 }}>Map nodes</p>
-          <div style={{ display: "grid", gap: 10 }}>
-            {nodes.map((node) => (
-              <button key={node.id} type="button" onClick={() => setSelectedNode(node)} style={{ border: "1px solid rgba(216,168,95,.14)", borderRadius: 18, background: "rgba(255,255,255,.035)", padding: 13, textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 6 }}>
-                  <div>
-                    <h2 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: 22, fontWeight: 600, lineHeight: 1.1 }}>{node.title}</h2>
-                    <p style={{ color: "var(--muted-2)", fontSize: 11, fontWeight: 800, marginTop: 4 }}>{node.category}</p>
-                  </div>
-                  <span style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 999, color: statusColor(node.status), background: "rgba(216,168,95,.07)", padding: "5px 9px", fontSize: 10, fontWeight: 900 }}>{statusCopy(node.status).label}</span>
-                </div>
-                <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 7 }}>{node.meaning}</p>
-                <p style={{ color: "var(--gold-2)", fontSize: 11, lineHeight: 1.4, fontWeight: 800 }}>{node.requirement}</p>
-              </button>
-            ))}
-          </div>
-        </section>
-
         <section style={{ ...cardStyle, padding: 16 }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", marginBottom: 10 }}>Current point</p>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -287,7 +222,7 @@ export default function SkyPage() {
             </div>
             <div style={{ flex: 1 }}>
               <p style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 2 }}>{activeNode.title}</p>
-              <p style={{ fontSize: 12, color: "var(--muted)" }}>Start here, then continue today's path to open deeper map areas.</p>
+              <p style={{ fontSize: 12, color: "var(--muted)" }}>Start here, then continue today\u2019s path to open deeper map areas.</p>
             </div>
             <button type="button" onClick={() => setSelectedNode(activeNode)} style={{ display: "flex", alignItems: "center", gap: 5, border: "1px solid rgba(216,168,95,.35)", borderRadius: 999, padding: "8px 14px", fontSize: 12, color: "var(--gold-2)", fontWeight: 800, background: "rgba(216,168,95,.06)", whiteSpace: "nowrap", flexShrink: 0, cursor: "pointer" }}>
               Open

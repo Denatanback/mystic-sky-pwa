@@ -1,14 +1,14 @@
-import type { UserProfile } from "@/lib/types";
+﻿import type { UserProfile } from "@/lib/types";
 
 export const mockUser: UserProfile = {
-  name: "Алина",
+  name: "Alina",
   birthDate: "14.06.1992",
   birthTime: "08:45",
-  birthPlace: "Москва, Россия",
-  level: "Искатель",
+  birthPlace: "Moscow, Russia",
+  level: "Seeker",
   levelProgress: 73,
   keys: 12,
-  subscriptionLabel: "Mystic Plus активен"
+  subscriptionLabel: "Mystic Plus active"
 };
 
-export const levels = ["Новичок", "Искатель", "Слушающий", "Видящий", "Проводник", "Оракул"] as const;
+export const levels = ["Beginner", "Seeker", "Listener", "Seer", "Guide", "Oracle"] as const;
