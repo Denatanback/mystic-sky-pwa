@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 type PlanId = "free" | "trial_3_day_1_usd" | "premium_monthly_2999" | "premium_3_month_5999" | "premium_6_month_8999";
 
@@ -113,8 +114,13 @@ function readPlan() {
 export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescription, trialCtaLabel }: SubscriptionModalProps) {
   const [notice, setNotice] = useState<"free" | "checkout-unavailable" | null>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<PlanId | null>(null);
+  const [mounted, setMounted] = useState(false);
   const currentPlan = readPlan();
   const hasPaidAccess = currentPlan === "trial" || currentPlan === "premium";
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isOpen || typeof document === "undefined") return;
@@ -127,7 +133,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   function choosePlan(planId: PlanId) {
     setSelectedPlanId(planId);
@@ -146,7 +152,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
     padding: 14,
   };
 
-  return (
+  return createPortal(
     <div
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
@@ -154,7 +160,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 100,
+        zIndex: 1000,
         display: "flex",
         alignItems: "flex-end",
         justifyContent: "center",
@@ -170,10 +176,14 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
         aria-modal="true"
         aria-labelledby="subscription-title"
         style={{
+          position: "relative",
+          zIndex: 1001,
           width: "min(100%, 430px)",
           maxHeight: "82dvh",
+          flexShrink: 0,
           overflowY: "auto",
           overscrollBehavior: "contain",
+          pointerEvents: "auto",
           borderRadius: "28px 28px 0 0",
           border: "1px solid rgba(216,168,95,.26)",
           borderBottom: "none",
@@ -354,6 +364,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
           </p>
         </section>
       </section>
-    </div>
+    </div>,
+    document.body
   );
 }
