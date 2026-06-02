@@ -56,3 +56,4 @@ skills-lock.json
 
 # Next.js specific
 next-env.d.ts
+.vercel

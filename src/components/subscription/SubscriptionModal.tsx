@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type PlanId = "free" | "trial_3_day_1_usd" | "premium_monthly_2999" | "premium_3_month_5999" | "premium_6_month_8999";
 
@@ -113,8 +113,32 @@ function readPlan() {
 export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescription, trialCtaLabel }: SubscriptionModalProps) {
   const [notice, setNotice] = useState<"free" | "checkout-unavailable" | null>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<PlanId | null>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
   const currentPlan = readPlan();
   const hasPaidAccess = currentPlan === "trial" || currentPlan === "premium";
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(min-width: 640px)");
+    const updateViewportMode = () => setIsDesktop(mediaQuery.matches);
+
+    updateViewportMode();
+    mediaQuery.addEventListener("change", updateViewportMode);
+
+    return () => mediaQuery.removeEventListener("change", updateViewportMode);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen || typeof document === "undefined") return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -136,9 +160,45 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
   };
 
   return (
-    <>
-      <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(4,2,14,.68)", backdropFilter: "blur(3px)", WebkitBackdropFilter: "blur(3px)", zIndex: 240 }} />
-      <section role="dialog" aria-modal="true" aria-labelledby="subscription-title" style={{ position: "fixed", left: "50%", bottom: 0, transform: "translateX(-50%)", width: "min(100vw, 430px)", maxHeight: "92dvh", overflowY: "auto", zIndex: 241, borderRadius: "26px 26px 0 0", border: "1px solid rgba(216,168,95,.26)", borderBottom: "none", background: "rgba(10,6,28,.98)", boxShadow: "0 -16px 54px rgba(0,0,0,.62), 0 0 32px rgba(128,64,192,.16)", padding: "10px 18px calc(96px + env(safe-area-inset-bottom))" }}>
+    <div
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 1000,
+        display: "flex",
+        alignItems: isDesktop ? "center" : "flex-end",
+        justifyContent: "center",
+        overflow: "hidden",
+        background: "rgba(4,2,14,.72)",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
+        padding: isDesktop ? 24 : "12px 12px 0",
+      }}
+    >
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="subscription-title"
+        style={{
+          width: isDesktop ? "min(100%, 460px)" : "min(100%, 430px)",
+          maxHeight: isDesktop ? "calc(100dvh - 48px)" : "calc(100dvh - 24px)",
+          overflowY: "auto",
+          overscrollBehavior: "contain",
+          borderRadius: isDesktop ? 28 : "28px 28px 0 0",
+          border: "1px solid rgba(216,168,95,.26)",
+          borderBottom: isDesktop ? "1px solid rgba(216,168,95,.26)" : "none",
+          background: "rgba(10,6,28,.98)",
+          boxShadow: isDesktop
+            ? "0 24px 70px rgba(0,0,0,.62), 0 0 32px rgba(128,64,192,.16)"
+            : "0 -16px 54px rgba(0,0,0,.62), 0 0 32px rgba(128,64,192,.16)",
+          padding: isDesktop
+            ? "18px 20px calc(28px + env(safe-area-inset-bottom))"
+            : "10px 18px calc(28px + env(safe-area-inset-bottom))",
+        }}
+      >
         <div style={{ display: "flex", justifyContent: "center", paddingBottom: 12 }}>
           <div style={{ width: 36, height: 4, borderRadius: 999, background: "rgba(255,255,255,.12)" }} />
         </div>
@@ -311,6 +371,6 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
           </p>
         </section>
       </section>
-    </>
+    </div>
   );
 }
