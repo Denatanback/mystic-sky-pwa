@@ -113,21 +113,8 @@ function readPlan() {
 export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescription, trialCtaLabel }: SubscriptionModalProps) {
   const [notice, setNotice] = useState<"free" | "checkout-unavailable" | null>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<PlanId | null>(null);
-  const [isDesktop, setIsDesktop] = useState(false);
   const currentPlan = readPlan();
   const hasPaidAccess = currentPlan === "trial" || currentPlan === "premium";
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const mediaQuery = window.matchMedia("(min-width: 640px)");
-    const updateViewportMode = () => setIsDesktop(mediaQuery.matches);
-
-    updateViewportMode();
-    mediaQuery.addEventListener("change", updateViewportMode);
-
-    return () => mediaQuery.removeEventListener("change", updateViewportMode);
-  }, []);
 
   useEffect(() => {
     if (!isOpen || typeof document === "undefined") return;
@@ -167,15 +154,15 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 1000,
+        zIndex: 100,
         display: "flex",
-        alignItems: isDesktop ? "center" : "flex-end",
+        alignItems: "flex-end",
         justifyContent: "center",
         overflow: "hidden",
         background: "rgba(4,2,14,.72)",
         backdropFilter: "blur(6px)",
         WebkitBackdropFilter: "blur(6px)",
-        padding: isDesktop ? 24 : "12px 12px 0",
+        padding: "0 10px",
       }}
     >
       <section
@@ -183,20 +170,16 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
         aria-modal="true"
         aria-labelledby="subscription-title"
         style={{
-          width: isDesktop ? "min(100%, 460px)" : "min(100%, 430px)",
-          maxHeight: isDesktop ? "calc(100dvh - 48px)" : "calc(100dvh - 24px)",
+          width: "min(100%, 430px)",
+          maxHeight: "82dvh",
           overflowY: "auto",
           overscrollBehavior: "contain",
-          borderRadius: isDesktop ? 28 : "28px 28px 0 0",
+          borderRadius: "28px 28px 0 0",
           border: "1px solid rgba(216,168,95,.26)",
-          borderBottom: isDesktop ? "1px solid rgba(216,168,95,.26)" : "none",
+          borderBottom: "none",
           background: "rgba(10,6,28,.98)",
-          boxShadow: isDesktop
-            ? "0 24px 70px rgba(0,0,0,.62), 0 0 32px rgba(128,64,192,.16)"
-            : "0 -16px 54px rgba(0,0,0,.62), 0 0 32px rgba(128,64,192,.16)",
-          padding: isDesktop
-            ? "18px 20px calc(28px + env(safe-area-inset-bottom))"
-            : "10px 18px calc(28px + env(safe-area-inset-bottom))",
+          boxShadow: "0 -16px 54px rgba(0,0,0,.62), 0 0 32px rgba(128,64,192,.16)",
+          padding: "10px 18px calc(32px + env(safe-area-inset-bottom))",
         }}
       >
         <div style={{ display: "flex", justifyContent: "center", paddingBottom: 12 }}>
