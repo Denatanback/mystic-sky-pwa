@@ -10,9 +10,9 @@ const DISCIPLINE = "spiritual";
 
 // ── Node 1: Meditation Timer ──────────────────────────────────────────────────
 const DURATIONS = [
-  { min: 3, label: { en: "3 min", ru: "3 мин" } },
-  { min: 5, label: { en: "5 min", ru: "5 мин" } },
-  { min: 10, label: { en: "10 min", ru: "10 мин" } },
+  { min: 3, label: { en: "3 min", ru: "3 min" } },
+  { min: 5, label: { en: "5 min", ru: "5 min" } },
+  { min: 10, label: { en: "10 min", ru: "10 min" } },
 ];
 
 function SpiritNode1() {
@@ -68,9 +68,9 @@ function SpiritNode1() {
 
   const BREATH_SCALE = { in: 1.25, hold: 1.25, out: 0.8 };
   const BREATH_LABEL = {
-    in:   { en: "Inhale", ru: "Вдох" },
-    hold: { en: "Hold",   ru: "Задержка" },
-    out:  { en: "Exhale", ru: "Выдох" },
+    in:   { en: "Inhale", ru: "Vdokh" },
+    hold: { en: "Hold",   ru: "Zaderzhka" },
+    out:  { en: "Exhale", ru: "Vydokh" },
   };
 
   const handleComplete = () => {
@@ -86,12 +86,12 @@ function SpiritNode1() {
             <div style={{ fontSize: 52, marginBottom: 10 }}>&#129497;</div>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
               {lang === "ru"
-                ? "Медитация — основа духовной практики. Даже несколько минут в тишине меняют качество всего дня."
+                ? "Meditatsiya — osnova dukhovnoy praktiki. Dazhe neskolko minut v tishine menyayut kachestvo vsego dnya."
                 : "Meditation is the foundation of spiritual practice. Even a few minutes of stillness transform the quality of your entire day."}
             </p>
           </div>
           <p style={{ fontSize: 12, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", textAlign: "center", marginBottom: 14 }}>
-            {lang === "ru" ? "ВЫБЕРИ ДЛИТЕЛЬНОСТЬ" : "CHOOSE DURATION"}
+            {lang === "ru" ? "VYBERI DLITELNOST" : "CHOOSE DURATION"}
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 24 }}>
             {DURATIONS.map(d => (
@@ -101,7 +101,7 @@ function SpiritNode1() {
             ))}
           </div>
           <button onClick={startMeditation} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Начать медитацию →" : "Begin meditation →"}
+            {lang === "ru" ? "Nachat meditatsiyu →" : "Begin meditation →"}
           </button>
         </div>
       )}
@@ -109,7 +109,7 @@ function SpiritNode1() {
       {phase === "active" && (
         <div style={{ textAlign: "center" }}>
           <p style={{ fontSize: 11, color: "var(--muted)", letterSpacing: ".08em", marginBottom: 30 }}>
-            {lang === "ru" ? "КОНЦЕНТРИРУЙСЯ НА ДЫХАНИИ" : "FOCUS ON YOUR BREATH"}
+            {lang === "ru" ? "KONTsENTRIRUYSYa NA DYKhANII" : "FOCUS ON YOUR BREATH"}
           </p>
 
           {/* Breathing orb */}
@@ -132,7 +132,7 @@ function SpiritNode1() {
 
           <button onClick={() => { clearInterval(intervalRef.current!); if (breathRef.current) clearTimeout(breathRef.current); setPhase("done"); }}
             style={{ padding: "10px 24px", borderRadius: 999, border: "1px solid rgba(255,255,255,.15)", background: "rgba(255,255,255,.04)", color: "var(--muted)", fontSize: 13, cursor: "pointer" }}>
-            {lang === "ru" ? "Остановить" : "Stop"}
+            {lang === "ru" ? "Ostanovit" : "Stop"}
           </button>
         </div>
       )}
@@ -141,15 +141,15 @@ function SpiritNode1() {
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 60, marginBottom: 14 }}>&#10024;</div>
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 10 }}>
-            {lang === "ru" ? "Отлично сделано" : "Well done"}
+            {lang === "ru" ? "Otlichno sdelano" : "Well done"}
           </h3>
           <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 24 }}>
             {lang === "ru"
-              ? `Ты медитировал ${chosen} минут. Заметь, как ты себя чувствуешь прямо сейчас — это и есть твоя практика.`
+              ? `Ty meditiroval ${chosen} minut. Zamet, kak ty sebya chuvstvuesh pryamo seychas — eto i est tvoya praktika.`
               : `You meditated for ${chosen} minutes. Notice how you feel right now — this is your practice.`}
           </p>
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
-            {lang === "ru" ? "Завершить узел ✓" : "Complete node ✓"}
+            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       )}
@@ -166,33 +166,33 @@ const BREATH_TECHS: Record<BreathTech, {
   cycles: number;
 }> = {
   "478": {
-    name: { en: "4-7-8 Breathing", ru: "Дыхание 4-7-8" },
-    desc: { en: "A calming technique that activates your parasympathetic system. Excellent for stress and sleep.", ru: "Успокаивающая техника, активирует парасимпатическую нервную систему. Отлично при стрессе и для сна." },
+    name: { en: "4-7-8 Breathing", ru: "Dykhanie 4-7-8" },
+    desc: { en: "A calming technique that activates your parasympathetic system. Excellent for stress and sleep.", ru: "Uspokaivayuschaya tekhnika, aktiviruet parasimpaticheskuyu nervnuyu sistemu. Otlichno pri stresse i dlya sna." },
     phases: [
-      { label: { en: "Inhale", ru: "Вдох" }, duration: 4 },
-      { label: { en: "Hold", ru: "Задержка" }, duration: 7 },
-      { label: { en: "Exhale", ru: "Выдох" }, duration: 8 },
+      { label: { en: "Inhale", ru: "Vdokh" }, duration: 4 },
+      { label: { en: "Hold", ru: "Zaderzhka" }, duration: 7 },
+      { label: { en: "Exhale", ru: "Vydokh" }, duration: 8 },
     ],
     cycles: 4,
   },
   box: {
-    name: { en: "Box Breathing", ru: "Квадратное дыхание" },
-    desc: { en: "Used by Navy SEALs and athletes. Balances the nervous system and sharpens focus.", ru: "Используется спецназом и спортсменами. Балансирует нервную систему и обостряет фокус." },
+    name: { en: "Box Breathing", ru: "Kvadratnoe dykhanie" },
+    desc: { en: "Used by Navy SEALs and athletes. Balances the nervous system and sharpens focus.", ru: "Ispolzuetsya spetsnazom i sportsmenami. Balansiruet nervnuyu sistemu i obostryaet fokus." },
     phases: [
-      { label: { en: "Inhale", ru: "Вдох" }, duration: 4 },
-      { label: { en: "Hold", ru: "Задержка" }, duration: 4 },
-      { label: { en: "Exhale", ru: "Выдох" }, duration: 4 },
-      { label: { en: "Hold", ru: "Задержка" }, duration: 4 },
+      { label: { en: "Inhale", ru: "Vdokh" }, duration: 4 },
+      { label: { en: "Hold", ru: "Zaderzhka" }, duration: 4 },
+      { label: { en: "Exhale", ru: "Vydokh" }, duration: 4 },
+      { label: { en: "Hold", ru: "Zaderzhka" }, duration: 4 },
     ],
     cycles: 4,
   },
   energising: {
-    name: { en: "Energising Breath", ru: "Заряжающее дыхание" },
-    desc: { en: "Quick inhales with extended exhale to increase oxygen and energy. Morning practice.", ru: "Быстрые вдохи с удлинённым выдохом. Увеличивает кислород и энергию. Утренняя практика." },
+    name: { en: "Energising Breath", ru: "Zaryazhayuschee dykhanie" },
+    desc: { en: "Quick inhales with extended exhale to increase oxygen and energy. Morning practice.", ru: "Bystrye vdokhi s udlinennym vydokhom. Uvelichivaet kislorod i energiyu. Utrennyaya praktika." },
     phases: [
-      { label: { en: "Quick Inhale", ru: "Быстрый вдох" }, duration: 2 },
-      { label: { en: "Quick Inhale", ru: "Быстрый вдох" }, duration: 2 },
-      { label: { en: "Long Exhale", ru: "Длинный выдох" }, duration: 6 },
+      { label: { en: "Quick Inhale", ru: "Bystryy vdokh" }, duration: 2 },
+      { label: { en: "Quick Inhale", ru: "Bystryy vdokh" }, duration: 2 },
+      { label: { en: "Long Exhale", ru: "Dlinnyy vydokh" }, duration: 6 },
     ],
     cycles: 5,
   },
@@ -260,7 +260,7 @@ function SpiritNode2() {
             <div style={{ fontSize: 48, marginBottom: 8 }}>&#128065;</div>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
               {lang === "ru"
-                ? "Дыхание — самый быстрый способ изменить состояние. Каждая техника создаёт разный эффект."
+                ? "Dykhanie — samyy bystryy sposob izmenit sostoyanie. Kazhdaya tekhnika sozdaet raznyy effekt."
                 : "Breathing is the fastest way to change your state. Each technique creates a different effect."}
             </p>
           </div>
@@ -274,7 +274,7 @@ function SpiritNode2() {
             ))}
           </div>
           <button onClick={startBreath} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Начать практику →" : "Begin practice →"}
+            {lang === "ru" ? "Nachat praktiku →" : "Begin practice →"}
           </button>
         </div>
       )}
@@ -285,7 +285,7 @@ function SpiritNode2() {
             {lang === "ru" ? tech.name.ru : tech.name.en}
           </p>
           <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 24 }}>
-            {lang === "ru" ? `Цикл ${cycleNum} из ${totalCycles}` : `Cycle ${cycleNum} of ${totalCycles}`}
+            {lang === "ru" ? `Tsikl ${cycleNum} iz ${totalCycles}` : `Cycle ${cycleNum} of ${totalCycles}`}
           </p>
 
           {/* Breathing circle */}
@@ -321,15 +321,15 @@ function SpiritNode2() {
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 60, marginBottom: 14 }}>&#10024;</div>
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 10 }}>
-            {lang === "ru" ? "Практика завершена" : "Practice complete"}
+            {lang === "ru" ? "Praktika zavershena" : "Practice complete"}
           </h3>
           <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 24 }}>
             {lang === "ru"
-              ? `${totalCycles} циклов ${lang === "ru" ? tech.name.ru : tech.name.en} завершено. Как твоё тело чувствует себя сейчас?`
+              ? `${totalCycles} tsiklov ${lang === "ru" ? tech.name.ru : tech.name.en} zaversheno. Kak tvoe telo chuvstvuet sebya seychas?`
               : `${totalCycles} cycles of ${tech.name.en} complete. How does your body feel right now?`}
           </p>
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
-            {lang === "ru" ? "Завершить узел ✓" : "Complete node ✓"}
+            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       )}
@@ -339,8 +339,8 @@ function SpiritNode2() {
 
 // ── Router ────────────────────────────────────────────────────────────────────
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
-  "1": { en: "Meditation",  ru: "Медитация", sub: { en: "Foundation",  ru: "Основа" } },
-  "2": { en: "Breathwork",  ru: "Дыхание",   sub: { en: "Energy",      ru: "Энергия" } },
+  "1": { en: "Meditation",  ru: "Meditatsiya", sub: { en: "Foundation",  ru: "Osnova" } },
+  "2": { en: "Breathwork",  ru: "Dykhanie",   sub: { en: "Energy",      ru: "Energiya" } },
 };
 
 export default function SpiritualNodePage() {
@@ -359,7 +359,7 @@ export default function SpiritualNodePage() {
     <NodePage title={lang === "ru" ? meta.ru : meta.en} subtitle={lang === "ru" ? meta.sub.ru : meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/spiritual">
       <div style={{ textAlign: "center", padding: "40px 16px" }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
-        <p style={{ color: "var(--muted)" }}>{lang === "ru" ? "Завершите предыдущий узел" : "Complete the previous node first"}</p>
+        <p style={{ color: "var(--muted)" }}>{lang === "ru" ? "Zavershite predyduschiy uzel" : "Complete the previous node first"}</p>
       </div>
     </NodePage>
   );

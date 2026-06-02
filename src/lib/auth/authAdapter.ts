@@ -37,8 +37,8 @@ type AuthResult = {
   error?: string;
 };
 
-const genericAuthError = "Не удалось выполнить вход. Проверь email и пароль.";
-const genericRegisterError = "Не удалось создать аккаунт. Попробуй ещё раз.";
+const genericAuthError = "We could not sign you in. Check your email and password.";
+const genericRegisterError = "We could not create your account. Please try again.";
 const genericResetError = "We could not send a reset link. Please try again.";
 const genericUpdatePasswordError = "We could not update your password. Please try again.";
 export const resetPasswordSuccessMessage = "If an account exists for this email, we’ll send a reset link.";
@@ -46,10 +46,10 @@ export const resetPasswordSuccessMessage = "If an account exists for this email,
 function friendlyError(message: string | undefined, fallback: string) {
   if (!message) return fallback;
   const normalized = message.toLowerCase();
-  if (normalized.includes("invalid login credentials")) return "Неверный email или пароль.";
-  if (normalized.includes("user already registered")) return "Аккаунт с этим email уже существует.";
-  if (normalized.includes("password")) return "Проверь пароль: он должен соответствовать требованиям безопасности.";
-  if (normalized.includes("email")) return "Проверь email и попробуй снова.";
+  if (normalized.includes("invalid login credentials")) return "Incorrect email or password.";
+  if (normalized.includes("user already registered")) return "An account with this email already exists.";
+  if (normalized.includes("password")) return "Check your password: it must meet the security requirements.";
+  if (normalized.includes("email")) return "Check your email and try again.";
   return fallback;
 }
 
@@ -85,7 +85,7 @@ function mapSupabaseProfile(user: {
       };
   return {
     id: user.id,
-    name: profile?.full_name || metadataName || "Путник",
+    name: profile?.full_name || metadataName || "Traveler",
     email: user.email ?? "",
     gender: typeof metadata.gender === "string" && (metadata.gender === "female" || metadata.gender === "male") ? metadata.gender : "",
     birthDate: typeof metadata.birth_date === "string" ? metadata.birth_date : typeof metadata.birthDate === "string" ? metadata.birthDate : typeof metadata.dateOfBirth === "string" ? metadata.dateOfBirth : typeof metadata.date_of_birth === "string" ? metadata.date_of_birth : "",
@@ -108,7 +108,7 @@ export async function signIn(input: LoginInput): Promise<AuthResult> {
 
   if (!isSupabaseAuthEnabled() || !supabase) {
     const rawName = email.split("@")[0].replace(/[._-]/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
-    setMockUser({ name: rawName || "Путник", email });
+    setMockUser({ name: rawName || "Traveler", email });
     return { user: mapMockUser(getMockUser()) };
   }
 
@@ -271,7 +271,7 @@ export async function upsertProfile(input: {
   });
 
   if (error) {
-    return { error: "Аккаунт создан, но профиль не удалось сохранить. Попробуй войти ещё раз." };
+    return { error: "Account created, but we could not save your profile. Please try signing in again." };
   }
 
   return {};

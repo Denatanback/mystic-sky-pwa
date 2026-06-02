@@ -74,40 +74,19 @@ function IconSpark() {
 
 function StreakChip({ streakDays, todayActive }: { streakDays: number; todayActive: boolean }) {
   const [open, setOpen] = useState(false);
-  const [isRu, setIsRu] = useState(false);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const popoverId = "home-streak-popover";
 
-  useEffect(() => {
-    setIsRu((navigator.language || "").toLowerCase().startsWith("ru"));
-  }, []);
-
-  const dayLabel = isRu
-    ? streakDays === 1
-      ? "день"
-      : streakDays > 1 && streakDays < 5
-        ? "дня"
-        : "дней"
-    : streakDays === 1
-      ? "day"
-      : "days";
-  const compactLabel = isRu ? `${streakDays}д` : `${streakDays}d`;
-  const title = isRu ? "Ваша серия" : "Your streak";
-  const intro = isRu
-    ? streakDays === 0
-      ? "Выполните хотя бы одно ежедневное упражнение, чтобы начать серию."
-      : "Выполняйте хотя бы одно ежедневное упражнение, чтобы поддерживать свою серию активных занятий."
-    : streakDays === 0
-      ? "Complete at least one daily action to start your streak."
-      : "Complete at least one daily action to keep your streak active.";
-  const status = isRu ? `Текущая серия: ${streakDays} ${dayLabel}` : `Current streak: ${streakDays} ${dayLabel}`;
-  const hint = isRu
-    ? todayActive
-      ? "Сегодня выполнено. Ваша серия сохранена."
-      : "Начните свою серию, выполнив сегодняшнюю практику."
-    : todayActive
-      ? "Today is active. Your streak is safe."
-      : "Start your streak by completing today’s practice.";
+  const dayLabel = streakDays === 1 ? "day" : "days";
+  const compactLabel = `${streakDays}d`;
+  const title = "Your streak";
+  const intro = streakDays === 0
+    ? "Complete at least one daily action to start your streak."
+    : "Complete at least one daily action to keep your streak active.";
+  const status = `Current streak: ${streakDays} ${dayLabel}`;
+  const hint = todayActive
+    ? "Today is complete. Your streak is safe."
+    : "Start your streak by completing today’s practice.";
 
   useEffect(() => {
     if (!open) return;
@@ -151,7 +130,7 @@ function StreakChip({ streakDays, todayActive }: { streakDays: number; todayActi
           <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 9 }}>{intro}</p>
           <p style={{ color: "var(--text)", fontSize: 12, fontWeight: 800, marginBottom: 5 }}>{status}</p>
           <p style={{ color: todayActive ? "var(--gold-2)" : "var(--muted-2)", fontSize: 12, lineHeight: 1.45 }}>{hint}</p>
-          <button type="button" onClick={() => setOpen(false)} style={{ marginTop: 11, height: 34, borderRadius: 999, border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", padding: "0 14px", fontSize: 12, fontWeight: 900, fontFamily: "var(--font-ui)", cursor: "pointer" }}>{isRu ? "Понятно" : "Got it"}</button>
+          <button type="button" onClick={() => setOpen(false)} style={{ marginTop: 11, height: 34, borderRadius: 999, border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", padding: "0 14px", fontSize: 12, fontWeight: 900, fontFamily: "var(--font-ui)", cursor: "pointer" }}>Got it</button>
         </div>
       )}
     </div>

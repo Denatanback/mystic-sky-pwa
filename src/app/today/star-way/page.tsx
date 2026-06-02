@@ -6,17 +6,17 @@ import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 
-// Constellation nodes for "Астрология" deep path
+// Constellation nodes for the Astrology deep path
 // Arranged like a necklace/constellation around center
 const NODES = [
-  { id: "sun",     num: 1, label: "Солнце",      sub: "Начало пути",      x: 50,  y: 85, current: true,  done: false },
-  { id: "moon",    num: 2, label: "Луна",         sub: "Эмоции",           x: 18,  y: 65, current: false, done: false },
-  { id: "aspects1",num: 3, label: "Аспекты",      sub: "Гармония",         x: 82,  y: 58, current: false, done: false },
-  { id: "house",   num: 4, label: "Дом",          sub: "Среда жизни",      x: 12,  y: 35, current: false, done: false },
-  { id: "planets", num: 5, label: "Планеты",      sub: "Энергии",          x: 50,  y: 22, current: false, done: false },
-  { id: "transit", num: 6, label: "Транзиты",     sub: "Синхронизация",    x: 82,  y: 34, current: false, done: false },
-  { id: "aspects2",num: 7, label: "Аспекты",      sub: "Структура",        x: 22,  y: 14, current: false, done: false },
-  { id: "cycle",   num: 8, label: "Цикличность",  sub: "Целостность",      x: 72,  y: 10, current: false, done: false },
+  { id: "sun",     num: 1, label: "Sun",      sub: "Beginning",       x: 50,  y: 85, current: true,  done: false },
+  { id: "moon",    num: 2, label: "Moon",     sub: "Emotions",        x: 18,  y: 65, current: false, done: false },
+  { id: "aspects1",num: 3, label: "Aspects",  sub: "Harmony",         x: 82,  y: 58, current: false, done: false },
+  { id: "house",   num: 4, label: "House",    sub: "Life area",       x: 12,  y: 35, current: false, done: false },
+  { id: "planets", num: 5, label: "Planets",  sub: "Energies",        x: 50,  y: 22, current: false, done: false },
+  { id: "transit", num: 6, label: "Transits", sub: "Synchronicity",    x: 82,  y: 34, current: false, done: false },
+  { id: "aspects2",num: 7, label: "Aspects",  sub: "Structure",       x: 22,  y: 14, current: false, done: false },
+  { id: "cycle",   num: 8, label: "Cycles",   sub: "Wholeness",       x: 72,  y: 10, current: false, done: false },
 ];
 
 // Line connections (pairs of node indices)
@@ -38,17 +38,17 @@ export default function StarWayPage() {
 
         {/* Header */}
         <header style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-          <Link href="/today" className="icon-btn" aria-label="Назад">
+          <Link href="/today" className="icon-btn" aria-label="Back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5m0 0 7 7m-7-7 7-7"/>
             </svg>
           </Link>
           <div>
             <p style={{ fontSize: 11, color: "var(--gold)", textTransform: "uppercase", letterSpacing: 1.2 }}>
-              Астрология · приближённое созвездие
+              Astrology · approximate constellation
             </p>
             <h1 style={{ fontFamily: "var(--font-serif)", fontSize: 28, fontWeight: 400, lineHeight: 1.1 }}>
-              Глубокий путь
+              Deep Path
             </h1>
           </div>
         </header>
@@ -154,7 +154,7 @@ export default function StarWayPage() {
           borderRadius: 20, border: "1px solid rgba(216,168,95,.2)",
           background: "rgba(12,10,30,.9)", padding: 16, marginBottom: 12,
         }}>
-          <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--gold)", marginBottom: 8 }}>Текущий узел</p>
+          <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--gold)", marginBottom: 8 }}>Current node</p>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <div style={{
               width: 52, height: 52, borderRadius: "50%",
@@ -168,11 +168,11 @@ export default function StarWayPage() {
               </svg>
             </div>
             <div style={{ flex: 1 }}>
-              <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 400 }}>Луна</h3>
-              <p style={{ fontSize: 13, color: "var(--muted)", marginTop: 3 }}>Эмоции, интуиция, внутренний мир</p>
+              <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 400 }}>Moon</h3>
+              <p style={{ fontSize: 13, color: "var(--muted)", marginTop: 3 }}>Emotions, intuition, inner world</p>
             </div>
             <button type="button" onClick={openPreparingNode} className="btn primary" style={{ width: "auto", padding: "0 18px", height: 40, fontSize: 13 }}>
-              Открыть узел
+              Open node
             </button>
           </div>
         </div>
@@ -185,20 +185,20 @@ export default function StarWayPage() {
           marginBottom: 16,
         }}>
           <div>
-            <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1, color: "var(--muted)", marginBottom: 4 }}>Следующий узел</p>
-            <p style={{ fontSize: 15, color: "var(--text)" }}>Планеты</p>
-            <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>Символы энергий и планет</p>
+            <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1, color: "var(--muted)", marginBottom: 4 }}>Next node</p>
+            <p style={{ fontSize: 15, color: "var(--text)" }}>Planets</p>
+            <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>Planetary symbols and energies</p>
           </div>
           <span style={{ fontSize: 12, color: "var(--muted-2)" }}>→</span>
         </div>
 
         {/* Progress */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1 }}>Прогресс пути</span>
+          <span style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1 }}>Path progress</span>
           <div className="progress-bar" style={{ flex: 1 }}>
             <span style={{ width: "25%" }} />
           </div>
-          <span style={{ fontSize: 12, color: "var(--gold-2)", fontWeight: 600 }}>2 из 8 узлов</span>
+          <span style={{ fontSize: 12, color: "var(--gold-2)", fontWeight: 600 }}>2 of 8 nodes</span>
         </div>
 
       </div>

@@ -20,7 +20,7 @@ export type SkyStar = {
   status: "opened" | "available" | "locked";
 };
 
-export type UserLevel = "Новичок" | "Искатель" | "Слушающий" | "Видящий" | "Проводник" | "Оракул";
+export type UserLevel = "Newcomer" | "Seeker" | "Listener" | "Seer" | "Guide" | "Oracle";
 
 export type UserProfile = {
   name: string;

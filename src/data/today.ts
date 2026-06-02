@@ -1,29 +1,29 @@
 export const todayDashboard = {
-  horoscopeTitle: "Гороскоп",
+  horoscopeTitle: "Horoscope",
   horoscopeText:
-    "Сегодня тебе будет легче увидеть, кто говорит с тобой честно, а кто просто тянет твое время. Не игнорируй первое ощущение: оно подскажет, куда идти дальше.",
-  available: ["Дневной прогноз", "Карты ассоциаций", "Ритуал дня"],
+    "Today it may be easier to notice who speaks honestly with you and who only pulls your attention away. Do not ignore the first feeling; it can show where to move next.",
+  available: ["Daily forecast", "Association cards", "Ritual of the day"],
   nextOpening: {
-    title: "Новая звезда",
-    path: "Астрологии"
+    title: "New star",
+    path: "Astrology"
   },
-  guidePhrase: "Я подготовил для тебя правильное начало дня. Доверься своим звездам."
+  guidePhrase: "I prepared a gentle start for your day. Trust your stars."
 };
 
 export const dailyPathSteps = [
   {
     id: "forecast",
-    title: "Дневной прогноз",
-    description: "Начни с прогноза дня. Он покажет, где сегодня не стоит спорить с собой."
+    title: "Daily forecast",
+    description: "Start with today’s forecast. It shows where not to argue with yourself today."
   },
   {
     id: "association",
-    title: "Карты ассоциаций",
-    description: "Выбери образ, который первым откликнется на вопрос дня."
+    title: "Association cards",
+    description: "Choose the image that answers the question of the day first."
   },
   {
     id: "ritual",
-    title: "Ритуал дня",
-    description: "Сделай простое действие, чтобы закрепить намерение."
+    title: "Ritual of the day",
+    description: "Take one simple action to anchor your intention."
   }
 ];

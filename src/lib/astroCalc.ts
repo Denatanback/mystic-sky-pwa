@@ -12,18 +12,18 @@ export type ZodiacSign = {
 };
 
 export const ZODIAC: ZodiacSign[] = [
-  { key: "aries",       en: "Aries",       ru: "Овен",        symbol: "♈", element: "fire",  quality: "cardinal", ruling: "Mars",    color: "#e84040" },
-  { key: "taurus",      en: "Taurus",      ru: "Телец",       symbol: "♉", element: "earth", quality: "fixed",    ruling: "Venus",   color: "#7ab04a" },
-  { key: "gemini",      en: "Gemini",      ru: "Близнецы",    symbol: "♊", element: "air",   quality: "mutable",  ruling: "Mercury", color: "#d8a85f" },
-  { key: "cancer",      en: "Cancer",      ru: "Рак",         symbol: "♋", element: "water", quality: "cardinal", ruling: "Moon",    color: "#7ab8d8" },
-  { key: "leo",         en: "Leo",         ru: "Лев",         symbol: "♌", element: "fire",  quality: "fixed",    ruling: "Sun",     color: "#f0b03a" },
-  { key: "virgo",       en: "Virgo",       ru: "Дева",        symbol: "♍", element: "earth", quality: "mutable",  ruling: "Mercury", color: "#8ab87a" },
-  { key: "libra",       en: "Libra",       ru: "Весы",        symbol: "♎", element: "air",   quality: "cardinal", ruling: "Venus",   color: "#c0a0d8" },
-  { key: "scorpio",     en: "Scorpio",     ru: "Скорпион",    symbol: "♏", element: "water", quality: "fixed",    ruling: "Pluto",   color: "#7040b0" },
-  { key: "sagittarius", en: "Sagittarius", ru: "Стрелец",     symbol: "♐", element: "fire",  quality: "mutable",  ruling: "Jupiter", color: "#d05030" },
-  { key: "capricorn",   en: "Capricorn",   ru: "Козерог",     symbol: "♑", element: "earth", quality: "cardinal", ruling: "Saturn",  color: "#708090" },
-  { key: "aquarius",    en: "Aquarius",    ru: "Водолей",     symbol: "♒", element: "air",   quality: "fixed",    ruling: "Uranus",  color: "#4090c0" },
-  { key: "pisces",      en: "Pisces",      ru: "Рыбы",        symbol: "♓", element: "water", quality: "mutable",  ruling: "Neptune", color: "#6070c8" },
+  { key: "aries",       en: "Aries",       ru: "Oven",        symbol: "♈", element: "fire",  quality: "cardinal", ruling: "Mars",    color: "#e84040" },
+  { key: "taurus",      en: "Taurus",      ru: "Telets",       symbol: "♉", element: "earth", quality: "fixed",    ruling: "Venus",   color: "#7ab04a" },
+  { key: "gemini",      en: "Gemini",      ru: "Bliznetsy",    symbol: "♊", element: "air",   quality: "mutable",  ruling: "Mercury", color: "#d8a85f" },
+  { key: "cancer",      en: "Cancer",      ru: "Rak",         symbol: "♋", element: "water", quality: "cardinal", ruling: "Moon",    color: "#7ab8d8" },
+  { key: "leo",         en: "Leo",         ru: "Lev",         symbol: "♌", element: "fire",  quality: "fixed",    ruling: "Sun",     color: "#f0b03a" },
+  { key: "virgo",       en: "Virgo",       ru: "Deva",        symbol: "♍", element: "earth", quality: "mutable",  ruling: "Mercury", color: "#8ab87a" },
+  { key: "libra",       en: "Libra",       ru: "Vesy",        symbol: "♎", element: "air",   quality: "cardinal", ruling: "Venus",   color: "#c0a0d8" },
+  { key: "scorpio",     en: "Scorpio",     ru: "Skorpion",    symbol: "♏", element: "water", quality: "fixed",    ruling: "Pluto",   color: "#7040b0" },
+  { key: "sagittarius", en: "Sagittarius", ru: "Strelets",     symbol: "♐", element: "fire",  quality: "mutable",  ruling: "Jupiter", color: "#d05030" },
+  { key: "capricorn",   en: "Capricorn",   ru: "Kozerog",     symbol: "♑", element: "earth", quality: "cardinal", ruling: "Saturn",  color: "#708090" },
+  { key: "aquarius",    en: "Aquarius",    ru: "Vodoley",     symbol: "♒", element: "air",   quality: "fixed",    ruling: "Uranus",  color: "#4090c0" },
+  { key: "pisces",      en: "Pisces",      ru: "Ryby",        symbol: "♓", element: "water", quality: "mutable",  ruling: "Neptune", color: "#6070c8" },
 ];
 
 // Sun sign ranges (inclusive month/day)
@@ -82,73 +82,73 @@ export function getVenusSign(birthDate: string): ZodiacSign | null {
 
 export type ElementTraits = { en: string[]; ru: string[] };
 export const ELEMENT_TRAITS: Record<string, ElementTraits> = {
-  fire:  { en: ["passionate", "spontaneous", "inspiring", "bold"],    ru: ["страстный", "спонтанный", "вдохновляющий", "смелый"] },
-  earth: { en: ["grounded", "reliable", "patient", "practical"],      ru: ["заземлённый", "надёжный", "терпеливый", "практичный"] },
-  air:   { en: ["intellectual", "social", "curious", "adaptable"],    ru: ["интеллектуальный", "общительный", "любопытный", "гибкий"] },
-  water: { en: ["intuitive", "empathetic", "deep", "sensitive"],      ru: ["интуитивный", "эмпатичный", "глубокий", "чувствительный"] },
+  fire:  { en: ["passionate", "spontaneous", "inspiring", "bold"],    ru: ["strastnyy", "spontannyy", "vdokhnovlyayuschiy", "smelyy"] },
+  earth: { en: ["grounded", "reliable", "patient", "practical"],      ru: ["zazemlennyy", "nadezhnyy", "terpelivyy", "praktichnyy"] },
+  air:   { en: ["intellectual", "social", "curious", "adaptable"],    ru: ["intellektualnyy", "obschitelnyy", "lyubopytnyy", "gibkiy"] },
+  water: { en: ["intuitive", "empathetic", "deep", "sensitive"],      ru: ["intuitivnyy", "empatichnyy", "glubokiy", "chuvstvitelnyy"] },
 };
 
 export type SunTraitCards = { title: { en: string; ru: string }; body: { en: string; ru: string } }[];
 
 export const SUN_TRAITS: Record<string, SunTraitCards> = {
   aries:       [
-    { title: { en: "Pioneer", ru: "Первопроходец" }, body: { en: "You charge ahead where others hesitate. New beginnings energise you.", ru: "Ты идёшь вперёд там, где другие колеблются. Новые начала наполняют тебя энергией." } },
-    { title: { en: "Leader", ru: "Лидер" }, body: { en: "Natural courage makes you a catalyst for action and inspiration.", ru: "Природная смелость делает тебя катализатором действий и вдохновения." } },
-    { title: { en: "Passionate", ru: "Страстный" }, body: { en: "You pursue your desires with intensity and wholehearted commitment.", ru: "Ты преследуешь свои желания с интенсивностью и полной самоотдачей." } },
+    { title: { en: "Pioneer", ru: "Pervoprokhodets" }, body: { en: "You charge ahead where others hesitate. New beginnings energise you.", ru: "Ty idesh vpered tam, gde drugie koleblyutsya. Novye nachala napolnyayut tebya energiey." } },
+    { title: { en: "Leader", ru: "Lider" }, body: { en: "Natural courage makes you a catalyst for action and inspiration.", ru: "Prirodnaya smelost delaet tebya katalizatorom deystviy i vdokhnoveniya." } },
+    { title: { en: "Passionate", ru: "Strastnyy" }, body: { en: "You pursue your desires with intensity and wholehearted commitment.", ru: "Ty presleduesh svoi zhelaniya s intensivnostyu i polnoy samootdachey." } },
   ],
   taurus:      [
-    { title: { en: "Steadfast", ru: "Стойкий" }, body: { en: "Your roots run deep. You build lasting things with patience and care.", ru: "Твои корни уходят глубоко. Ты строишь долговечное с терпением и заботой." } },
-    { title: { en: "Sensual", ru: "Чувственный" }, body: { en: "Beauty, comfort and the pleasures of life speak to your soul.", ru: "Красота, комфорт и радости жизни говорят твоей душе." } },
-    { title: { en: "Loyal", ru: "Верный" }, body: { en: "Once committed, your devotion is unwavering and deeply felt.", ru: "Однажды приняв обязательство, твоя преданность непоколебима." } },
+    { title: { en: "Steadfast", ru: "Stoykiy" }, body: { en: "Your roots run deep. You build lasting things with patience and care.", ru: "Tvoi korni ukhodyat gluboko. Ty stroish dolgovechnoe s terpeniem i zabotoy." } },
+    { title: { en: "Sensual", ru: "Chuvstvennyy" }, body: { en: "Beauty, comfort and the pleasures of life speak to your soul.", ru: "Krasota, komfort i radosti zhizni govoryat tvoey dushe." } },
+    { title: { en: "Loyal", ru: "Vernyy" }, body: { en: "Once committed, your devotion is unwavering and deeply felt.", ru: "Odnazhdy prinyav obyazatelstvo, tvoya predannost nepokolebima." } },
   ],
   gemini:      [
-    { title: { en: "Curious", ru: "Любопытный" }, body: { en: "Your mind is a kaleidoscope — always turning, always discovering.", ru: "Твой ум — калейдоскоп: всегда вращается, всегда открывает новое." } },
-    { title: { en: "Versatile", ru: "Разносторонний" }, body: { en: "You move between worlds with ease, connecting ideas no one else sees.", ru: "Ты легко перемещаешься между мирами, соединяя идеи, которых никто не видит." } },
-    { title: { en: "Witty", ru: "Остроумный" }, body: { en: "Words are your playground — quick, bright, and endlessly entertaining.", ru: "Слова — твоя игровая площадка: быстрые, яркие, бесконечно занимательные." } },
+    { title: { en: "Curious", ru: "Lyubopytnyy" }, body: { en: "Your mind is a kaleidoscope — always turning, always discovering.", ru: "Tvoy um — kaleydoskop: vsegda vraschaetsya, vsegda otkryvaet novoe." } },
+    { title: { en: "Versatile", ru: "Raznostoronniy" }, body: { en: "You move between worlds with ease, connecting ideas no one else sees.", ru: "Ty legko peremeschaeshsya mezhdu mirami, soedinyaya idei, kotorykh nikto ne vidit." } },
+    { title: { en: "Witty", ru: "Ostroumnyy" }, body: { en: "Words are your playground — quick, bright, and endlessly entertaining.", ru: "Slova — tvoya igrovaya ploschadka: bystrye, yarkie, beskonechno zanimatelnye." } },
   ],
   cancer:      [
-    { title: { en: "Nurturing", ru: "Заботливый" }, body: { en: "You carry the warmth of home wherever you go, healing those around you.", ru: "Ты несёшь тепло дома везде, куда идёшь, исцеляя окружающих." } },
-    { title: { en: "Intuitive", ru: "Интуитивный" }, body: { en: "You sense the unspoken — emotions, moods, needs others can't express.", ru: "Ты чувствуешь невысказанное — эмоции, настроения, потребности других." } },
-    { title: { en: "Protective", ru: "Защитник" }, body: { en: "Your love creates a sanctuary. Those close to you feel truly safe.", ru: "Твоя любовь создаёт убежище. Те, кто рядом, чувствуют себя в безопасности." } },
+    { title: { en: "Nurturing", ru: "Zabotlivyy" }, body: { en: "You carry the warmth of home wherever you go, healing those around you.", ru: "Ty nesesh teplo doma vezde, kuda idesh, istselyaya okruzhayuschikh." } },
+    { title: { en: "Intuitive", ru: "Intuitivnyy" }, body: { en: "You sense the unspoken — emotions, moods, needs others can't express.", ru: "Ty chuvstvuesh nevyskazannoe — emotsii, nastroeniya, potrebnosti drugikh." } },
+    { title: { en: "Protective", ru: "Zaschitnik" }, body: { en: "Your love creates a sanctuary. Those close to you feel truly safe.", ru: "Tvoya lyubov sozdaet ubezhische. Te, kto ryadom, chuvstvuyut sebya v bezopasnosti." } },
   ],
   leo:         [
-    { title: { en: "Radiant", ru: "Сияющий" }, body: { en: "You were born to shine. Your presence lights up every room.", ru: "Ты рождён сиять. Твоё присутствие освещает каждую комнату." } },
-    { title: { en: "Generous", ru: "Щедрый" }, body: { en: "Your heart is large — you give freely, love deeply, celebrate others.", ru: "Твоё сердце велико — ты даёшь щедро, любишь глубоко, празднуешь других." } },
-    { title: { en: "Creative", ru: "Творческий" }, body: { en: "Self-expression is your life force. Art, play and drama flow through you.", ru: "Самовыражение — твоя жизненная сила. Искусство, игра и драма текут через тебя." } },
+    { title: { en: "Radiant", ru: "Siyayuschiy" }, body: { en: "You were born to shine. Your presence lights up every room.", ru: "Ty rozhden siyat. Tvoe prisutstvie osveschaet kazhduyu komnatu." } },
+    { title: { en: "Generous", ru: "Schedryy" }, body: { en: "Your heart is large — you give freely, love deeply, celebrate others.", ru: "Tvoe serdtse veliko — ty daesh schedro, lyubish gluboko, prazdnuesh drugikh." } },
+    { title: { en: "Creative", ru: "Tvorcheskiy" }, body: { en: "Self-expression is your life force. Art, play and drama flow through you.", ru: "Samovyrazhenie — tvoya zhiznennaya sila. Iskusstvo, igra i drama tekut cherez tebya." } },
   ],
   virgo:       [
-    { title: { en: "Discerning", ru: "Проницательный" }, body: { en: "You see what others miss — patterns, improvements, hidden potential.", ru: "Ты видишь то, что упускают другие — паттерны, улучшения, скрытый потенциал." } },
-    { title: { en: "Devoted", ru: "Преданный" }, body: { en: "When you care about something, you give it your absolute best.", ru: "Когда тебе что-то важно, ты отдаёшь этому всё лучшее." } },
-    { title: { en: "Healing", ru: "Целительный" }, body: { en: "You carry a quiet gift for restoring order and wellbeing around you.", ru: "Ты несёшь тихий дар восстановления порядка и благополучия вокруг." } },
+    { title: { en: "Discerning", ru: "Pronitsatelnyy" }, body: { en: "You see what others miss — patterns, improvements, hidden potential.", ru: "Ty vidish to, chto upuskayut drugie — patterny, uluchsheniya, skrytyy potentsial." } },
+    { title: { en: "Devoted", ru: "Predannyy" }, body: { en: "When you care about something, you give it your absolute best.", ru: "Kogda tebe chto-to vazhno, ty otdaesh etomu vse luchshee." } },
+    { title: { en: "Healing", ru: "Tselitelnyy" }, body: { en: "You carry a quiet gift for restoring order and wellbeing around you.", ru: "Ty nesesh tikhiy dar vosstanovleniya poryadka i blagopoluchiya vokrug." } },
   ],
   libra:       [
-    { title: { en: "Harmonious", ru: "Гармоничный" }, body: { en: "You seek balance in all things — beauty, fairness, and peace.", ru: "Ты ищешь баланс во всём — красоту, справедливость и мир." } },
-    { title: { en: "Diplomatic", ru: "Дипломатичный" }, body: { en: "You see every side, hold space for all, and bridge differences with grace.", ru: "Ты видишь каждую сторону и соединяешь различия с изяществом." } },
-    { title: { en: "Romantic", ru: "Романтичный" }, body: { en: "Love, art and beauty are not luxuries for you — they are necessities.", ru: "Любовь, искусство и красота — не роскошь для тебя, а необходимость." } },
+    { title: { en: "Harmonious", ru: "Garmonichnyy" }, body: { en: "You seek balance in all things — beauty, fairness, and peace.", ru: "Ty ischesh balans vo vsem — krasotu, spravedlivost i mir." } },
+    { title: { en: "Diplomatic", ru: "Diplomatichnyy" }, body: { en: "You see every side, hold space for all, and bridge differences with grace.", ru: "Ty vidish kazhduyu storonu i soedinyaesh razlichiya s izyaschestvom." } },
+    { title: { en: "Romantic", ru: "Romantichnyy" }, body: { en: "Love, art and beauty are not luxuries for you — they are necessities.", ru: "Lyubov, iskusstvo i krasota — ne roskosh dlya tebya, a neobkhodimost." } },
   ],
   scorpio:     [
-    { title: { en: "Depth", ru: "Глубина" }, body: { en: "You are drawn to what is hidden — truth, transformation, the soul beneath.", ru: "Тебя привлекает скрытое — истина, трансформация, душа под поверхностью." } },
-    { title: { en: "Magnetic", ru: "Магнетический" }, body: { en: "Your presence carries an invisible power that draws people in.", ru: "Твоё присутствие несёт невидимую силу, которая притягивает людей." } },
-    { title: { en: "Transformative", ru: "Трансформирующий" }, body: { en: "You have faced the dark and emerged renewed. This is your greatest gift.", ru: "Ты смотрел в темноту и выходил обновлённым. Это твой величайший дар." } },
+    { title: { en: "Depth", ru: "Glubina" }, body: { en: "You are drawn to what is hidden — truth, transformation, the soul beneath.", ru: "Tebya privlekaet skrytoe — istina, transformatsiya, dusha pod poverkhnostyu." } },
+    { title: { en: "Magnetic", ru: "Magneticheskiy" }, body: { en: "Your presence carries an invisible power that draws people in.", ru: "Tvoe prisutstvie neset nevidimuyu silu, kotoraya prityagivaet lyudey." } },
+    { title: { en: "Transformative", ru: "Transformiruyuschiy" }, body: { en: "You have faced the dark and emerged renewed. This is your greatest gift.", ru: "Ty smotrel v temnotu i vykhodil obnovlennym. Eto tvoy velichayshiy dar." } },
   ],
   sagittarius: [
-    { title: { en: "Explorer", ru: "Исследователь" }, body: { en: "Horizons call you — physical journeys, philosophies, new worlds of meaning.", ru: "Горизонты зовут тебя — путешествия, философии, новые миры смысла." } },
-    { title: { en: "Optimistic", ru: "Оптимист" }, body: { en: "Your faith in possibility is a light others navigate by.", ru: "Твоя вера в возможности — свет, по которому ориентируются другие." } },
-    { title: { en: "Truthful", ru: "Правдивый" }, body: { en: "You speak your truth boldly, even when it is uncomfortable.", ru: "Ты говоришь свою правду смело, даже когда это неудобно." } },
+    { title: { en: "Explorer", ru: "Issledovatel" }, body: { en: "Horizons call you — physical journeys, philosophies, new worlds of meaning.", ru: "Gorizonty zovut tebya — puteshestviya, filosofii, novye miry smysla." } },
+    { title: { en: "Optimistic", ru: "Optimist" }, body: { en: "Your faith in possibility is a light others navigate by.", ru: "Tvoya vera v vozmozhnosti — svet, po kotoromu orientiruyutsya drugie." } },
+    { title: { en: "Truthful", ru: "Pravdivyy" }, body: { en: "You speak your truth boldly, even when it is uncomfortable.", ru: "Ty govorish svoyu pravdu smelo, dazhe kogda eto neudobno." } },
   ],
   capricorn:   [
-    { title: { en: "Ambitious", ru: "Целеустремлённый" }, body: { en: "You build your dreams with discipline, brick by patient brick.", ru: "Ты строишь мечты с дисциплиной, кирпич за терпеливым кирпичом." } },
-    { title: { en: "Resilient", ru: "Стойкий" }, body: { en: "Setbacks are data, not defeats. You always find a way forward.", ru: "Неудачи — это данные, не поражения. Ты всегда находишь путь вперёд." } },
-    { title: { en: "Wise", ru: "Мудрый" }, body: { en: "You carry an old soul's wisdom — practical, grounded and hard-won.", ru: "Ты несёшь мудрость старой души — практичную, заземлённую, выстраданную." } },
+    { title: { en: "Ambitious", ru: "Tseleustremlennyy" }, body: { en: "You build your dreams with discipline, brick by patient brick.", ru: "Ty stroish mechty s distsiplinoy, kirpich za terpelivym kirpichom." } },
+    { title: { en: "Resilient", ru: "Stoykiy" }, body: { en: "Setbacks are data, not defeats. You always find a way forward.", ru: "Neudachi — eto dannye, ne porazheniya. Ty vsegda nakhodish put vpered." } },
+    { title: { en: "Wise", ru: "Mudryy" }, body: { en: "You carry an old soul's wisdom — practical, grounded and hard-won.", ru: "Ty nesesh mudrost staroy dushi — praktichnuyu, zazemlennuyu, vystradannuyu." } },
   ],
   aquarius:    [
-    { title: { en: "Visionary", ru: "Провидец" }, body: { en: "You see the future before it arrives and work to make it real.", ru: "Ты видишь будущее до того, как оно приходит, и работаешь, чтобы воплотить его." } },
-    { title: { en: "Humanitarian", ru: "Гуманист" }, body: { en: "The wellbeing of all lives in your heart. Collective progress is personal.", ru: "Благополучие всех живёт в твоём сердце. Коллективный прогресс — это личное." } },
-    { title: { en: "Original", ru: "Оригинальный" }, body: { en: "You refuse to be a copy. Your uniqueness is your most valuable asset.", ru: "Ты отказываешься быть копией. Твоя уникальность — твой самый ценный актив." } },
+    { title: { en: "Visionary", ru: "Providets" }, body: { en: "You see the future before it arrives and work to make it real.", ru: "Ty vidish buduschee do togo, kak ono prikhodit, i rabotaesh, chtoby voplotit ego." } },
+    { title: { en: "Humanitarian", ru: "Gumanist" }, body: { en: "The wellbeing of all lives in your heart. Collective progress is personal.", ru: "Blagopoluchie vsekh zhivet v tvoem serdtse. Kollektivnyy progress — eto lichnoe." } },
+    { title: { en: "Original", ru: "Originalnyy" }, body: { en: "You refuse to be a copy. Your uniqueness is your most valuable asset.", ru: "Ty otkazyvaeshsya byt kopiey. Tvoya unikalnost — tvoy samyy tsennyy aktiv." } },
   ],
   pisces:      [
-    { title: { en: "Mystical", ru: "Мистичный" }, body: { en: "You live at the edge of the visible world, touching the unseen.", ru: "Ты живёшь на краю видимого мира, касаясь невидимого." } },
-    { title: { en: "Compassionate", ru: "Сострадательный" }, body: { en: "Your empathy has no boundaries — you feel with the whole world.", ru: "Твоя эмпатия не знает границ — ты чувствуешь вместе со всем миром." } },
-    { title: { en: "Dreamer", ru: "Мечтатель" }, body: { en: "Your inner world is a vast ocean of images, music and meaning.", ru: "Твой внутренний мир — огромный океан образов, музыки и смысла." } },
+    { title: { en: "Mystical", ru: "Mistichnyy" }, body: { en: "You live at the edge of the visible world, touching the unseen.", ru: "Ty zhivesh na krayu vidimogo mira, kasayas nevidimogo." } },
+    { title: { en: "Compassionate", ru: "Sostradatelnyy" }, body: { en: "Your empathy has no boundaries — you feel with the whole world.", ru: "Tvoya empatiya ne znaet granits — ty chuvstvuesh vmeste so vsem mirom." } },
+    { title: { en: "Dreamer", ru: "Mechtatel" }, body: { en: "Your inner world is a vast ocean of images, music and meaning.", ru: "Tvoy vnutrenniy mir — ogromnyy okean obrazov, muzyki i smysla." } },
   ],
 };

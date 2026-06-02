@@ -56,9 +56,9 @@ export function LoginForm() {
 
   const validate = (): LoginErrors => {
     const e: LoginErrors = {};
-    if (!email.trim()) e.email = "Введи email";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Неверный формат email";
-    if (!password) e.password = "Введи пароль";
+    if (!email.trim()) e.email = "Enter your email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Enter a valid email";
+    if (!password) e.password = "Enter your password";
     return e;
   };
 
@@ -94,7 +94,7 @@ export function LoginForm() {
       <div>
         <input
           className="parchment-input"
-          placeholder="Пароль"
+          placeholder="Password"
           type="password"
           autoComplete="current-password"
           value={password}
@@ -104,13 +104,13 @@ export function LoginForm() {
       </div>
 
       <div style={{ marginTop: 4 }}>
-        <OrnateButton type="submit">{loading ? "Входим..." : "Войти"}</OrnateButton>
+        <OrnateButton type="submit">{loading ? "Signing in..." : "Sign in"}</OrnateButton>
       </div>
       <FieldError msg={authError} />
 
       <p style={{ textAlign: "center", fontSize: 13, color: "rgba(231,213,181,0.6)", marginTop: 4 }}>
-        Нет профиля?{" "}
-        <Link href="/register" style={{ color: "var(--gold)" }}>Создать небо</Link>
+        No profile yet?{" "}
+        <Link href="/register" style={{ color: "var(--gold)" }}>Create your sky</Link>
       </p>
     </form>
   );
@@ -145,14 +145,14 @@ export function RegisterForm() {
 
   const validate = (): RegErrors => {
     const e: RegErrors = {};
-    if (!name.trim())      e.name = "Введи имя";
-    if (!email.trim())     e.email = "Введи email";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Неверный формат email";
-    if (!password)         e.password = "Введи пароль";
-    else if (password.length < 6) e.password = "Минимум 6 символов";
-    if (!birthDate)        e.birthDate = "Укажи дату рождения";
-    if (!birthTimeUnknown && !birthTime) e.birthTime = "Укажи время или отметь «не знаю»";
-    if (!birthPlace.trim()) e.birthPlace = "Укажи место рождения";
+    if (!name.trim())      e.name = "Enter your name";
+    if (!email.trim())     e.email = "Enter your email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Enter a valid email";
+    if (!password)         e.password = "Enter your password";
+    else if (password.length < 6) e.password = "Minimum 6 characters";
+    if (!birthDate)        e.birthDate = "Add your birth date";
+    if (!birthTimeUnknown && !birthTime) e.birthTime = "Add your birth time or mark it unknown";
+    if (!birthPlace.trim()) e.birthPlace = "Add your birth place";
     return e;
   };
 
@@ -186,7 +186,7 @@ export function RegisterForm() {
       <div>
         <input
           className="parchment-input"
-          placeholder="Имя"
+          placeholder="Name"
           autoComplete="name"
           value={name}
           onChange={(e) => { setName(e.target.value); clearErr("name"); }}
@@ -211,7 +211,7 @@ export function RegisterForm() {
       <div>
         <input
           className="parchment-input"
-          placeholder="Пароль"
+          placeholder="Password"
           type="password"
           autoComplete="new-password"
           value={password}
@@ -222,7 +222,7 @@ export function RegisterForm() {
 
       {/* Birth date */}
       <div>
-        <FieldLabel>Дата рождения</FieldLabel>
+        <FieldLabel>Birth date</FieldLabel>
         <input
           className="parchment-input"
           type="date"
@@ -234,7 +234,7 @@ export function RegisterForm() {
 
       {/* Birth time */}
       <div>
-        <FieldLabel>Время рождения</FieldLabel>
+        <FieldLabel>Birth time</FieldLabel>
         <input
           className="parchment-input"
           type="time"
@@ -266,14 +266,14 @@ export function RegisterForm() {
           }}
           style={{ width: 16, height: 16, accentColor: "var(--gold)", cursor: "pointer", flexShrink: 0 }}
         />
-        Я не знаю точное время
+        I do not know the exact time
       </label>
 
       {/* Birth place */}
       <div>
         <input
           className="parchment-input"
-          placeholder="Место рождения"
+          placeholder="Birth place"
           autoComplete="address-level2"
           value={birthPlace}
           onChange={(e) => { setBirthPlace(e.target.value); clearErr("birthPlace"); }}
@@ -282,13 +282,13 @@ export function RegisterForm() {
       </div>
 
       <div style={{ marginTop: 6 }}>
-        <OrnateButton type="submit">{loading ? "Создаем небо..." : "Создать небо"}</OrnateButton>
+        <OrnateButton type="submit">{loading ? "Creating your sky..." : "Create your sky"}</OrnateButton>
       </div>
       <FieldError msg={authError} />
 
       <p style={{ textAlign: "center", fontSize: 13, color: "rgba(231,213,181,0.6)", marginTop: 4 }}>
-        Уже есть профиль?{" "}
-        <Link href="/login" style={{ color: "var(--gold)" }}>Войти</Link>
+        Already have a profile?{" "}
+        <Link href="/login" style={{ color: "var(--gold)" }}>Sign in</Link>
       </p>
     </form>
   );
