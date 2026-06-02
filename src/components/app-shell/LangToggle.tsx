@@ -78,7 +78,7 @@ export function LangToggle() {
                   <path d="M20 6 9 17l-5-5" />
                 </svg>
               )}
-              {l === "en" ? "English" : "Русский"}
+              {l === "en" ? "English" : "Russian"}
             </button>
           ))}
         </div>

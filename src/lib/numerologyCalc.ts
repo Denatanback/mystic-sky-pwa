@@ -62,87 +62,87 @@ export function soulNumber(name: string): { vowels: { letter: string; value: num
 export type NumeroTraits = { title: { en: string; ru: string }; body: { en: string; ru: string } };
 export const NUMBER_TRAITS: Record<number, { name: { en: string; ru: string }; traits: NumeroTraits[] }> = {
   1: {
-    name: { en: "The Leader", ru: "Лидер" },
+    name: { en: "The Leader", ru: "Lider" },
     traits: [
-      { title: { en: "Independent", ru: "Независимый" }, body: { en: "You carve your own path with originality and drive.", ru: "Ты прокладываешь свой путь с оригинальностью и решимостью." } },
-      { title: { en: "Pioneer", ru: "Первопроходец" }, body: { en: "New ideas and bold starts are your natural territory.", ru: "Новые идеи и смелые начинания — твоя стихия." } },
+      { title: { en: "Independent", ru: "Nezavisimyy" }, body: { en: "You carve your own path with originality and drive.", ru: "Ty prokladyvaesh svoy put s originalnostyu i reshimostyu." } },
+      { title: { en: "Pioneer", ru: "Pervoprokhodets" }, body: { en: "New ideas and bold starts are your natural territory.", ru: "Novye idei i smelye nachinaniya — tvoya stikhiya." } },
     ],
   },
   2: {
-    name: { en: "The Mediator", ru: "Миротворец" },
+    name: { en: "The Mediator", ru: "Mirotvorets" },
     traits: [
-      { title: { en: "Diplomatic", ru: "Дипломатичный" }, body: { en: "You sense tension before it forms and smooth it with grace.", ru: "Ты чувствуешь напряжение прежде, чем оно возникнет, и сглаживаешь его." } },
-      { title: { en: "Intuitive", ru: "Интуитивный" }, body: { en: "Your emotional radar is finely tuned to those around you.", ru: "Твой эмоциональный радар точно настроен на окружающих." } },
+      { title: { en: "Diplomatic", ru: "Diplomatichnyy" }, body: { en: "You sense tension before it forms and smooth it with grace.", ru: "Ty chuvstvuesh napryazhenie prezhde, chem ono vozniknet, i sglazhivaesh ego." } },
+      { title: { en: "Intuitive", ru: "Intuitivnyy" }, body: { en: "Your emotional radar is finely tuned to those around you.", ru: "Tvoy emotsionalnyy radar tochno nastroen na okruzhayuschikh." } },
     ],
   },
   3: {
-    name: { en: "The Creator", ru: "Творец" },
+    name: { en: "The Creator", ru: "Tvorets" },
     traits: [
-      { title: { en: "Expressive", ru: "Выразительный" }, body: { en: "Joy, art and communication are your gifts to the world.", ru: "Радость, искусство и общение — твои дары миру." } },
-      { title: { en: "Optimistic", ru: "Оптимист" }, body: { en: "Your sunny outlook is contagious and uplifting.", ru: "Твой солнечный взгляд на мир заразителен и воодушевляет." } },
+      { title: { en: "Expressive", ru: "Vyrazitelnyy" }, body: { en: "Joy, art and communication are your gifts to the world.", ru: "Radost, iskusstvo i obschenie — tvoi dary miru." } },
+      { title: { en: "Optimistic", ru: "Optimist" }, body: { en: "Your sunny outlook is contagious and uplifting.", ru: "Tvoy solnechnyy vzglyad na mir zarazitelen i voodushevlyaet." } },
     ],
   },
   4: {
-    name: { en: "The Builder", ru: "Строитель" },
+    name: { en: "The Builder", ru: "Stroitel" },
     traits: [
-      { title: { en: "Disciplined", ru: "Дисциплинированный" }, body: { en: "You build lasting foundations through consistent effort.", ru: "Ты строишь прочные основы через последовательный труд." } },
-      { title: { en: "Reliable", ru: "Надёжный" }, body: { en: "Others know they can count on you — always.", ru: "Другие знают, что могут на тебя рассчитывать — всегда." } },
+      { title: { en: "Disciplined", ru: "Distsiplinirovannyy" }, body: { en: "You build lasting foundations through consistent effort.", ru: "Ty stroish prochnye osnovy cherez posledovatelnyy trud." } },
+      { title: { en: "Reliable", ru: "Nadezhnyy" }, body: { en: "Others know they can count on you — always.", ru: "Drugie znayut, chto mogut na tebya rasschityvat — vsegda." } },
     ],
   },
   5: {
-    name: { en: "The Adventurer", ru: "Искатель" },
+    name: { en: "The Adventurer", ru: "Iskatel" },
     traits: [
-      { title: { en: "Freedom-loving", ru: "Свободолюбивый" }, body: { en: "Variety, travel and change are the oxygen you breathe.", ru: "Разнообразие, путешествия и перемены — кислород, которым ты дышишь." } },
-      { title: { en: "Versatile", ru: "Разносторонний" }, body: { en: "You adapt instantly and thrive in dynamic environments.", ru: "Ты мгновенно адаптируешься и процветаешь в динамичных условиях." } },
+      { title: { en: "Freedom-loving", ru: "Svobodolyubivyy" }, body: { en: "Variety, travel and change are the oxygen you breathe.", ru: "Raznoobrazie, puteshestviya i peremeny — kislorod, kotorym ty dyshish." } },
+      { title: { en: "Versatile", ru: "Raznostoronniy" }, body: { en: "You adapt instantly and thrive in dynamic environments.", ru: "Ty mgnovenno adaptirueshsya i protsvetaesh v dinamichnykh usloviyakh." } },
     ],
   },
   6: {
-    name: { en: "The Nurturer", ru: "Опекун" },
+    name: { en: "The Nurturer", ru: "Opekun" },
     traits: [
-      { title: { en: "Caring", ru: "Заботливый" }, body: { en: "Love, family and service are the core of your being.", ru: "Любовь, семья и служение — основа твоего существа." } },
-      { title: { en: "Responsible", ru: "Ответственный" }, body: { en: "You take duty seriously and carry it with quiet grace.", ru: "Ты серьёзно относишься к долгу и несёшь его с тихим изяществом." } },
+      { title: { en: "Caring", ru: "Zabotlivyy" }, body: { en: "Love, family and service are the core of your being.", ru: "Lyubov, semya i sluzhenie — osnova tvoego suschestva." } },
+      { title: { en: "Responsible", ru: "Otvetstvennyy" }, body: { en: "You take duty seriously and carry it with quiet grace.", ru: "Ty serezno otnosishsya k dolgu i nesesh ego s tikhim izyaschestvom." } },
     ],
   },
   7: {
-    name: { en: "The Seeker", ru: "Искатель истины" },
+    name: { en: "The Seeker", ru: "Iskatel istiny" },
     traits: [
-      { title: { en: "Analytical", ru: "Аналитический" }, body: { en: "You dig beneath surfaces to find the truth that matters.", ru: "Ты копаешь под поверхностью в поисках важной истины." } },
-      { title: { en: "Spiritual", ru: "Духовный" }, body: { en: "Your path is inward — wisdom, solitude and deep knowing.", ru: "Твой путь — внутренний: мудрость, уединение и глубокое знание." } },
+      { title: { en: "Analytical", ru: "Analiticheskiy" }, body: { en: "You dig beneath surfaces to find the truth that matters.", ru: "Ty kopaesh pod poverkhnostyu v poiskakh vazhnoy istiny." } },
+      { title: { en: "Spiritual", ru: "Dukhovnyy" }, body: { en: "Your path is inward — wisdom, solitude and deep knowing.", ru: "Tvoy put — vnutrenniy: mudrost, uedinenie i glubokoe znanie." } },
     ],
   },
   8: {
-    name: { en: "The Achiever", ru: "Достигатор" },
+    name: { en: "The Achiever", ru: "Dostigator" },
     traits: [
-      { title: { en: "Ambitious", ru: "Амбициозный" }, body: { en: "Power, success and abundance flow naturally toward you.", ru: "Власть, успех и изобилие естественно текут к тебе." } },
-      { title: { en: "Executive", ru: "Управленец" }, body: { en: "You see the big picture and command the resources to reach it.", ru: "Ты видишь общую картину и управляешь ресурсами для её достижения." } },
+      { title: { en: "Ambitious", ru: "Ambitsioznyy" }, body: { en: "Power, success and abundance flow naturally toward you.", ru: "Vlast, uspekh i izobilie estestvenno tekut k tebe." } },
+      { title: { en: "Executive", ru: "Upravlenets" }, body: { en: "You see the big picture and command the resources to reach it.", ru: "Ty vidish obschuyu kartinu i upravlyaesh resursami dlya ee dostizheniya." } },
     ],
   },
   9: {
-    name: { en: "The Humanitarian", ru: "Гуманист" },
+    name: { en: "The Humanitarian", ru: "Gumanist" },
     traits: [
-      { title: { en: "Compassionate", ru: "Сострадательный" }, body: { en: "Universal love flows through you — your heart holds the world.", ru: "Через тебя течёт универсальная любовь — твоё сердце вмещает весь мир." } },
-      { title: { en: "Wise", ru: "Мудрый" }, body: { en: "Old-soul insight and a broad perspective define your vision.", ru: "Мудрость старой души и широкий кругозор определяют твоё видение." } },
+      { title: { en: "Compassionate", ru: "Sostradatelnyy" }, body: { en: "Universal love flows through you — your heart holds the world.", ru: "Cherez tebya techet universalnaya lyubov — tvoe serdtse vmeschaet ves mir." } },
+      { title: { en: "Wise", ru: "Mudryy" }, body: { en: "Old-soul insight and a broad perspective define your vision.", ru: "Mudrost staroy dushi i shirokiy krugozor opredelyayut tvoe videnie." } },
     ],
   },
   11: {
-    name: { en: "The Illuminator", ru: "Просветитель" },
+    name: { en: "The Illuminator", ru: "Prosvetitel" },
     traits: [
-      { title: { en: "Intuitive Master", ru: "Мастер интуиции" }, body: { en: "You carry a rare gift for inspiration and spiritual perception.", ru: "Ты несёшь редкий дар вдохновения и духовного восприятия." } },
-      { title: { en: "Visionary", ru: "Провидец" }, body: { en: "11 is a master number — your potential is extraordinary.", ru: "11 — мастер-число. Твой потенциал необычаен." } },
+      { title: { en: "Intuitive Master", ru: "Master intuitsii" }, body: { en: "You carry a rare gift for inspiration and spiritual perception.", ru: "Ty nesesh redkiy dar vdokhnoveniya i dukhovnogo vospriyatiya." } },
+      { title: { en: "Visionary", ru: "Providets" }, body: { en: "11 is a master number — your potential is extraordinary.", ru: "11 — master-chislo. Tvoy potentsial neobychaen." } },
     ],
   },
   22: {
-    name: { en: "The Master Builder", ru: "Мастер-строитель" },
+    name: { en: "The Master Builder", ru: "Master-stroitel" },
     traits: [
-      { title: { en: "Architect", ru: "Архитектор" }, body: { en: "You can build systems and structures that outlast generations.", ru: "Ты можешь строить системы, которые переживут поколения." } },
-      { title: { en: "Pragmatic Visionary", ru: "Прагматичный провидец" }, body: { en: "22 bridges spiritual insight with tangible achievement.", ru: "22 соединяет духовное прозрение с материальным достижением." } },
+      { title: { en: "Architect", ru: "Arkhitektor" }, body: { en: "You can build systems and structures that outlast generations.", ru: "Ty mozhesh stroit sistemy, kotorye perezhivut pokoleniya." } },
+      { title: { en: "Pragmatic Visionary", ru: "Pragmatichnyy providets" }, body: { en: "22 bridges spiritual insight with tangible achievement.", ru: "22 soedinyaet dukhovnoe prozrenie s materialnym dostizheniem." } },
     ],
   },
   33: {
-    name: { en: "The Master Teacher", ru: "Мастер-учитель" },
+    name: { en: "The Master Teacher", ru: "Master-uchitel" },
     traits: [
-      { title: { en: "Selfless", ru: "Самоотверженный" }, body: { en: "Your life mission is to uplift and heal humanity.", ru: "Миссия твоей жизни — поднять и исцелить человечество." } },
-      { title: { en: "Compassionate Leader", ru: "Лидер-сострадающий" }, body: { en: "33 carries the highest vibration of love and service.", ru: "33 несёт высшую вибрацию любви и служения." } },
+      { title: { en: "Selfless", ru: "Samootverzhennyy" }, body: { en: "Your life mission is to uplift and heal humanity.", ru: "Missiya tvoey zhizni — podnyat i istselit chelovechestvo." } },
+      { title: { en: "Compassionate Leader", ru: "Lider-sostradayuschiy" }, body: { en: "33 carries the highest vibration of love and service.", ru: "33 neset vysshuyu vibratsiyu lyubvi i sluzheniya." } },
     ],
   },
 };

@@ -8,21 +8,21 @@ const TOTAL_Q = 7;
 
 const QUESTIONS = [
   {
-    q: "Что ты чувствуешь, когда человек становится холоднее, что происходит внутри первым?",
+    q: "When someone becomes colder toward you, what happens inside first?",
     options: [
-      "Я начинаю искать скрытый смысл в его словах",
-      "Замыкаюсь в себе, жалею за то, что открылся/ась",
-      "Хочу сразу всё прояснить и вернуть ощущение контроля",
-      "Делаю вид, что всё нормально, хотя внутри уже тревожно",
+      "I start looking for hidden meaning in their words",
+      "I close off and regret opening up",
+      "I want to clarify everything and regain a sense of control",
+      "I act like everything is fine, even though I already feel anxious inside",
     ],
   },
   {
-    q: "Что чаще всего возвращает тебе чувство безопасности?",
+    q: "What most often brings your sense of safety back?",
     options: [
-      "Постоянство и предсказуемость",
-      "Эмоциональная близость и искренность",
-      "Личное пространство и тишина",
-      "Ощущение, что я держу ситуацию под контролем",
+      "Consistency and predictability",
+      "Emotional closeness and honesty",
+      "Personal space and quiet",
+      "The feeling that I have the situation under control",
     ],
   },
 ];
@@ -65,31 +65,31 @@ export default function NodePage() {
       <div className="content">
         {/* Breadcrumbs */}
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, fontSize: 11, color: "var(--muted)" }}>
-          <Link href="/today" style={{ color: "var(--muted)" }}>Астрология</Link>
+          <Link href="/today" style={{ color: "var(--muted)" }}>Astrology</Link>
           <span>›</span>
-          <Link href="/today/star-way" style={{ color: "var(--muted)" }}>Глубокий путь</Link>
+          <Link href="/today/star-way" style={{ color: "var(--muted)" }}>Deep Path</Link>
           <span>›</span>
-          <span style={{ color: "var(--gold)" }}>Луна</span>
+          <span style={{ color: "var(--gold)" }}>Moon</span>
         </div>
 
         {/* Title */}
         <h1 style={{ fontFamily: "var(--font-display)", fontSize: 52, fontWeight: 600, lineHeight: 1, marginBottom: 4, color: "var(--text)" }}>
-          Луна
+          Moon
         </h1>
         <p style={{ fontSize: 14, color: "var(--muted)", marginBottom: 6 }}>
-          Эмоции, интуиция, внутренний мир
+          Emotions, intuition, inner world
         </p>
         <p style={{ fontSize: 13, color: "rgba(220,210,200,.65)", lineHeight: 1.6, marginBottom: 20, maxWidth: 340 }}>
-          Это узел не для правильных ответов. Он позволяет тебе наблюдать за собой — честно, без осуждения.
+          This node is not about correct answers. It helps you observe yourself honestly, without judgment.
         </p>
 
         {/* Progress */}
         <div style={{ marginBottom: 20 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
             <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)" }}>
-              Путь исследования
+              Exploration path
             </p>
-            <span style={{ fontSize: 11, color: "var(--muted)" }}>Вопрос: {currentQ + 1} из {TOTAL_Q}</span>
+            <span style={{ fontSize: 11, color: "var(--muted)" }}>Question: {currentQ + 1} of {TOTAL_Q}</span>
           </div>
           <div className="progress-bar">
             <span style={{ width: `${progress}%`, transition: "width .4s ease" }} />
@@ -103,7 +103,7 @@ export default function NodePage() {
           backdropFilter: "blur(10px)",
         }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", marginBottom: 12 }}>
-            Исследуй свою луну
+            Explore your Moon
           </p>
           <p style={{ fontSize: 15, color: "var(--text)", lineHeight: 1.55, marginBottom: 16 }}>
             {currentQ + 1}. {q.q}
@@ -138,19 +138,19 @@ export default function NodePage() {
 
         {/* Footer note */}
         <p style={{ fontSize: 12, color: "var(--muted-2)", textAlign: "center", lineHeight: 1.4, marginBottom: 14 }}>
-          Интерпретация откроется после последнего вопроса
+          Your interpretation opens after the final question.
         </p>
 
         {/* Buttons */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 10 }}>
-          <button className="btn secondary">Сохранить прогресс</button>
+          <button className="btn secondary">Save progress</button>
           <button
             className="btn primary"
             onClick={handleNext}
             style={{ opacity: selected === null ? .5 : 1 }}
             disabled={selected === null}
           >
-            Следующий вопрос <span>→</span>
+            Next question <span>→</span>
           </button>
         </div>
       </div>

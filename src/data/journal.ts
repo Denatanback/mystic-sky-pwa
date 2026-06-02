@@ -4,22 +4,22 @@ export const journalEntries: JournalEntry[] = [
   {
     id: "j1",
     type: "today",
-    title: "Дневной прогноз открыт",
-    description: "Ты получил прогноз дня и сохранил первый фокус.",
-    date: "Сегодня"
+    title: "Daily forecast opened",
+    description: "You opened today’s forecast and saved your first focus.",
+    date: "Today",
   },
   {
     id: "j2",
     type: "cards",
-    title: "Карта ассоциаций: Фонарь",
-    description: "В теме пути ты выбрала образ света и проверки реальности.",
-    date: "Вчера"
+    title: "Association card: Lamp",
+    description: "In your path theme, you chose the image of light and reality-checking.",
+    date: "Yesterday",
   },
   {
     id: "j3",
     type: "sky",
-    title: "Новая звезда в Астрологии",
-    description: "Открыт базовый слой солнечного знака.",
-    date: "2 дня назад"
-  }
+    title: "New star in Astrology",
+    description: "The basic layer of your Sun sign has opened.",
+    date: "2 days ago",
+  },
 ];

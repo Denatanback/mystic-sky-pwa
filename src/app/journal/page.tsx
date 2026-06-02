@@ -28,10 +28,10 @@ export default function JournalPage() {
   });
 
   const ENTRIES = [
-    { id: 1, dayLabel: t.journal.all === "All" ? "Today" : "Сегодня",    title: t.journal.all === "All" ? "Intuition without rush" : "Интуиция без спешки",     text: t.journal.all === "All" ? "I noticed the answer didn't come right away, but after a pause. The body knew before the mind." : "Я заметил/а, что ответ появился не сразу, а после паузы.", tag: t.journal.insight, tagColor: "var(--blue)", moon: MOON_PHASES[4], accentColor: "rgba(131,184,207,.12)", borderColor: "rgba(131,184,207,.25)" },
-    { id: 2, dayLabel: t.journal.all === "All" ? "Yesterday" : "Вчера",  title: t.journal.all === "All" ? "Theme of boundaries" : "Тема границ", text: t.journal.all === "All" ? "Today it was important not to agree automatically. A pause before answering works." : "Сегодня было важно не соглашаться автоматически.", tag: t.journal.node, tagColor: "var(--rose)", moon: MOON_PHASES[3], accentColor: "rgba(200,128,165,.10)", borderColor: "rgba(200,128,165,.22)" },
-    { id: 3, dayLabel: t.journal.all === "All" ? "May 10" : "10 мая", title: t.journal.all === "All" ? "Card: Threshold" : "Карта: Порог", text: t.journal.all === "All" ? "I linger in the old state out of habit. The card showed this precisely." : "Задерживаюсь в старом состоянии из-за привычки.", tag: t.journal.card, tagColor: "var(--gold)", moon: MOON_PHASES[2], accentColor: "rgba(216,168,95,.08)", borderColor: "rgba(216,168,95,.22)" },
-    { id: 4, dayLabel: t.journal.all === "All" ? "May 7" : "7 мая",   title: t.journal.all === "All" ? "Fatigue as a signal" : "Усталость как сигнал", text: t.journal.all === "All" ? "I noticed fatigue comes when I act out of habit, not my own will." : "Заметила, что усталость приходит, когда действую не из своей воли.", tag: t.journal.insight, tagColor: "var(--blue)", moon: MOON_PHASES[1], accentColor: "rgba(131,184,207,.08)", borderColor: "rgba(131,184,207,.18)" },
+    { id: 1, dayLabel: t.journal.all === "All" ? "Today" : "Segodnya",    title: t.journal.all === "All" ? "Intuition without rush" : "Intuitsiya bez speshki",     text: t.journal.all === "All" ? "I noticed the answer didn't come right away, but after a pause. The body knew before the mind." : "Ya zametil/a, chto otvet poyavilsya ne srazu, a posle pauzy.", tag: t.journal.insight, tagColor: "var(--blue)", moon: MOON_PHASES[4], accentColor: "rgba(131,184,207,.12)", borderColor: "rgba(131,184,207,.25)" },
+    { id: 2, dayLabel: t.journal.all === "All" ? "Yesterday" : "Vchera",  title: t.journal.all === "All" ? "Theme of boundaries" : "Tema granits", text: t.journal.all === "All" ? "Today it was important not to agree automatically. A pause before answering works." : "Segodnya bylo vazhno ne soglashatsya avtomaticheski.", tag: t.journal.node, tagColor: "var(--rose)", moon: MOON_PHASES[3], accentColor: "rgba(200,128,165,.10)", borderColor: "rgba(200,128,165,.22)" },
+    { id: 3, dayLabel: t.journal.all === "All" ? "May 10" : "10 maya", title: t.journal.all === "All" ? "Card: Threshold" : "Karta: Porog", text: t.journal.all === "All" ? "I linger in the old state out of habit. The card showed this precisely." : "Zaderzhivayus v starom sostoyanii iz-za privychki.", tag: t.journal.card, tagColor: "var(--gold)", moon: MOON_PHASES[2], accentColor: "rgba(216,168,95,.08)", borderColor: "rgba(216,168,95,.22)" },
+    { id: 4, dayLabel: t.journal.all === "All" ? "May 7" : "7 maya",   title: t.journal.all === "All" ? "Fatigue as a signal" : "Ustalost kak signal", text: t.journal.all === "All" ? "I noticed fatigue comes when I act out of habit, not my own will." : "Zametila, chto ustalost prikhodit, kogda deystvuyu ne iz svoey voli.", tag: t.journal.insight, tagColor: "var(--blue)", moon: MOON_PHASES[1], accentColor: "rgba(131,184,207,.08)", borderColor: "rgba(131,184,207,.18)" },
   ];
   const TAGS = [t.journal.all, t.journal.insight, t.journal.node, t.journal.card];
 
@@ -109,7 +109,7 @@ export default function JournalPage() {
         {filtered.length === 0 && (
           <div style={{ textAlign: "center", padding: "48px 24px", color: "var(--muted-2)" }}>
             <div style={{ fontSize: 32, marginBottom: 12 }}>📓</div>
-            <p style={{ fontSize: 14 }}>{t.journal.all === "All" ? "No entries yet" : "Записей пока нет"}</p>
+            <p style={{ fontSize: 14 }}>{t.journal.all === "All" ? "No entries yet" : "Zapisey poka net"}</p>
           </div>
         )}
 

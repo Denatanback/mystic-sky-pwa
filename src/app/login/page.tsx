@@ -74,7 +74,7 @@ export default function LoginPage() {
             background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.1)",
             display: "flex", alignItems: "center", justifyContent: "center",
             color: "var(--text)",
-          }} aria-label="Назад">
+          }} aria-label="Nazad">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5m0 0 7 7m-7-7 7-7" />
             </svg>

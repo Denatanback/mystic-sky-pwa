@@ -12,64 +12,64 @@ const DISCIPLINE = "soulmate";
 
 // ── Venus love styles ─────────────────────────────────────────────────────────
 const VENUS_LOVE: Record<string, { title: { en: string; ru: string }; style: { en: string; ru: string }; needs: { en: string; ru: string }; gift: { en: string; ru: string } }> = {
-  aries:       { title: { en: "Bold Lover", ru: "Страстный влюблённый" }, style: { en: "Direct, passionate and immediate — you love fiercely and without games.", ru: "Прямой, страстный, непосредственный — любишь яростно и без игр." }, needs: { en: "Excitement, spontaneity, a partner who matches your fire.", ru: "Волнение, спонтанность, партнёр под стать твоему огню." }, gift: { en: "You make love feel like a grand adventure.", ru: "Ты делаешь любовь похожей на грандиозное приключение." } },
-  taurus:      { title: { en: "Sensual Devotee", ru: "Чувственный преданный" }, style: { en: "Slow, steady and deeply loyal. You love through presence, touch and constancy.", ru: "Медленный, устойчивый, глубоко преданный. Любишь через присутствие, прикосновение, постоянство." }, needs: { en: "Stability, physical affection, security and comfort.", ru: "Стабильность, физическая близость, безопасность и комфорт." }, gift: { en: "Your love is a sanctuary that others long for.", ru: "Твоя любовь — убежище, по которому тоскуют другие." } },
-  gemini:      { title: { en: "Playful Connector", ru: "Игривый соединитель" }, style: { en: "Witty, curious and light. Love flows through conversation and shared discovery.", ru: "Остроумный, любопытный, лёгкий. Любовь течёт через разговор и совместное открытие." }, needs: { en: "Mental stimulation, variety and a partner who surprises you.", ru: "Ментальная стимуляция, разнообразие, партнёр, который удивляет." }, gift: { en: "You keep love fresh, curious and ever-evolving.", ru: "Ты держишь любовь свежей, любопытной и постоянно развивающейся." } },
-  cancer:      { title: { en: "Nurturing Heart", ru: "Заботливое сердце" }, style: { en: "Deeply caring and protective. You love by creating emotional safety and home.", ru: "Глубоко заботливый и защищающий. Любишь через создание эмоциональной безопасности и дома." }, needs: { en: "Emotional depth, security and a partner who truly sees you.", ru: "Эмоциональная глубина, безопасность, партнёр, который видит тебя по-настоящему." }, gift: { en: "Your love nourishes and heals at the deepest levels.", ru: "Твоя любовь питает и исцеляет на самом глубоком уровне." } },
-  leo:         { title: { en: "Radiant Beloved", ru: "Сияющий возлюбленный" }, style: { en: "Grand, generous and warm. You love with drama and full-hearted devotion.", ru: "Грандиозный, щедрый, тёплый. Любишь с драмой и искренней преданностью." }, needs: { en: "Admiration, loyalty and celebrations of love.", ru: "Восхищение, верность и праздники любви." }, gift: { en: "Your love makes people feel like royalty.", ru: "Твоя любовь заставляет людей чувствовать себя королями." } },
-  virgo:       { title: { en: "Devoted Caretaker", ru: "Преданный опекун" }, style: { en: "Quiet, practical and profoundly loyal. Love is in the details and the acts of service.", ru: "Тихий, практичный, глубоко верный. Любовь — в деталях и актах служения." }, needs: { en: "Reliability, growth and a partner who appreciates the effort.", ru: "Надёжность, рост, партнёр, ценящий усилия." }, gift: { en: "Your love improves everything it touches.", ru: "Твоя любовь улучшает всё, чего касается." } },
-  libra:       { title: { en: "Romantic Idealist", ru: "Романтический идеалист" }, style: { en: "Graceful, charming and deeply committed to harmony. You love beautifully.", ru: "Изящный, обаятельный, глубоко преданный гармонии. Ты любишь красиво." }, needs: { en: "Balance, beauty and a partnership of equals.", ru: "Баланс, красота, партнёрство равных." }, gift: { en: "You bring art and elegance to every relationship.", ru: "Ты приносишь искусство и элегантность в каждые отношения." } },
-  scorpio:     { title: { en: "Magnetic Transformer", ru: "Магнетический преобразователь" }, style: { en: "Intense, all-or-nothing and deeply transforming. Love is a sacred merging.", ru: "Интенсивный, всё или ничего, глубоко преобразующий. Любовь — священное слияние." }, needs: { en: "Depth, trust, honesty and total emotional commitment.", ru: "Глубина, доверие, честность и полная эмоциональная преданность." }, gift: { en: "You transform your partner through the alchemy of love.", ru: "Ты преображаешь партнёра через алхимию любви." } },
-  sagittarius: { title: { en: "Free-Spirited Lover", ru: "Свободолюбивый влюблённый" }, style: { en: "Adventurous, philosophical and expansive. Love is a journey of shared growth.", ru: "Приключенческий, философский, расширяющий. Любовь — путешествие совместного роста." }, needs: { en: "Freedom, shared adventures and intellectual connection.", ru: "Свобода, общие приключения и интеллектуальная связь." }, gift: { en: "You open your partner's world and inspire them to grow.", ru: "Ты открываешь мир партнёра и вдохновляешь его расти." } },
-  capricorn:   { title: { en: "Steadfast Partner", ru: "Верный партнёр" }, style: { en: "Patient, responsible and building love for the long term.", ru: "Терпеливый, ответственный, строит любовь на долгий срок." }, needs: { en: "Commitment, respect and a shared vision for the future.", ru: "Обязательство, уважение и общее видение будущего." }, gift: { en: "Your love is a foundation that lasts a lifetime.", ru: "Твоя любовь — фундамент, который длится всю жизнь." } },
-  aquarius:    { title: { en: "Unconventional Bond", ru: "Нетрадиционная связь" }, style: { en: "Unique, intellectual and outside the norm. You love as a meeting of minds and souls.", ru: "Уникальный, интеллектуальный, вне нормы. Любишь как встречу умов и душ." }, needs: { en: "Independence, mental connection and space to be yourself.", ru: "Независимость, ментальная связь, пространство быть собой." }, gift: { en: "Your love is a friendship first — the deepest kind.", ru: "Твоя любовь прежде всего дружба — самого глубокого рода." } },
-  pisces:      { title: { en: "Mystical Devotion", ru: "Мистическая преданность" }, style: { en: "Transcendent, empathic and profoundly romantic. Love is a spiritual experience.", ru: "Трансцендентный, эмпатичный, глубоко романтичный. Любовь — духовный опыт." }, needs: { en: "Emotional safety, a soulful connection and someone who sees your depth.", ru: "Эмоциональная безопасность, душевная связь, кто видит твою глубину." }, gift: { en: "Your love dissolves barriers and heals old wounds.", ru: "Твоя любовь растворяет барьеры и исцеляет старые раны." } },
+  aries:       { title: { en: "Bold Lover", ru: "Strastnyy vlyublennyy" }, style: { en: "Direct, passionate and immediate — you love fiercely and without games.", ru: "Pryamoy, strastnyy, neposredstvennyy — lyubish yarostno i bez igr." }, needs: { en: "Excitement, spontaneity, a partner who matches your fire.", ru: "Volnenie, spontannost, partner pod stat tvoemu ognyu." }, gift: { en: "You make love feel like a grand adventure.", ru: "Ty delaesh lyubov pokhozhey na grandioznoe priklyuchenie." } },
+  taurus:      { title: { en: "Sensual Devotee", ru: "Chuvstvennyy predannyy" }, style: { en: "Slow, steady and deeply loyal. You love through presence, touch and constancy.", ru: "Medlennyy, ustoychivyy, gluboko predannyy. Lyubish cherez prisutstvie, prikosnovenie, postoyanstvo." }, needs: { en: "Stability, physical affection, security and comfort.", ru: "Stabilnost, fizicheskaya blizost, bezopasnost i komfort." }, gift: { en: "Your love is a sanctuary that others long for.", ru: "Tvoya lyubov — ubezhische, po kotoromu toskuyut drugie." } },
+  gemini:      { title: { en: "Playful Connector", ru: "Igrivyy soedinitel" }, style: { en: "Witty, curious and light. Love flows through conversation and shared discovery.", ru: "Ostroumnyy, lyubopytnyy, legkiy. Lyubov techet cherez razgovor i sovmestnoe otkrytie." }, needs: { en: "Mental stimulation, variety and a partner who surprises you.", ru: "Mentalnaya stimulyatsiya, raznoobrazie, partner, kotoryy udivlyaet." }, gift: { en: "You keep love fresh, curious and ever-evolving.", ru: "Ty derzhish lyubov svezhey, lyubopytnoy i postoyanno razvivayuscheysya." } },
+  cancer:      { title: { en: "Nurturing Heart", ru: "Zabotlivoe serdtse" }, style: { en: "Deeply caring and protective. You love by creating emotional safety and home.", ru: "Gluboko zabotlivyy i zaschischayuschiy. Lyubish cherez sozdanie emotsionalnoy bezopasnosti i doma." }, needs: { en: "Emotional depth, security and a partner who truly sees you.", ru: "Emotsionalnaya glubina, bezopasnost, partner, kotoryy vidit tebya po-nastoyaschemu." }, gift: { en: "Your love nourishes and heals at the deepest levels.", ru: "Tvoya lyubov pitaet i istselyaet na samom glubokom urovne." } },
+  leo:         { title: { en: "Radiant Beloved", ru: "Siyayuschiy vozlyublennyy" }, style: { en: "Grand, generous and warm. You love with drama and full-hearted devotion.", ru: "Grandioznyy, schedryy, teplyy. Lyubish s dramoy i iskrenney predannostyu." }, needs: { en: "Admiration, loyalty and celebrations of love.", ru: "Voskhischenie, vernost i prazdniki lyubvi." }, gift: { en: "Your love makes people feel like royalty.", ru: "Tvoya lyubov zastavlyaet lyudey chuvstvovat sebya korolyami." } },
+  virgo:       { title: { en: "Devoted Caretaker", ru: "Predannyy opekun" }, style: { en: "Quiet, practical and profoundly loyal. Love is in the details and the acts of service.", ru: "Tikhiy, praktichnyy, gluboko vernyy. Lyubov — v detalyakh i aktakh sluzheniya." }, needs: { en: "Reliability, growth and a partner who appreciates the effort.", ru: "Nadezhnost, rost, partner, tsenyaschiy usiliya." }, gift: { en: "Your love improves everything it touches.", ru: "Tvoya lyubov uluchshaet vse, chego kasaetsya." } },
+  libra:       { title: { en: "Romantic Idealist", ru: "Romanticheskiy idealist" }, style: { en: "Graceful, charming and deeply committed to harmony. You love beautifully.", ru: "Izyaschnyy, obayatelnyy, gluboko predannyy garmonii. Ty lyubish krasivo." }, needs: { en: "Balance, beauty and a partnership of equals.", ru: "Balans, krasota, partnerstvo ravnykh." }, gift: { en: "You bring art and elegance to every relationship.", ru: "Ty prinosish iskusstvo i elegantnost v kazhdye otnosheniya." } },
+  scorpio:     { title: { en: "Magnetic Transformer", ru: "Magneticheskiy preobrazovatel" }, style: { en: "Intense, all-or-nothing and deeply transforming. Love is a sacred merging.", ru: "Intensivnyy, vse ili nichego, gluboko preobrazuyuschiy. Lyubov — svyaschennoe sliyanie." }, needs: { en: "Depth, trust, honesty and total emotional commitment.", ru: "Glubina, doverie, chestnost i polnaya emotsionalnaya predannost." }, gift: { en: "You transform your partner through the alchemy of love.", ru: "Ty preobrazhaesh partnera cherez alkhimiyu lyubvi." } },
+  sagittarius: { title: { en: "Free-Spirited Lover", ru: "Svobodolyubivyy vlyublennyy" }, style: { en: "Adventurous, philosophical and expansive. Love is a journey of shared growth.", ru: "Priklyuchencheskiy, filosofskiy, rasshiryayuschiy. Lyubov — puteshestvie sovmestnogo rosta." }, needs: { en: "Freedom, shared adventures and intellectual connection.", ru: "Svoboda, obschie priklyucheniya i intellektualnaya svyaz." }, gift: { en: "You open your partner's world and inspire them to grow.", ru: "Ty otkryvaesh mir partnera i vdokhnovlyaesh ego rasti." } },
+  capricorn:   { title: { en: "Steadfast Partner", ru: "Vernyy partner" }, style: { en: "Patient, responsible and building love for the long term.", ru: "Terpelivyy, otvetstvennyy, stroit lyubov na dolgiy srok." }, needs: { en: "Commitment, respect and a shared vision for the future.", ru: "Obyazatelstvo, uvazhenie i obschee videnie buduschego." }, gift: { en: "Your love is a foundation that lasts a lifetime.", ru: "Tvoya lyubov — fundament, kotoryy dlitsya vsyu zhizn." } },
+  aquarius:    { title: { en: "Unconventional Bond", ru: "Netraditsionnaya svyaz" }, style: { en: "Unique, intellectual and outside the norm. You love as a meeting of minds and souls.", ru: "Unikalnyy, intellektualnyy, vne normy. Lyubish kak vstrechu umov i dush." }, needs: { en: "Independence, mental connection and space to be yourself.", ru: "Nezavisimost, mentalnaya svyaz, prostranstvo byt soboy." }, gift: { en: "Your love is a friendship first — the deepest kind.", ru: "Tvoya lyubov prezhde vsego druzhba — samogo glubokogo roda." } },
+  pisces:      { title: { en: "Mystical Devotion", ru: "Misticheskaya predannost" }, style: { en: "Transcendent, empathic and profoundly romantic. Love is a spiritual experience.", ru: "Transtsendentnyy, empatichnyy, gluboko romantichnyy. Lyubov — dukhovnyy opyt." }, needs: { en: "Emotional safety, a soulful connection and someone who sees your depth.", ru: "Emotsionalnaya bezopasnost, dushevnaya svyaz, kto vidit tvoyu glubinu." }, gift: { en: "Your love dissolves barriers and heals old wounds.", ru: "Tvoya lyubov rastvoryaet barery i istselyaet starye rany." } },
 };
 
 // ── Attachment quiz ───────────────────────────────────────────────────────────
 type AttachType = "secure" | "anxious" | "avoidant" | "disorganised";
 const ATTACH_TYPES: Record<AttachType, { en: string; ru: string; desc: { en: string; ru: string }; growth: { en: string; ru: string }; color: string }> = {
-  secure:       { en: "Secure",       ru: "Надёжный",      desc: { en: "You feel comfortable with closeness and independence. Relationships feel safe and trusting.", ru: "Тебе комфортна и близость, и независимость. Отношения ощущаются безопасными." }, growth: { en: "Continue modelling healthy love for others.", ru: "Продолжай моделировать здоровую любовь для других." }, color: "#7ab04a" },
-  anxious:      { en: "Anxious",      ru: "Тревожный",     desc: { en: "You crave closeness but fear abandonment. Reassurance is key — and working on self-soothing.", ru: "Ты жаждешь близости, но боишься быть покинутым. Ключ — самоуспокоение." }, growth: { en: "Practice self-soothing and build trust in your own worth.", ru: "Практикуй самоуспокоение и строй доверие к своей ценности." }, color: "#d8a85f" },
-  avoidant:     { en: "Avoidant",     ru: "Избегающий",    desc: { en: "You value independence and can withdraw from closeness. Vulnerability feels risky.", ru: "Ты ценишь независимость и можешь избегать близости. Уязвимость ощущается рискованной." }, growth: { en: "Practise letting people in — vulnerability is strength.", ru: "Практикуй впускание людей — уязвимость — это сила." }, color: "#7ab8d8" },
-  disorganised: { en: "Disorganised", ru: "Дезорганизованный", desc: { en: "You both crave and fear closeness. This often stems from early experiences — healing is possible.", ru: "Ты и жаждешь, и боишься близости. Часто из ранних опытов — исцеление возможно." }, growth: { en: "Therapy and self-compassion are powerful tools for you.", ru: "Терапия и самосострадание — мощные инструменты для тебя." }, color: "#9070d8" },
+  secure:       { en: "Secure",       ru: "Nadezhnyy",      desc: { en: "You feel comfortable with closeness and independence. Relationships feel safe and trusting.", ru: "Tebe komfortna i blizost, i nezavisimost. Otnosheniya oschuschayutsya bezopasnymi." }, growth: { en: "Continue modelling healthy love for others.", ru: "Prodolzhay modelirovat zdorovuyu lyubov dlya drugikh." }, color: "#7ab04a" },
+  anxious:      { en: "Anxious",      ru: "Trevozhnyy",     desc: { en: "You crave closeness but fear abandonment. Reassurance is key — and working on self-soothing.", ru: "Ty zhazhdesh blizosti, no boishsya byt pokinutym. Klyuch — samouspokoenie." }, growth: { en: "Practice self-soothing and build trust in your own worth.", ru: "Praktikuy samouspokoenie i stroy doverie k svoey tsennosti." }, color: "#d8a85f" },
+  avoidant:     { en: "Avoidant",     ru: "Izbegayuschiy",    desc: { en: "You value independence and can withdraw from closeness. Vulnerability feels risky.", ru: "Ty tsenish nezavisimost i mozhesh izbegat blizosti. Uyazvimost oschuschaetsya riskovannoy." }, growth: { en: "Practise letting people in — vulnerability is strength.", ru: "Praktikuy vpuskanie lyudey — uyazvimost — eto sila." }, color: "#7ab8d8" },
+  disorganised: { en: "Disorganised", ru: "Dezorganizovannyy", desc: { en: "You both crave and fear closeness. This often stems from early experiences — healing is possible.", ru: "Ty i zhazhdesh, i boishsya blizosti. Chasto iz rannikh opytov — istselenie vozmozhno." }, growth: { en: "Therapy and self-compassion are powerful tools for you.", ru: "Terapiya i samosostradanie — moschnye instrumenty dlya tebya." }, color: "#9070d8" },
 };
 
 const ATTACH_Q: { q: { en: string; ru: string }; opts: { label: { en: string; ru: string }; score: AttachType }[] }[] = [
   {
-    q: { en: "In relationships, I most often feel...", ru: "В отношениях я чаще всего чувствую..." },
+    q: { en: "In relationships, I most often feel...", ru: "V otnosheniyakh ya chasche vsego chuvstvuyu..." },
     opts: [
-      { label: { en: "Safe and comfortable — closeness is natural", ru: "Безопасность и комфорт — близость естественна" }, score: "secure" },
-      { label: { en: "Anxious — I worry about being left or not enough", ru: "Тревогу — переживаю, что меня оставят или я недостаточен" }, score: "anxious" },
-      { label: { en: "The urge to pull back when things get too close", ru: "Желание отступить, когда всё становится слишком близким" }, score: "avoidant" },
-      { label: { en: "Confused — I want closeness but get overwhelmed by it", ru: "Замешательство — хочу близости, но ею overwhelmed" }, score: "disorganised" },
+      { label: { en: "Safe and comfortable — closeness is natural", ru: "Bezopasnost i komfort — blizost estestvenna" }, score: "secure" },
+      { label: { en: "Anxious — I worry about being left or not enough", ru: "Trevogu — perezhivayu, chto menya ostavyat ili ya nedostatochen" }, score: "anxious" },
+      { label: { en: "The urge to pull back when things get too close", ru: "Zhelanie otstupit, kogda vse stanovitsya slishkom blizkim" }, score: "avoidant" },
+      { label: { en: "Confused — I want closeness but get overwhelmed by it", ru: "Zameshatelstvo — khochu blizosti, no eyu overwhelmed" }, score: "disorganised" },
     ],
   },
   {
-    q: { en: "When a partner needs space, I tend to...", ru: "Когда партнёр просит пространства, я обычно..." },
+    q: { en: "When a partner needs space, I tend to...", ru: "Kogda partner prosit prostranstva, ya obychno..." },
     opts: [
-      { label: { en: "Feel fine — I trust them and give space easily", ru: "Чувствую себя нормально — доверяю и легко даю пространство" }, score: "secure" },
-      { label: { en: "Worry they're losing interest or pulling away", ru: "Переживаю, что они теряют интерес или отдаляются" }, score: "anxious" },
-      { label: { en: "Feel relieved — I appreciate the distance too", ru: "Чувствую облегчение — я тоже ценю дистанцию" }, score: "avoidant" },
-      { label: { en: "Feel both relieved and panicked at the same time", ru: "Чувствую одновременно облегчение и панику" }, score: "disorganised" },
+      { label: { en: "Feel fine — I trust them and give space easily", ru: "Chuvstvuyu sebya normalno — doveryayu i legko dayu prostranstvo" }, score: "secure" },
+      { label: { en: "Worry they're losing interest or pulling away", ru: "Perezhivayu, chto oni teryayut interes ili otdalyayutsya" }, score: "anxious" },
+      { label: { en: "Feel relieved — I appreciate the distance too", ru: "Chuvstvuyu oblegchenie — ya tozhe tsenyu distantsiyu" }, score: "avoidant" },
+      { label: { en: "Feel both relieved and panicked at the same time", ru: "Chuvstvuyu odnovremenno oblegchenie i paniku" }, score: "disorganised" },
     ],
   },
   {
-    q: { en: "Showing vulnerability to a partner feels...", ru: "Проявить уязвимость перед партнёром мне кажется..." },
+    q: { en: "Showing vulnerability to a partner feels...", ru: "Proyavit uyazvimost pered partnerom mne kazhetsya..." },
     opts: [
-      { label: { en: "Natural and important — it deepens connection", ru: "Естественным и важным — это углубляет связь" }, score: "secure" },
-      { label: { en: "Scary but I do it, hoping they won't leave", ru: "Страшным, но делаю, надеясь, что не уйдут" }, score: "anxious" },
-      { label: { en: "Uncomfortable — I prefer to handle things alone", ru: "Некомфортным — предпочитаю справляться самому" }, score: "avoidant" },
-      { label: { en: "Both tempting and terrifying", ru: "И соблазнительным, и ужасающим одновременно" }, score: "disorganised" },
+      { label: { en: "Natural and important — it deepens connection", ru: "Estestvennym i vazhnym — eto uglublyaet svyaz" }, score: "secure" },
+      { label: { en: "Scary but I do it, hoping they won't leave", ru: "Strashnym, no delayu, nadeyas, chto ne uydut" }, score: "anxious" },
+      { label: { en: "Uncomfortable — I prefer to handle things alone", ru: "Nekomfortnym — predpochitayu spravlyatsya samomu" }, score: "avoidant" },
+      { label: { en: "Both tempting and terrifying", ru: "I soblaznitelnym, i uzhasayuschim odnovremenno" }, score: "disorganised" },
     ],
   },
   {
-    q: { en: "After a conflict in a relationship, I usually...", ru: "После конфликта в отношениях я обычно..." },
+    q: { en: "After a conflict in a relationship, I usually...", ru: "Posle konflikta v otnosheniyakh ya obychno..." },
     opts: [
-      { label: { en: "Talk it through calmly and resolve it", ru: "Спокойно обсуждаю и разрешаю его" }, score: "secure" },
-      { label: { en: "Seek reassurance that everything is okay", ru: "Ищу заверений, что всё в порядке" }, score: "anxious" },
-      { label: { en: "Need time alone to decompress first", ru: "Мне нужно время в одиночестве, чтобы прийти в себя" }, score: "avoidant" },
-      { label: { en: "Oscillate between wanting to fix it and withdrawing", ru: "Колеблюсь между желанием исправить и желанием отдалиться" }, score: "disorganised" },
+      { label: { en: "Talk it through calmly and resolve it", ru: "Spokoyno obsuzhdayu i razreshayu ego" }, score: "secure" },
+      { label: { en: "Seek reassurance that everything is okay", ru: "Ischu zavereniy, chto vse v poryadke" }, score: "anxious" },
+      { label: { en: "Need time alone to decompress first", ru: "Mne nuzhno vremya v odinochestve, chtoby priyti v sebya" }, score: "avoidant" },
+      { label: { en: "Oscillate between wanting to fix it and withdrawing", ru: "Koleblyus mezhdu zhelaniem ispravit i zhelaniem otdalitsya" }, score: "disorganised" },
     ],
   },
 ];
@@ -94,7 +94,7 @@ function SMNode1() {
 
   if (!user?.birthDate) return (
     <div style={{ textAlign: "center", padding: "40px 16px" }}>
-      <p style={{ color: "var(--muted)", marginBottom: 16 }}>{lang === "ru" ? "Укажи дату рождения в профиле" : "Add birth date in profile"}</p>
+      <p style={{ color: "var(--muted)", marginBottom: 16 }}>{lang === "ru" ? "Ukazhi datu rozhdeniya v profile" : "Add birth date in profile"}</p>
     </div>
   );
 
@@ -102,14 +102,14 @@ function SMNode1() {
     <div>
       <div style={{ textAlign: "center", marginBottom: 16 }}>
         <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-          {lang === "ru" ? "Венера в твоей карте раскрывает твою природу любви — как ты привлекаешь, отдаёшь и принимаешь любовь." : "Venus in your chart reveals your nature in love — how you attract, give and receive love."}
+          {lang === "ru" ? "Venera v tvoey karte raskryvaet tvoyu prirodu lyubvi — kak ty privlekaesh, otdaesh i prinimaesh lyubov." : "Venus in your chart reveals your nature in love — how you attract, give and receive love."}
         </p>
       </div>
 
       {!revealed ? (
         <button onClick={() => setRevealed(true)} style={{ width: "100%", height: 120, borderRadius: 20, background: "radial-gradient(circle at 40% 35%, rgba(180,80,140,.3), rgba(14,10,32,.95))", border: "1.5px solid rgba(216,168,95,.4)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 }}>
           <span style={{ fontSize: 42 }}>&#9792;</span>
-          <span style={{ fontSize: 14, color: "var(--gold-2)", fontWeight: 600 }}>{lang === "ru" ? "Раскрыть знак Венеры" : "Reveal Venus sign"}</span>
+          <span style={{ fontSize: 14, color: "var(--gold-2)", fontWeight: 600 }}>{lang === "ru" ? "Raskryt znak Venery" : "Reveal Venus sign"}</span>
         </button>
       ) : venusSign && loveData ? (
         <div>
@@ -118,13 +118,13 @@ function SMNode1() {
               <span style={{ fontSize: 44 }}>{venusSign.symbol}</span>
             </div>
             <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, marginBottom: 4 }}>{lang === "ru" ? loveData.title.ru : loveData.title.en}</h2>
-            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{lang === "ru" ? `Венера в ${venusSign.ru}` : `Venus in ${venusSign.en}`}</p>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{lang === "ru" ? `Venera v ${venusSign.ru}` : `Venus in ${venusSign.en}`}</p>
           </div>
 
           {[
-            { key: "style", label: { en: "LOVE STYLE", ru: "СТИЛЬ ЛЮБВИ" } },
-            { key: "needs", label: { en: "WHAT YOU NEED", ru: "ЧТО ТЕБЕ НУЖНО" } },
-            { key: "gift",  label: { en: "YOUR GIFT IN LOVE", ru: "ТВОЙ ДАР В ЛЮБВИ" } },
+            { key: "style", label: { en: "LOVE STYLE", ru: "STIL LYuBVI" } },
+            { key: "needs", label: { en: "WHAT YOU NEED", ru: "ChTO TEBE NUZhNO" } },
+            { key: "gift",  label: { en: "YOUR GIFT IN LOVE", ru: "TVOY DAR V LYuBVI" } },
           ].map(({ key, label }) => (
             <div key={key} style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.5)", marginBottom: 10 }}>
               <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{lang === "ru" ? label.ru : label.en}</p>
@@ -134,7 +134,7 @@ function SMNode1() {
 
           <div style={{ marginBottom: 20 }} />
           <button onClick={() => { completeNode(DISCIPLINE, 1, { venusSign: venusSign.key }); router.push("/sky/soulmate"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Завершить узел ✓" : "Complete node ✓"}
+            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       ) : null}
@@ -170,12 +170,12 @@ function SMNode2() {
             <div style={{ fontSize: 48, marginBottom: 10 }}>&#10084;</div>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
               {lang === "ru"
-                ? "Стиль привязанности формируется в детстве и влияет на все романтические отношения. Понять его — значит изменить паттерны."
+                ? "Stil privyazannosti formiruetsya v detstve i vliyaet na vse romanticheskie otnosheniya. Ponyat ego — znachit izmenit patterny."
                 : "Attachment style forms in childhood and shapes all romantic relationships. Understanding yours is the first step to changing patterns."}
             </p>
           </div>
           <button onClick={() => setQIdx(0)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Пройти тест →" : "Take the quiz →"}
+            {lang === "ru" ? "Proyti test →" : "Take the quiz →"}
           </button>
         </div>
       )}
@@ -206,19 +206,19 @@ function SMNode2() {
               <span style={{ fontSize: 48 }}>&#10084;</span>
             </div>
             <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{lang === "ru" ? attachData.ru : attachData.en}</h2>
-            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{lang === "ru" ? "Твой стиль привязанности" : "Your attachment style"}</p>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{lang === "ru" ? "Tvoy stil privyazannosti" : "Your attachment style"}</p>
           </div>
 
           <div style={{ border: `1px solid ${attachData.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{lang === "ru" ? attachData.desc.ru : attachData.desc.en}</p>
           </div>
           <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 14, padding: "14px 16px", background: "rgba(216,168,95,.05)", marginBottom: 20 }}>
-            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{lang === "ru" ? "ПУТЬ РОСТА" : "GROWTH PATH"}</p>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{lang === "ru" ? "PUT ROSTA" : "GROWTH PATH"}</p>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{lang === "ru" ? attachData.growth.ru : attachData.growth.en}</p>
           </div>
 
           <button onClick={() => { completeNode(DISCIPLINE, 2, { attachment: result }); router.push("/sky/soulmate"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Завершить узел ✓" : "Complete node ✓"}
+            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       )}
@@ -228,8 +228,8 @@ function SMNode2() {
 
 // ── Router ────────────────────────────────────────────────────────────────────
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
-  "1": { en: "Venus",       ru: "Венера",         sub: { en: "Love nature", ru: "Природа любви" } },
-  "2": { en: "Heart Line",  ru: "Линия сердца",   sub: { en: "Connection",  ru: "Связь" } },
+  "1": { en: "Venus",       ru: "Venera",         sub: { en: "Love nature", ru: "Priroda lyubvi" } },
+  "2": { en: "Heart Line",  ru: "Liniya serdtsa",   sub: { en: "Connection",  ru: "Svyaz" } },
 };
 
 export default function SoulmateNodePage() {
@@ -247,7 +247,7 @@ export default function SoulmateNodePage() {
     <NodePage title={lang === "ru" ? meta.ru : meta.en} subtitle={lang === "ru" ? meta.sub.ru : meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/soulmate">
       <div style={{ textAlign: "center", padding: "40px 16px" }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
-        <p style={{ color: "var(--muted)" }}>{lang === "ru" ? "Завершите предыдущий узел" : "Complete the previous node first"}</p>
+        <p style={{ color: "var(--muted)" }}>{lang === "ru" ? "Zavershite predyduschiy uzel" : "Complete the previous node first"}</p>
       </div>
     </NodePage>
   );
