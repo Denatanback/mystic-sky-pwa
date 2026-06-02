@@ -181,7 +181,7 @@ export default function TodayPage() {
   }
 
   const today = new Date();
-  const dateLabel = today.toLocaleDateString(ru ? "ru-RU" : "en-US", { weekday: "long", day: "numeric", month: "long" });
+  const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long" });
 
   const moonSignDesc = moonSign ? (MOON_IN_SIGN[moonSign.key]?.[lang] ?? "") : "";
   const personalDayInfo = PERSONAL_DAY[personalDay] ?? PERSONAL_DAY[1];

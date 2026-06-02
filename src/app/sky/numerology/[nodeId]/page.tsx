@@ -62,7 +62,7 @@ function NumNode1() {
           <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.5)", marginBottom: 20 }}>
             <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{lang === "ru" ? "TVOYa DATA ROZhDENIYa" : "YOUR BIRTH DATE"}</p>
             <p style={{ fontSize: 22, color: "var(--text)", fontFamily: "var(--font-serif)", letterSpacing: ".06em" }}>
-              {new Date(user.birthDate).toLocaleDateString(lang === "ru" ? "ru-RU" : "en-GB", { day: "numeric", month: "long", year: "numeric" })}
+              {new Date(user.birthDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
             </p>
           </div>
           <div style={{ border: "1px solid rgba(255,255,255,.08)", borderRadius: 14, padding: "14px 16px", background: "rgba(12,8,28,.45)", marginBottom: 20 }}>
