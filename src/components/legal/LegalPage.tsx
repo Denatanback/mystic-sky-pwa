@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { StarField } from "@/components/app-shell/StarField";
-import { SUPPORT_EMAIL_ADDRESS, SUPPORT_MAILTO, type LegalDocument } from "@/lib/legal/legalContent";
+import { BILLING_SUPPORT_MAILTO, REFUND_SUPPORT_MAILTO, SUPPORT_EMAIL_ADDRESS, SUPPORT_MAILTO, type LegalDocument } from "@/lib/legal/legalContent";
 
 type LegalPageProps = {
   document: LegalDocument;
@@ -16,7 +16,42 @@ const cardStyle: CSSProperties = {
   boxShadow: "0 18px 48px rgba(0,0,0,.30)",
 };
 
+function supportHrefForDocument(document: LegalDocument) {
+  if (document.slug === "money-back") return REFUND_SUPPORT_MAILTO;
+  if (document.slug === "billing") return BILLING_SUPPORT_MAILTO;
+  return SUPPORT_MAILTO;
+}
+
+function renderInlineLinks(text: string, supportHref: string) {
+  const parts = text.split(SUPPORT_EMAIL_ADDRESS);
+  const linkedEmail = parts.flatMap((part, index) => {
+    if (index === parts.length - 1) return [part];
+    return [
+      part,
+      <a key={`email-${index}`} href={supportHref} style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none", overflowWrap: "anywhere" }}>
+        {SUPPORT_EMAIL_ADDRESS}
+      </a>,
+    ];
+  });
+
+  return linkedEmail.flatMap((part, index) => {
+    if (typeof part !== "string") return [part];
+    const moneyParts = part.split("Money-Back Policy");
+    return moneyParts.flatMap((moneyPart, moneyIndex) => {
+      if (moneyIndex === moneyParts.length - 1) return [moneyPart];
+      return [
+        moneyPart,
+        <Link key={`money-${index}-${moneyIndex}`} href="/money-back" style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>
+          Money-Back Policy
+        </Link>,
+      ];
+    });
+  });
+}
+
 export function LegalPage({ document }: LegalPageProps) {
+  const supportHref = supportHrefForDocument(document);
+
   return (
     <main className="app no-nav" style={{ minHeight: "100dvh", padding: "0 18px 40px" }}>
       <StarField />
@@ -41,7 +76,7 @@ export function LegalPage({ document }: LegalPageProps) {
                 <h2 style={{ color: "var(--gold-2)", fontSize: 18, lineHeight: 1.22, fontWeight: 900, marginBottom: 10 }}>{section.title}</h2>
                 <div style={{ display: "grid", gap: 9 }}>
                   {section.body.map((paragraph, paragraphIndex) => (
-                    <p key={paragraphIndex} style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.68 }}>{paragraph}</p>
+                    <p key={paragraphIndex} style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.68 }}>{renderInlineLinks(paragraph, supportHref)}</p>
                   ))}
                 </div>
                 {section.bullets && (
@@ -57,7 +92,7 @@ export function LegalPage({ document }: LegalPageProps) {
 
           <section style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: 18, background: "rgba(216,168,95,.07)", padding: 14, marginTop: 24 }}>
             <p style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 900, marginBottom: 5 }}>Contact support</p>
-            <a href={SUPPORT_MAILTO} style={{ color: "var(--text)", fontSize: 13, lineHeight: 1.5, fontWeight: 800, textDecoration: "none", overflowWrap: "anywhere" }}>
+            <a href={supportHref} style={{ color: "var(--text)", fontSize: 13, lineHeight: 1.5, fontWeight: 800, textDecoration: "none", overflowWrap: "anywhere" }}>
               {SUPPORT_EMAIL_ADDRESS}
             </a>
           </section>

@@ -151,12 +151,12 @@ export default function ProfilePage() {
           <MenuItem icon={<IconSettings />} title="Edit birth data" sub="Update your chart source" href="/onboarding?step=birth&mode=edit" />
           <MenuItem icon={<IconJournal />}  title={t.profile.journalMenu}    sub={t.profile.journalMenuSub}   href="/journal" />
           <MenuItem icon={<IconSettings />} title={t.profile.settings}       sub={t.profile.settingsSub}      href="/settings" />
-          <MenuItem icon={<IconSupport />} title="Support" sub="Questions about your account, trial, or subscription." href={SUPPORT_MAILTO} />
+          <MenuItem icon={<IconSupport />} title="Support" sub="Questions about your account, trial, billing, cancellation, or refund request." href={SUPPORT_MAILTO} />
         </div>
 
         <div style={{ border: "1px solid rgba(216,168,95,.16)", borderRadius: "var(--radius-md)", background: "rgba(255,255,255,.035)", padding: "12px 14px", marginBottom: 16 }}>
           <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>
-            Need help?{" "}
+            Questions about your account, trial, billing, cancellation, or refund request?{" "}
             <a href={SUPPORT_MAILTO} style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>
               {SUPPORT_EMAIL}
             </a>
