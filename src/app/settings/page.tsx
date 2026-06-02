@@ -160,7 +160,8 @@ export default function SettingsPage() {
             <div style={iconCircle}><IconSupport /></div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>Support email</div>
-              <div style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 2 }}>{SUPPORT_EMAIL}</div>
+              <div style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 2 }}>Questions about your account, trial, billing, cancellation, or refund request.</div>
+              <div style={{ fontSize: 12, color: "var(--gold-2)", marginTop: 4, fontWeight: 800 }}>{SUPPORT_EMAIL}</div>
             </div>
             <span style={{ color: "var(--muted-2)" }}><IconChevron /></span>
           </a>

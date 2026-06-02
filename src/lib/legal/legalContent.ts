@@ -16,6 +16,8 @@ export const LEGAL_ENTITY_ADDRESS = "[LEGAL_ENTITY_ADDRESS]";
 export const SUPPORT_EMAIL = "[support@myeluna.com](mailto:support@myeluna.com)";
 export const SUPPORT_EMAIL_ADDRESS = "support@myeluna.com";
 export const SUPPORT_MAILTO = "mailto:support@myeluna.com?subject=eLuna%20Support";
+export const BILLING_SUPPORT_MAILTO = "mailto:support@myeluna.com?subject=eLuna%20Billing%20Question";
+export const REFUND_SUPPORT_MAILTO = "mailto:support@myeluna.com?subject=eLuna%20Refund%20or%20Billing%20Question";
 export const WEBSITE_URL = "https://myeluna.com";
 export const APP_NAME = "eLuna";
 
@@ -260,6 +262,14 @@ export const moneyBackPolicy: LegalDocument = {
       ],
     },
     {
+      title: "How to Request a Refund or Billing Review",
+      body: [
+        `If you have questions about a charge, renewal, cancellation, or refund request, please contact us first at ${SUPPORT_EMAIL_ADDRESS}. This is the fastest way for us to locate your account, review the charge, and help resolve the issue.`,
+        "When contacting support, please include the email address used for your eLuna account, the date of the charge, the amount, and any receipt or transaction details available.",
+        "Contacting eLuna support first does not limit any rights you may have under applicable consumer protection laws.",
+      ],
+    },
+    {
       title: "Refund Eligibility",
       body: ["Refunds may be considered when all relevant conditions are met."],
       bullets: [
@@ -359,6 +369,13 @@ export const billingTerms: LegalDocument = {
       ],
     },
     {
+      title: "Billing Questions, Cancellations, and Refund Requests",
+      body: [
+        `For billing questions, cancellation help, renewal questions, or refund review, please contact ${SUPPORT_EMAIL_ADDRESS} first. Our support team can help identify your subscription, explain your current plan, and review eligible refund requests according to our Money-Back Policy.`,
+        "To help us respond faster, include the email used for your eLuna account and any receipt or payment details.",
+      ],
+    },
+    {
       title: "Failed Payments",
       body: [
         "If a payment fails, your premium access may be paused, downgraded, or canceled. Payment providers may retry failed payments according to their rules.",
@@ -372,7 +389,7 @@ export const billingTerms: LegalDocument = {
     },
     {
       title: "Refunds",
-      body: ["Refunds are governed by the Money-Back Policy."],
+      body: ["Refund requests are reviewed according to our Money-Back Policy."],
     },
     {
       title: "Contact",

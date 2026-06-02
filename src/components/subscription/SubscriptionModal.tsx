@@ -303,10 +303,11 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
             ))}
           </div>
           <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, marginTop: 12 }}>
-            Contact support:{" "}
+            Billing or refund question? Contact{" "}
             <a href={SUPPORT_MAILTO} style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>
               {SUPPORT_EMAIL}
             </a>
+            {" "}first for the fastest help.
           </p>
         </section>
       </section>
