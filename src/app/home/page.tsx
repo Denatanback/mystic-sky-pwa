@@ -85,7 +85,7 @@ function StreakChip({ streakDays, todayActive }: { streakDays: number; todayActi
     : "Complete at least one daily action to keep your streak active.";
   const status = `Current streak: ${streakDays} ${dayLabel}`;
   const hint = todayActive
-    ? "Today is complete. Your streak is safe."
+    ? "Today is active. Your streak is safe."
     : "Start your streak by completing today’s practice.";
 
   useEffect(() => {
