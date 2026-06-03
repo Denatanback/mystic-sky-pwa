@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useEntitlements } from "@/lib/subscription/entitlements";
 
 type PlanId = "free" | "trial_3_day_1_usd" | "premium_monthly_2999" | "premium_3_month_5999" | "premium_6_month_8999";
 
@@ -105,18 +106,13 @@ const plans: Array<{
   },
 ];
 
-function readPlan() {
-  if (typeof window === "undefined") return "free";
-  const plan = localStorage.getItem("eluna:plan");
-  return plan === "trial" || plan === "premium" ? plan : "free";
-}
-
 export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescription, trialCtaLabel }: SubscriptionModalProps) {
   const [notice, setNotice] = useState<"free" | "checkout-unavailable" | null>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<PlanId | null>(null);
   const [mounted, setMounted] = useState(false);
-  const currentPlan = readPlan();
-  const hasPaidAccess = currentPlan === "trial" || currentPlan === "premium";
+  const { entitlements } = useEntitlements();
+  const hasPaidAccess = entitlements.hasFullAccess;
+  const hasInternalAccess = entitlements.planId === "internal_full_access" && entitlements.status === "internal";
 
   useEffect(() => {
     setMounted(true);
@@ -138,7 +134,6 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
   function choosePlan(planId: PlanId) {
     setSelectedPlanId(planId);
     if (planId === "free") {
-      localStorage.setItem("eluna:plan", "free");
       setNotice("free");
       return;
     }
@@ -214,6 +209,13 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
         {notice === "free" && (
           <div style={{ border: "1px solid rgba(216,168,95,.24)", borderRadius: 18, background: "rgba(216,168,95,.08)", padding: 13, marginBottom: 12 }}>
             <p style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 800 }}>You’re staying on the Free plan.</p>
+          </div>
+        )}
+
+        {hasInternalAccess && (
+          <div style={{ border: "1px solid rgba(216,168,95,.28)", borderRadius: 18, background: "rgba(216,168,95,.10)", padding: 13, marginBottom: 12 }}>
+            <p style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 900, marginBottom: 4 }}>You already have full access.</p>
+            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Internal full access is active for this account. No checkout is needed.</p>
           </div>
         )}
 
@@ -307,7 +309,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
                     ))}
                   </div>
                   <button type="button" onClick={() => choosePlan(plan.id)} style={{ width: "100%", height: 44, borderRadius: 999, border: isFree ? "1px solid rgba(216,168,95,.30)" : "none", background: isFree ? "rgba(255,255,255,.05)" : "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: isFree ? "var(--gold-2)" : "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", boxShadow: isFree ? "none" : "0 8px 24px rgba(90,32,144,.38)" }}>
-                    {isFree && currentPlan === "free" ? "Current plan" : isTrial && trialCtaLabel ? trialCtaLabel : plan.cta}
+                    {isFree && entitlements.isFree ? "Current plan" : isTrial && trialCtaLabel ? trialCtaLabel : plan.cta}
                   </button>
                   {isTrial && (
                     <p style={{ color: "var(--muted-2)", fontSize: 10.5, lineHeight: 1.45, textAlign: "center", marginTop: 8 }}>

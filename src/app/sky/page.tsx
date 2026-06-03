@@ -15,6 +15,7 @@ import { getCurrentProfile } from "@/lib/profile/currentProfile";
 import { getPrelandContext, getPrelandExperience, type PrelandExperience } from "@/lib/funnel/prelandContext";
 import { getTodayProgress } from "@/lib/progress/dailyProgress";
 import { resolveSkyNodes, type SkyNode, type SkyNodeStatus } from "@/lib/sky/skyNodes";
+import { useEntitlements } from "@/lib/subscription/entitlements";
 
 const CW = 390;
 const CH = 460;
@@ -54,12 +55,6 @@ function getOrbitalPosition(node: SkyNode) {
   return orbitalNodePositions[node.id] ?? polar(node.deg);
 }
 
-function readPlanAccess() {
-  if (typeof window === "undefined") return false;
-  const plan = localStorage.getItem("eluna:plan");
-  return plan === "trial" || plan === "premium";
-}
-
 function statusCopy(status: SkyNodeStatus) {
   if (status === "active") return { label: "Active", text: "Ready to open now" };
   if (status === "available") return { label: "Available", text: "Can be explored after your next step" };
@@ -79,7 +74,8 @@ export default function SkyPage() {
   const [gender, setGender] = useState<"female" | "male">("female");
   const [birthDate, setBirthDate] = useState<string | null>(null);
   const [completedCount, setCompletedCount] = useState(0);
-  const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
+  const { entitlements } = useEntitlements();
+  const hasPremiumAccess = entitlements.canAccessPremiumNodes;
   const [howOpen, setHowOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<SkyNode | null>(null);
   const [paywallContext, setPaywallContext] = useState<{ title: string; description: string } | null>(null);
@@ -90,7 +86,6 @@ export default function SkyPage() {
   useEffect(() => {
     let cancelled = false;
     setCompletedCount(getTodayProgress().completedCount);
-    setHasPremiumAccess(readPlanAccess());
     setPrelandExperience(getPrelandExperience(getPrelandContext()));
     void getCurrentProfile().then((profile) => {
       if (!cancelled && profile && !profile.onboardingCompleted) {

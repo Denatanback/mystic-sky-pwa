@@ -73,9 +73,9 @@ export const baseSkyNodes: SkyNode[] = [
     meaning: "Decision-making style and energy rhythm",
     status: "locked",
     route: "/sky/humandesign/1",
-    requirement: "Complete 2 daily practices",
-    unlockType: "progress",
-    requiredDailyCompletions: 2,
+    requirement: "Available with Trial or Premium",
+    unlockType: "premium",
+    premium: true,
     emblem: "/assets/sky-emblems/sky-humandesign-emblem-2.png",
     deg: 60,
     previewBullets: ["Your energy rhythm", "Where you force effort", "One daily integration prompt", "A simple decision-making check"],
@@ -108,9 +108,9 @@ export const baseSkyNodes: SkyNode[] = [
     meaning: "Reflection, affirmations, and daily integration",
     status: "available",
     route: "/sky/spiritual/1",
-    requirement: "Available after your first daily practice",
-    unlockType: "progress",
-    requiredDailyCompletions: 1,
+    requirement: "Available with Trial or Premium",
+    unlockType: "premium",
+    premium: true,
     emblem: "/assets/sky-emblems/sky-soulpractice-emblem.png",
     deg: 180,
     previewBullets: ["A grounding ritual", "One reflection question", "A practice instruction", "A path integration cue"],
@@ -174,10 +174,9 @@ export function resolveSkyNodes(input: {
     }
 
     if (node.unlockType === "premium") {
-      const progressUnlock = node.requiredDailyCompletions ? input.completedCount >= node.requiredDailyCompletions : false;
       return {
         ...node,
-        status: input.hasPremiumAccess || progressUnlock ? "available" as const : "premium" as const,
+        status: input.hasPremiumAccess ? "available" as const : "premium" as const,
       };
     }
 

@@ -2,19 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { SubscriptionModal } from "./SubscriptionModal";
+import { getEntitlementLabel, useEntitlements } from "@/lib/subscription/entitlements";
 
-type PlanLabel = "Free" | "Trial" | "Premium";
+type PlanLabel = "Free" | "Trial" | "Premium" | "Full Access";
 
 export function PlanChip() {
   const [open, setOpen] = useState(false);
   const [label, setLabel] = useState<PlanLabel>("Free");
+  const { entitlements, loading } = useEntitlements();
 
   useEffect(() => {
-    const stored = localStorage.getItem("eluna:plan");
-    if (stored === "trial") setLabel("Trial");
-    else if (stored === "premium") setLabel("Premium");
-    else setLabel("Free");
-  }, [open]);
+    setLabel(getEntitlementLabel(entitlements) as PlanLabel);
+  }, [entitlements, open]);
 
   return (
     <>
@@ -39,7 +38,7 @@ export function PlanChip() {
           flexShrink: 0,
         }}
       >
-        {label}
+        {loading ? "..." : label}
       </button>
       <SubscriptionModal isOpen={open} onClose={() => setOpen(false)} />
     </>

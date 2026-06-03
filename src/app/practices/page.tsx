@@ -26,6 +26,7 @@ import {
 import { getTodayDailyCard, type DailyCardState } from "@/lib/cards/dailyCardProgress";
 import { getPrelandContext, getPrelandExperience, type PrelandExperience } from "@/lib/funnel/prelandContext";
 import { affirmationCategories, type AffirmationCategory, type AffirmationItem } from "@/lib/practices/affirmations";
+import { useEntitlements } from "@/lib/subscription/entitlements";
 
 type Tab = "today" | "my" | "library";
 type PlanAccess = "free" | "trial" | "premium";
@@ -76,14 +77,6 @@ const secondaryButtonStyle: CSSProperties = {
   textDecoration: "none",
   cursor: "pointer",
 };
-
-function readPlan(): PlanAccess {
-  if (typeof window === "undefined") return "free";
-  const stored = localStorage.getItem("eluna:plan");
-  if (stored === "trial") return "trial";
-  if (stored === "premium") return "premium";
-  return "free";
-}
 
 function hasFullAccess(plan: PlanAccess) {
   return plan === "trial" || plan === "premium";
@@ -139,7 +132,8 @@ function canActivateAffirmation(category: AffirmationCategory, affirmation: Affi
 export default function PracticesPage() {
   const todayKey = useMemo(() => getTodayKey(), []);
   const [tab, setTab] = useState<Tab>("today");
-  const [plan, setPlan] = useState<PlanAccess>("free");
+  const { entitlements } = useEntitlements();
+  const plan: PlanAccess = entitlements.hasFullAccess ? entitlements.isTrial ? "trial" : "premium" : "free";
   const [affirmationCompleted, setAffirmationCompleted] = useState(false);
   const [reflectionCompleted, setReflectionCompleted] = useState(false);
   const [groundingCompleted, setGroundingCompleted] = useState(false);
@@ -160,7 +154,6 @@ export default function PracticesPage() {
     const initialTab = params.get("tab");
     if (initialTab === "my" || initialTab === "library" || initialTab === "today") setTab(initialTab);
     const currentProgress = getTodayProgress(todayKey);
-    setPlan(readPlan());
     setAffirmationCompleted(currentProgress.affirmationCompleted);
     setReflectionCompleted(currentProgress.practiceCompleted);
     setGroundingCompleted(isGroundingCompleted(todayKey));

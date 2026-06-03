@@ -26,15 +26,38 @@ create table if not exists public.profiles (
 create table if not exists public.subscriptions (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references auth.users(id) on delete cascade,
-  status text not null default 'free' check (status in ('free', 'trialing', 'active', 'past_due', 'canceled', 'expired')),
+  plan_id text not null default 'free' check (plan_id in ('free', 'trial_3_day_1_usd', 'premium_monthly_2999', 'premium_3_month_5999', 'premium_6_month_8999', 'internal_full_access')),
+  subscription_status text not null default 'free' check (subscription_status in ('free', 'trialing', 'active', 'past_due', 'canceled', 'unpaid', 'internal')),
+  stripe_customer_id text null,
+  stripe_subscription_id text null,
+  current_period_end timestamptz null,
+  trial_end timestamptz null,
+  cancel_at_period_end boolean not null default false,
+  entitlement_source text not null default 'manual' check (entitlement_source in ('stripe', 'manual', 'internal', 'support')),
+  -- Legacy aliases retained for backward compatibility with older alpha data.
+  status text null,
   plan text null,
   provider text null,
   provider_customer_id text null,
   provider_subscription_id text null,
-  current_period_end timestamptz null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+create index if not exists subscriptions_user_id_idx
+on public.subscriptions(user_id);
+
+create unique index if not exists subscriptions_active_internal_user_idx
+on public.subscriptions(user_id)
+where subscription_status in ('trialing', 'active', 'internal');
+
+create unique index if not exists subscriptions_stripe_customer_id_uidx
+on public.subscriptions(stripe_customer_id)
+where stripe_customer_id is not null;
+
+create unique index if not exists subscriptions_stripe_subscription_id_uidx
+on public.subscriptions(stripe_subscription_id)
+where stripe_subscription_id is not null;
 
 drop trigger if exists set_profiles_updated_at on public.profiles;
 create trigger set_profiles_updated_at
@@ -102,4 +125,3 @@ drop trigger if exists on_auth_user_created_profile on auth.users;
 create trigger on_auth_user_created_profile
 after insert on auth.users
 for each row execute function public.handle_new_user_profile();
-

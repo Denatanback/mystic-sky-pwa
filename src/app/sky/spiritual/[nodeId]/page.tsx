@@ -2,6 +2,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { NodePage } from "@/components/sky/NodePage";
+import { SkyNodeEntitlementGate } from "@/components/sky/SkyNodeEntitlementGate";
 import { useLang } from "@/lib/i18n";
 import { startNode, completeNode, getNodeState, isNodeLocked } from "@/lib/nodeProgress";
 
@@ -354,27 +355,34 @@ export default function SpiritualNodePage() {
 
   const meta = NODE_TITLES[nodeId];
   if (!meta) { router.push("/sky/spiritual"); return null; }
+  const nodeNum = parseInt(nodeId);
+  const title = lang === "ru" ? meta.ru : meta.en;
+  const subtitle = lang === "ru" ? meta.sub.ru : meta.sub.en;
 
   if (locked) return (
-    <NodePage title={lang === "ru" ? meta.ru : meta.en} subtitle={lang === "ru" ? meta.sub.ru : meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/spiritual">
-      <div style={{ textAlign: "center", padding: "40px 16px" }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
-        <p style={{ color: "var(--muted)" }}>{lang === "ru" ? "Zavershite predyduschiy uzel" : "Complete the previous node first"}</p>
-      </div>
-    </NodePage>
+    <SkyNodeEntitlementGate discipline={DISCIPLINE} nodeId={nodeNum} title={title} subtitle={subtitle} totalNodes={TOTAL} backHref="/sky/spiritual">
+      <NodePage title={title} subtitle={subtitle} nodeNum={nodeNum} totalNodes={TOTAL} backHref="/sky/spiritual">
+        <div style={{ textAlign: "center", padding: "40px 16px" }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
+          <p style={{ color: "var(--muted)" }}>Complete the previous node first</p>
+        </div>
+      </NodePage>
+    </SkyNodeEntitlementGate>
   );
 
   return (
-    <NodePage
-      title={lang === "ru" ? meta.ru : meta.en}
-      subtitle={lang === "ru" ? meta.sub.ru : meta.sub.en}
-      nodeNum={parseInt(nodeId)}
-      totalNodes={TOTAL}
-      backHref="/sky/spiritual"
-      badge={state.status === "completed" ? "completed" : undefined}
-    >
-      {nodeId === "1" && <SpiritNode1 />}
-      {nodeId === "2" && <SpiritNode2 />}
-    </NodePage>
+    <SkyNodeEntitlementGate discipline={DISCIPLINE} nodeId={nodeNum} title={title} subtitle={subtitle} totalNodes={TOTAL} backHref="/sky/spiritual">
+      <NodePage
+        title={title}
+        subtitle={subtitle}
+        nodeNum={nodeNum}
+        totalNodes={TOTAL}
+        backHref="/sky/spiritual"
+        badge={state.status === "completed" ? "completed" : undefined}
+      >
+        {nodeId === "1" && <SpiritNode1 />}
+        {nodeId === "2" && <SpiritNode2 />}
+      </NodePage>
+    </SkyNodeEntitlementGate>
   );
 }
