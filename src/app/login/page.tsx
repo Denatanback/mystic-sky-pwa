@@ -30,7 +30,7 @@ export default function LoginPage() {
     setReturnTo(value);
 
     const error = new URLSearchParams(window.location.search).get("error");
-    if (error === "oauth_failed") setAuthError("Social sign-in failed. Please try again.");
+    if (error === "oauth_failed") setAuthError("Could not start Google sign-in. Please try again.");
   }, []);
 
   async function handleLogin(e: React.FormEvent) {
@@ -273,29 +273,24 @@ export default function LoginPage() {
             </div>
 
             {/* social */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-              {[
-                ["google", "Continue with Google"],
-                ["apple", "Continue with Apple"],
-              ].map(([provider, label]) => (
-                <button
-                  key={provider}
-                  type="button"
-                  onClick={() => handleSocialSignIn(provider as OAuthProvider)}
-                  disabled={socialLoading !== null}
-                  style={{
-                    height: 46, borderRadius: 999,
-                    background: "rgba(255,255,255,.05)",
-                    border: "1px solid rgba(255,255,255,.12)",
-                    color: "var(--text)", fontSize: 12, fontWeight: 700,
-                    cursor: socialLoading ? "default" : "pointer", transition: "background .2s",
-                    opacity: socialLoading && socialLoading !== provider ? .55 : 1,
-                  }}
-                >
-                  {socialLoading === provider ? "Connecting..." : label}
-                </button>
-              ))}
-            </div>
+            <button
+              type="button"
+              onClick={() => handleSocialSignIn("google")}
+              disabled={socialLoading !== null}
+              style={{
+                height: 46,
+                borderRadius: 999,
+                background: "rgba(255,255,255,.05)",
+                border: "1px solid rgba(255,255,255,.12)",
+                color: "var(--text)",
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: socialLoading ? "default" : "pointer",
+                transition: "background .2s",
+              }}
+            >
+              {socialLoading === "google" ? "Connecting..." : "Continue with Google"}
+            </button>
 
           </form>
           {resetOpen && (

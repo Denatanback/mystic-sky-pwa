@@ -32,7 +32,7 @@ export type LoginInput = {
   password: string;
 };
 
-export type OAuthProvider = "google" | "apple";
+export type OAuthProvider = "google";
 
 type AuthResult = {
   user: AuthUserProfile | null;
@@ -128,7 +128,7 @@ export async function signIn(input: LoginInput): Promise<AuthResult> {
 
 export async function signInWithOAuth(provider: OAuthProvider, returnTo = "/home"): Promise<{ error?: string }> {
   if (!isSupabaseAuthEnabled() || !supabase) {
-    return { error: "Social sign-in is not connected yet. Please use email and password." };
+    return { error: "Could not start Google sign-in. Please try again." };
   }
 
   if (typeof window === "undefined") {
@@ -143,7 +143,7 @@ export async function signInWithOAuth(provider: OAuthProvider, returnTo = "/home
     },
   });
 
-  if (error) return { error: friendlyError(error.message, "Could not start social sign-in. Please try again.") };
+  if (error) return { error: friendlyError(error.message, "Could not start Google sign-in. Please try again.") };
   return {};
 }
 

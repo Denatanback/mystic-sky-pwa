@@ -216,7 +216,7 @@ export default function SettingsPage() {
           <div>
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 5 }}>Change password</h2>
             <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.55 }}>
-              If your account was created with Google or Apple, you may not have a password yet. Setting a password lets you also sign in with email.
+              If your account was created with Google, you may not have a password yet. Setting a password lets you also sign in with email.
             </p>
           </div>
 

@@ -10,7 +10,6 @@ import { register, signInWithOAuth, type OAuthProvider } from "@/lib/auth/authAd
 import { cleanLaunchContext, saveLaunchContext } from "@/lib/launch/launchContext";
 import { parsePrelandContext, savePrelandContext, type PrelandContext } from "@/lib/funnel/prelandContext";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
-import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 
 const inputRow: React.CSSProperties = {
   display: "flex",
@@ -61,15 +60,19 @@ export default function RegisterPage() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [launchContext, setLaunchContext] = useState(() => cleanLaunchContext({}));
   const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
   const [legalReturnTo, setLegalReturnTo] = useState("/register");
+  const [oauthReturnTo, setOauthReturnTo] = useState("/onboarding");
   const [socialLoading, setSocialLoading] = useState<OAuthProvider | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setLegalReturnTo(`${window.location.pathname}${window.location.search}`);
+    const returnTo = params.get("returnTo");
+    if (returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//") && !returnTo.includes("http://") && !returnTo.includes("https://")) {
+      setOauthReturnTo(returnTo);
+    }
     const context = cleanLaunchContext({
       source: params.get("source"),
       funnel: params.get("funnel"),
@@ -128,7 +131,7 @@ export default function RegisterPage() {
     setSocialLoading(provider);
     saveLaunchContext(launchContext);
     savePrelandContext(prelandContext);
-    const result = await signInWithOAuth(provider, "/onboarding");
+    const result = await signInWithOAuth(provider, oauthReturnTo);
     if (result.error) {
       setError(result.error);
       setSocialLoading(null);
@@ -172,32 +175,23 @@ export default function RegisterPage() {
 
           {error && <p style={{ color: "var(--danger)", fontSize: 12, lineHeight: 1.45, textAlign: "center" }}>{error}</p>}
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            {[
-              ["google", "Sign up with Google"],
-              ["apple", "Sign up with Apple"],
-            ].map(([provider, label]) => (
-              <button
-                key={provider}
-                type="button"
-                onClick={() => handleSocialSignUp(provider as OAuthProvider)}
-                disabled={socialLoading !== null}
-                style={{
-                  height: 44,
-                  borderRadius: 999,
-                  border: "1px solid rgba(255,255,255,.12)",
-                  background: "rgba(255,255,255,.04)",
-                  color: "var(--text)",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  cursor: socialLoading ? "default" : "pointer",
-                  opacity: socialLoading && socialLoading !== provider ? .55 : 1,
-                }}
-              >
-                {socialLoading === provider ? "Connecting..." : label}
-              </button>
-            ))}
-          </div>
+          <button
+            type="button"
+            onClick={() => handleSocialSignUp("google")}
+            disabled={socialLoading !== null}
+            style={{
+              height: 44,
+              borderRadius: 999,
+              border: "1px solid rgba(255,255,255,.12)",
+              background: "rgba(255,255,255,.04)",
+              color: "var(--text)",
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: socialLoading ? "default" : "pointer",
+            }}
+          >
+            {socialLoading === "google" ? "Connecting..." : "Sign up with Google"}
+          </button>
           <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.5, textAlign: "center" }}>
             By creating an account, you agree to eLuna&apos;s{" "}
             <Link href={legalHref("/terms")} style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>Terms of Use</Link>
@@ -211,7 +205,6 @@ export default function RegisterPage() {
           Already have an account? <Link href="/login" style={{ color: "var(--gold-2)", fontWeight: 700 }}>Sign in</Link>
         </p>
       </div>
-      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
     </main>
   );
 }
