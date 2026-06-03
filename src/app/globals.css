@@ -691,3 +691,88 @@ select:focus-visible {
 .sky-next-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 .sky-next-name  { font-size: 14px; color: var(--text); font-weight: 500; margin-top: 3px; }
 .sky-next-badge { font-size: 11px; color: var(--muted); }
+
+/* ── AppLoader splash ─────────────────────────────────────────────────────── */
+.eluna-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 40%, rgba(60,20,110,.98) 0%, rgba(6,4,15,1) 70%);
+}
+.eluna-loader--out {
+  animation: eluna-fade-out .45s cubic-bezier(.4,0,.2,1) forwards;
+}
+.eluna-loader__scene {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+/* static orbital ring */
+.eluna-loader__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(216,168,95,.18);
+}
+/* centre glyph */
+.eluna-loader__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: rgba(216,168,95,.85);
+  text-shadow: 0 0 18px rgba(216,168,95,.55);
+  animation: eluna-center-pulse 2.4s ease-in-out infinite;
+}
+/* rotating arm that carries the comet */
+.eluna-loader__orbit {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: eluna-orbit 2s linear infinite;
+}
+/* comet dot at top of the arm */
+.eluna-loader__comet {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d8a85f;
+  box-shadow: 0 0 10px 3px rgba(216,168,95,.7), 0 0 24px 6px rgba(216,168,95,.3);
+}
+/* star dots — positioned via inline transform on each element */
+.eluna-loader__star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: rgba(216,168,95,.3);
+  animation: eluna-star-pulse 2s linear infinite;
+}
+
+@keyframes eluna-orbit {
+  to { transform: rotate(360deg); }
+}
+@keyframes eluna-star-pulse {
+  0%, 100% { opacity: .25; box-shadow: none; }
+  8%        { opacity: 1;   box-shadow: 0 0 7px 2px rgba(216,168,95,.75); }
+  22%       { opacity: .3;  box-shadow: none; }
+}
+@keyframes eluna-center-pulse {
+  0%, 100% { opacity: .7; }
+  50%       { opacity: 1; text-shadow: 0 0 28px rgba(216,168,95,.9); }
+}
+@keyframes eluna-fade-out {
+  to { opacity: 0; pointer-events: none; }
+}

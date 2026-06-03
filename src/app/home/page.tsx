@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
+import { AppLoader } from "@/components/app-shell/AppLoader";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
@@ -166,6 +167,7 @@ export default function HomePage() {
   const today = useMemo(() => new Date(), []);
   const todayKey = getTodayKey(today);
   const todayTitle = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(today);
+  const [loaderReady, setLoaderReady] = useState(false);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [launchContext, setLaunchContext] = useState<LaunchContext>({});
   const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
@@ -242,6 +244,8 @@ export default function HomePage() {
       if (!cancelled && user?.launchContext) {
         setLaunchContext({ ...storedContext, ...user.launchContext });
       }
+    }).finally(() => {
+      if (!cancelled) setLoaderReady(true);
     });
     return () => {
       cancelled = true;
@@ -305,6 +309,8 @@ export default function HomePage() {
         : { label: "Open first signal", type: "link" as const, href: "/path" };
 
   return (
+    <>
+    <AppLoader ready={loaderReady} />
     <div className="app">
       <StarField />
       <div className="content">
@@ -376,17 +382,17 @@ export default function HomePage() {
         </section>
 
         <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 12 }}>
-          <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...cardStyle, padding: 14, minHeight: 136, display: "flex", flexDirection: "column", textDecoration: "none" }}>
-            <div style={{ width: 72, height: 72, position: "relative", marginBottom: 10 }}>
-              <Image src={candleImage} alt="Today’s reading" fill style={{ objectFit: "contain" }} />
+          <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...cardStyle, padding: 14, minHeight: 160, display: "flex", flexDirection: "column", textDecoration: "none" }}>
+            <div style={{ width: "100%", height: 88, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 10, flexShrink: 0 }}>
+              <Image src={candleImage} alt="Today’s reading" fill style={{ objectFit: "contain" }} priority />
             </div>
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Today’s reading</h2>
             <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>Open your personal insight.</p>
             <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{dailyState.readingOpened ? "Opened" : "Open"}</span>
           </Link>
-          <button type="button" onClick={drawDailyCard} style={{ ...cardStyle, padding: 14, minHeight: 136, display: "flex", flexDirection: "column", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
-            <div style={{ width: 72, height: 72, position: "relative", marginBottom: 10 }}>
-              <Image src={cardImage} alt="Daily card" fill style={{ objectFit: "contain" }} />
+          <button type="button" onClick={drawDailyCard} style={{ ...cardStyle, padding: 14, minHeight: 160, display: "flex", flexDirection: "column", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
+            <div style={{ width: "100%", height: 88, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 10, flexShrink: 0 }}>
+              <Image src={cardImage} alt="Daily card" fill style={{ objectFit: "contain" }} priority />
             </div>
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Daily card</h2>
             <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>
@@ -512,5 +518,6 @@ export default function HomePage() {
       <BottomNav />
       {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
     </div>
+    </>
   );
 }
