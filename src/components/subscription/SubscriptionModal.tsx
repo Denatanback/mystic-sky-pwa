@@ -152,6 +152,11 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
     padding: 14,
   };
 
+  function legalHref(path: string) {
+    const returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    return `${path}?returnTo=${encodeURIComponent(returnTo)}`;
+  }
+
   return createPortal(
     <div
       onMouseDown={(event) => {
@@ -307,7 +312,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
                   {isTrial && (
                     <p style={{ color: "var(--muted-2)", fontSize: 10.5, lineHeight: 1.45, textAlign: "center", marginTop: 8 }}>
                       Trial and subscription terms are governed by{" "}
-                      <Link href="/billing" target="_blank" style={{ color: "var(--gold-2)", fontWeight: 900, textDecoration: "none" }}>
+                      <Link href={legalHref("/billing")} target="_blank" style={{ color: "var(--gold-2)", fontWeight: 900, textDecoration: "none" }}>
                         Billing Terms
                       </Link>
                       .
@@ -347,10 +352,10 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
           <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, marginTop: 12 }}>Your plan can be managed from your account settings.</p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 10 }}>
             {[
-              ["Terms of Use", "/terms"],
-              ["Billing Terms", "/billing"],
-              ["Money-Back Policy", "/money-back"],
-              ["Privacy Policy", "/privacy"],
+              ["Terms of Use", legalHref("/terms")],
+              ["Billing Terms", legalHref("/billing")],
+              ["Money-Back Policy", legalHref("/money-back")],
+              ["Privacy Policy", legalHref("/privacy")],
             ].map(([label, href]) => (
               <Link key={label} href={href} target="_blank" style={{ color: "var(--gold-2)", fontSize: 11, fontWeight: 800, textDecoration: "none" }}>{label}</Link>
             ))}
