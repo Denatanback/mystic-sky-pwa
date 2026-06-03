@@ -43,16 +43,47 @@ const genericAuthError = "We could not sign you in. Check your email and passwor
 const genericRegisterError = "We could not create your account. Please try again.";
 const genericResetError = "We could not send a reset link. Please try again.";
 const genericUpdatePasswordError = "We could not update your password. Please try again.";
+export const existingAccountErrorMessage = "An account with this email already exists. Please sign in instead.";
 export const resetPasswordSuccessMessage = "If an account exists for this email, we’ll send a reset link.";
+
+function isExistingAccountError(message: string | undefined) {
+  if (!message) return false;
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes("user already registered") ||
+    normalized.includes("already registered") ||
+    normalized.includes("already exists") ||
+    normalized.includes("already been registered") ||
+    normalized.includes("email already")
+  );
+}
 
 function friendlyError(message: string | undefined, fallback: string) {
   if (!message) return fallback;
   const normalized = message.toLowerCase();
   if (normalized.includes("invalid login credentials")) return "Incorrect email or password.";
-  if (normalized.includes("user already registered")) return "An account with this email already exists.";
+  if (isExistingAccountError(message)) return existingAccountErrorMessage;
   if (normalized.includes("password")) return "Check your password: it must meet the security requirements.";
   if (normalized.includes("email")) return "Check your email and try again.";
   return fallback;
+}
+
+function firstString(...values: unknown[]) {
+  return values.find((value): value is string => typeof value === "string" && value.trim().length > 0)?.trim() ?? "";
+}
+
+function readBoolean(value: unknown) {
+  return value === true || value === "true";
+}
+
+function isMissingProfileColumnError(message: string | undefined) {
+  if (!message) return false;
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes("schema cache") ||
+    normalized.includes("could not find") ||
+    (normalized.includes("column") && normalized.includes("does not exist"))
+  );
 }
 
 function mapMockUser(user: MockUserProfile | null): AuthUserProfile | null {
@@ -64,9 +95,9 @@ function mapSupabaseProfile(user: {
   id: string;
   email?: string | null;
   user_metadata?: Record<string, unknown>;
-}, profile?: { full_name?: string | null; avatar_url?: string | null } | null): AuthUserProfile {
-  const metadataName = typeof user.user_metadata?.full_name === "string" ? user.user_metadata.full_name : "";
+}, profile?: Record<string, unknown> | null): AuthUserProfile {
   const metadata = user.user_metadata ?? {};
+  const metadataName = firstString(metadata.full_name, metadata.name);
   const launchContext = typeof metadata.launch_context === "object" && metadata.launch_context !== null
     ? metadata.launch_context as LaunchContext
     : {
@@ -87,15 +118,15 @@ function mapSupabaseProfile(user: {
       };
   return {
     id: user.id,
-    name: profile?.full_name || metadataName || "Traveler",
+    name: firstString(profile?.full_name, metadataName) || "Traveler",
     email: user.email ?? "",
     gender: typeof metadata.gender === "string" && (metadata.gender === "female" || metadata.gender === "male") ? metadata.gender : "",
-    birthDate: typeof metadata.birth_date === "string" ? metadata.birth_date : typeof metadata.birthDate === "string" ? metadata.birthDate : typeof metadata.dateOfBirth === "string" ? metadata.dateOfBirth : typeof metadata.date_of_birth === "string" ? metadata.date_of_birth : "",
-    birthTime: typeof metadata.birth_time === "string" ? metadata.birth_time : typeof metadata.birthTime === "string" ? metadata.birthTime : "",
-    birthTimeUnknown: Boolean(metadata.birth_time_unknown),
-    birthPlace: typeof metadata.birth_place === "string" ? metadata.birth_place : typeof metadata.birthPlace === "string" ? metadata.birthPlace : "",
+    birthDate: firstString(profile?.birth_date, profile?.birthDate, metadata.birth_date, metadata.birthDate, metadata.dateOfBirth, metadata.date_of_birth),
+    birthTime: firstString(profile?.birth_time, profile?.birthTime, metadata.birth_time, metadata.birthTime),
+    birthTimeUnknown: readBoolean(profile?.birth_time_unknown) || readBoolean(profile?.birthTimeUnknown) || readBoolean(metadata.birth_time_unknown) || readBoolean(metadata.birthTimeUnknown),
+    birthPlace: firstString(profile?.birth_place, profile?.birthPlace, metadata.birth_place, metadata.birthPlace),
     createdAt: new Date().toISOString(),
-    avatarUrl: profile?.avatar_url ?? null,
+    avatarUrl: typeof profile?.avatar_url === "string" ? profile.avatar_url : null,
     launchContext,
     provider: "supabase",
   };
@@ -200,10 +231,17 @@ export async function register(input: RegisterInput): Promise<AuthResult> {
     return { user: null, error: friendlyError(error?.message, genericRegisterError) };
   }
 
+  const identities = data.user.identities as unknown[] | undefined;
+  if (Array.isArray(identities) && identities.length === 0) {
+    return { user: null, error: existingAccountErrorMessage };
+  }
+
   const profileResult = await upsertProfile({
     id: data.user.id,
     email,
     fullName: name,
+    language: "en",
+    onboardingCompleted: false,
   });
 
   if (profileResult.error) {
@@ -221,11 +259,21 @@ export async function getCurrentUser(): Promise<AuthUserProfile | null> {
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) return null;
 
-  const { data: profile } = await supabase
+  const profileSelect = await supabase
     .from("profiles")
-    .select("full_name, avatar_url")
+    .select("full_name, avatar_url, birth_date, birth_place, birth_time, birth_time_unknown, language, onboarding_completed")
     .eq("id", data.user.id)
     .maybeSingle();
+  let profile = profileSelect.data as Record<string, unknown> | null;
+
+  if (profileSelect.error && isMissingProfileColumnError(profileSelect.error.message)) {
+    const fallbackSelect = await supabase
+      .from("profiles")
+      .select("full_name, avatar_url")
+      .eq("id", data.user.id)
+      .maybeSingle();
+    profile = fallbackSelect.data as Record<string, unknown> | null;
+  }
 
   return mapSupabaseProfile(data.user, profile);
 }
@@ -282,18 +330,44 @@ export async function upsertProfile(input: {
   email: string;
   fullName?: string;
   avatarUrl?: string | null;
+  language?: "en";
+  onboardingCompleted?: boolean;
+  birthDate?: string | null;
+  birthTime?: string | null;
+  birthTimeUnknown?: boolean;
+  birthPlace?: string | null;
+  zodiacSign?: string | null;
+  zodiacOverride?: boolean;
 }): Promise<{ error?: string }> {
   if (!isSupabaseAuthEnabled() || !supabase) return {};
 
-  const { error } = await supabase.from("profiles").upsert({
+  const baseProfile = {
     id: input.id,
     email: input.email,
     full_name: input.fullName ?? null,
     avatar_url: input.avatarUrl ?? null,
     updated_at: new Date().toISOString(),
-  });
+  };
+
+  const extendedProfile = {
+    ...baseProfile,
+    language: input.language ?? "en",
+    onboarding_completed: input.onboardingCompleted,
+    birth_date: input.birthDate,
+    birth_time: input.birthTime,
+    birth_time_unknown: input.birthTimeUnknown,
+    birth_place: input.birthPlace,
+    zodiac_sign: input.zodiacSign,
+    zodiac_override: input.zodiacOverride,
+  };
+
+  const { error } = await supabase.from("profiles").upsert(extendedProfile);
 
   if (error) {
+    if (isMissingProfileColumnError(error.message)) {
+      const fallback = await supabase.from("profiles").upsert(baseProfile);
+      if (!fallback.error) return {};
+    }
     return { error: "Account created, but we could not save your profile. Please try signing in again." };
   }
 

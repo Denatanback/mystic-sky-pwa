@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
 import { LangToggle } from "@/components/app-shell/LangToggle";
-import { register, signInWithOAuth, type OAuthProvider } from "@/lib/auth/authAdapter";
+import { existingAccountErrorMessage, register, signInWithOAuth, type OAuthProvider } from "@/lib/auth/authAdapter";
 import { cleanLaunchContext, saveLaunchContext } from "@/lib/launch/launchContext";
 import { parsePrelandContext, savePrelandContext, type PrelandContext } from "@/lib/funnel/prelandContext";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
@@ -173,7 +173,16 @@ export default function RegisterPage() {
 
           <button type="button" onClick={submit} disabled={loading} style={{ ...btnPrimary, opacity: loading ? .7 : 1 }}>{loading ? "Creating..." : "Create account"}</button>
 
-          {error && <p style={{ color: "var(--danger)", fontSize: 12, lineHeight: 1.45, textAlign: "center" }}>{error}</p>}
+          {error && (
+            <div style={{ display: "grid", gap: 8, justifyItems: "center" }}>
+              <p style={{ color: "var(--danger)", fontSize: 12, lineHeight: 1.45, textAlign: "center", margin: 0 }}>{error}</p>
+              {error === existingAccountErrorMessage && (
+                <Link href="/login" style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 800, textDecoration: "none" }}>
+                  Sign in
+                </Link>
+              )}
+            </div>
+          )}
 
           <button
             type="button"

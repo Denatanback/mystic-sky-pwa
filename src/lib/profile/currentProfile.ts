@@ -80,8 +80,8 @@ function validZodiacKey(value: unknown): ZodiacSignKey | "" {
   return sign.key === "unknown" ? "" : sign.key;
 }
 
-function isCompleted(input: { birthDate: string; birthPlace: string; focusAreas: string[]; practicePreferences: string[]; explicit?: boolean }) {
-  return Boolean(input.explicit || (input.birthDate && input.birthPlace && (input.focusAreas.length > 0 || input.practicePreferences.length > 0)));
+function isCompleted(input: { birthDate: string; birthPlace: string; birthTime: string; birthTimeUnknown: boolean; explicit?: boolean }) {
+  return Boolean(input.explicit || (input.birthDate && input.birthPlace && (input.birthTime || input.birthTimeUnknown)));
 }
 
 export async function getCurrentProfile(): Promise<CurrentProfile | null> {
@@ -121,7 +121,7 @@ export async function getCurrentProfile(): Promise<CurrentProfile | null> {
     zodiacOverride: zodiacSign.source === "manual",
     focusAreas,
     practicePreferences,
-    onboardingCompleted: isCompleted({ birthDate, birthPlace, focusAreas, practicePreferences, explicit: onboardingCompleted || metadata.onboarding_completed === true || metadata.onboardingCompleted === true }),
+    onboardingCompleted: isCompleted({ birthDate, birthPlace, birthTime, birthTimeUnknown, explicit: onboardingCompleted || metadata.onboarding_completed === true || metadata.onboardingCompleted === true }),
     source: launchContext.source,
     funnel: launchContext.funnel,
     utm: {
@@ -189,6 +189,7 @@ export async function saveOnboardingData(input: OnboardingInput): Promise<{ erro
         practicePreferences: input.practicePreferences,
         onboarding_completed: true,
         onboardingCompleted: true,
+        language: "en",
       },
     });
     if (error) return { error: "We saved your setup locally, but could not sync it to your account yet." };
@@ -197,7 +198,15 @@ export async function saveOnboardingData(input: OnboardingInput): Promise<{ erro
       await upsertProfile({
         id: data.user.id,
         email: data.user.email ?? "",
-        fullName: firstString(metadata.full_name),
+        fullName: firstString(metadata.full_name, metadata.name),
+        language: "en",
+        onboardingCompleted: true,
+        birthDate: input.birthDate,
+        birthTime: input.birthTime,
+        birthTimeUnknown: input.birthTimeUnknown,
+        birthPlace: input.birthPlace,
+        zodiacSign: input.zodiacSign || null,
+        zodiacOverride: Boolean(input.zodiacOverride),
       });
     }
   }
