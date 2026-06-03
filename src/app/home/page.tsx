@@ -383,16 +383,20 @@ export default function HomePage() {
 
         <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 12 }}>
           <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...cardStyle, padding: 14, minHeight: 160, display: "flex", flexDirection: "column", textDecoration: "none" }}>
-            <div style={{ width: "100%", height: 88, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 10, flexShrink: 0 }}>
-              <Image src={candleImage} alt="Today’s reading" fill style={{ objectFit: "contain" }} priority />
+            <div style={{ width: "100%", height: 88, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14, flexShrink: 0 }}>
+              <div style={{ position: "relative", width: 88, height: 88, margin: "0 auto" }}>
+                <Image src={candleImage} alt="Today’s reading" fill style={{ objectFit: "contain" }} priority />
+              </div>
             </div>
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Today’s reading</h2>
             <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>Open your personal insight.</p>
             <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{dailyState.readingOpened ? "Opened" : "Open"}</span>
           </Link>
           <button type="button" onClick={drawDailyCard} style={{ ...cardStyle, padding: 14, minHeight: 160, display: "flex", flexDirection: "column", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
-            <div style={{ width: "100%", height: 88, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 10, flexShrink: 0 }}>
-              <Image src={cardImage} alt="Daily card" fill style={{ objectFit: "contain" }} priority />
+            <div style={{ width: "100%", height: 88, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14, flexShrink: 0 }}>
+              <div style={{ position: "relative", width: 88, height: 88, margin: "0 auto" }}>
+                <Image src={cardImage} alt="Daily card" fill style={{ objectFit: "contain" }} priority />
+              </div>
             </div>
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Daily card</h2>
             <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>
