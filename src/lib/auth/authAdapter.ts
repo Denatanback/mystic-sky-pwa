@@ -32,6 +32,8 @@ export type LoginInput = {
   password: string;
 };
 
+export type OAuthProvider = "google" | "apple";
+
 type AuthResult = {
   user: AuthUserProfile | null;
   error?: string;
@@ -122,6 +124,27 @@ export async function signIn(input: LoginInput): Promise<AuthResult> {
   }
 
   return { user: await getCurrentUser() };
+}
+
+export async function signInWithOAuth(provider: OAuthProvider, returnTo = "/home"): Promise<{ error?: string }> {
+  if (!isSupabaseAuthEnabled() || !supabase) {
+    return { error: "Social sign-in is not connected yet. Please use email and password." };
+  }
+
+  if (typeof window === "undefined") {
+    return { error: "Social sign-in can only be started in the browser." };
+  }
+
+  const redirectTo = `${window.location.origin}/auth/callback?returnTo=${encodeURIComponent(returnTo)}`;
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo,
+    },
+  });
+
+  if (error) return { error: friendlyError(error.message, "Could not start social sign-in. Please try again.") };
+  return {};
 }
 
 export async function register(input: RegisterInput): Promise<AuthResult> {

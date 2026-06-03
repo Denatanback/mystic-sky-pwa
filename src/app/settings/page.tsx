@@ -6,6 +6,7 @@ import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang, type Lang, ENABLE_RU_LOCALE } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
+import { updatePassword } from "@/lib/auth/authAdapter";
 
 function IconChevron() {
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>;
@@ -30,6 +31,11 @@ export default function SettingsPage() {
   const { t, lang, setLang } = useLang();
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [legalReturnTo, setLegalReturnTo] = useState("/settings");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
     setLegalReturnTo(`${window.location.pathname}${window.location.search}${window.location.hash}`);
@@ -51,6 +57,35 @@ export default function SettingsPage() {
     statusLabel: "Coming soon",
     primaryActionLabel: "Got it",
   });
+  async function handlePasswordUpdate(event: React.FormEvent) {
+    event.preventDefault();
+    setPasswordMessage("");
+    setPasswordError("");
+
+    if (newPassword.length < 8) {
+      setPasswordError("Use at least 8 characters.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New password and confirmation must match.");
+      return;
+    }
+
+    setPasswordLoading(true);
+    const result = await updatePassword(newPassword);
+    setPasswordLoading(false);
+
+    if (result.error) {
+      setPasswordError("Could not update password. Please try again.");
+      return;
+    }
+
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordMessage("Password updated successfully.");
+  }
+
   const iconCircle: React.CSSProperties = {
     width: 38, height: 38, borderRadius: "50%", flexShrink: 0,
     background: "rgba(216,168,95,.10)", border: "1px solid rgba(216,168,95,.20)",
@@ -176,6 +211,58 @@ export default function SettingsPage() {
             <span style={{ color: "var(--muted-2)" }}><IconChevron /></span>
           </a>
         </div>
+
+        <form onSubmit={handlePasswordUpdate} style={{ marginTop: 12, marginBottom: 12, border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)", padding: "16px", display: "grid", gap: 12, background: "rgba(255,255,255,.025)" }}>
+          <div>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 5 }}>Change password</h2>
+            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.55 }}>
+              If your account was created with Google or Apple, you may not have a password yet. Setting a password lets you also sign in with email.
+            </p>
+          </div>
+
+          <label style={{ display: "grid", gap: 6, color: "var(--muted)", fontSize: 12 }}>
+            New password
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(event) => {
+                setNewPassword(event.target.value);
+                setPasswordError("");
+                setPasswordMessage("");
+              }}
+              autoComplete="new-password"
+              placeholder="At least 8 characters"
+              style={{ minHeight: 44, borderRadius: "var(--radius-sm)", border: "1px solid var(--line-soft)", background: "rgba(255,255,255,.05)", color: "var(--text)", padding: "0 13px", fontSize: 14, fontFamily: "var(--font-ui)" }}
+            />
+          </label>
+
+          <label style={{ display: "grid", gap: 6, color: "var(--muted)", fontSize: 12 }}>
+            Confirm new password
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(event) => {
+                setConfirmPassword(event.target.value);
+                setPasswordError("");
+                setPasswordMessage("");
+              }}
+              autoComplete="new-password"
+              placeholder="Repeat new password"
+              style={{ minHeight: 44, borderRadius: "var(--radius-sm)", border: "1px solid var(--line-soft)", background: "rgba(255,255,255,.05)", color: "var(--text)", padding: "0 13px", fontSize: 14, fontFamily: "var(--font-ui)" }}
+            />
+          </label>
+
+          {passwordError && <p style={{ color: "var(--danger)", fontSize: 12, lineHeight: 1.45 }}>{passwordError}</p>}
+          {passwordMessage && <p style={{ color: "var(--gold-2)", fontSize: 12, lineHeight: 1.45, fontWeight: 800 }}>{passwordMessage}</p>}
+
+          <button
+            type="submit"
+            disabled={passwordLoading}
+            style={{ minHeight: 44, borderRadius: 999, border: "none", background: passwordLoading ? "rgba(128,64,192,.5)" : "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 14, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: passwordLoading ? "default" : "pointer" }}
+          >
+            {passwordLoading ? "Updating..." : "Update password"}
+          </button>
+        </form>
       </div>
       <BottomNav />
       {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}

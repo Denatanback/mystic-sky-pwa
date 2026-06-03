@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
 import { LangToggle } from "@/components/app-shell/LangToggle";
-import { register } from "@/lib/auth/authAdapter";
+import { register, signInWithOAuth, type OAuthProvider } from "@/lib/auth/authAdapter";
 import { cleanLaunchContext, saveLaunchContext } from "@/lib/launch/launchContext";
 import { parsePrelandContext, savePrelandContext, type PrelandContext } from "@/lib/funnel/prelandContext";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
@@ -65,6 +65,7 @@ export default function RegisterPage() {
   const [launchContext, setLaunchContext] = useState(() => cleanLaunchContext({}));
   const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
   const [legalReturnTo, setLegalReturnTo] = useState("/register");
+  const [socialLoading, setSocialLoading] = useState<OAuthProvider | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -118,17 +119,20 @@ export default function RegisterPage() {
     router.refresh();
   }
 
-  function socialSoon() {
-    setFeatureInfo({
-      title: "Social sign-in",
-      description: "This sign-in option is being prepared for the full release. Please use email for this alpha test.",
-      statusLabel: "Coming soon",
-      primaryActionLabel: "Got it",
-    });
-  }
-
   function legalHref(path: string) {
     return `${path}?returnTo=${encodeURIComponent(legalReturnTo)}`;
+  }
+
+  async function handleSocialSignUp(provider: OAuthProvider) {
+    setError("");
+    setSocialLoading(provider);
+    saveLaunchContext(launchContext);
+    savePrelandContext(prelandContext);
+    const result = await signInWithOAuth(provider, "/onboarding");
+    if (result.error) {
+      setError(result.error);
+      setSocialLoading(null);
+    }
   }
 
   return (
@@ -169,8 +173,30 @@ export default function RegisterPage() {
           {error && <p style={{ color: "var(--danger)", fontSize: 12, lineHeight: 1.45, textAlign: "center" }}>{error}</p>}
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            <button type="button" onClick={socialSoon} style={{ height: 44, borderRadius: 999, border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.04)", color: "var(--muted)", fontWeight: 700 }}>Google</button>
-            <button type="button" onClick={socialSoon} style={{ height: 44, borderRadius: 999, border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.04)", color: "var(--muted)", fontWeight: 700 }}>Apple</button>
+            {[
+              ["google", "Sign up with Google"],
+              ["apple", "Sign up with Apple"],
+            ].map(([provider, label]) => (
+              <button
+                key={provider}
+                type="button"
+                onClick={() => handleSocialSignUp(provider as OAuthProvider)}
+                disabled={socialLoading !== null}
+                style={{
+                  height: 44,
+                  borderRadius: 999,
+                  border: "1px solid rgba(255,255,255,.12)",
+                  background: "rgba(255,255,255,.04)",
+                  color: "var(--text)",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: socialLoading ? "default" : "pointer",
+                  opacity: socialLoading && socialLoading !== provider ? .55 : 1,
+                }}
+              >
+                {socialLoading === provider ? "Connecting..." : label}
+              </button>
+            ))}
           </div>
           <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.5, textAlign: "center" }}>
             By creating an account, you agree to eLuna&apos;s{" "}

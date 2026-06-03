@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { sendPasswordReset, signIn } from "@/lib/auth/authAdapter";
+import { sendPasswordReset, signIn, signInWithOAuth, type OAuthProvider } from "@/lib/auth/authAdapter";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { useLang } from "@/lib/i18n";
 
@@ -22,11 +22,15 @@ export default function LoginPage() {
   const [resetError, setResetError] = useState("");
   const [resetSuccess, setResetSuccess] = useState("");
   const [returnTo, setReturnTo] = useState("/home");
+  const [socialLoading, setSocialLoading] = useState<OAuthProvider | null>(null);
 
   useEffect(() => {
     const value = new URLSearchParams(window.location.search).get("returnTo");
     if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("http://") || value.includes("https://")) return;
     setReturnTo(value);
+
+    const error = new URLSearchParams(window.location.search).get("error");
+    if (error === "oauth_failed") setAuthError("Social sign-in failed. Please try again.");
   }, []);
 
   async function handleLogin(e: React.FormEvent) {
@@ -42,6 +46,16 @@ export default function LoginPage() {
       return;
     }
     router.push(returnTo);
+  }
+
+  async function handleSocialSignIn(provider: OAuthProvider) {
+    setAuthError("");
+    setSocialLoading(provider);
+    const result = await signInWithOAuth(provider, returnTo);
+    if (result.error) {
+      setAuthError(result.error);
+      setSocialLoading(null);
+    }
   }
 
   function openResetForm() {
@@ -260,29 +274,28 @@ export default function LoginPage() {
 
             {/* social */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-              {["Google", "Apple"].map(s => (
+              {[
+                ["google", "Continue with Google"],
+                ["apple", "Continue with Apple"],
+              ].map(([provider, label]) => (
                 <button
-                  key={s}
+                  key={provider}
                   type="button"
-                  disabled
-                  aria-disabled="true"
-                  title="Social sign-in is being prepared for the full release"
+                  onClick={() => handleSocialSignIn(provider as OAuthProvider)}
+                  disabled={socialLoading !== null}
                   style={{
                     height: 46, borderRadius: 999,
                     background: "rgba(255,255,255,.05)",
                     border: "1px solid rgba(255,255,255,.12)",
-                    color: "var(--muted)", fontSize: 14, fontWeight: 500,
-                    cursor: "not-allowed", transition: "background .2s",
-                    opacity: .62,
+                    color: "var(--text)", fontSize: 12, fontWeight: 700,
+                    cursor: socialLoading ? "default" : "pointer", transition: "background .2s",
+                    opacity: socialLoading && socialLoading !== provider ? .55 : 1,
                   }}
                 >
-                  {s}
+                  {socialLoading === provider ? "Connecting..." : label}
                 </button>
               ))}
             </div>
-            <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, textAlign: "center", marginTop: -4 }}>
-              Social sign-in is being prepared for the full release. Please use email for this alpha test.
-            </p>
 
           </form>
           {resetOpen && (
