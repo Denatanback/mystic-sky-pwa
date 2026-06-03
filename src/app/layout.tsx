@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Lora, Manrope } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
 import { GuideProvider } from "@/components/guide/GuideProvider";
+import { AuthRouteGuard } from "@/components/auth/AuthRouteGuard";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin", "cyrillic"],
@@ -51,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${manrope.variable} ${lora.variable}`}>
       <body>
-        <LanguageProvider><GuideProvider>{children}</GuideProvider></LanguageProvider>
+        <LanguageProvider><GuideProvider><AuthRouteGuard>{children}</AuthRouteGuard></GuideProvider></LanguageProvider>
       </body>
     </html>
   );

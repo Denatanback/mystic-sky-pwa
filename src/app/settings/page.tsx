@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang, type Lang, ENABLE_RU_LOCALE } from "@/lib/i18n";
@@ -29,6 +29,16 @@ const SUPPORT_MAILTO = "mailto:support@myeluna.com?subject=eLuna%20Support%20Req
 export default function SettingsPage() {
   const { t, lang, setLang } = useLang();
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  const [legalReturnTo, setLegalReturnTo] = useState("/settings");
+
+  useEffect(() => {
+    setLegalReturnTo(`${window.location.pathname}${window.location.search}${window.location.hash}`);
+  }, []);
+
+  function legalHref(path: string) {
+    return `${path}?returnTo=${encodeURIComponent(legalReturnTo)}`;
+  }
+
   const openNotifications = () => setFeatureInfo({
     title: "Soul reminders",
     description: "This section is being prepared for the full release. For alpha, return to Home to continue your daily path.",
@@ -138,10 +148,10 @@ export default function SettingsPage() {
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", fontWeight: 600, marginBottom: 10 }}>Legal</p>
           <div style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: "var(--radius-md)", overflow: "hidden" }}>
             {[
-              ["Privacy Policy", "/privacy"],
-              ["Terms of Use", "/terms"],
-              ["Billing Terms", "/billing"],
-              ["Money-Back Policy", "/money-back"],
+              ["Privacy Policy", legalHref("/privacy")],
+              ["Terms of Use", legalHref("/terms")],
+              ["Billing Terms", legalHref("/billing")],
+              ["Money-Back Policy", legalHref("/money-back")],
             ].map(([label, href], index) => (
               <Link key={label} href={href} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, minHeight: 44, padding: "0 16px", color: "var(--text)", textDecoration: "none", borderTop: index === 0 ? "none" : "1px solid rgba(255,255,255,.06)" }}>
                 <span style={{ fontSize: 13, fontWeight: 700 }}>{label}</span>

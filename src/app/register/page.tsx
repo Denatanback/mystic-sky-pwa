@@ -64,9 +64,11 @@ export default function RegisterPage() {
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [launchContext, setLaunchContext] = useState(() => cleanLaunchContext({}));
   const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
+  const [legalReturnTo, setLegalReturnTo] = useState("/register");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    setLegalReturnTo(`${window.location.pathname}${window.location.search}`);
     const context = cleanLaunchContext({
       source: params.get("source"),
       funnel: params.get("funnel"),
@@ -125,6 +127,10 @@ export default function RegisterPage() {
     });
   }
 
+  function legalHref(path: string) {
+    return `${path}?returnTo=${encodeURIComponent(legalReturnTo)}`;
+  }
+
   return (
     <main className="app welcome-bg no-nav" style={{ padding: "0 18px 40px" }}>
       <StarField />
@@ -168,9 +174,9 @@ export default function RegisterPage() {
           </div>
           <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.5, textAlign: "center" }}>
             By creating an account, you agree to eLuna&apos;s{" "}
-            <Link href="/terms" style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>Terms of Use</Link>
+            <Link href={legalHref("/terms")} style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>Terms of Use</Link>
             {" "}and acknowledge the{" "}
-            <Link href="/privacy" style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>Privacy Policy</Link>
+            <Link href={legalHref("/privacy")} style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>Privacy Policy</Link>
             .
           </p>
         </div>

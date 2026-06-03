@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { sendPasswordReset, signIn } from "@/lib/auth/authAdapter";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { useLang } from "@/lib/i18n";
@@ -21,6 +21,13 @@ export default function LoginPage() {
   const [resetLoading, setResetLoading] = useState(false);
   const [resetError, setResetError] = useState("");
   const [resetSuccess, setResetSuccess] = useState("");
+  const [returnTo, setReturnTo] = useState("/home");
+
+  useEffect(() => {
+    const value = new URLSearchParams(window.location.search).get("returnTo");
+    if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("http://") || value.includes("https://")) return;
+    setReturnTo(value);
+  }, []);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -34,7 +41,7 @@ export default function LoginPage() {
       setAuthError(result.error);
       return;
     }
-    router.push("/home");
+    router.push(returnTo);
   }
 
   function openResetForm() {
