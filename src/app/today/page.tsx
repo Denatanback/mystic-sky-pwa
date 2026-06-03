@@ -2,8 +2,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import candleImage from "@/assets/home-emblems/candle-1.png";
-import cardImage from "@/assets/home-emblems/card-1.png";
 import { useRouter } from "next/navigation";
 import { PremiumMoonPhase } from "@/components/astrology/PremiumMoonPhase";
 import { StarField } from "@/components/app-shell/StarField";
@@ -202,11 +200,7 @@ export default function TodayPage() {
 
         {/* Header */}
         <header style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div style={{ flexShrink: 0, width: 72, height: 72, position: "relative" }}>
-              <Image src={candleImage} alt="TodayвЂ™s reading" fill style={{ objectFit: "contain" }} />
-            </div>
-            <div>
+          <div>
             <p style={{ fontSize: 12, color: "var(--muted)", textTransform: "capitalize", marginBottom: 2 }}>{dateLabel}</p>
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 600, color: "var(--text)", lineHeight: 1.1 }}>
               {ru ? "Р§С‚РµРЅРёРµ РґРЅСЏ" : "TodayвЂ™s reading"}
@@ -217,7 +211,6 @@ export default function TodayPage() {
                 {userName ? (ru ? `${userName}, ` : `${userName}, `) : ""}{ru ? `С‚РµРјР° РґРЅСЏ В· ${planetDay.ru}` : `daily theme В· ${planetDay.en}`}
               </p>
             )}
-            </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <GuideTopBarButton />
@@ -338,9 +331,7 @@ export default function TodayPage() {
               <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 6 }}>{ru ? "РљР°СЂС‚Р° РґРЅСЏ" : "TodayвЂ™s card"}</p>
               <h2 style={{ fontFamily: "var(--font-display)", fontSize: 26, color: "var(--text)", fontWeight: 600, lineHeight: 1.08 }}>{dailyCardState.card?.title ?? (ru ? "Р’С‹С‚СЏРЅРё РєР°СЂС‚Сѓ РґРЅСЏ" : "Draw todayвЂ™s card")}</h2>
             </div>
-            <div style={{ width: 72, height: 72, position: "relative", flexShrink: 0 }}>
-              <Image src={cardImage} alt="Daily card" fill style={{ objectFit: "contain" }} />
-            </div>
+            <div style={{ width: 46, height: 46, borderRadius: "50%", border: "1px solid rgba(216,168,95,.34)", background: "radial-gradient(circle at 35% 30%, rgba(247,217,139,.18), rgba(128,64,192,.22) 58%, rgba(10,6,28,.82))", color: "var(--gold-2)", display: "grid", placeItems: "center", flexShrink: 0, fontSize: 21 }}>✦</div>
           </div>
           {!dailyCardState.drawn ? (
             <button
@@ -380,4 +371,3 @@ export default function TodayPage() {
     </div>
   );
 }
-

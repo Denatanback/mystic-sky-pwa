@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import candleImage from "@/assets/home-emblems/candle-1.png";
+import cardImage from "@/assets/home-emblems/card-1.png";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -374,13 +377,17 @@ export default function HomePage() {
 
         <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 12 }}>
           <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...cardStyle, padding: 14, minHeight: 136, display: "flex", flexDirection: "column", textDecoration: "none" }}>
-            <span style={{ color: "var(--gold-2)", marginBottom: 10 }}><IconSpark /></span>
+            <div style={{ width: 72, height: 72, position: "relative", marginBottom: 10 }}>
+              <Image src={candleImage} alt="Today’s reading" fill style={{ objectFit: "contain" }} />
+            </div>
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Today’s reading</h2>
             <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>Open your personal insight.</p>
             <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{dailyState.readingOpened ? "Opened" : "Open"}</span>
           </Link>
           <button type="button" onClick={drawDailyCard} style={{ ...cardStyle, padding: 14, minHeight: 136, display: "flex", flexDirection: "column", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
-            <span style={{ color: "var(--gold-2)", marginBottom: 10 }}><IconSpark /></span>
+            <div style={{ width: 72, height: 72, position: "relative", marginBottom: 10 }}>
+              <Image src={cardImage} alt="Daily card" fill style={{ objectFit: "contain" }} />
+            </div>
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Daily card</h2>
             <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>
               {dailyCardState.card ? `${dailyCardState.card.title} · ${dailyCardState.card.theme}` : "Reveal today’s symbol."}
@@ -495,11 +502,13 @@ export default function HomePage() {
             <div key={day} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderTop: day === "Day 1" ? "none" : "1px solid rgba(255,255,255,.06)" }}>
               <span style={{ minWidth: 50, fontSize: 11, color: "var(--gold-2)", fontWeight: 800 }}>{day}</span>
               <span style={{ flex: 1, fontSize: 13, color: "var(--text)" }}>{label}</span>
-              <span style={{ fontSize: 11, color: status === "Unlocked" || status === "Integrated" ? "var(--gold-2)" : "var(--muted-2)" }}>{status}</span>
+              <span style={{ fontSize: 11, color: "var(--muted-2)", fontWeight: 800 }}>{status}</span>
             </div>
           ))}
         </section>
+
       </div>
+
       <BottomNav />
       {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
     </div>
