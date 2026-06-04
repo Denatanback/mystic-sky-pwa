@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 import {
@@ -17,9 +16,6 @@ const appRegisterUrl = "https://www.myeluna.com/register";
 const supportHref = "mailto:support@myeluna.com?subject=eLuna%20Support";
 const billingSupportHref = "mailto:support@myeluna.com?subject=eLuna%20Billing%20Question";
 
-const heroVisualImage = "/assets/landing/eluna-hero-product.png";
-const featureCollageImage = "/assets/landing/eluna-feature-collage.png";
-const finalCtaImage = "/assets/landing/eluna-final-cta-phones.png";
 const desktopBackgroundImage = "/assets/landing/eluna-bg-desktop.png";
 const mobileBackgroundImage = "/assets/landing/eluna-bg-mobile.png";
 
@@ -219,62 +215,151 @@ function SectionHeader({ eyebrow, title, body, centered = false }: { eyebrow: st
   );
 }
 
-function HeroVisual() {
+function SkyMapMini({ compact = false }: { compact?: boolean }) {
   return (
-    <div className="hero-visual" style={{ position: "relative", width: "min(100%, 650px)", minHeight: 520, margin: "0 auto" }}>
-      <div style={{ position: "absolute", inset: "5% 0 2% 6%", borderRadius: "50%", background: "radial-gradient(circle at 52% 44%, rgba(141,85,214,.36), transparent 57%), radial-gradient(circle at 62% 70%, rgba(216,168,95,.18), transparent 56%)", filter: "blur(26px)" }} />
-      <div style={{ position: "absolute", right: "2%", bottom: "1%", width: "86%", height: 56, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(0,0,0,.52), transparent 68%)", filter: "blur(7px)" }} />
-      <Image
-        src={heroVisualImage}
-        alt="eLuna app preview with daily reflection screens"
-        width={920}
-        height={940}
-        priority
-        sizes="(max-width: 760px) 94vw, 48vw"
-        style={{
-          position: "relative",
-          zIndex: 1,
-          display: "block",
-          width: "112%",
-          maxWidth: "none",
-          height: "auto",
-          marginLeft: "-4%",
-          filter: "drop-shadow(0 32px 70px rgba(0,0,0,.48)) drop-shadow(0 0 42px rgba(128,64,192,.22))",
-          clipPath: "ellipse(43% 50% at 55% 56%)",
-          maskImage: "radial-gradient(ellipse 56% 82% at 53% 56%, #000 0%, #000 54%, rgba(0,0,0,.74) 64%, transparent 78%)",
-          WebkitMaskImage: "radial-gradient(ellipse 56% 82% at 53% 56%, #000 0%, #000 54%, rgba(0,0,0,.74) 64%, transparent 78%)",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          inset: "-2%",
-          zIndex: 2,
-          pointerEvents: "none",
-          background:
-            "linear-gradient(180deg, #070613 0%, rgba(7,6,19,.72) 9%, transparent 25%), linear-gradient(90deg, #070613 0%, rgba(7,6,19,.76) 13%, transparent 34%), linear-gradient(270deg, #070613 0%, rgba(7,6,19,.54) 8%, transparent 22%), linear-gradient(0deg, rgba(7,6,19,.28) 0%, transparent 18%)",
-        }}
-      />
+    <div className="sky-map-mini" style={{ width: compact ? 116 : 150, height: compact ? 116 : 150 }}>
+      <span className="sky-ring ring-one" />
+      <span className="sky-ring ring-two" />
+      <span className="sky-dot dot-one" />
+      <span className="sky-dot dot-two" />
+      <span className="sky-dot dot-three" />
+      <span className="sky-dot dot-four" />
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <path d="M30 72 48 45 70 58 91 34" />
+        <path d="M48 45 58 83 70 58" />
+      </svg>
     </div>
   );
 }
 
-function FeatureCollage() {
+function PhoneMockup({ variant = "daily", compact = false, className = "" }: { variant?: "daily" | "sky" | "practice"; compact?: boolean; className?: string }) {
   return (
-    <div style={{ position: "relative", width: "min(100%, 590px)", margin: "0 auto" }}>
-      <div style={{ position: "absolute", inset: "8% -8% -6%", borderRadius: 48, background: "radial-gradient(circle at 48% 48%, rgba(128,64,192,.20), transparent 62%), radial-gradient(circle at 76% 72%, rgba(216,168,95,.10), transparent 55%)", filter: "blur(18px)" }} />
-      <div className="proof-visual" style={{ position: "relative", aspectRatio: "4 / 3", borderRadius: 34, overflow: "hidden", padding: 16, background: "linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.025))", boxShadow: "0 26px 70px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.10)" }}>
-        <Image
-          src={featureCollageImage}
-          alt="eLuna product feature collage"
-          fill
-          sizes="(max-width: 760px) 92vw, 46vw"
-          style={{ objectFit: "contain", objectPosition: "center center", padding: 16 }}
-        />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,22,.04), transparent 68%, rgba(7,8,22,.10))" }} />
-        <div style={{ position: "absolute", inset: 0, boxShadow: "inset 0 0 0 1px rgba(255,255,255,.08), inset 0 -18px 42px rgba(7,8,22,.12)" }} />
+    <div className={`phone-mockup ${compact ? "phone-compact" : ""} ${className}`} aria-label="eLuna app interface preview">
+      <div className="phone-speaker" />
+      <div className="phone-screen">
+        <div className="phone-topbar">
+          <span>9:41</span>
+          <span className="phone-brand">eLuna</span>
+          <span>Full Access</span>
+        </div>
+        {variant === "sky" ? (
+          <>
+            <div className="phone-pill-row">
+              <span>Energy</span>
+              <span>Mood</span>
+              <span>Focus</span>
+            </div>
+            <div style={{ display: "grid", placeItems: "center", padding: compact ? "8px 0" : "12px 0" }}>
+              <SkyMapMini compact={compact} />
+            </div>
+            <div className="phone-card accent">
+              <p>Today's energy</p>
+              <h4>Transformative</h4>
+              <span>A day for inner shifts and reflection.</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="streak-row">
+              {["M", "T", "W", "T", "F"].map((day, index) => (
+                <span key={`${day}-${index}`} className={index < 3 ? "done" : ""}>{day}</span>
+              ))}
+            </div>
+            <div className="phone-card hero-card">
+              <p>Guidance for today</p>
+              <h4>Notice what pulls your attention</h4>
+              <span>The signal that repeats today may point to your next step.</span>
+              <button>Open today's reading</button>
+            </div>
+            <div className="phone-card-grid">
+              <div className="phone-card mini">
+                <p>Today's reading</p>
+                <span>Personal insight</span>
+              </div>
+              <div className="phone-card mini">
+                <p>Daily card</p>
+                <span>Draw card</span>
+              </div>
+            </div>
+          </>
+        )}
+        {variant === "practice" && (
+          <div className="phone-card accent">
+            <p>Repeat affirmation</p>
+            <h4>Ready</h4>
+            <span>Choose your daily affirmation.</span>
+          </div>
+        )}
+        <div className="phone-nav">
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
       </div>
+    </div>
+  );
+}
+
+function SymbolicCard() {
+  return (
+    <div className="symbolic-card">
+      <div className="symbolic-orbit" />
+      <Icon name="spark" size={36} />
+      <span>Symbolic card</span>
+    </div>
+  );
+}
+
+function HeroVisual() {
+  return (
+    <div className="hero-visual" aria-label="eLuna product mockup scene">
+      <div className="scene-glow main" />
+      <div className="scene-glow gold" />
+      <div className="scene-shadow" />
+      <PhoneMockup variant="daily" className="phone-main" />
+      <PhoneMockup variant="sky" compact className="phone-secondary" />
+      <SymbolicCard />
+    </div>
+  );
+}
+
+function ProductProofVisual() {
+  return (
+    <div className="proof-scene" aria-label="eLuna product dashboard preview">
+      <div className="scene-glow main" />
+      <div className="proof-panel">
+        <div className="proof-panel-top">
+          <span>Today in eLuna</span>
+          <span>Account-based access</span>
+        </div>
+        <div className="proof-layout">
+          <div className="proof-daily">
+            <p>Guidance for today</p>
+            <h3>Reflect on the pattern that keeps returning.</h3>
+            <button>Open reading</button>
+          </div>
+          <div className="proof-side">
+            <div className="proof-card small">
+              <Icon name="card" size={18} />
+              <span>Daily card</span>
+            </div>
+            <div className="proof-card small">
+              <Icon name="journal" size={18} />
+              <span>Reflection journal</span>
+            </div>
+          </div>
+        </div>
+        <div className="proof-bottom">
+          <SkyMapMini compact />
+          <div>
+            <p>Personal Sky Map</p>
+            <span>Constellation-style insight and progress cues.</span>
+          </div>
+        </div>
+      </div>
+      <PhoneMockup variant="practice" compact className="proof-phone" />
     </div>
   );
 }
@@ -295,27 +380,10 @@ function FinalCta() {
             </a>
           </div>
         </div>
-        <div className="cta-phones" style={{ position: "relative", minHeight: 320 }}>
-          <div style={{ position: "absolute", inset: "2% -6% 0 8%", borderRadius: "50%", background: "radial-gradient(circle at 58% 54%, rgba(216,168,95,.18), transparent 54%), radial-gradient(circle at 44% 42%, rgba(141,85,214,.28), transparent 62%)", filter: "blur(20px)" }} />
-          <div style={{ position: "relative", width: "100%", height: 320, overflow: "visible" }}>
-            <Image
-              src={finalCtaImage}
-              alt="eLuna app screens preview"
-              width={760}
-              height={950}
-              sizes="(max-width: 760px) 86vw, 42vw"
-              style={{
-                display: "block",
-                width: "108%",
-                maxWidth: "none",
-                height: "auto",
-                marginLeft: "-4%",
-                transform: "translateY(-11%)",
-                filter: "drop-shadow(0 28px 52px rgba(0,0,0,.42))",
-              }}
-            />
-            <div style={{ position: "absolute", right: 12, bottom: 12, width: "min(58%, 260px)", height: 1, background: "linear-gradient(90deg, transparent, rgba(216,168,95,.52), transparent)" }} />
-          </div>
+        <div className="cta-phone-scene">
+          <div className="scene-glow main" />
+          <PhoneMockup variant="sky" compact className="cta-phone-back" />
+          <PhoneMockup variant="daily" compact className="cta-phone-front" />
         </div>
       </div>
     </section>
@@ -368,6 +436,452 @@ export default function WelcomeHeadPage() {
           padding: 46px 0 84px;
         }
 
+        .hero-visual,
+        .proof-scene,
+        .cta-phone-scene {
+          position: relative;
+          isolation: isolate;
+        }
+
+        .hero-visual {
+          width: min(100%, 640px);
+          min-height: 560px;
+          margin: 0 auto;
+        }
+
+        .scene-glow {
+          position: absolute;
+          pointer-events: none;
+          z-index: 0;
+          border-radius: 999px;
+          filter: blur(24px);
+        }
+
+        .scene-glow.main {
+          inset: 10% 4% 12% 10%;
+          background: radial-gradient(circle at 52% 46%, rgba(141,85,214,.36), transparent 60%);
+        }
+
+        .scene-glow.gold {
+          right: 4%;
+          bottom: 8%;
+          width: 280px;
+          height: 220px;
+          background: radial-gradient(circle, rgba(216,168,95,.16), transparent 62%);
+        }
+
+        .scene-shadow {
+          position: absolute;
+          right: 4%;
+          bottom: 4%;
+          width: 78%;
+          height: 62px;
+          border-radius: 999px;
+          background: radial-gradient(ellipse, rgba(0,0,0,.50), transparent 70%);
+          filter: blur(8px);
+          z-index: 0;
+        }
+
+        .phone-mockup {
+          position: relative;
+          width: 274px;
+          height: 548px;
+          border-radius: 42px;
+          padding: 10px;
+          background: linear-gradient(145deg, #171423, #05050c 62%, #201635);
+          border: 1px solid rgba(255,255,255,.18);
+          box-shadow:
+            inset 0 0 0 1px rgba(255,255,255,.05),
+            0 34px 80px rgba(0,0,0,.48),
+            0 0 44px rgba(128,64,192,.18);
+          z-index: 2;
+        }
+
+        .phone-compact {
+          width: 208px;
+          height: 416px;
+          border-radius: 34px;
+          padding: 8px;
+        }
+
+        .phone-speaker {
+          position: absolute;
+          top: 20px;
+          left: 50%;
+          width: 78px;
+          height: 22px;
+          transform: translateX(-50%);
+          border-radius: 999px;
+          background: #05050d;
+          border: 1px solid rgba(255,255,255,.08);
+          z-index: 4;
+        }
+
+        .phone-compact .phone-speaker {
+          top: 16px;
+          width: 60px;
+          height: 18px;
+        }
+
+        .phone-screen {
+          position: relative;
+          height: 100%;
+          border-radius: 32px;
+          overflow: hidden;
+          padding: 44px 14px 14px;
+          color: var(--text);
+          background:
+            radial-gradient(circle at 50% 5%, rgba(141,85,214,.32), transparent 34%),
+            radial-gradient(circle at 90% 28%, rgba(216,168,95,.08), transparent 28%),
+            linear-gradient(180deg, #171033, #090719 72%, #060510);
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,.07);
+        }
+
+        .phone-compact .phone-screen {
+          border-radius: 27px;
+          padding: 36px 11px 12px;
+        }
+
+        .phone-topbar,
+        .phone-pill-row,
+        .streak-row,
+        .phone-card-grid,
+        .phone-nav {
+          display: flex;
+          align-items: center;
+        }
+
+        .phone-topbar {
+          justify-content: space-between;
+          gap: 8px;
+          color: rgba(255,255,255,.62);
+          font-size: 9px;
+          font-weight: 800;
+        }
+
+        .phone-brand {
+          color: var(--gold-2);
+          font-family: var(--font-display);
+          font-size: 14px;
+          font-weight: 600;
+        }
+
+        .phone-pill-row,
+        .streak-row {
+          gap: 7px;
+          margin: 14px 0 12px;
+        }
+
+        .phone-pill-row span,
+        .streak-row span {
+          min-width: 28px;
+          height: 22px;
+          border-radius: 999px;
+          display: grid;
+          place-items: center;
+          color: rgba(255,255,255,.58);
+          background: rgba(255,255,255,.045);
+          border: 1px solid rgba(255,255,255,.08);
+          font-size: 8px;
+          font-weight: 800;
+        }
+
+        .streak-row span.done {
+          border-color: rgba(216,168,95,.32);
+          color: var(--gold-2);
+        }
+
+        .phone-card {
+          border: 1px solid rgba(255,255,255,.09);
+          border-radius: 18px;
+          background: rgba(255,255,255,.045);
+          padding: 12px;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+        }
+
+        .phone-card p,
+        .proof-daily p,
+        .proof-bottom p {
+          color: var(--gold);
+          font-size: 9px;
+          font-weight: 900;
+          letter-spacing: .12em;
+          text-transform: uppercase;
+        }
+
+        .phone-card h4 {
+          color: var(--text);
+          font-family: var(--font-display);
+          font-size: 21px;
+          line-height: 1.1;
+          font-weight: 600;
+          margin: 8px 0 7px;
+        }
+
+        .phone-card span,
+        .proof-card span,
+        .proof-bottom span {
+          color: var(--muted);
+          font-size: 10px;
+          line-height: 1.45;
+        }
+
+        .phone-card button,
+        .proof-daily button {
+          width: 100%;
+          min-height: 34px;
+          border: 0;
+          border-radius: 999px;
+          margin-top: 12px;
+          color: #fff;
+          font-size: 10px;
+          font-weight: 900;
+          background: linear-gradient(135deg, #8d55d6, #5a2090);
+          box-shadow: 0 14px 28px rgba(90,32,144,.34);
+        }
+
+        .phone-card-grid {
+          gap: 9px;
+          margin-top: 10px;
+        }
+
+        .phone-card.mini {
+          flex: 1;
+          min-height: 82px;
+          padding: 10px;
+        }
+
+        .phone-card.accent {
+          margin-top: 10px;
+          background: linear-gradient(145deg, rgba(216,168,95,.08), rgba(128,64,192,.08));
+        }
+
+        .phone-nav {
+          position: absolute;
+          left: 22px;
+          right: 22px;
+          bottom: 13px;
+          justify-content: space-between;
+        }
+
+        .phone-nav span {
+          width: 18px;
+          height: 18px;
+          border-radius: 8px;
+          border: 1px solid rgba(216,168,95,.22);
+          background: rgba(255,255,255,.035);
+        }
+
+        .phone-main {
+          position: absolute;
+          right: 115px;
+          top: 0;
+          transform: rotate(-4deg);
+        }
+
+        .phone-secondary {
+          position: absolute;
+          right: 0;
+          top: 108px;
+          transform: rotate(7deg);
+          z-index: 1;
+          opacity: .95;
+        }
+
+        .symbolic-card {
+          position: absolute;
+          left: 40px;
+          bottom: 82px;
+          width: 138px;
+          height: 188px;
+          border-radius: 24px;
+          display: grid;
+          place-items: center;
+          gap: 10px;
+          color: var(--gold-2);
+          background:
+            radial-gradient(circle at 50% 34%, rgba(216,168,95,.16), transparent 38%),
+            linear-gradient(145deg, rgba(28,18,56,.78), rgba(8,7,22,.62));
+          border: 1px solid rgba(216,168,95,.22);
+          box-shadow: 0 24px 54px rgba(0,0,0,.36);
+          transform: rotate(-9deg);
+          z-index: 3;
+        }
+
+        .symbolic-card span {
+          color: var(--muted);
+          font-size: 11px;
+          font-weight: 900;
+        }
+
+        .symbolic-orbit {
+          position: absolute;
+          inset: 22px;
+          border-radius: 999px;
+          border: 1px solid rgba(216,168,95,.18);
+        }
+
+        .sky-map-mini {
+          position: relative;
+          border-radius: 999px;
+          display: grid;
+          place-items: center;
+          background: radial-gradient(circle, rgba(128,64,192,.26), rgba(8,7,22,.16) 58%, rgba(216,168,95,.06));
+          border: 1px solid rgba(216,168,95,.18);
+        }
+
+        .sky-map-mini svg {
+          width: 78%;
+          height: 78%;
+          stroke: rgba(216,168,95,.88);
+          stroke-width: 1.6;
+          fill: none;
+          filter: drop-shadow(0 0 8px rgba(216,168,95,.35));
+        }
+
+        .sky-ring,
+        .sky-dot {
+          position: absolute;
+          border-radius: 999px;
+        }
+
+        .sky-ring {
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .ring-one {
+          inset: 18%;
+        }
+
+        .ring-two {
+          inset: 31%;
+        }
+
+        .sky-dot {
+          width: 5px;
+          height: 5px;
+          background: var(--gold-2);
+          box-shadow: 0 0 14px rgba(216,168,95,.70);
+        }
+
+        .dot-one { left: 25%; top: 58%; }
+        .dot-two { left: 42%; top: 35%; }
+        .dot-three { right: 28%; top: 46%; }
+        .dot-four { right: 17%; top: 24%; }
+
+        .proof-scene {
+          min-height: 450px;
+        }
+
+        .proof-panel {
+          position: relative;
+          width: min(100%, 520px);
+          min-height: 340px;
+          margin: 42px auto 0;
+          border-radius: 32px;
+          padding: 20px;
+          background: linear-gradient(145deg, rgba(24,16,50,.58), rgba(8,7,22,.36));
+          border: 1px solid rgba(216,168,95,.14);
+          box-shadow: 0 26px 70px rgba(0,0,0,.28);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          z-index: 1;
+        }
+
+        .proof-panel-top {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          color: var(--muted-2);
+          font-size: 11px;
+          font-weight: 900;
+          margin-bottom: 16px;
+        }
+
+        .proof-layout {
+          display: grid;
+          grid-template-columns: 1.2fr .8fr;
+          gap: 14px;
+        }
+
+        .proof-daily,
+        .proof-card,
+        .proof-bottom {
+          border: 1px solid rgba(255,255,255,.09);
+          background: rgba(255,255,255,.04);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+        }
+
+        .proof-daily {
+          min-height: 164px;
+          border-radius: 24px;
+          padding: 18px;
+        }
+
+        .proof-daily h3 {
+          color: var(--text);
+          font-family: var(--font-display);
+          font-size: 28px;
+          line-height: 1.04;
+          font-weight: 600;
+          margin: 10px 0 16px;
+        }
+
+        .proof-side {
+          display: grid;
+          gap: 12px;
+        }
+
+        .proof-card.small {
+          min-height: 76px;
+          border-radius: 20px;
+          padding: 14px;
+          display: grid;
+          align-content: center;
+          gap: 8px;
+          color: var(--gold-2);
+        }
+
+        .proof-bottom {
+          display: grid;
+          grid-template-columns: auto 1fr;
+          gap: 16px;
+          align-items: center;
+          margin-top: 14px;
+          border-radius: 24px;
+          padding: 14px;
+        }
+
+        .proof-phone {
+          position: absolute;
+          right: -4px;
+          bottom: -8px;
+          transform: rotate(8deg) scale(.72);
+          transform-origin: bottom right;
+          z-index: 2;
+        }
+
+        .cta-phone-scene {
+          min-height: 330px;
+        }
+
+        .cta-phone-back {
+          position: absolute;
+          right: 0;
+          top: 18px;
+          transform: rotate(8deg) scale(.88);
+          z-index: 1;
+          opacity: .82;
+        }
+
+        .cta-phone-front {
+          position: absolute;
+          right: 132px;
+          top: -2px;
+          transform: rotate(-6deg);
+          z-index: 2;
+        }
+
         .feature-grid {
           display: grid;
           grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -406,13 +920,29 @@ export default function WelcomeHeadPage() {
           }
 
           .hero-visual {
-            min-height: auto !important;
+            min-height: 450px !important;
             margin-top: 4px !important;
           }
 
-          .hero-visual img {
-            width: 100% !important;
-            margin-left: 0 !important;
+          .phone-main {
+            right: 70px;
+            top: 8px;
+            transform: rotate(-4deg) scale(.84);
+            transform-origin: top right;
+          }
+
+          .phone-secondary {
+            right: -8px;
+            top: 94px;
+            transform: rotate(7deg) scale(.74);
+            transform-origin: top right;
+          }
+
+          .symbolic-card {
+            left: 0;
+            bottom: 66px;
+            transform: rotate(-8deg) scale(.82);
+            transform-origin: bottom left;
           }
 
           .feature-grid {
@@ -428,12 +958,41 @@ export default function WelcomeHeadPage() {
             border-radius: 26px !important;
           }
 
-          .cta-phones {
+          .proof-scene {
+            min-height: 520px;
+          }
+
+          .proof-panel {
+            margin-top: 18px;
+            padding: 16px;
+          }
+
+          .proof-layout {
+            grid-template-columns: 1fr;
+          }
+
+          .proof-phone {
+            right: -20px;
+            bottom: -48px;
+            transform: rotate(8deg) scale(.58);
+          }
+
+          .cta-phone-scene {
             min-height: 230px !important;
           }
 
-          .cta-phones > div:last-child {
-            height: 230px !important;
+          .cta-phone-front {
+            right: 96px;
+            top: 0;
+            transform: rotate(-6deg) scale(.62);
+            transform-origin: top right;
+          }
+
+          .cta-phone-back {
+            right: -12px;
+            top: 22px;
+            transform: rotate(8deg) scale(.54);
+            transform-origin: top right;
           }
         }
       `}</style>
@@ -508,7 +1067,7 @@ export default function WelcomeHeadPage() {
         </section>
 
         <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 390px), 1fr))", gap: 30, alignItems: "center", padding: "34px 0 46px" }}>
-          <FeatureCollage />
+          <ProductProofVisual />
           <div>
             <SectionHeader eyebrow="Product proof" title="Your daily reflection space, all in one app" body="The public landing shows how eLuna delivers a real digital experience: daily guidance, structured personal insight, and a journal-friendly rhythm." />
             <div style={{ display: "grid", gap: 12 }}>
