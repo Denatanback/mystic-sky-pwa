@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
@@ -8,6 +9,12 @@ const appLoginUrl = "https://www.myeluna.com/login";
 const appRegisterUrl = "https://www.myeluna.com/register";
 const supportHref = "mailto:support@myeluna.com?subject=eLuna%20Support";
 const billingSupportHref = "mailto:support@myeluna.com?subject=eLuna%20Billing%20Question";
+
+// TODO: Swap these fallback assets for public/assets/welcome-head/eluna-phone-hero.webp,
+// eluna-feature-collage.webp, and eluna-final-cta-phones.webp once those files exist in the repo.
+const heroVisualImage = "/assets/welcome-bg.png";
+const featureCollageImage = "/assets/main_screen/background-main.png";
+const finalCtaImage = "/assets/sky-background/sky-background-main.png";
 
 const navLinks = [
   { label: "Product", href: "#product" },
@@ -204,67 +211,143 @@ function SectionHeader({ eyebrow, title, body, centered = false }: { eyebrow: st
   );
 }
 
-function AppMockup({ compact = false }: { compact?: boolean }) {
+function VisualFrame({
+  src,
+  alt,
+  aspectRatio,
+  priority = false,
+  objectPosition = "center",
+  overlay = "linear-gradient(90deg, rgba(7,8,22,.42), transparent 40%), linear-gradient(180deg, transparent 52%, rgba(7,8,22,.72))",
+  children,
+}: {
+  src: string;
+  alt: string;
+  aspectRatio: string;
+  priority?: boolean;
+  objectPosition?: string;
+  overlay?: string;
+  children?: ReactNode;
+}) {
   return (
-    <div style={{ ...glassPanel, width: compact ? "min(100%, 360px)" : "min(100%, 445px)", padding: compact ? 12 : 14, borderRadius: compact ? 30 : 34, margin: compact ? "0 auto" : undefined }}>
-      <div style={{ borderRadius: compact ? 22 : 26, overflow: "hidden", background: "linear-gradient(180deg, #171132, #090817)", border: "1px solid rgba(255,255,255,.08)" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px 16px", borderBottom: "1px solid rgba(255,255,255,.08)" }}>
-          <div>
-            <p style={{ color: "var(--muted-2)", fontSize: 11, marginBottom: 3 }}>Today</p>
-            <p style={{ color: "var(--text)", fontSize: 15, fontWeight: 900 }}>Your reflection space</p>
-          </div>
-          <span style={{ width: 38, height: 38, borderRadius: "50%", display: "grid", placeItems: "center", color: "var(--gold-2)", background: "rgba(216,168,95,.10)", border: "1px solid rgba(216,168,95,.20)" }}>
-            <Icon name="moon" size={19} />
-          </span>
+    <div style={{ position: "relative", aspectRatio, width: "100%", borderRadius: 34, overflow: "hidden", border: "1px solid rgba(216,168,95,.22)", background: "linear-gradient(145deg, rgba(17,12,38,.92), rgba(8,7,22,.80))", boxShadow: "0 34px 90px rgba(0,0,0,.46), 0 0 70px rgba(128,64,192,.18)", maskImage: "linear-gradient(180deg, transparent 0%, #000 7%, #000 91%, transparent 100%)", WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 7%, #000 91%, transparent 100%)" }}>
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        priority={priority}
+        sizes="(max-width: 760px) 92vw, 48vw"
+        style={{ objectFit: "cover", objectPosition }}
+      />
+      <div style={{ position: "absolute", inset: 0, background: overlay }} />
+      <div style={{ position: "absolute", inset: 0, boxShadow: "inset 0 1px 0 rgba(255,255,255,.10), inset 0 -80px 100px rgba(7,8,22,.45)" }} />
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 18% 12%, rgba(255,255,255,.10), transparent 22%), linear-gradient(135deg, rgba(216,168,95,.10), transparent 30%, rgba(141,85,214,.10) 76%, transparent)" }} />
+      {children}
+    </div>
+  );
+}
+
+function FloatingLabel({ label, icon, style }: { label: string; icon: string; style?: CSSProperties }) {
+  return (
+    <div style={{ position: "absolute", display: "inline-flex", alignItems: "center", gap: 9, minHeight: 44, padding: "0 13px", borderRadius: 999, color: "var(--text)", background: "rgba(10,9,25,.72)", border: "1px solid rgba(216,168,95,.24)", boxShadow: "0 18px 45px rgba(0,0,0,.36)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", fontSize: 12, fontWeight: 900, ...style }}>
+      <span style={{ color: "var(--gold-2)", display: "grid", placeItems: "center" }}>
+        <Icon name={icon} size={17} />
+      </span>
+      {label}
+    </div>
+  );
+}
+
+function HeroVisual() {
+  return (
+    <div style={{ position: "relative", width: "min(100%, 520px)", margin: "0 auto", padding: "10px 0" }}>
+      <div style={{ position: "absolute", inset: "4% -8% 8% 4%", borderRadius: 54, background: "radial-gradient(circle at 50% 42%, rgba(141,85,214,.30), transparent 62%), radial-gradient(circle at 72% 72%, rgba(216,168,95,.18), transparent 52%)", filter: "blur(18px)" }} />
+      <VisualFrame
+        src={heroVisualImage}
+        alt="eLuna app preview with daily reflection screens"
+        aspectRatio="4 / 5"
+        priority
+        objectPosition="center 48%"
+        overlay="linear-gradient(90deg, rgba(7,8,22,.54), transparent 42%), linear-gradient(180deg, rgba(7,8,22,.22), transparent 34%, rgba(7,8,22,.76))"
+      >
+        <div style={{ position: "absolute", left: 18, right: 18, bottom: 18, display: "grid", gap: 8, padding: 16, borderRadius: 24, background: "linear-gradient(145deg, rgba(7,8,22,.76), rgba(24,16,49,.64))", border: "1px solid rgba(255,255,255,.10)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}>
+          <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".14em", textTransform: "uppercase" }}>Today in eLuna</p>
+          <h2 style={{ color: "var(--text)", fontFamily: "var(--font-display)", fontSize: "clamp(22px, 3vw, 30px)", lineHeight: 1.04, fontWeight: 600 }}>Guidance, cards, and reflection in one account</h2>
+          <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.55 }}>A real digital subscription experience for daily symbolic self-reflection.</p>
         </div>
+        <FloatingLabel label="Daily reading" icon="moon" style={{ left: -8, top: "12%" }} />
+        <FloatingLabel label="Sky Map" icon="orbit" style={{ right: -4, top: "30%" }} />
+      </VisualFrame>
+    </div>
+  );
+}
 
-        <div style={{ padding: 16, display: "grid", gap: 12 }}>
-          <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 20, padding: 16, background: "linear-gradient(145deg, rgba(128,64,192,.22), rgba(255,255,255,.055))" }}>
-            <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Daily reading</p>
-            <h3 style={{ color: "var(--text)", fontSize: compact ? 20 : 23, fontFamily: "var(--font-display)", fontWeight: 600, lineHeight: 1.08, marginBottom: 8 }}>
-              A clear signal for today
-            </h3>
-            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.55 }}>
-              Pause, name the pattern, and choose one grounded action.
-            </p>
+function FeatureCollage() {
+  return (
+    <div style={{ position: "relative" }}>
+      <div style={{ position: "absolute", inset: "12% 4% -8% -4%", borderRadius: 36, background: "radial-gradient(circle, rgba(128,64,192,.20), transparent 65%)", filter: "blur(14px)" }} />
+      <VisualFrame
+        src={featureCollageImage}
+        alt="eLuna product feature collage"
+        aspectRatio="16 / 10"
+        objectPosition="center"
+        overlay="linear-gradient(90deg, rgba(7,8,22,.18), rgba(7,8,22,.08) 45%, rgba(7,8,22,.48)), linear-gradient(180deg, transparent 42%, rgba(7,8,22,.76))"
+      >
+      <div style={{ position: "absolute", left: 18, right: 18, bottom: 18, display: "flex", flexWrap: "wrap", gap: 9 }}>
+        {[
+          ["Daily guidance", "moon"],
+          ["Symbolic insight", "card"],
+          ["Reflection journal", "journal"],
+        ].map(([label, icon]) => (
+          <span key={label} style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 38, padding: "0 12px", borderRadius: 999, color: "var(--text)", background: "rgba(10,9,25,.70)", border: "1px solid rgba(216,168,95,.20)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", fontSize: 12, fontWeight: 900 }}>
+            <span style={{ color: "var(--gold-2)", display: "grid", placeItems: "center" }}><Icon name={icon} size={15} /></span>
+            {label}
+          </span>
+        ))}
+      </div>
+      </VisualFrame>
+    </div>
+  );
+}
+
+function FinalCta() {
+  return (
+    <section style={{ position: "relative", overflow: "hidden", borderRadius: 34, border: "1px solid rgba(216,168,95,.24)", background: "radial-gradient(circle at 78% 50%, rgba(141,85,214,.28), transparent 32%), linear-gradient(135deg, rgba(20,13,47,.96), rgba(8,7,22,.92))", boxShadow: "0 28px 80px rgba(0,0,0,.34)", margin: "36px 0 18px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))", gap: 24, alignItems: "center", padding: "clamp(24px, 5vw, 42px)" }}>
+        <div style={{ display: "grid", gap: 14, maxWidth: 560, position: "relative", zIndex: 2 }}>
+          <p style={{ color: "var(--gold)", fontSize: 11, fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" }}>Start with a free preview</p>
+          <h2 style={{ color: "var(--text)", fontFamily: "var(--font-display)", fontSize: "clamp(32px, 5vw, 52px)", lineHeight: 1.04, fontWeight: 600 }}>Start your eLuna journey today</h2>
+          <p style={{ color: "var(--muted)", fontSize: 15, lineHeight: 1.7 }}>
+            Create your account and begin with a free preview. Paid features unlock after subscription activation.
+          </p>
+          <div>
+            <a href={appRegisterUrl} style={{ minHeight: 50, borderRadius: 999, padding: "0 22px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #8d55d6 0%, #5a2090 100%)", color: "#fff", fontSize: 14, fontWeight: 900, textDecoration: "none", boxShadow: "0 14px 34px rgba(90,32,144,.40)" }}>
+              Create account
+            </a>
           </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            {[
-              ["Symbolic card", "Meaning + action", "card"],
-              ["Sky Map", "Path preview", "orbit"],
-            ].map(([title, body, icon]) => (
-              <div key={title} style={{ border: "1px solid rgba(255,255,255,.09)", borderRadius: 18, background: "rgba(255,255,255,.045)", padding: 13, minHeight: 126 }}>
-                <IconFrame icon={icon} compact />
-                <p style={{ color: "var(--text)", fontSize: 13, fontWeight: 900, lineHeight: 1.25, margin: "10px 0 5px" }}>{title}</p>
-                <p style={{ color: "var(--muted)", fontSize: 11, lineHeight: 1.45 }}>{body}</p>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ border: "1px solid rgba(255,255,255,.09)", borderRadius: 18, background: "rgba(255,255,255,.04)", padding: 13, display: "grid", gap: 10 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-              <div>
-                <p style={{ color: "var(--text)", fontSize: 13, fontWeight: 900 }}>Practice rhythm</p>
-                <p style={{ color: "var(--muted-2)", fontSize: 11, marginTop: 4 }}>Affirmation and journal prompt</p>
-              </div>
-              <IconFrame icon="spark" compact />
-            </div>
-            <div style={{ height: 7, borderRadius: 999, background: "rgba(255,255,255,.08)", overflow: "hidden" }}>
-              <div style={{ width: "62%", height: "100%", borderRadius: 999, background: "linear-gradient(90deg, #d8a85f, #8d55d6)" }} />
-            </div>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, paddingTop: 2 }}>
-            {["Home", "Today", "Sky", "Journal"].map((item, index) => (
-              <div key={item} style={{ height: 38, borderRadius: 14, display: "grid", placeItems: "center", color: index === 1 ? "var(--gold-2)" : "var(--muted-2)", background: index === 1 ? "rgba(216,168,95,.10)" : "rgba(255,255,255,.035)", fontSize: 10, fontWeight: 900 }}>
-                {item}
-              </div>
-            ))}
+        </div>
+        <div style={{ position: "relative", minHeight: 260, overflow: "hidden", borderRadius: 30 }}>
+          <div style={{ position: "absolute", inset: "4% -4% -2% 0", borderRadius: 44, background: "radial-gradient(circle at 58% 54%, rgba(216,168,95,.22), transparent 54%), radial-gradient(circle at 42% 40%, rgba(141,85,214,.34), transparent 62%)", filter: "blur(18px)" }} />
+          <div style={{ position: "relative", width: "100%", height: "100%", minHeight: 260 }}>
+            <Image
+              src={finalCtaImage}
+              alt="eLuna app screens preview"
+              fill
+              sizes="(max-width: 760px) 86vw, 42vw"
+              style={{
+                objectFit: "cover",
+                objectPosition: "center 42%",
+                transform: "scale(1.08) translateX(4%)",
+                filter: "drop-shadow(0 28px 52px rgba(0,0,0,.42))",
+                maskImage: "radial-gradient(ellipse at 58% 50%, #000 0%, #000 58%, transparent 82%)",
+                WebkitMaskImage: "radial-gradient(ellipse at 58% 50%, #000 0%, #000 58%, transparent 82%)",
+              }}
+            />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(12,8,29,.68), transparent 45%), linear-gradient(180deg, transparent 58%, rgba(12,8,29,.62))" }} />
+            <div style={{ position: "absolute", right: 12, bottom: 12, width: "min(58%, 260px)", height: 1, background: "linear-gradient(90deg, transparent, rgba(216,168,95,.52), transparent)" }} />
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -320,7 +403,7 @@ export default function WelcomeHeadPage() {
           </div>
 
           <div style={{ display: "grid", placeItems: "center" }}>
-            <AppMockup />
+            <HeroVisual />
           </div>
         </section>
 
@@ -342,10 +425,10 @@ export default function WelcomeHeadPage() {
           </div>
         </section>
 
-        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))", gap: 34, alignItems: "center", padding: "40px 0 58px" }}>
-          <AppMockup compact />
+        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 390px), 1fr))", gap: 34, alignItems: "center", padding: "40px 0 58px" }}>
+          <FeatureCollage />
           <div>
-            <SectionHeader eyebrow="Product proof" title="A personal reflection space in your pocket" body="The public landing shows how eLuna delivers a real digital experience: daily guidance, structured personal insight, and a journal-friendly rhythm." />
+            <SectionHeader eyebrow="Product proof" title="Your daily reflection space, all in one app" body="The public landing shows how eLuna delivers a real digital experience: daily guidance, structured personal insight, and a journal-friendly rhythm." />
             <div style={{ display: "grid", gap: 12 }}>
               {proofBenefits.map(([title, body], index) => (
                 <article key={title} style={{ ...glassPanel, padding: 18, display: "grid", gridTemplateColumns: "auto 1fr", gap: 14, alignItems: "start" }}>
@@ -414,17 +497,19 @@ export default function WelcomeHeadPage() {
 
         <section id="faq" style={{ padding: "36px 0 44px" }}>
           <SectionHeader eyebrow="FAQ" title="Clear answers for a digital subscription" centered />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))", gap: 12 }}>
+          <div style={{ display: "grid", gap: 10, width: "min(100%, 900px)", margin: "0 auto" }}>
             {faqs.map(([question, answer]) => (
-              <article key={question} style={{ border: "1px solid rgba(255,255,255,.09)", borderRadius: 18, background: "rgba(255,255,255,.035)", padding: 16 }}>
-                <h3 style={{ color: "var(--text)", fontSize: 15, fontWeight: 900, lineHeight: 1.3, marginBottom: 7 }}>{question}</h3>
-                <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.62 }}>
+              <details key={question} style={{ border: "1px solid rgba(255,255,255,.09)", borderRadius: 18, background: "rgba(255,255,255,.035)", padding: "0 16px" }}>
+                <summary style={{ cursor: "pointer", color: "var(--text)", fontSize: 15, fontWeight: 900, lineHeight: 1.35, padding: "16px 0", listStyle: "none" }}>{question}</summary>
+                <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.62, padding: "0 0 16px" }}>
                   <SmartText text={answer} href={supportHref} />
                 </p>
-              </article>
+              </details>
             ))}
           </div>
         </section>
+
+        <FinalCta />
 
         <section id="contact" style={{ ...glassPanel, padding: "26px 24px", margin: "16px 0 26px" }}>
           <SectionHeader eyebrow="Company details" title="Official contact and business details" body="These details are visible for customers and payment review. Replace placeholders with the exact legal information used in the Stripe account." />
