@@ -20,9 +20,12 @@ const desktopBackgroundImage = "/assets/landing/eluna-bg-desktop.png";
 const mobileBackgroundImage = "/assets/landing/eluna-bg-mobile.png";
 const constellationOverlayImage = "/assets/landing/eluna-constellation-overlay-clean.png";
 const zodiacHaloImage = "/assets/landing/eluna-zodiac-halo-clean.png";
-const heroPhonesImage = "/assets/landing/eluna-hero-phones-transparent.svg";
-const dailyGuidanceScreenImage = "/assets/landing/eluna-phone-screen-daily-guidance.svg";
-const skyMapScreenImage = "/assets/landing/eluna-phone-screen-sky-map.svg";
+const heroPhonesImage = "/assets/landing/eluna-hero-phones-transparent.png";
+const dailyGuidanceScreenImage = "/assets/landing/eluna-phone-daily-guidance.png";
+const skyMapScreenImage = "/assets/landing/eluna-phone-sky-map.png";
+const testimonialEmilyImage = "/assets/testimonials/testimonial-emily.png";
+const testimonialJasonImage = "/assets/testimonials/testimonial-jason.png";
+const testimonialLaurenImage = "/assets/testimonials/testimonial-lauren.png";
 
 const navLinks = [
   { label: "Product", href: "#product" },
@@ -59,6 +62,33 @@ const steps = [
   ["Add your birth details", "Share birth date, optional birth time, place, and preferences."],
   ["Explore daily guidance", "Open daily readings, cards, practices, and your Sky Map."],
   ["Unlock deeper readings", "Use a subscription for deeper digital guidance and premium features."],
+];
+
+const testimonials = [
+  {
+    image: testimonialEmilyImage,
+    name: "Emily R.",
+    location: "Austin, TX",
+    tag: "Daily ritual",
+    quote:
+      "eLuna feels less like a regular horoscope app and more like a guided astrology journey. I like opening it each day, checking my reflection, and seeing what new theme it gives me to think about.",
+  },
+  {
+    image: testimonialJasonImage,
+    name: "Jason M.",
+    location: "Seattle, WA",
+    tag: "Sky Map explorer",
+    quote:
+      "The Sky Map makes the experience feel like a quest. It gives me a simple reason to come back, unlock another layer, and reflect on patterns I usually do not stop to notice.",
+  },
+  {
+    image: testimonialLaurenImage,
+    name: "Lauren T.",
+    location: "Chicago, IL",
+    tag: "Personal insight",
+    quote:
+      "I started out of curiosity, but the daily guidance and symbolic cards made it feel personal. It is a calm little routine that helps me pause and think about myself in a different way.",
+  },
 ];
 
 const plans = [
@@ -254,7 +284,7 @@ function HeroVisual() {
       <div className="constellation-layer hero-constellation" />
       <div className="zodiac-halo hero-halo" />
       <div className="scene-shadow" />
-      <img className="hero-phones-svg" src={heroPhonesImage} alt="eLuna app screens showing daily guidance and a personal sky map" draggable={false} />
+      <img className="hero-phones-image" src={heroPhonesImage} alt="eLuna app screens showing daily guidance and a personal sky map" draggable={false} />
     </div>
   );
 }
@@ -274,7 +304,7 @@ function ProductProofVisual() {
           <div className="proof-daily">
             <p>Guidance for today</p>
             <h3>Reflect on the pattern that keeps returning.</h3>
-            <span className="mock-cta">Open reading</span>
+            <span className="mock-cta">Daily preview</span>
           </div>
           <div className="proof-side">
             <div className="proof-card small">
@@ -317,11 +347,16 @@ function FinalCta() {
             </a>
           </div>
         </div>
-        <div className="cta-phone-scene">
+        <div className="cta-astro-scene" aria-hidden="true">
           <div className="scene-glow main" />
+          <div className="scene-glow gold" />
           <div className="constellation-layer cta-constellation" />
           <div className="zodiac-halo cta-halo" />
-          <img className="cta-phones-svg" src={heroPhonesImage} alt="" draggable={false} />
+          <div className="cta-symbolic-card">
+            <Icon name="spark" size={28} />
+            <span />
+          </div>
+          <SkyMapMini />
         </div>
       </div>
     </section>
@@ -369,8 +404,8 @@ export default function WelcomeHeadPage() {
 
         .hero-section {
           display: grid;
-          grid-template-columns: minmax(0, 1.06fr) minmax(360px, .94fr);
-          gap: clamp(24px, 4vw, 48px);
+          grid-template-columns: minmax(0, .98fr) minmax(440px, 1.02fr);
+          gap: clamp(22px, 3.2vw, 42px);
           align-items: center;
           padding: 46px 0 84px;
         }
@@ -386,34 +421,34 @@ export default function WelcomeHeadPage() {
 
         .hero-visual,
         .proof-scene,
-        .cta-phone-scene {
+        .cta-astro-scene {
           position: relative;
           isolation: isolate;
           pointer-events: none;
         }
 
         .hero-visual {
-          width: min(100%, 640px);
-          min-height: 560px;
+          width: min(100%, 670px);
+          min-height: clamp(560px, 46vw, 680px);
           margin: 0 auto;
         }
 
-        .hero-phones-svg {
+        .hero-phones-image {
           position: absolute;
-          right: -18px;
-          top: 0;
+          right: -38px;
+          top: -12px;
           z-index: 3;
-          width: min(112%, 690px);
-          height: min(690px, 76vh);
-          max-height: 690px;
+          width: min(112%, 720px);
+          height: clamp(560px, 48vw, 680px);
+          max-height: 680px;
           object-fit: contain;
           object-position: center;
           user-select: none;
           pointer-events: none;
           filter:
-            drop-shadow(0 34px 72px rgba(0,0,0,.48))
-            drop-shadow(0 0 34px rgba(141,85,214,.24))
-            drop-shadow(0 0 12px rgba(216,168,95,.10));
+            drop-shadow(0 38px 78px rgba(0,0,0,.50))
+            drop-shadow(0 0 38px rgba(141,85,214,.25))
+            drop-shadow(0 0 16px rgba(216,168,95,.12));
           animation: phoneFloat 7.5s ease-in-out infinite;
         }
 
@@ -426,24 +461,24 @@ export default function WelcomeHeadPage() {
         }
 
         .scene-glow.main {
-          inset: 10% 4% 12% 10%;
-          background: radial-gradient(circle at 52% 46%, rgba(141,85,214,.36), transparent 60%);
+          inset: 6% -1% 10% 4%;
+          background: radial-gradient(circle at 55% 45%, rgba(141,85,214,.42), transparent 61%);
         }
 
         .scene-glow.gold {
-          right: 4%;
-          bottom: 8%;
-          width: 280px;
-          height: 220px;
-          background: radial-gradient(circle, rgba(216,168,95,.16), transparent 62%);
+          right: 0;
+          bottom: 9%;
+          width: 340px;
+          height: 260px;
+          background: radial-gradient(circle, rgba(216,168,95,.19), transparent 62%);
         }
 
         .scene-shadow {
           position: absolute;
-          right: 4%;
+          right: 2%;
           bottom: 4%;
-          width: 78%;
-          height: 62px;
+          width: 82%;
+          height: 68px;
           border-radius: 999px;
           background: radial-gradient(ellipse, rgba(0,0,0,.50), transparent 70%);
           filter: blur(8px);
@@ -475,14 +510,15 @@ export default function WelcomeHeadPage() {
         }
 
         .hero-constellation {
-          inset: 4% -3% 16% 6%;
+          inset: 1% -5% 16% 2%;
         }
 
         .hero-halo {
-          width: 450px;
-          height: 450px;
-          right: 58px;
-          top: 46px;
+          width: 490px;
+          height: 490px;
+          right: 36px;
+          top: 40px;
+          opacity: .26;
         }
 
         .proof-constellation {
@@ -595,18 +631,19 @@ export default function WelcomeHeadPage() {
         }
 
         .mock-cta {
-          width: 100%;
+          width: fit-content;
           min-height: 34px;
-          border: 0;
           border-radius: 999px;
           margin-top: 12px;
-          color: #fff;
+          border: 1px solid rgba(216,168,95,.18);
+          color: var(--gold-2);
           font-size: 10px;
           font-weight: 900;
-          background: linear-gradient(135deg, #8d55d6, #5a2090);
-          box-shadow: 0 14px 28px rgba(90,32,144,.34);
-          display: grid;
-          place-items: center;
+          background: rgba(216,168,95,.08);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 12px;
           text-align: center;
         }
 
@@ -748,31 +785,171 @@ export default function WelcomeHeadPage() {
           padding: 14px;
         }
 
-        .cta-phone-scene {
-          min-height: 330px;
+        .cta-astro-scene {
+          min-height: 300px;
+          display: grid;
+          place-items: center;
         }
 
-        .cta-phones-svg {
+        .cta-symbolic-card {
           position: absolute;
-          right: -22px;
-          top: -24px;
-          z-index: 3;
-          width: min(112%, 520px);
-          height: 360px;
-          object-fit: contain;
-          object-position: center;
-          user-select: none;
-          pointer-events: none;
-          filter:
-            drop-shadow(0 30px 58px rgba(0,0,0,.46))
-            drop-shadow(0 0 28px rgba(141,85,214,.22));
-          animation: phoneFloat 8s ease-in-out infinite;
+          right: 18%;
+          top: 20%;
+          z-index: 2;
+          width: 116px;
+          height: 156px;
+          border-radius: 24px;
+          display: grid;
+          place-items: center;
+          color: var(--gold-2);
+          background:
+            radial-gradient(circle at 50% 26%, rgba(216,168,95,.18), transparent 42%),
+            linear-gradient(145deg, rgba(24,16,50,.60), rgba(8,7,22,.40));
+          border: 1px solid rgba(216,168,95,.20);
+          box-shadow: 0 24px 58px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.08);
+          transform: rotate(9deg);
+        }
+
+        .cta-symbolic-card span {
+          position: absolute;
+          inset: 16px;
+          border-radius: 18px;
+          border: 1px solid rgba(216,168,95,.13);
+        }
+
+        .cta-astro-scene .sky-map-mini {
+          width: 168px !important;
+          height: 168px !important;
+          z-index: 2;
+          transform: translate(-58px, 46px);
+          box-shadow: 0 20px 54px rgba(0,0,0,.22);
         }
 
         .feature-grid {
           display: grid;
           grid-template-columns: repeat(6, minmax(0, 1fr));
           gap: 14px;
+        }
+
+        .testimonials-section {
+          position: relative;
+          padding: 42px 0 50px;
+          scroll-margin-top: 24px;
+        }
+
+        .testimonials-section::before {
+          content: "";
+          position: absolute;
+          inset: -38px -24px -22px;
+          pointer-events: none;
+          background:
+            radial-gradient(circle at 48% 8%, rgba(216,168,95,.12), transparent 24%),
+            radial-gradient(circle at 18% 44%, rgba(141,85,214,.15), transparent 31%),
+            radial-gradient(circle at 82% 54%, rgba(216,168,95,.08), transparent 28%);
+          opacity: .95;
+          z-index: -1;
+        }
+
+        .testimonials-section::after {
+          content: "";
+          position: absolute;
+          inset: 0 -14px;
+          pointer-events: none;
+          background-image: url("${constellationOverlayImage}");
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: min(880px, 100%) auto;
+          opacity: .10;
+          mix-blend-mode: screen;
+          z-index: -1;
+        }
+
+        .testimonial-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 16px;
+          align-items: stretch;
+        }
+
+        .testimonial-card {
+          min-height: 332px;
+          padding: 20px;
+          display: grid;
+          align-content: start;
+          gap: 18px;
+          border-radius: 24px;
+          border: 1px solid rgba(216,168,95,.16);
+          background:
+            radial-gradient(circle at 20% 0%, rgba(216,168,95,.08), transparent 30%),
+            linear-gradient(145deg, rgba(24,16,50,.50), rgba(8,7,22,.34));
+          box-shadow: 0 22px 58px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.055);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+        }
+
+        .testimonial-card:hover {
+          transform: translateY(-3px);
+          border-color: rgba(216,168,95,.25);
+          box-shadow: 0 26px 64px rgba(0,0,0,.28), 0 0 30px rgba(141,85,214,.10), inset 0 1px 0 rgba(255,255,255,.065);
+        }
+
+        .testimonial-person {
+          display: grid;
+          grid-template-columns: auto 1fr;
+          gap: 13px;
+          align-items: center;
+          min-width: 0;
+        }
+
+        .testimonial-avatar {
+          width: 64px;
+          height: 64px;
+          border-radius: 999px;
+          object-fit: cover;
+          border: 1px solid rgba(216,168,95,.34);
+          box-shadow: 0 0 0 4px rgba(216,168,95,.045), 0 12px 26px rgba(0,0,0,.22);
+          user-select: none;
+          pointer-events: none;
+        }
+
+        .testimonial-name {
+          color: var(--text);
+          font-size: 17px;
+          line-height: 1.25;
+          font-weight: 900;
+        }
+
+        .testimonial-location {
+          color: var(--muted-2);
+          font-size: 13px;
+          line-height: 1.45;
+          margin-top: 2px;
+        }
+
+        .testimonial-tag {
+          width: fit-content;
+          border-radius: 999px;
+          border: 1px solid rgba(216,168,95,.20);
+          background: rgba(216,168,95,.08);
+          color: var(--gold-2);
+          font-size: 13px;
+          line-height: 1;
+          font-weight: 850;
+          padding: 8px 10px;
+        }
+
+        .testimonial-stars {
+          color: var(--gold-2);
+          font-size: 13px;
+          letter-spacing: .08em;
+          opacity: .82;
+        }
+
+        .testimonial-quote {
+          color: var(--muted);
+          font-size: 16px;
+          line-height: 1.66;
         }
 
         .feature-card {
@@ -933,8 +1110,7 @@ export default function WelcomeHeadPage() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .hero-phones-svg,
-          .cta-phones-svg,
+          .hero-phones-image,
           .screen-phone,
           .zodiac-halo,
           .constellation-layer {
@@ -945,6 +1121,10 @@ export default function WelcomeHeadPage() {
         @media (max-width: 980px) {
           .feature-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+
+          .testimonial-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
           }
 
           .footer-grid,
@@ -974,7 +1154,8 @@ export default function WelcomeHeadPage() {
           }
 
           .hero-visual {
-            min-height: 450px !important;
+            width: min(100%, 500px);
+            min-height: 410px !important;
             margin-top: 4px !important;
           }
 
@@ -991,12 +1172,12 @@ export default function WelcomeHeadPage() {
             opacity: .18;
           }
 
-          .hero-phones-svg {
-            right: -12%;
-            top: 14px;
-            width: 124%;
-            height: 430px;
-            max-height: 430px;
+          .hero-phones-image {
+            right: -8%;
+            top: 10px;
+            width: 116%;
+            height: 390px;
+            max-height: 390px;
           }
 
           .feature-grid {
@@ -1045,8 +1226,8 @@ export default function WelcomeHeadPage() {
             transform: rotate(-8deg) scale(.42);
           }
 
-          .cta-phone-scene {
-            min-height: 230px !important;
+          .cta-astro-scene {
+            min-height: 210px !important;
           }
 
           .cta-halo {
@@ -1055,11 +1236,32 @@ export default function WelcomeHeadPage() {
             right: 42px;
           }
 
-          .cta-phones-svg {
-            right: -12%;
-            top: 0;
-            width: 124%;
-            height: 250px;
+          .cta-symbolic-card {
+            right: 12%;
+            top: 12%;
+            width: 96px;
+            height: 130px;
+            border-radius: 22px;
+          }
+
+          .cta-astro-scene .sky-map-mini {
+            width: 132px !important;
+            height: 132px !important;
+            transform: translate(-42px, 36px);
+          }
+
+          .testimonial-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .testimonial-card {
+            min-height: auto;
+            padding: 18px;
+          }
+
+          .testimonial-avatar {
+            width: 58px;
+            height: 58px;
           }
 
           .contact-footer-area {
@@ -1191,6 +1393,33 @@ export default function WelcomeHeadPage() {
           <p style={{ color: "var(--muted-2)", fontSize: 13, lineHeight: 1.65, margin: "14px auto 0", textAlign: "center", maxWidth: 720 }}>
             Access is delivered digitally through your eLuna account. No physical products are shipped.
           </p>
+        </section>
+
+        <section className="testimonials-section">
+          <SectionHeader
+            eyebrow="USER IMPRESSIONS"
+            title="Why people keep coming back to eLuna"
+            body="A daily astrology-inspired experience that feels personal, engaging, and easy to return to."
+            centered
+          />
+          <div className="testimonial-grid">
+            {testimonials.map((testimonial) => (
+              <article key={testimonial.name} className="testimonial-card">
+                <div className="testimonial-person">
+                  <img className="testimonial-avatar" src={testimonial.image} alt={`${testimonial.name} portrait`} draggable={false} />
+                  <div>
+                    <h3 className="testimonial-name">{testimonial.name}</h3>
+                    <p className="testimonial-location">{testimonial.location}</p>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                  <span className="testimonial-tag">{testimonial.tag}</span>
+                  <span className="testimonial-stars" aria-hidden="true">*****</span>
+                </div>
+                <p className="testimonial-quote">"{testimonial.quote}"</p>
+              </article>
+            ))}
+          </div>
         </section>
 
         <section id="pricing" style={{ padding: "36px 0", scrollMarginTop: 24 }}>
