@@ -61,10 +61,24 @@ export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
 
-  if (host === "welcome-head.myeluna.com" && pathname === "/") {
-    const rewriteUrl = request.nextUrl.clone();
-    rewriteUrl.pathname = "/welcome-head";
-    return NextResponse.rewrite(rewriteUrl);
+  if (host === "welcome-head.myeluna.com") {
+    if (pathname === "/") {
+      const rewriteUrl = request.nextUrl.clone();
+      rewriteUrl.pathname = "/welcome-head";
+      return NextResponse.rewrite(rewriteUrl);
+    }
+
+    if (pathname === "/welcome") {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+
+    if (pathname === "/login") {
+      return NextResponse.redirect("https://www.myeluna.com/login");
+    }
+
+    if (pathname === "/register") {
+      return NextResponse.redirect("https://www.myeluna.com/register");
+    }
   }
 
   if (isPublicRoute(pathname)) {
