@@ -18,6 +18,9 @@ const billingSupportHref = "mailto:support@myeluna.com?subject=eLuna%20Billing%2
 
 const desktopBackgroundImage = "/assets/landing/eluna-bg-desktop.png";
 const mobileBackgroundImage = "/assets/landing/eluna-bg-mobile.png";
+const constellationOverlayImage = "/assets/landing/eluna-constellation-overlay-clean.png";
+const symbolicCardImage = "/assets/landing/eluna-symbolic-card-clean.png";
+const zodiacHaloImage = "/assets/landing/eluna-zodiac-halo-clean.png";
 
 const navLinks = [
   { label: "Product", href: "#product" },
@@ -269,7 +272,7 @@ function PhoneMockup({ variant = "daily", compact = false, className = "" }: { v
               <p>Guidance for today</p>
               <h4>Notice what pulls your attention</h4>
               <span>The signal that repeats today may point to your next step.</span>
-              <button>Open today's reading</button>
+              <span className="mock-cta">Open today's reading</span>
             </div>
             <div className="phone-card-grid">
               <div className="phone-card mini">
@@ -304,10 +307,9 @@ function PhoneMockup({ variant = "daily", compact = false, className = "" }: { v
 
 function SymbolicCard() {
   return (
-    <div className="symbolic-card">
-      <div className="symbolic-orbit" />
-      <Icon name="spark" size={36} />
-      <span>Symbolic card</span>
+    <div className="symbolic-card" aria-label="Daily card symbolic guidance preview">
+      <div className="symbolic-card-image" />
+      <span>Daily card</span>
     </div>
   );
 }
@@ -317,6 +319,8 @@ function HeroVisual() {
     <div className="hero-visual" aria-label="eLuna product mockup scene">
       <div className="scene-glow main" />
       <div className="scene-glow gold" />
+      <div className="constellation-layer hero-constellation" />
+      <div className="zodiac-halo hero-halo" />
       <div className="scene-shadow" />
       <PhoneMockup variant="daily" className="phone-main" />
       <PhoneMockup variant="sky" compact className="phone-secondary" />
@@ -329,6 +333,8 @@ function ProductProofVisual() {
   return (
     <div className="proof-scene" aria-label="eLuna product dashboard preview">
       <div className="scene-glow main" />
+      <div className="constellation-layer proof-constellation" />
+      <div className="zodiac-halo proof-halo" />
       <div className="proof-panel">
         <div className="proof-panel-top">
           <span>Today in eLuna</span>
@@ -338,7 +344,7 @@ function ProductProofVisual() {
           <div className="proof-daily">
             <p>Guidance for today</p>
             <h3>Reflect on the pattern that keeps returning.</h3>
-            <button>Open reading</button>
+            <span className="mock-cta">Open reading</span>
           </div>
           <div className="proof-side">
             <div className="proof-card small">
@@ -382,6 +388,8 @@ function FinalCta() {
         </div>
         <div className="cta-phone-scene">
           <div className="scene-glow main" />
+          <div className="constellation-layer cta-constellation" />
+          <div className="zodiac-halo cta-halo" />
           <PhoneMockup variant="sky" compact className="cta-phone-back" />
           <PhoneMockup variant="daily" compact className="cta-phone-front" />
         </div>
@@ -396,8 +404,9 @@ export default function WelcomeHeadPage() {
       <style>{`
         .welcome-head-page {
           position: relative;
+          font-family: var(--font-sans), Manrope, system-ui, sans-serif;
           background-image:
-            linear-gradient(180deg, rgba(8,5,20,.45), rgba(8,5,20,.86) 45%, #070613 100%),
+            linear-gradient(180deg, rgba(8,5,20,.35), rgba(8,5,20,.82) 45%, #070613 100%),
             url("${desktopBackgroundImage}");
           background-repeat: no-repeat;
           background-size: 100% auto;
@@ -436,11 +445,21 @@ export default function WelcomeHeadPage() {
           padding: 46px 0 84px;
         }
 
+        .hero-section h1,
+        .welcome-head-page h2 {
+          text-wrap: balance;
+        }
+
+        .welcome-head-page p {
+          text-wrap: pretty;
+        }
+
         .hero-visual,
         .proof-scene,
         .cta-phone-scene {
           position: relative;
           isolation: isolate;
+          pointer-events: none;
         }
 
         .hero-visual {
@@ -482,6 +501,67 @@ export default function WelcomeHeadPage() {
           z-index: 0;
         }
 
+        .constellation-layer,
+        .zodiac-halo {
+          position: absolute;
+          pointer-events: none;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: contain;
+          mix-blend-mode: screen;
+          z-index: 1;
+        }
+
+        .constellation-layer {
+          background-image: url("${constellationOverlayImage}");
+          opacity: .24;
+          animation: constellationDrift 18s ease-in-out infinite alternate;
+        }
+
+        .zodiac-halo {
+          background-image: url("${zodiacHaloImage}");
+          opacity: .30;
+          animation: haloRotate 42s linear infinite;
+          transform-origin: center;
+        }
+
+        .hero-constellation {
+          inset: 4% -3% 16% 6%;
+        }
+
+        .hero-halo {
+          width: 450px;
+          height: 450px;
+          right: 58px;
+          top: 46px;
+        }
+
+        .proof-constellation {
+          inset: 0 2% 8% 0;
+          opacity: .20;
+        }
+
+        .proof-halo {
+          width: 340px;
+          height: 340px;
+          left: 32px;
+          top: 30px;
+          opacity: .22;
+        }
+
+        .cta-constellation {
+          inset: 0 -6% 0 4%;
+          opacity: .22;
+        }
+
+        .cta-halo {
+          width: 300px;
+          height: 300px;
+          right: 74px;
+          top: 4px;
+          opacity: .22;
+        }
+
         .phone-mockup {
           position: relative;
           width: 274px;
@@ -495,6 +575,7 @@ export default function WelcomeHeadPage() {
             0 34px 80px rgba(0,0,0,.48),
             0 0 44px rgba(128,64,192,.18);
           z-index: 2;
+          animation: phoneFloat 7s ease-in-out infinite;
         }
 
         .phone-compact {
@@ -627,7 +708,7 @@ export default function WelcomeHeadPage() {
         }
 
         .phone-card button,
-        .proof-daily button {
+        .mock-cta {
           width: 100%;
           min-height: 34px;
           border: 0;
@@ -638,6 +719,9 @@ export default function WelcomeHeadPage() {
           font-weight: 900;
           background: linear-gradient(135deg, #8d55d6, #5a2090);
           box-shadow: 0 14px 28px rgba(90,32,144,.34);
+          display: grid;
+          place-items: center;
+          text-align: center;
         }
 
         .phone-card-grid {
@@ -686,6 +770,7 @@ export default function WelcomeHeadPage() {
           transform: rotate(7deg);
           z-index: 1;
           opacity: .95;
+          animation-delay: -1.8s;
         }
 
         .symbolic-card {
@@ -696,22 +781,38 @@ export default function WelcomeHeadPage() {
           height: 188px;
           border-radius: 24px;
           display: grid;
-          place-items: center;
-          gap: 10px;
+          align-content: end;
+          justify-items: center;
+          padding: 12px 10px 18px;
           color: var(--gold-2);
-          background:
-            radial-gradient(circle at 50% 34%, rgba(216,168,95,.16), transparent 38%),
-            linear-gradient(145deg, rgba(28,18,56,.78), rgba(8,7,22,.62));
-          border: 1px solid rgba(216,168,95,.22);
-          box-shadow: 0 24px 54px rgba(0,0,0,.36);
+          background: transparent;
+          border: 0;
+          box-shadow: none;
           transform: rotate(-9deg);
           z-index: 3;
+          animation: cardFloat 8s ease-in-out infinite;
+        }
+
+        .symbolic-card-image {
+          position: absolute;
+          inset: 0;
+          background-image: url("${symbolicCardImage}");
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: contain;
+          filter: drop-shadow(0 24px 42px rgba(0,0,0,.42)) drop-shadow(0 0 24px rgba(216,168,95,.15));
         }
 
         .symbolic-card span {
+          position: relative;
+          z-index: 2;
           color: var(--muted);
           font-size: 11px;
           font-weight: 900;
+          padding: 5px 10px;
+          border-radius: 999px;
+          background: rgba(8,7,22,.54);
+          border: 1px solid rgba(216,168,95,.16);
         }
 
         .symbolic-orbit {
@@ -786,6 +887,13 @@ export default function WelcomeHeadPage() {
           backdrop-filter: blur(14px);
           -webkit-backdrop-filter: blur(14px);
           z-index: 1;
+          transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+        }
+
+        .proof-panel:hover {
+          border-color: rgba(216,168,95,.22);
+          box-shadow: 0 30px 82px rgba(0,0,0,.34), 0 0 48px rgba(128,64,192,.10);
+          transform: translateY(-2px);
         }
 
         .proof-panel-top {
@@ -872,6 +980,7 @@ export default function WelcomeHeadPage() {
           transform: rotate(8deg) scale(.88);
           z-index: 1;
           opacity: .82;
+          animation-delay: -2.2s;
         }
 
         .cta-phone-front {
@@ -891,6 +1000,47 @@ export default function WelcomeHeadPage() {
         .feature-card {
           min-height: 158px;
           padding: 18px;
+          transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+        }
+
+        .feature-card:hover {
+          border-color: rgba(216,168,95,.22);
+          box-shadow: 0 22px 60px rgba(0,0,0,.24), 0 0 34px rgba(128,64,192,.08);
+          transform: translateY(-2px);
+        }
+
+        @keyframes phoneFloat {
+          0%, 100% { translate: 0 0; }
+          50% { translate: 0 -10px; }
+        }
+
+        @keyframes cardFloat {
+          0%, 100% { translate: 0 0; }
+          50% { translate: 0 -8px; }
+        }
+
+        @keyframes haloRotate {
+          from { rotate: 0deg; }
+          to { rotate: 360deg; }
+        }
+
+        @keyframes constellationDrift {
+          from { translate: -8px -4px; opacity: .18; }
+          to { translate: 10px 6px; opacity: .30; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .phone-mockup,
+          .symbolic-card,
+          .zodiac-halo,
+          .constellation-layer {
+            animation: none !important;
+          }
+
+          .feature-card,
+          .proof-panel {
+            transition: none !important;
+          }
         }
 
         @media (max-width: 980px) {
@@ -922,6 +1072,19 @@ export default function WelcomeHeadPage() {
           .hero-visual {
             min-height: 450px !important;
             margin-top: 4px !important;
+          }
+
+          .hero-halo {
+            width: 330px;
+            height: 330px;
+            right: 8px;
+            top: 48px;
+            opacity: .22;
+          }
+
+          .hero-constellation {
+            inset: 8% -18% 18% -8%;
+            opacity: .18;
           }
 
           .phone-main {
@@ -962,6 +1125,13 @@ export default function WelcomeHeadPage() {
             min-height: 520px;
           }
 
+          .proof-halo {
+            width: 260px;
+            height: 260px;
+            left: 18px;
+            top: 42px;
+          }
+
           .proof-panel {
             margin-top: 18px;
             padding: 16px;
@@ -979,6 +1149,12 @@ export default function WelcomeHeadPage() {
 
           .cta-phone-scene {
             min-height: 230px !important;
+          }
+
+          .cta-halo {
+            width: 220px;
+            height: 220px;
+            right: 42px;
           }
 
           .cta-phone-front {
