@@ -224,8 +224,11 @@ function VisualFrame({
   aspectRatio,
   priority = false,
   objectPosition = "center",
+  objectFit = "cover",
   imageTransform,
   overlay = "linear-gradient(90deg, rgba(7,8,22,.42), transparent 40%), linear-gradient(180deg, transparent 52%, rgba(7,8,22,.72))",
+  insetShadow = "inset 0 1px 0 rgba(255,255,255,.10), inset 0 -80px 100px rgba(7,8,22,.45)",
+  mask = true,
   children,
 }: {
   src: string;
@@ -233,23 +236,26 @@ function VisualFrame({
   aspectRatio: string;
   priority?: boolean;
   objectPosition?: string;
+  objectFit?: "cover" | "contain";
   imageTransform?: string;
   overlay?: string;
+  insetShadow?: string;
+  mask?: boolean;
   children?: ReactNode;
 }) {
   return (
-    <div style={{ position: "relative", aspectRatio, width: "100%", borderRadius: 34, overflow: "hidden", border: "1px solid rgba(216,168,95,.22)", background: "linear-gradient(145deg, rgba(17,12,38,.92), rgba(8,7,22,.80))", boxShadow: "0 34px 90px rgba(0,0,0,.46), 0 0 70px rgba(128,64,192,.18)", maskImage: "linear-gradient(180deg, transparent 0%, #000 7%, #000 91%, transparent 100%)", WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 7%, #000 91%, transparent 100%)" }}>
+    <div style={{ position: "relative", aspectRatio, width: "100%", borderRadius: 34, overflow: "hidden", border: "1px solid rgba(216,168,95,.22)", background: "radial-gradient(circle at 50% 42%, rgba(128,64,192,.16), transparent 58%), linear-gradient(145deg, rgba(17,12,38,.92), rgba(8,7,22,.80))", boxShadow: "0 34px 90px rgba(0,0,0,.42), 0 0 70px rgba(128,64,192,.18)", maskImage: mask ? "linear-gradient(180deg, transparent 0%, #000 7%, #000 91%, transparent 100%)" : undefined, WebkitMaskImage: mask ? "linear-gradient(180deg, transparent 0%, #000 7%, #000 91%, transparent 100%)" : undefined }}>
       <Image
         src={src}
         alt={alt}
         fill
         priority={priority}
         sizes="(max-width: 760px) 92vw, 48vw"
-        style={{ objectFit: "cover", objectPosition, transform: imageTransform }}
+        style={{ objectFit, objectPosition, transform: imageTransform }}
       />
       <div style={{ position: "absolute", inset: 0, background: overlay }} />
-      <div style={{ position: "absolute", inset: 0, boxShadow: "inset 0 1px 0 rgba(255,255,255,.10), inset 0 -80px 100px rgba(7,8,22,.45)" }} />
-      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 18% 12%, rgba(255,255,255,.10), transparent 22%), linear-gradient(135deg, rgba(216,168,95,.10), transparent 30%, rgba(141,85,214,.10) 76%, transparent)" }} />
+      <div style={{ position: "absolute", inset: 0, boxShadow: insetShadow }} />
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 18% 12%, rgba(255,255,255,.06), transparent 24%), linear-gradient(135deg, rgba(216,168,95,.06), transparent 34%, rgba(141,85,214,.07) 76%, transparent)" }} />
       {children}
     </div>
   );
@@ -268,24 +274,26 @@ function FloatingLabel({ label, icon, style }: { label: string; icon: string; st
 
 function HeroVisual() {
   return (
-    <div style={{ position: "relative", width: "min(100%, 520px)", margin: "0 auto", padding: "10px 0" }}>
-      <div style={{ position: "absolute", inset: "4% -8% 8% 4%", borderRadius: 54, background: "radial-gradient(circle at 50% 42%, rgba(141,85,214,.30), transparent 62%), radial-gradient(circle at 72% 72%, rgba(216,168,95,.18), transparent 52%)", filter: "blur(18px)" }} />
+    <div style={{ position: "relative", width: "min(100%, 590px)", maxHeight: 620, margin: "0 auto", padding: "8px 0" }}>
+      <div style={{ position: "absolute", inset: "7% -5% 10% 0", borderRadius: 56, background: "radial-gradient(circle at 50% 42%, rgba(141,85,214,.34), transparent 60%), radial-gradient(circle at 70% 70%, rgba(216,168,95,.16), transparent 54%)", filter: "blur(20px)" }} />
       <VisualFrame
         src={heroVisualImage}
         alt="eLuna app preview with daily reflection screens"
-        aspectRatio="4 / 5"
+        aspectRatio="1 / 1.08"
         priority
-        objectPosition="center 50%"
-        imageTransform="scale(1.18) translateY(2%)"
-        overlay="linear-gradient(90deg, rgba(7,8,22,.38), transparent 46%), linear-gradient(180deg, rgba(7,8,22,.08), transparent 42%, rgba(7,8,22,.72))"
+        objectFit="contain"
+        objectPosition="center center"
+        imageTransform="scale(.98)"
+        overlay="linear-gradient(90deg, rgba(7,8,22,.12), transparent 34%, rgba(7,8,22,.08)), linear-gradient(180deg, rgba(7,8,22,.04), transparent 64%, rgba(7,8,22,.18))"
+        insetShadow="inset 0 1px 0 rgba(255,255,255,.10), inset 0 -18px 42px rgba(7,8,22,.20)"
+        mask={false}
       >
-        <div style={{ position: "absolute", left: 18, right: 18, bottom: 18, display: "grid", gap: 8, padding: 16, borderRadius: 24, background: "linear-gradient(145deg, rgba(7,8,22,.76), rgba(24,16,49,.64))", border: "1px solid rgba(255,255,255,.10)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}>
+        <div style={{ position: "absolute", left: 18, bottom: 18, display: "grid", gap: 6, width: "min(68%, 330px)", padding: "12px 14px", borderRadius: 20, background: "linear-gradient(145deg, rgba(7,8,22,.66), rgba(24,16,49,.52))", border: "1px solid rgba(255,255,255,.10)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)" }}>
           <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".14em", textTransform: "uppercase" }}>Today in eLuna</p>
-          <h2 style={{ color: "var(--text)", fontFamily: "var(--font-display)", fontSize: "clamp(22px, 3vw, 30px)", lineHeight: 1.04, fontWeight: 600 }}>Guidance, cards, and reflection in one account</h2>
-          <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.55 }}>A real digital subscription experience for daily symbolic self-reflection.</p>
+          <h2 style={{ color: "var(--text)", fontFamily: "var(--font-display)", fontSize: "clamp(18px, 2.2vw, 23px)", lineHeight: 1.08, fontWeight: 600 }}>Guidance, cards, and reflection</h2>
         </div>
-        <FloatingLabel label="Daily reading" icon="moon" style={{ left: -8, top: "12%" }} />
-        <FloatingLabel label="Sky Map" icon="orbit" style={{ right: -4, top: "30%" }} />
+        <FloatingLabel label="Daily reading" icon="moon" style={{ left: 16, top: "10%" }} />
+        <FloatingLabel label="Sky Map" icon="orbit" style={{ right: 16, bottom: "18%" }} />
       </VisualFrame>
     </div>
   );
@@ -293,16 +301,19 @@ function HeroVisual() {
 
 function FeatureCollage() {
   return (
-    <div style={{ position: "relative" }}>
-      <div style={{ position: "absolute", inset: "12% 4% -8% -4%", borderRadius: 36, background: "radial-gradient(circle, rgba(128,64,192,.20), transparent 65%)", filter: "blur(14px)" }} />
-      <VisualFrame
-        src={featureCollageImage}
-        alt="eLuna product feature collage"
-        aspectRatio="5 / 4"
-        objectPosition="center 52%"
-        overlay="linear-gradient(90deg, rgba(7,8,22,.18), rgba(7,8,22,.08) 45%, rgba(7,8,22,.48)), linear-gradient(180deg, transparent 42%, rgba(7,8,22,.76))"
-      >
-      <div style={{ position: "absolute", left: 18, right: 18, bottom: 18, display: "flex", flexWrap: "wrap", gap: 9 }}>
+    <div style={{ position: "relative", width: "min(100%, 560px)", margin: "0 auto" }}>
+      <div style={{ position: "absolute", inset: "10% -6% -8%", borderRadius: 38, background: "radial-gradient(circle at 48% 48%, rgba(128,64,192,.22), transparent 62%), radial-gradient(circle at 72% 70%, rgba(216,168,95,.12), transparent 55%)", filter: "blur(16px)" }} />
+      <div style={{ position: "relative", aspectRatio: "4 / 3", borderRadius: 30, overflow: "hidden", padding: 18, border: "1px solid rgba(255,255,255,.10)", background: "radial-gradient(circle at 50% 30%, rgba(128,64,192,.16), transparent 56%), linear-gradient(145deg, rgba(18,12,42,.92), rgba(8,7,22,.82))", boxShadow: "0 28px 74px rgba(0,0,0,.36), 0 0 54px rgba(128,64,192,.16)" }}>
+        <Image
+          src={featureCollageImage}
+          alt="eLuna product feature collage"
+          fill
+          sizes="(max-width: 760px) 92vw, 46vw"
+          style={{ objectFit: "contain", objectPosition: "center center", padding: 18 }}
+        />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,22,.06), transparent 58%, rgba(7,8,22,.18))" }} />
+        <div style={{ position: "absolute", inset: 0, boxShadow: "inset 0 1px 0 rgba(255,255,255,.10), inset 0 -24px 50px rgba(7,8,22,.18)" }} />
+      <div style={{ position: "absolute", left: 18, right: 18, bottom: 16, display: "flex", flexWrap: "wrap", gap: 8 }}>
         {[
           ["Daily guidance", "moon"],
           ["Symbolic insight", "card"],
@@ -314,15 +325,15 @@ function FeatureCollage() {
           </span>
         ))}
       </div>
-      </VisualFrame>
+      </div>
     </div>
   );
 }
 
 function FinalCta() {
   return (
-    <section style={{ position: "relative", overflow: "hidden", borderRadius: 34, border: "1px solid rgba(216,168,95,.24)", background: "radial-gradient(circle at 78% 50%, rgba(141,85,214,.28), transparent 32%), linear-gradient(135deg, rgba(20,13,47,.96), rgba(8,7,22,.92))", boxShadow: "0 28px 80px rgba(0,0,0,.34)", margin: "36px 0 18px" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))", gap: 24, alignItems: "center", padding: "clamp(24px, 5vw, 42px)" }}>
+    <section style={{ position: "relative", overflow: "hidden", borderRadius: 34, border: "1px solid rgba(216,168,95,.24)", background: "radial-gradient(circle at 78% 50%, rgba(141,85,214,.24), transparent 34%), linear-gradient(135deg, rgba(20,13,47,.96), rgba(8,7,22,.92))", boxShadow: "0 28px 80px rgba(0,0,0,.34)", margin: "28px 0 18px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))", gap: 18, alignItems: "center", padding: "clamp(24px, 5vw, 40px)" }}>
         <div style={{ display: "grid", gap: 14, maxWidth: 560, position: "relative", zIndex: 2 }}>
           <p style={{ color: "var(--gold)", fontSize: 11, fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" }}>Start with a free preview</p>
           <h2 style={{ color: "var(--text)", fontFamily: "var(--font-display)", fontSize: "clamp(32px, 5vw, 52px)", lineHeight: 1.04, fontWeight: 600 }}>Start your eLuna journey today</h2>
@@ -335,24 +346,26 @@ function FinalCta() {
             </a>
           </div>
         </div>
-        <div style={{ position: "relative", minHeight: 260, overflow: "hidden", borderRadius: 30 }}>
-          <div style={{ position: "absolute", inset: "4% -4% -2% 0", borderRadius: 44, background: "radial-gradient(circle at 58% 54%, rgba(216,168,95,.22), transparent 54%), radial-gradient(circle at 42% 40%, rgba(141,85,214,.34), transparent 62%)", filter: "blur(18px)" }} />
-          <div style={{ position: "relative", width: "100%", height: "100%", minHeight: 260 }}>
+        <div style={{ position: "relative", minHeight: 300, overflow: "hidden", borderRadius: 30, border: "1px solid rgba(255,255,255,.08)", background: "rgba(255,255,255,.035)" }}>
+          <div style={{ position: "absolute", inset: "8% -2% 0 4%", borderRadius: 44, background: "radial-gradient(circle at 58% 54%, rgba(216,168,95,.18), transparent 54%), radial-gradient(circle at 44% 42%, rgba(141,85,214,.30), transparent 62%)", filter: "blur(18px)" }} />
+          <div style={{ position: "relative", width: "100%", height: 300, overflow: "hidden" }}>
             <Image
               src={finalCtaImage}
               alt="eLuna app screens preview"
-              fill
+              width={760}
+              height={950}
               sizes="(max-width: 760px) 86vw, 42vw"
               style={{
-                objectFit: "cover",
-                objectPosition: "center 48%",
-                transform: "scale(1.10) translate(4%, 2%)",
+                display: "block",
+                width: "112%",
+                maxWidth: "none",
+                height: "auto",
+                marginLeft: "-7%",
+                transform: "translateY(-10%)",
                 filter: "drop-shadow(0 28px 52px rgba(0,0,0,.42))",
-                maskImage: "radial-gradient(ellipse at 58% 50%, #000 0%, #000 58%, transparent 82%)",
-                WebkitMaskImage: "radial-gradient(ellipse at 58% 50%, #000 0%, #000 58%, transparent 82%)",
               }}
             />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(12,8,29,.68), transparent 45%), linear-gradient(180deg, transparent 58%, rgba(12,8,29,.62))" }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(12,8,29,.18), transparent 38%), linear-gradient(180deg, transparent 74%, rgba(12,8,29,.22))" }} />
             <div style={{ position: "absolute", right: 12, bottom: 12, width: "min(58%, 260px)", height: 1, background: "linear-gradient(90deg, transparent, rgba(216,168,95,.52), transparent)" }} />
           </div>
         </div>
@@ -383,7 +396,7 @@ export default function WelcomeHeadPage() {
           </a>
         </header>
 
-        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 430px), 1fr))", gap: 48, alignItems: "center", padding: "44px 0 58px" }}>
+        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 430px), 1fr))", gap: 38, alignItems: "center", padding: "34px 0 48px" }}>
           <div style={{ display: "grid", gap: 19, maxWidth: 660 }}>
             <p style={{ color: "var(--gold)", fontSize: 11, fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" }}>ELUNA DIGITAL SUBSCRIPTION APP</p>
             <h1 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: "clamp(42px, 5.7vw, 70px)", fontWeight: 600, lineHeight: 1.03, maxWidth: 640 }}>
@@ -417,7 +430,7 @@ export default function WelcomeHeadPage() {
           </div>
         </section>
 
-        <section id="product" style={{ padding: "42px 0" }}>
+        <section id="product" style={{ padding: "36px 0", scrollMarginTop: 24 }}>
           <SectionHeader
             eyebrow="Product"
             title="What is eLuna?"
@@ -435,7 +448,7 @@ export default function WelcomeHeadPage() {
           </div>
         </section>
 
-        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 390px), 1fr))", gap: 34, alignItems: "center", padding: "40px 0 58px" }}>
+        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 390px), 1fr))", gap: 30, alignItems: "center", padding: "34px 0 46px" }}>
           <FeatureCollage />
           <div>
             <SectionHeader eyebrow="Product proof" title="Your daily reflection space, all in one app" body="The public landing shows how eLuna delivers a real digital experience: daily guidance, structured personal insight, and a journal-friendly rhythm." />
@@ -453,7 +466,7 @@ export default function WelcomeHeadPage() {
           </div>
         </section>
 
-        <section id="how-it-works" style={{ padding: "34px 0 48px" }}>
+        <section id="how-it-works" style={{ padding: "30px 0 42px", scrollMarginTop: 24 }}>
           <SectionHeader eyebrow="How it works" title="Digital access in four steps" centered />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 230px), 1fr))", gap: 14 }}>
             {steps.map(([title, body], index) => (
@@ -472,7 +485,7 @@ export default function WelcomeHeadPage() {
           </p>
         </section>
 
-        <section id="pricing" style={{ padding: "42px 0" }}>
+        <section id="pricing" style={{ padding: "36px 0", scrollMarginTop: 24 }}>
           <SectionHeader eyebrow="Pricing" title="Simple digital subscription pricing" body="Create an account first. Paid access is only activated after subscription checkout is available and completed." centered />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: 16, alignItems: "stretch" }}>
             {plans.slice(0, 3).map((plan) => (
@@ -490,7 +503,7 @@ export default function WelcomeHeadPage() {
           </p>
         </section>
 
-        <section style={{ padding: "42px 0" }}>
+        <section style={{ padding: "34px 0" }}>
           <SectionHeader eyebrow="Trust and policies" title="Digital delivery, support, cancellation, and refunds" centered />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 245px), 1fr))", gap: 14 }}>
             {complianceCards.map((card) => (
@@ -505,7 +518,7 @@ export default function WelcomeHeadPage() {
           </div>
         </section>
 
-        <section id="faq" style={{ padding: "36px 0 44px" }}>
+        <section id="faq" style={{ padding: "30px 0 38px", scrollMarginTop: 24 }}>
           <SectionHeader eyebrow="FAQ" title="Clear answers for a digital subscription" centered />
           <div style={{ display: "grid", gap: 10, width: "min(100%, 900px)", margin: "0 auto" }}>
             {faqs.map(([question, answer]) => (
@@ -521,7 +534,7 @@ export default function WelcomeHeadPage() {
 
         <FinalCta />
 
-        <section id="contact" style={{ ...glassPanel, padding: "26px 24px", margin: "16px 0 26px" }}>
+        <section id="contact" style={{ ...glassPanel, padding: "26px 24px", margin: "16px 0 26px", scrollMarginTop: 24 }}>
           <SectionHeader eyebrow="Company details" title="Official contact and business details" body="These details are visible for customers and payment review and should match the Stripe account." />
           <dl style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 12, margin: 0 }}>
             {[
