@@ -363,39 +363,37 @@ export default function WelcomeHeadPage() {
       <style>{`
         .welcome-head-page {
           position: relative;
+          isolation: isolate;
           font-family: var(--font-sans), Manrope, system-ui, sans-serif;
-          background-image:
-            linear-gradient(180deg, rgba(7,4,18,.58), rgba(7,4,18,.78) 48%, #070613 100%),
-            url("${desktopBackgroundImage}");
-          background-repeat: no-repeat;
+          background-color: #070613;
+          background-image: none;
+        }
+
+        .welcome-head-bg {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          background-image: url("${desktopBackgroundImage}");
           background-size: cover;
           background-position: center top;
-          background-attachment: scroll;
+          background-repeat: no-repeat;
+          opacity: .95;
         }
 
-        .welcome-head-page::before,
-        .welcome-head-page::after {
+        .welcome-head-bg::after {
           content: "";
           position: absolute;
-          pointer-events: none;
-          z-index: 1;
-        }
-
-        .welcome-head-page::before {
           inset: 0;
           background:
-            radial-gradient(circle at 70% 16%, rgba(137,78,214,.20), transparent 28%),
-            radial-gradient(circle at 16% 44%, rgba(48,64,132,.12), transparent 30%),
-            radial-gradient(circle at 86% 72%, rgba(216,168,95,.08), transparent 26%),
-            linear-gradient(180deg, rgba(7,6,19,.08) 0%, rgba(7,6,19,.34) 36%, rgba(7,6,19,.86) 100%);
+            linear-gradient(180deg, rgba(7,4,18,.24) 0%, rgba(7,4,18,.42) 45%, rgba(7,4,18,.72) 100%),
+            radial-gradient(circle at 25% 20%, rgba(142,83,255,.18), transparent 34%),
+            radial-gradient(circle at 78% 35%, rgba(214,168,88,.12), transparent 30%);
         }
 
-        .welcome-head-page::after {
-          top: 620px;
-          left: 0;
-          right: 0;
-          height: 480px;
-          background: linear-gradient(180deg, rgba(7,6,19,0), rgba(7,6,19,.88) 58%, rgba(7,6,19,0));
+        .welcome-head-content {
+          position: relative;
+          z-index: 1;
         }
 
         .hero-section {
@@ -1190,20 +1188,15 @@ export default function WelcomeHeadPage() {
         }
 
         @media (max-width: 760px) {
-          .welcome-head-page {
-            background-image:
-              linear-gradient(180deg, rgba(7,4,18,.64), rgba(7,4,18,.82) 48%, #070613 100%),
-              url("${mobileBackgroundImage}");
-            background-size: cover;
+          .welcome-head-bg {
+            background-image: url("${mobileBackgroundImage}");
             background-position: center top;
-            background-attachment: scroll;
+            opacity: .95;
           }
 
-          .welcome-head-page::before {
+          .welcome-head-bg::after {
             background:
-              radial-gradient(circle at 54% 18%, rgba(137,78,214,.17), transparent 40%),
-              radial-gradient(circle at 20% 54%, rgba(48,64,132,.10), transparent 32%),
-              linear-gradient(180deg, rgba(7,6,19,.12) 0%, rgba(7,6,19,.52) 45%, rgba(7,6,19,.91) 100%);
+              linear-gradient(180deg, rgba(7,4,18,.36) 0%, rgba(7,4,18,.56) 50%, rgba(7,4,18,.82) 100%);
           }
 
           .hero-section {
@@ -1383,7 +1376,9 @@ export default function WelcomeHeadPage() {
         }
       `}</style>
 
-      <div style={pageWrap}>
+      <div className="welcome-head-bg" aria-hidden="true" />
+
+      <div className="welcome-head-content" style={pageWrap}>
         <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18, padding: "22px 0", position: "relative", zIndex: 3 }}>
           <Link href="/" aria-label="eLuna home" style={{ textDecoration: "none" }}>
             <Logo variant="header" priority />
