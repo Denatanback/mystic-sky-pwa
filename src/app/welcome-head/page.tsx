@@ -365,11 +365,12 @@ export default function WelcomeHeadPage() {
           position: relative;
           font-family: var(--font-sans), Manrope, system-ui, sans-serif;
           background-image:
-            linear-gradient(180deg, rgba(8,5,20,.35), rgba(8,5,20,.82) 45%, #070613 100%),
+            linear-gradient(180deg, rgba(7,4,18,.74), rgba(7,4,18,.90) 48%, #070613 100%),
             url("${desktopBackgroundImage}");
           background-repeat: no-repeat;
-          background-size: 100% auto;
-          background-position: top center;
+          background-size: cover;
+          background-position: center top;
+          background-attachment: scroll;
         }
 
         .welcome-head-page::before,
@@ -383,9 +384,10 @@ export default function WelcomeHeadPage() {
         .welcome-head-page::before {
           inset: 0;
           background:
-            radial-gradient(circle at 73% 18%, rgba(137,78,214,.22), transparent 26%),
-            radial-gradient(circle at 87% 70%, rgba(216,168,95,.10), transparent 24%),
-            linear-gradient(180deg, transparent 0%, rgba(7,6,19,.34) 38%, rgba(7,6,19,.92) 100%);
+            radial-gradient(circle at 70% 16%, rgba(137,78,214,.20), transparent 28%),
+            radial-gradient(circle at 16% 44%, rgba(48,64,132,.12), transparent 30%),
+            radial-gradient(circle at 86% 72%, rgba(216,168,95,.08), transparent 26%),
+            linear-gradient(180deg, rgba(7,6,19,.12) 0%, rgba(7,6,19,.48) 36%, rgba(7,6,19,.94) 100%);
         }
 
         .welcome-head-page::after {
@@ -1190,16 +1192,18 @@ export default function WelcomeHeadPage() {
         @media (max-width: 760px) {
           .welcome-head-page {
             background-image:
-              linear-gradient(180deg, rgba(8,5,20,.34), rgba(8,5,20,.82) 42%, #070613 100%),
+              linear-gradient(180deg, rgba(7,4,18,.78), rgba(7,4,18,.90) 48%, #070613 100%),
               url("${mobileBackgroundImage}");
-            background-size: 100% auto;
-            background-position: top center;
+            background-size: cover;
+            background-position: center top;
+            background-attachment: scroll;
           }
 
           .welcome-head-page::before {
             background:
-              radial-gradient(circle at 55% 21%, rgba(137,78,214,.18), transparent 38%),
-              linear-gradient(180deg, transparent 0%, rgba(7,6,19,.62) 44%, rgba(7,6,19,.96) 100%);
+              radial-gradient(circle at 54% 18%, rgba(137,78,214,.17), transparent 40%),
+              radial-gradient(circle at 20% 54%, rgba(48,64,132,.10), transparent 32%),
+              linear-gradient(180deg, rgba(7,6,19,.18) 0%, rgba(7,6,19,.68) 45%, rgba(7,6,19,.97) 100%);
           }
 
           .hero-section {
