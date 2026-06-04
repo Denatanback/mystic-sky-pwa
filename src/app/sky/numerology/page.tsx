@@ -15,7 +15,7 @@ export default function NumerologyPathPage() {
     { num: 7, label: "Master-chisla",    sub: "Sila",            desc: "Osobye vibratsii 11, 22, 33 i ikh znachenie v tvoey karte",       status: "locked",  emblem: "/assets/node-emblems/numerology/emblem-7-master-number.png",     x: 47, y:  8 },
     { num: 8, label: "Lichnyy kod",      sub: "Tselostnost",     desc: "Sintez vsekh chisel — tvoya polnaya numerologicheskaya kartina",     status: "locked",  emblem: "/assets/node-emblems/numerology/emblem-8-personal-code.png",     x: 80, y: 11 },
   ] : [
-    { num: 1, label: "Life Path",       sub: "Foundation",      desc: "Your destiny number — the core vibration of your life path",   status: "done",    emblem: "/assets/node-emblems/numerology/emblem-1-path-number.png",      x: 50, y: 82 },
+    { num: 1, label: "Life Path",       sub: "Foundation",      desc: "Your reflection number — the core vibration of your life path", status: "done",    emblem: "/assets/node-emblems/numerology/emblem-1-path-number.png",      x: 50, y: 82 },
     { num: 2, label: "Soul Number",     sub: "Inner world",     desc: "Intuition, desires and your inner voice",                      status: "current", emblem: "/assets/node-emblems/numerology/emblem-2-soul-number.png",      x: 21, y: 64 },
     { num: 3, label: "Personality",     sub: "Outer image",     desc: "How the world perceives you",                                 status: "locked",  emblem: "/assets/node-emblems/numerology/emblem-3-personality-number.png", x: 73, y: 64 },
     { num: 4, label: "Matrix",          sub: "Potential",       desc: "Pythagoras square — a map of your hidden possibilities",      status: "locked",  emblem: "/assets/node-emblems/numerology/emblem-4-matrix.png",            x: 18, y: 40 },

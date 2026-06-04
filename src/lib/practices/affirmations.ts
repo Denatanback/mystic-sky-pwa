@@ -148,7 +148,7 @@ export const affirmationCategories: AffirmationCategory[] = [
   },
   {
     id: "past-life",
-    title: "Past-life healing",
+    title: "Past-life reflection",
     description: "Release repeating emotional patterns and soften old soul imprints.",
     whenToUse: "Use this when a fear, attachment, or reaction feels older than the current situation.",
     emotionalBenefit: "Release, forgiveness, emotional freedom, and deeper self-understanding.",

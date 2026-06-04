@@ -107,7 +107,7 @@ export const SUN_TRAITS: Record<string, SunTraitCards> = {
     { title: { en: "Witty", ru: "Ostroumnyy" }, body: { en: "Words are your playground — quick, bright, and endlessly entertaining.", ru: "Slova — tvoya igrovaya ploschadka: bystrye, yarkie, beskonechno zanimatelnye." } },
   ],
   cancer:      [
-    { title: { en: "Nurturing", ru: "Zabotlivyy" }, body: { en: "You carry the warmth of home wherever you go, healing those around you.", ru: "Ty nesesh teplo doma vezde, kuda idesh, istselyaya okruzhayuschikh." } },
+    { title: { en: "Nurturing", ru: "Zabotlivyy" }, body: { en: "You carry the warmth of home wherever you go, supporting those around you.", ru: "Ty nesesh teplo doma vezde, kuda idesh, podderzhivaya okruzhayuschikh." } },
     { title: { en: "Intuitive", ru: "Intuitivnyy" }, body: { en: "You sense the unspoken — emotions, moods, needs others can't express.", ru: "Ty chuvstvuesh nevyskazannoe — emotsii, nastroeniya, potrebnosti drugikh." } },
     { title: { en: "Protective", ru: "Zaschitnik" }, body: { en: "Your love creates a sanctuary. Those close to you feel truly safe.", ru: "Tvoya lyubov sozdaet ubezhische. Te, kto ryadom, chuvstvuyut sebya v bezopasnosti." } },
   ],

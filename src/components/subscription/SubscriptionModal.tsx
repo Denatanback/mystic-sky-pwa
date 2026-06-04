@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { GLOBAL_DISCLAIMER } from "@/lib/legal/legalContent";
 import { useEntitlements } from "@/lib/subscription/entitlements";
 
 type PlanId = "free" | "trial_3_day_1_usd" | "premium_monthly_2999" | "premium_3_month_5999" | "premium_6_month_8999";
@@ -52,24 +53,24 @@ const plans: Array<{
 }> = [
   {
     id: "trial_3_day_1_usd",
-    label: "3-day trial",
+    label: "3-day intro access",
     badge: "Best start",
-    price: "$1.00 today",
-    billingNote: "Full access for 3 days. Then $29.99/month unless canceled. Cancel anytime before day 3.",
-    trustNote: "No hidden charges before your trial ends.",
+    price: "$1.00 USD today",
+    billingNote: "Full access for 3 days. Then automatically renews at $29.99 USD/month unless canceled before day 3.",
+    trustNote: "Digital subscription. No physical goods are shipped.",
     description: "Try the full eLuna experience and unlock your first deeper readings.",
     includes: ["Full daily readings", "Daily card and symbols", "Past-life signal preview", "Practices and affirmations", "Sky Map progression", "Weekly soul report preview"],
-    cta: "Start 3-day trial",
+    cta: "Start 3-day access",
   },
   {
     id: "premium_6_month_8999",
     label: "6-Month Premium",
     badge: "Maximum savings",
-    price: "$89.99 every 6 months",
-    equivalent: "$14.99/month equivalent",
+    price: "$89.99 USD every 6 months",
+    equivalent: "$14.99 USD/month equivalent",
     valueLabel: "Save 50%",
     savingsText: "Save $89.95 vs monthly",
-    comparison: { monthly: "$179.94", price: "$89.99", savings: "$89.95" },
+    comparison: { monthly: "$179.94 USD", price: "$89.99 USD", savings: "$89.95 USD" },
     description: "Deep transformation plan.",
     includes: ["Full daily readings", "Full practice library", "Personal chart insights", "Past-life insights", "Relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
     cta: "Choose 6 Months",
@@ -78,11 +79,11 @@ const plans: Array<{
     id: "premium_3_month_5999",
     label: "3-Month Premium",
     badge: "Best value",
-    price: "$59.99 every 3 months",
-    equivalent: "$19.99/month equivalent",
+    price: "$59.99 USD every 3 months",
+    equivalent: "$19.99 USD/month equivalent",
     valueLabel: "Save 33%",
     savingsText: "Save $29.98 vs monthly",
-    comparison: { monthly: "$89.97", price: "$59.99", savings: "$29.98" },
+    comparison: { monthly: "$89.97 USD", price: "$59.99 USD", savings: "$29.98 USD" },
     description: "Best value for starting your path.",
     includes: ["Full daily readings", "Full practice library", "Personal chart insights", "Past-life insights", "Relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
     cta: "Choose 3 Months",
@@ -90,7 +91,7 @@ const plans: Array<{
   {
     id: "premium_monthly_2999",
     label: "Monthly Premium",
-    price: "$29.99/month",
+    price: "$29.99 USD/month",
     equivalent: "Flexible monthly access",
     description: "Continue your path with deeper insights and monthly reports.",
     includes: ["Unlimited daily readings", "Full practice library", "Personal chart insights", "Past-life and relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
@@ -99,7 +100,7 @@ const plans: Array<{
   {
     id: "free",
     label: "Free",
-    price: "$0",
+    price: "$0 USD",
     description: "Stay with the preview experience and keep basic daily guidance.",
     includes: ["Basic daily guidance preview", "1 daily card per day", "1 active affirmation", "Starter Sky Map preview"],
     cta: "Current plan",
@@ -200,7 +201,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
             <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 7 }}>{contextTitle ?? "Subscription"}</p>
             <h2 id="subscription-title" style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 8 }}>{contextTitle ?? "Unlock your full eLuna path"}</h2>
             <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>
-              {contextDescription ?? "Start with 3 days of full access for $1. Open deeper readings, premium practices, and the parts of your Sky Map that stay locked on Free."}
+              {contextDescription ?? "Start with 3 days of full access for $1.00 USD. Open deeper readings, premium practices, and the parts of your Sky Map that stay locked on Free."}
             </p>
           </div>
           <button type="button" onClick={onClose} aria-label="Close" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(255,255,255,.1)", background: "rgba(255,255,255,.06)", color: "var(--muted-2)", display: "grid", placeItems: "center", cursor: "pointer", flexShrink: 0 }}>×</button>
@@ -246,7 +247,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
               {freePreview.map((item) => <p key={item} style={{ color: "var(--muted)", fontSize: 11, lineHeight: 1.45, marginTop: 5 }}>• {item}</p>)}
             </div>
             <div>
-              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 8 }}>Trial unlocks</p>
+              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 8 }}>Intro access unlocks</p>
               {trialUnlocks.map((item) => <p key={item} style={{ color: "var(--text)", fontSize: 11, lineHeight: 1.45, marginTop: 5 }}>• {item}</p>)}
             </div>
           </div>
@@ -271,7 +272,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
             return (
               <div key={plan.id} style={{ display: "grid", gap: 8 }}>
                 {index === 0 && <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", margin: "2px 0 0" }}>All plans</p>}
-                {index === 1 && <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", margin: "4px 0 0" }}>Continue after trial</p>}
+                {index === 1 && <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", margin: "4px 0 0" }}>Continue after intro access</p>}
                 <article style={{ border: `1px solid ${borderColor}`, borderRadius: isTrial || isLongPlan ? 22 : 18, background, padding: compact ? 13 : 15, boxShadow: isSixMonth ? "0 0 22px rgba(216,168,95,.14)" : isLongPlan || isTrial ? "0 0 16px rgba(216,168,95,.08)" : "none" }}>
                   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
                     <div>
@@ -313,7 +314,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
                   </button>
                   {isTrial && (
                     <p style={{ color: "var(--muted-2)", fontSize: 10.5, lineHeight: 1.45, textAlign: "center", marginTop: 8 }}>
-                      Trial and subscription terms are governed by{" "}
+                      By starting paid access, you agree that after the 3-day introductory access, eLuna will automatically renew at $29.99 USD/month unless you cancel before day 3. Terms are governed by{" "}
                       <Link href={legalHref("/billing")} target="_blank" style={{ color: "var(--gold-2)", fontWeight: 900, textDecoration: "none" }}>
                         Billing Terms
                       </Link>
@@ -341,7 +342,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
           </div>
           {!hasPaidAccess && (
             <button type="button" onClick={() => choosePlan("trial_3_day_1_usd")} style={{ width: "100%", height: 42, borderRadius: 999, border: "1px solid rgba(216,168,95,.30)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", fontSize: 13, fontWeight: 900, fontFamily: "var(--font-ui)", cursor: "pointer", marginTop: 12 }}>
-              Unlock with 3-day trial
+              Unlock with 3-day access
             </button>
           )}
         </section>
@@ -351,12 +352,13 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
           {["New daily guidance every day", "Unlock deeper parts of your Sky Map", "Build your practice streak", "Receive weekly and monthly soul reports"].map((item) => (
             <p key={item} style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.45, marginTop: 5 }}>• {item}</p>
           ))}
-          <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, marginTop: 12 }}>Your plan can be managed from your account settings.</p>
+          <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, marginTop: 12 }}>Digital subscription. No physical goods are shipped. Cancel before renewal by contacting support.</p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 10 }}>
             {[
               ["Terms of Use", legalHref("/terms")],
               ["Billing Terms", legalHref("/billing")],
-              ["Money-Back Policy", legalHref("/money-back")],
+              ["Refund Policy", legalHref("/money-back")],
+              ["Cancellation Policy", legalHref("/cancellation")],
               ["Privacy Policy", legalHref("/privacy")],
             ].map(([label, href]) => (
               <Link key={label} href={href} target="_blank" style={{ color: "var(--gold-2)", fontSize: 11, fontWeight: 800, textDecoration: "none" }}>{label}</Link>
@@ -368,6 +370,9 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
               {SUPPORT_EMAIL}
             </a>
             {" "}first for the fastest help.
+          </p>
+          <p style={{ color: "var(--muted-2)", fontSize: 10.5, lineHeight: 1.45, marginTop: 10 }}>
+            {GLOBAL_DISCLAIMER}
           </p>
         </section>
       </section>

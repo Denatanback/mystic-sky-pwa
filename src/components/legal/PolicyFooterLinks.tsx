@@ -12,6 +12,7 @@ const links = [
   { label: "Refund", href: "/money-back" },
   { label: "Cancellation", href: "/cancellation" },
   { label: "Delivery", href: "/delivery" },
+  { label: "Support", href: "/support" },
 ];
 
 function legalHref(path: string, returnTo: string) {

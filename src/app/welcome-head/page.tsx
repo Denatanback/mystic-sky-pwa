@@ -3,7 +3,15 @@ import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
-import { SUPPORT_EMAIL_ADDRESS } from "@/lib/legal/legalContent";
+import {
+  COMPANY_COUNTRY,
+  COMPANY_REGISTRATION_NUMBER,
+  GLOBAL_DISCLAIMER,
+  LEGAL_ENTITY_ADDRESS,
+  LEGAL_ENTITY_NAME,
+  SUPPORT_EMAIL_ADDRESS,
+  WEBSITE_URL,
+} from "@/lib/legal/legalContent";
 
 const appLoginUrl = "https://www.myeluna.com/login";
 const appRegisterUrl = "https://www.myeluna.com/register";
@@ -54,39 +62,39 @@ const steps = [
 const plans = [
   {
     name: "Free preview",
-    price: "$0",
+    price: "$0 USD",
     period: "Preview access",
     icon: "moon",
     bullets: ["Basic daily guidance preview", "Limited daily card preview", "Starter Sky Map preview"],
   },
   {
     name: "Introductory access",
-    price: "$1",
-    period: "3 days",
+    price: "$1.00 USD",
+    period: "3-day access",
     icon: "spark",
     featured: true,
     bullets: ["Full access for 3 days", "Daily readings", "Sky Map insights", "Practices and affirmations"],
   },
   {
     name: "Monthly",
-    price: "$29.99",
+    price: "$29.99 USD",
     period: "per month",
     icon: "star",
     bullets: ["Full eLuna access", "Daily readings", "Personal insights", "Journal and progress features"],
   },
   {
     name: "3-month plan",
-    price: "$59.99",
+    price: "$59.99 USD",
     period: "every 3 months",
-    subprice: "$19.99/month equivalent",
+    subprice: "$19.99 USD/month equivalent",
     icon: "orbit",
     bullets: ["Full eLuna access", "Longer access period", "Daily readings and practices"],
   },
   {
     name: "6-month plan",
-    price: "$89.99",
+    price: "$89.99 USD",
     period: "every 6 months",
-    subprice: "$14.99/month equivalent",
+    subprice: "$14.99 USD/month equivalent",
     icon: "shield",
     bullets: ["Full eLuna access", "Best current value", "Daily readings and practices"],
   },
@@ -116,13 +124,13 @@ const complianceCards = [
 ];
 
 const faqs = [
-  ["What is eLuna?", "eLuna is an AI-powered self-reflection and symbolic guidance app for daily personal insight."],
+  ["What is eLuna?", "eLuna is a digital subscription app that provides AI-powered self-reflection experiences, symbolic guidance, daily readings, personal insight prompts, and journaling-style tools."],
   ["Is eLuna a digital product?", "Yes. eLuna is a digital subscription service. No physical goods are shipped."],
   ["What do I get with a subscription?", "A subscription unlocks deeper daily readings, Sky Map insights, practices, affirmations, and account-based digital access to premium features."],
   ["How do I access paid features?", "Paid features are delivered through your eLuna account after subscription activation."],
   ["How do I cancel?", "Contact support@myeluna.com with the email address linked to your account."],
   ["How do I request a refund?", "Contact support@myeluna.com. Refund requests are reviewed according to account status, subscription activity, and applicable law."],
-  ["Is eLuna medical, legal, financial, or psychological advice?", "No. eLuna is for self-reflection and entertainment only. It is not professional advice."],
+  ["Is eLuna medical, legal, financial, or psychological advice?", GLOBAL_DISCLAIMER],
 ];
 
 const footerLinks = [
@@ -132,6 +140,7 @@ const footerLinks = [
   { label: "Refund Policy", href: "/money-back" },
   { label: "Cancellation Policy", href: "/cancellation" },
   { label: "Fulfillment Policy", href: "/delivery" },
+  { label: "Support / Contact", href: "/support" },
 ];
 
 const pageWrap: CSSProperties = {
@@ -399,7 +408,7 @@ export default function WelcomeHeadPage() {
               ))}
             </div>
             <p style={{ color: "var(--muted-2)", fontSize: 12, lineHeight: 1.6, maxWidth: 600 }}>
-              eLuna is for self-reflection and entertainment. It is not medical, legal, financial, psychological, or crisis advice.
+              {GLOBAL_DISCLAIMER}
             </p>
           </div>
 
@@ -412,7 +421,7 @@ export default function WelcomeHeadPage() {
           <SectionHeader
             eyebrow="Product"
             title="What is eLuna?"
-            body="eLuna is a digital subscription app that provides AI-powered readings, daily symbolic guidance, personal reflection prompts, affirmations, and spiritual self-awareness tools. The app is designed for personal reflection and entertainment, not professional advice."
+            body="eLuna is a digital subscription app that provides AI-powered self-reflection experiences, symbolic guidance, daily readings, personal insight prompts, and journaling-style tools. The service is designed for personal reflection and entertainment, not for professional advice or guaranteed predictions."
             centered
           />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: 16 }}>
@@ -476,7 +485,7 @@ export default function WelcomeHeadPage() {
             ))}
           </div>
           <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.65, margin: "16px auto 0", textAlign: "center", maxWidth: 820 }}>
-            Subscriptions renew automatically unless cancelled. For cancellation, refund, or billing questions, contact{" "}
+            Subscriptions renew automatically unless cancelled. Prices are shown in USD. For cancellation, refund, or billing questions, contact{" "}
             <GoldLink href={billingSupportHref}>{SUPPORT_EMAIL_ADDRESS}</GoldLink>.
           </p>
         </section>
@@ -513,15 +522,15 @@ export default function WelcomeHeadPage() {
         <FinalCta />
 
         <section id="contact" style={{ ...glassPanel, padding: "26px 24px", margin: "16px 0 26px" }}>
-          <SectionHeader eyebrow="Company details" title="Official contact and business details" body="These details are visible for customers and payment review. Replace placeholders with the exact legal information used in the Stripe account." />
-          {/* TODO: Replace company placeholders before Stripe review with exact Stripe account details. */}
+          <SectionHeader eyebrow="Company details" title="Official contact and business details" body="These details are visible for customers and payment review and should match the Stripe account." />
           <dl style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 12, margin: 0 }}>
             {[
-              ["Legal name", "[LEGAL COMPANY NAME]"],
-              ["Registered address", "[REGISTERED ADDRESS]"],
-              ["Country", "[COUNTRY]"],
+              ["Legal name", LEGAL_ENTITY_NAME],
+              ["Registered address", LEGAL_ENTITY_ADDRESS],
+              ["Registration number", COMPANY_REGISTRATION_NUMBER],
+              ["Country", COMPANY_COUNTRY],
               ["Contact", SUPPORT_EMAIL_ADDRESS],
-              ["Website", "https://www.myeluna.com"],
+              ["Website", WEBSITE_URL],
             ].map(([label, value]) => (
               <div key={label} style={{ border: "1px solid rgba(255,255,255,.08)", borderRadius: 16, background: "rgba(255,255,255,.035)", padding: 14 }}>
                 <dt style={{ color: "var(--muted-2)", fontSize: 11, fontWeight: 900, marginBottom: 5 }}>{label}</dt>
@@ -529,7 +538,7 @@ export default function WelcomeHeadPage() {
                   {label === "Contact" ? (
                     <GoldLink href={supportHref}>{value}</GoldLink>
                   ) : label === "Website" ? (
-                    <a href="https://www.myeluna.com" style={{ color: "var(--gold-2)", fontWeight: 900, textDecoration: "none" }}>{value}</a>
+                    <a href={WEBSITE_URL} style={{ color: "var(--gold-2)", fontWeight: 900, textDecoration: "none" }}>{value}</a>
                   ) : (
                     value
                   )}
@@ -546,11 +555,9 @@ export default function WelcomeHeadPage() {
                 {link.label}
               </Link>
             ))}
-            <a href={supportHref} style={{ color: "var(--gold-2)", fontWeight: 900, textDecoration: "none" }}>
-              Support
-            </a>
           </nav>
           <p style={{ textAlign: "center", lineHeight: 1.55 }}>© eLuna. Digital AI-powered self-reflection subscription service.</p>
+          <p style={{ textAlign: "center", lineHeight: 1.55, maxWidth: 760 }}>{GLOBAL_DISCLAIMER}</p>
         </footer>
       </div>
     </main>

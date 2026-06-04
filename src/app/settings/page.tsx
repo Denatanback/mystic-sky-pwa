@@ -7,6 +7,7 @@ import { useLang, type Lang, ENABLE_RU_LOCALE } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { updatePassword } from "@/lib/auth/authAdapter";
+import { GLOBAL_DISCLAIMER } from "@/lib/legal/legalContent";
 
 function IconChevron() {
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>;
@@ -186,7 +187,10 @@ export default function SettingsPage() {
               ["Privacy Policy", legalHref("/privacy")],
               ["Terms of Use", legalHref("/terms")],
               ["Billing Terms", legalHref("/billing")],
-              ["Money-Back Policy", legalHref("/money-back")],
+              ["Refund Policy", legalHref("/money-back")],
+              ["Cancellation Policy", legalHref("/cancellation")],
+              ["Fulfillment Policy", legalHref("/delivery")],
+              ["Support / Contact", legalHref("/support")],
             ].map(([label, href], index) => (
               <Link key={label} href={href} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, minHeight: 44, padding: "0 16px", color: "var(--text)", textDecoration: "none", borderTop: index === 0 ? "none" : "1px solid rgba(255,255,255,.06)" }}>
                 <span style={{ fontSize: 13, fontWeight: 700 }}>{label}</span>
@@ -195,7 +199,7 @@ export default function SettingsPage() {
             ))}
           </div>
           <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.5, marginTop: 10 }}>
-            eLuna guidance is for reflection and self-awareness. It is not medical, legal, financial, or crisis advice.
+            {GLOBAL_DISCLAIMER}
           </p>
         </div>
 

@@ -60,6 +60,18 @@ function toIsoDate(value: string) {
   return day && month && year ? `${year}-${month}-${day}` : value;
 }
 
+function getAgeFromBirthDate(value: string) {
+  const isoDate = toIsoDate(value);
+  const date = new Date(`${isoDate}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return null;
+
+  const today = new Date();
+  let age = today.getFullYear() - date.getFullYear();
+  const monthDiff = today.getMonth() - date.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate())) age -= 1;
+  return age;
+}
+
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -146,6 +158,9 @@ export default function OnboardingPage() {
   function validateBirth() {
     if (!birthDate || birthDate.length < 10) return "Enter date of birth.";
     if (getZodiacSign(birthDate).key === "unknown") return "Enter a valid date to reveal your sign.";
+    const age = getAgeFromBirthDate(birthDate);
+    if (age === null || age < 0) return "Enter a valid date of birth.";
+    if (age < 18) return "eLuna paid features are intended for adults. You must be at least 18 years old to continue.";
     if (!birthTimeUnknown && !birthTime.trim()) return "Add your birth time or choose 'I don’t know'.";
     if (!birthPlace.trim()) return "Enter place of birth.";
     return "";

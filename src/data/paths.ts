@@ -23,7 +23,7 @@ export const skyPaths: SkyPath[] = [
     id: "numerology",
     title: "Numerology",
     shortTitle: "Numbers",
-    description: "Life path, personal year, destiny matrix, and number patterns.",
+    description: "Life path, personal year, personal pattern matrix, and number patterns.",
     color: "#60e4c6",
     progress: 45,
     openedStars: 8,
@@ -32,7 +32,7 @@ export const skyPaths: SkyPath[] = [
     stars: [
       { id: "life-path",      title: "Life path number", layer: "basic", status: "opened"    },
       { id: "personal-year",  title: "Personal year",     layer: "basic", status: "available" },
-      { id: "destiny-matrix", title: "Destiny matrix",    layer: "deep",  status: "locked"    },
+      { id: "pattern-matrix", title: "Personal pattern matrix", layer: "deep", status: "locked" },
     ],
   },
   {
