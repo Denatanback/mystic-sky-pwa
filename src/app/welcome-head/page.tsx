@@ -20,7 +20,6 @@ const mobileBackgroundImage = "/assets/landing/eluna-bg-mobile.png";
 const constellationOverlayImage = "/assets/landing/eluna-constellation-overlay-clean.png";
 const zodiacHaloImage = "/assets/landing/eluna-zodiac-halo-clean.png";
 const heroPhonesImage = "/assets/landing/eluna-hero-phones-transparent.png";
-const dailyGuidanceScreenImage = "/assets/landing/eluna-phone-daily-guidance.png";
 const skyMapScreenImage = "/assets/landing/eluna-phone-sky-map.png";
 const testimonialEmilyImage = "/assets/testimonials/testimonial-emily.png";
 const testimonialJasonImage = "/assets/testimonials/testimonial-jason.png";
@@ -266,15 +265,6 @@ function SkyMapMini({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function ScreenPhone({ screen, className = "" }: { screen: "daily" | "sky"; className?: string }) {
-  return (
-    <div className={`screen-phone ${className}`} aria-hidden="true">
-      <span className="screen-phone-notch" />
-      <span className={`screen-phone-display screen-${screen}`} />
-    </div>
-  );
-}
-
 function HeroVisual() {
   return (
     <div className="hero-visual" aria-label="eLuna product mockup scene">
@@ -324,8 +314,9 @@ function ProductProofVisual() {
           </div>
         </div>
       </div>
-      <ScreenPhone screen="sky" className="proof-screen-phone" />
-      <ScreenPhone screen="daily" className="proof-screen-phone proof-screen-phone-secondary" />
+      <div className="proof-phone-layer" aria-hidden="true">
+        <img className="proof-phone-image proof-phone-sky" src={skyMapScreenImage} alt="" draggable={false} />
+      </div>
     </div>
   );
 }
@@ -546,71 +537,37 @@ export default function WelcomeHeadPage() {
           opacity: .22;
         }
 
-        .screen-phone {
+        .proof-phone-layer {
           position: absolute;
-          width: 214px;
-          height: 428px;
-          border-radius: 38px;
-          padding: 9px;
-          background: linear-gradient(145deg, #171423, #05050c 64%, #22153b);
-          border: 1px solid rgba(255,255,255,.18);
-          box-shadow:
-            inset 0 0 0 1px rgba(255,255,255,.05),
-            0 30px 76px rgba(0,0,0,.46),
-            0 0 42px rgba(141,85,214,.18);
-          z-index: 2;
+          right: -18px;
+          bottom: -28px;
+          width: 210px;
+          height: 300px;
+          z-index: 3;
           pointer-events: none;
           user-select: none;
+          overflow: visible;
+        }
+
+        .proof-phone-image {
+          position: absolute;
+          display: block;
+          width: auto;
+          height: auto;
+          max-width: none;
+          object-fit: contain;
+          pointer-events: none;
+          user-select: none;
+          filter: drop-shadow(0 30px 46px rgba(0,0,0,.42)) drop-shadow(0 0 22px rgba(141,85,214,.18));
           animation: phoneFloat 7.5s ease-in-out infinite;
         }
 
-        .screen-phone-notch {
-          position: absolute;
-          top: 18px;
-          left: 50%;
-          width: 62px;
-          height: 18px;
-          transform: translateX(-50%);
-          border-radius: 999px;
-          background: #05050d;
-          border: 1px solid rgba(255,255,255,.08);
-          z-index: 4;
-        }
-
-        .screen-phone-display {
-          display: block;
-          width: 100%;
-          height: 100%;
-          border-radius: 30px;
-          overflow: hidden;
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: cover;
-          box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
-        }
-
-        .screen-daily {
-          background-image: url("${dailyGuidanceScreenImage}");
-        }
-
-        .screen-sky {
-          background-image: url("${skyMapScreenImage}");
-        }
-
-        .proof-screen-phone {
-          right: -2px;
-          bottom: -10px;
-          transform: rotate(8deg) scale(.82);
+        .proof-phone-sky {
+          right: 0;
+          bottom: 0;
+          width: 188px;
+          transform: rotate(6deg);
           transform-origin: bottom right;
-        }
-
-        .proof-screen-phone-secondary {
-          right: 160px;
-          bottom: 28px;
-          opacity: .62;
-          transform: rotate(-8deg) scale(.56);
-          z-index: 1;
-          animation-delay: -2.4s;
         }
 
         .proof-daily p,
@@ -1095,7 +1052,7 @@ export default function WelcomeHeadPage() {
 
         @media (prefers-reduced-motion: reduce) {
           .hero-phones-image,
-          .screen-phone,
+          .proof-phone-image,
           .zodiac-halo,
           .constellation-layer {
             animation: none !important;
@@ -1197,16 +1154,8 @@ export default function WelcomeHeadPage() {
             grid-template-columns: 1fr;
           }
 
-          .proof-screen-phone {
-            right: -18px;
-            bottom: -42px;
-            transform: rotate(8deg) scale(.58);
-          }
-
-          .proof-screen-phone-secondary {
-            right: 120px;
-            bottom: 0;
-            transform: rotate(-8deg) scale(.42);
+          .proof-phone-layer {
+            display: none;
           }
 
           .cta-astro-scene {
