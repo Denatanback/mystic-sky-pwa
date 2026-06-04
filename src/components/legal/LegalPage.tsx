@@ -106,13 +106,10 @@ export function LegalPage({ document }: LegalPageProps) {
     <main className="app no-nav" style={{ minHeight: "100dvh", padding: "0 18px 40px" }}>
       <StarField />
       <div style={{ position: "relative", zIndex: 2, width: "min(100%, 820px)", margin: "0 auto", paddingTop: 18 }}>
-        <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
+        <header style={{ display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 12, marginBottom: 18 }}>
           <button type="button" onClick={goBack} aria-label="Back" style={{ width: 42, height: 42, borderRadius: "50%", background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.12)", display: "grid", placeItems: "center", color: "var(--text)", textDecoration: "none", flexShrink: 0, cursor: "pointer" }}>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5m0 0 7 7m-7-7 7-7" /></svg>
           </button>
-          <Link href="/settings" style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 900, textDecoration: "none" }}>
-            Settings
-          </Link>
         </header>
 
         <article style={{ ...cardStyle, padding: "24px 18px" }}>

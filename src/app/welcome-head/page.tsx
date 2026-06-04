@@ -21,6 +21,8 @@ const constellationOverlayImage = "/assets/landing/eluna-constellation-overlay-c
 const zodiacHaloImage = "/assets/landing/eluna-zodiac-halo-clean.png";
 const heroPhonesImage = "/assets/landing/eluna-hero-phones-transparent.png";
 const skyMapScreenImage = "/assets/landing/eluna-phone-sky-map.png";
+const ctaStarMapCardImage = "/assets/welcome-head/eluna-star-map-card.png";
+const ctaStarSkyBackgroundImage = "/assets/welcome-head/eluna-star-sky-background.png";
 const testimonialEmilyImage = "/assets/testimonials/testimonial-emily.png";
 const testimonialJasonImage = "/assets/testimonials/testimonial-jason.png";
 const testimonialLaurenImage = "/assets/testimonials/testimonial-lauren.png";
@@ -323,9 +325,11 @@ function ProductProofVisual() {
 
 function FinalCta() {
   return (
-    <section style={{ position: "relative", overflow: "hidden", borderRadius: 36, border: "1px solid rgba(216,168,95,.18)", background: "radial-gradient(circle at 78% 50%, rgba(141,85,214,.20), transparent 35%), linear-gradient(135deg, rgba(20,13,47,.70), rgba(8,7,22,.58))", boxShadow: "0 26px 70px rgba(0,0,0,.28)", margin: "28px 0 18px" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))", gap: 18, alignItems: "center", padding: "clamp(24px, 5vw, 40px)" }}>
-        <div style={{ display: "grid", gap: 14, maxWidth: 560, position: "relative", zIndex: 2 }}>
+    <section className="final-cta-section">
+      <img className="final-cta-sky" src={ctaStarSkyBackgroundImage} alt="" aria-hidden="true" draggable={false} />
+      <div className="final-cta-vignette" aria-hidden="true" />
+      <div className="final-cta-grid">
+        <div className="final-cta-copy">
           <p style={{ color: "var(--gold)", fontSize: 11, fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" }}>Start with a free preview</p>
           <h2 style={{ color: "var(--text)", fontFamily: "var(--font-display)", fontSize: "clamp(32px, 5vw, 52px)", lineHeight: 1.04, fontWeight: 600 }}>Start your eLuna journey today</h2>
           <p style={{ color: "var(--muted)", fontSize: 15, lineHeight: 1.7 }}>
@@ -337,16 +341,16 @@ function FinalCta() {
             </a>
           </div>
         </div>
-        <div className="cta-astro-scene" aria-hidden="true">
+        <div className="cta-astro-scene final-cta-visual" aria-hidden="true">
           <div className="scene-glow main" />
           <div className="scene-glow gold" />
           <div className="constellation-layer cta-constellation" />
           <div className="zodiac-halo cta-halo" />
-          <div className="cta-symbolic-card">
-            <Icon name="spark" size={28} />
-            <span />
+          <div className="final-cta-orbit" />
+          <div className="final-cta-card" />
+          <div className="final-cta-mini-card">
+            <Icon name="spark" size={24} />
           </div>
-          <SkyMapMini />
         </div>
       </div>
     </section>
@@ -539,10 +543,10 @@ export default function WelcomeHeadPage() {
 
         .proof-phone-layer {
           position: absolute;
-          right: -18px;
-          bottom: -28px;
-          width: 210px;
-          height: 300px;
+          right: 42px;
+          bottom: -20px;
+          width: 184px;
+          height: 286px;
           z-index: 3;
           pointer-events: none;
           user-select: none;
@@ -565,8 +569,8 @@ export default function WelcomeHeadPage() {
         .proof-phone-sky {
           right: 0;
           bottom: 0;
-          width: 188px;
-          transform: rotate(6deg);
+          width: 176px;
+          transform: rotate(4deg);
           transform-origin: bottom right;
         }
 
@@ -745,6 +749,116 @@ export default function WelcomeHeadPage() {
           min-height: 300px;
           display: grid;
           place-items: center;
+        }
+
+        .final-cta-section {
+          position: relative;
+          overflow: hidden;
+          border-radius: 36px;
+          border: 1px solid rgba(216,168,95,.18);
+          background:
+            radial-gradient(circle at 82% 50%, rgba(141,85,214,.20), transparent 36%),
+            linear-gradient(135deg, rgba(20,13,47,.74), rgba(8,7,22,.64));
+          box-shadow: 0 26px 70px rgba(0,0,0,.28);
+          margin: 28px 0 18px;
+        }
+
+        .final-cta-sky {
+          position: absolute;
+          inset: -18% -9% -16% 34%;
+          width: 76%;
+          height: 136%;
+          object-fit: cover;
+          opacity: .34;
+          filter: saturate(.92) contrast(1.04);
+          mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.62) 24%, #000 100%);
+          -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.62) 24%, #000 100%);
+          pointer-events: none;
+          user-select: none;
+        }
+
+        .final-cta-vignette {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background:
+            radial-gradient(circle at 72% 46%, rgba(216,168,95,.12), transparent 23%),
+            radial-gradient(circle at 88% 66%, rgba(141,85,214,.16), transparent 34%),
+            linear-gradient(90deg, rgba(8,7,22,.82) 0%, rgba(8,7,22,.42) 48%, rgba(8,7,22,.74) 100%);
+          z-index: 1;
+        }
+
+        .final-cta-grid {
+          position: relative;
+          z-index: 2;
+          display: grid;
+          grid-template-columns: minmax(0, 1.02fr) minmax(300px, .82fr);
+          gap: 18px;
+          align-items: center;
+          padding: clamp(24px, 5vw, 40px);
+        }
+
+        .final-cta-copy {
+          display: grid;
+          gap: 14px;
+          max-width: 560px;
+          position: relative;
+          z-index: 3;
+        }
+
+        .final-cta-visual {
+          min-height: 320px;
+        }
+
+        .final-cta-orbit {
+          position: absolute;
+          right: 9%;
+          top: 10%;
+          width: min(78%, 320px);
+          aspect-ratio: 1;
+          border-radius: 999px;
+          border: 1px solid rgba(216,168,95,.16);
+          background: radial-gradient(circle, rgba(141,85,214,.16), transparent 58%);
+          box-shadow: inset 0 0 34px rgba(216,168,95,.055), 0 0 44px rgba(141,85,214,.12);
+          z-index: 1;
+        }
+
+        .final-cta-card {
+          position: absolute;
+          right: 17%;
+          top: 3%;
+          width: clamp(150px, 19vw, 224px);
+          aspect-ratio: .58;
+          border-radius: 28px;
+          z-index: 3;
+          background-image: url("${ctaStarMapCardImage}");
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: 132% auto;
+          transform: rotate(6deg);
+          box-shadow: 0 28px 64px rgba(0,0,0,.42), 0 0 34px rgba(216,168,95,.10);
+          filter: saturate(.98) contrast(1.03);
+          overflow: hidden;
+          pointer-events: none;
+        }
+
+        .final-cta-mini-card {
+          position: absolute;
+          left: 17%;
+          bottom: 17%;
+          z-index: 4;
+          width: 94px;
+          height: 122px;
+          border-radius: 24px;
+          display: grid;
+          place-items: center;
+          color: var(--gold-2);
+          background:
+            radial-gradient(circle at 50% 30%, rgba(216,168,95,.16), transparent 42%),
+            linear-gradient(145deg, rgba(24,16,50,.62), rgba(8,7,22,.42));
+          border: 1px solid rgba(216,168,95,.18);
+          box-shadow: 0 22px 50px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.08);
+          transform: rotate(-10deg);
         }
 
         .cta-symbolic-card {
@@ -1158,6 +1272,30 @@ export default function WelcomeHeadPage() {
             display: none;
           }
 
+          .final-cta-sky {
+            inset: 26% -24% -8% 0;
+            width: 128%;
+            height: 82%;
+            opacity: .28;
+            mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.86) 22%, #000 100%);
+            -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.86) 22%, #000 100%);
+          }
+
+          .final-cta-vignette {
+            background:
+              radial-gradient(circle at 70% 76%, rgba(216,168,95,.13), transparent 28%),
+              linear-gradient(180deg, rgba(8,7,22,.88) 0%, rgba(8,7,22,.58) 58%, rgba(8,7,22,.82) 100%);
+          }
+
+          .final-cta-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+          }
+
+          .final-cta-visual {
+            min-height: 220px !important;
+          }
+
           .cta-astro-scene {
             min-height: 210px !important;
           }
@@ -1174,6 +1312,27 @@ export default function WelcomeHeadPage() {
             width: 96px;
             height: 130px;
             border-radius: 22px;
+          }
+
+          .final-cta-card {
+            right: 13%;
+            top: 6%;
+            width: clamp(132px, 42vw, 170px);
+            border-radius: 24px;
+          }
+
+          .final-cta-orbit {
+            right: 4%;
+            top: 12%;
+            width: min(72%, 230px);
+          }
+
+          .final-cta-mini-card {
+            left: 14%;
+            bottom: 16%;
+            width: 76px;
+            height: 98px;
+            border-radius: 20px;
           }
 
           .cta-astro-scene .sky-map-mini {
