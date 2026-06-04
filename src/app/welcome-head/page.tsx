@@ -359,13 +359,13 @@ function FinalCta() {
 
 export default function WelcomeHeadPage() {
   return (
-    <main className="app no-nav welcome-head-page" style={{ width: "100vw", maxWidth: "none", minHeight: "100dvh", padding: 0, border: "none", overflowX: "hidden", background: "#070613" }}>
+    <main className="app no-nav welcome-head-page" style={{ width: "100vw", maxWidth: "none", minHeight: "100dvh", padding: 0, border: "none", overflowX: "hidden", backgroundColor: "#070613" }}>
       <style>{`
         .welcome-head-page {
           position: relative;
           font-family: var(--font-sans), Manrope, system-ui, sans-serif;
           background-image:
-            linear-gradient(180deg, rgba(7,4,18,.74), rgba(7,4,18,.90) 48%, #070613 100%),
+            linear-gradient(180deg, rgba(7,4,18,.58), rgba(7,4,18,.78) 48%, #070613 100%),
             url("${desktopBackgroundImage}");
           background-repeat: no-repeat;
           background-size: cover;
@@ -387,7 +387,7 @@ export default function WelcomeHeadPage() {
             radial-gradient(circle at 70% 16%, rgba(137,78,214,.20), transparent 28%),
             radial-gradient(circle at 16% 44%, rgba(48,64,132,.12), transparent 30%),
             radial-gradient(circle at 86% 72%, rgba(216,168,95,.08), transparent 26%),
-            linear-gradient(180deg, rgba(7,6,19,.12) 0%, rgba(7,6,19,.48) 36%, rgba(7,6,19,.94) 100%);
+            linear-gradient(180deg, rgba(7,6,19,.08) 0%, rgba(7,6,19,.34) 36%, rgba(7,6,19,.86) 100%);
         }
 
         .welcome-head-page::after {
@@ -1192,7 +1192,7 @@ export default function WelcomeHeadPage() {
         @media (max-width: 760px) {
           .welcome-head-page {
             background-image:
-              linear-gradient(180deg, rgba(7,4,18,.78), rgba(7,4,18,.90) 48%, #070613 100%),
+              linear-gradient(180deg, rgba(7,4,18,.64), rgba(7,4,18,.82) 48%, #070613 100%),
               url("${mobileBackgroundImage}");
             background-size: cover;
             background-position: center top;
@@ -1203,7 +1203,7 @@ export default function WelcomeHeadPage() {
             background:
               radial-gradient(circle at 54% 18%, rgba(137,78,214,.17), transparent 40%),
               radial-gradient(circle at 20% 54%, rgba(48,64,132,.10), transparent 32%),
-              linear-gradient(180deg, rgba(7,6,19,.18) 0%, rgba(7,6,19,.68) 45%, rgba(7,6,19,.97) 100%);
+              linear-gradient(180deg, rgba(7,6,19,.12) 0%, rgba(7,6,19,.52) 45%, rgba(7,6,19,.91) 100%);
           }
 
           .hero-section {
