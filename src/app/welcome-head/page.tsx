@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
@@ -12,161 +11,113 @@ const billingSupportHref = "mailto:support@myeluna.com?subject=eLuna%20Billing%2
 
 const navLinks = [
   { label: "Product", href: "#product" },
+  { label: "How it works", href: "#how-it-works" },
   { label: "Pricing", href: "#pricing" },
   { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];
 
-const trustBullets = [
+const trustItems = [
   "Digital subscription service",
   "Secure payment flow",
   "Support: support@myeluna.com",
   "No physical goods shipped",
 ];
 
-const appVisuals = {
-  background: "/assets/main_screen/background-main.png",
-  card: "/assets/main_screen/card-01.png",
-  candle: "/assets/main_screen/candle-01.png",
-  lotus: "/assets/main_screen/lotus-01.png",
-  meditation: "/assets/main_screen/meditation-01.png",
-  astrology: "/assets/sky-emblems/sky-astrology-emblem.png",
-  sky: "/assets/sky-emblems/sky-numerology-emblem.png",
-  soulmate: "/assets/sky-emblems/sky-soulmate-emblem.png",
-};
-
-const previewCards = [
-  {
-    title: "Today's reading",
-    tag: "Daily guidance",
-    body: "A focused symbolic theme, reflection prompt, and next step for the day.",
-    icon: "moon",
-  },
-  {
-    title: "Symbolic card",
-    tag: "Card insight",
-    body: "A personal card draw with meaning, action, and reflection space.",
-    icon: "star",
-  },
-  {
-    title: "Sky Map",
-    tag: "Personal path",
-    body: "A visual map of astrology-inspired, numerology-inspired, and soul-path insights.",
-    icon: "orbit",
-  },
-  {
-    title: "Practices",
-    tag: "Affirmations",
-    body: "Guided practices, affirmations, and journal prompts for self-awareness.",
-    icon: "spark",
-  },
+const features = [
+  ["Daily readings", "Clear daily symbolic guidance with reflection prompts and a grounded next step.", "moon"],
+  ["Symbolic cards", "Draw a card, explore its meaning, and capture a simple action or reflection.", "card"],
+  ["Personal Sky Map", "A structured map of astrology-inspired, numerology-inspired, and soul-path insights.", "orbit"],
+  ["Affirmations & practices", "Guided practices and affirmations designed for repeat daily use.", "spark"],
+  ["Journal & progress", "A personal space for saved reflections, practice entries, and visible progress.", "journal"],
+  ["AI reflection tools", "AI-powered prompts that help users explore patterns and self-awareness themes.", "ai"],
 ];
 
-const features = [
-  {
-    title: "Daily readings and reflection prompts",
-    body: "Start each day with a clear symbolic reading and a grounded question for personal reflection.",
-    visual: appVisuals.meditation,
-  },
-  {
-    title: "Symbolic cards and guidance",
-    body: "Draw a card, explore its meaning, and save a simple action or reflection.",
-    visual: appVisuals.card,
-  },
-  {
-    title: "Personal Sky Map insights",
-    body: "Explore a structured map of personal themes, unlocks, and deeper symbolic signals.",
-    visual: appVisuals.sky,
-  },
-  {
-    title: "Affirmations and practices",
-    body: "Use guided affirmations and short practices to turn insight into a daily ritual.",
-    visual: appVisuals.candle,
-  },
-  {
-    title: "Journal and progress features",
-    body: "Keep a visible record of reflections, progress, and return moments over time.",
-    visual: appVisuals.lotus,
-  },
-  {
-    title: "AI-powered reflection tools",
-    body: "Use AI-assisted prompts to explore patterns, questions, and self-awareness themes.",
-    visual: appVisuals.astrology,
-  },
+const proofBenefits = [
+  ["Daily symbolic guidance", "A calm daily ritual with reading, card, action, and reflection."],
+  ["Personal insight map", "A visual path that makes the product feel ongoing, not one-and-done."],
+  ["Reflection journal", "A simple account-based record for thoughts, prompts, and progress."],
 ];
 
 const steps = [
-  ["Create your account", "Start with email or Google and enter the eLuna app."],
-  ["Add your birth details and preferences", "Share optional birth time, birth place, and focus areas for personalization."],
-  ["Explore your daily guidance and Sky Map", "Open daily readings, cards, practices, and symbolic path previews."],
-  ["Unlock deeper readings with a subscription", "Use a paid plan to access deeper digital guidance and premium features."],
+  ["Create your account", "Start with an eLuna account and enter the app."],
+  ["Add your birth details", "Share birth date, optional birth time, place, and preferences."],
+  ["Explore daily guidance", "Open daily readings, cards, practices, and your Sky Map."],
+  ["Unlock deeper readings", "Use a subscription for deeper digital guidance and premium features."],
 ];
 
 const plans = [
   {
     name: "Free preview",
     price: "$0",
+    period: "Preview access",
     icon: "moon",
     bullets: ["Basic daily guidance preview", "Limited daily card preview", "Starter Sky Map preview"],
   },
   {
     name: "Introductory access",
-    price: "$1 / 3 days",
+    price: "$1",
+    period: "3 days",
     icon: "spark",
-    highlighted: true,
+    featured: true,
     bullets: ["Full access for 3 days", "Daily readings", "Sky Map insights", "Practices and affirmations"],
   },
   {
     name: "Monthly",
-    price: "$29.99 / month",
+    price: "$29.99",
+    period: "per month",
     icon: "star",
     bullets: ["Full eLuna access", "Daily readings", "Personal insights", "Journal and progress features"],
   },
   {
     name: "3-month plan",
-    price: "$59.99 every 3 months",
+    price: "$59.99",
+    period: "every 3 months",
     subprice: "$19.99/month equivalent",
     icon: "orbit",
     bullets: ["Full eLuna access", "Longer access period", "Daily readings and practices"],
   },
   {
     name: "6-month plan",
-    price: "$89.99 every 6 months",
+    price: "$89.99",
+    period: "every 6 months",
     subprice: "$14.99/month equivalent",
-    icon: "spark",
+    icon: "shield",
     bullets: ["Full eLuna access", "Best current value", "Daily readings and practices"],
   },
 ];
 
+const complianceCards = [
+  {
+    title: "Digital delivery",
+    icon: "device",
+    body: "eLuna is a digital service. After account creation and successful subscription activation, access to paid digital features is delivered through the user's eLuna account. No physical goods are shipped.",
+  },
+  {
+    title: "Cancellation",
+    icon: "mail",
+    body: "Users can request cancellation by contacting support@myeluna.com. Cancellation requests should include the email address associated with the eLuna account.",
+  },
+  {
+    title: "Refunds",
+    icon: "receipt",
+    body: "Refund requests should be sent to support@myeluna.com. Each request is reviewed according to account status, subscription activity, and applicable law.",
+  },
+  {
+    title: "Support",
+    icon: "support",
+    body: "For billing, refund, cancellation, or account questions, contact support@myeluna.com.",
+  },
+];
+
 const faqs = [
-  {
-    question: "What is eLuna?",
-    answer: "eLuna is an AI-powered self-reflection and symbolic guidance app for daily personal insight.",
-  },
-  {
-    question: "Is eLuna a medical, legal, financial, or psychological service?",
-    answer: "No. eLuna is for self-reflection and entertainment only. It is not professional advice.",
-  },
-  {
-    question: "Is this a digital product?",
-    answer: "Yes. eLuna is a digital subscription service. No physical goods are shipped.",
-  },
-  {
-    question: "What do I get with a subscription?",
-    answer: "A subscription unlocks deeper daily readings, Sky Map insights, practices, affirmations, and account-based digital access to premium features.",
-  },
-  {
-    question: "How do I access paid features?",
-    answer: "Paid features are delivered through your eLuna account after subscription activation.",
-  },
-  {
-    question: "How do I cancel?",
-    answer: "Contact support@myeluna.com with the email address linked to your account.",
-  },
-  {
-    question: "How do I request a refund?",
-    answer: "Contact support@myeluna.com. Refund requests are reviewed according to account status, subscription activity, and applicable law.",
-  },
+  ["What is eLuna?", "eLuna is an AI-powered self-reflection and symbolic guidance app for daily personal insight."],
+  ["Is eLuna a digital product?", "Yes. eLuna is a digital subscription service. No physical goods are shipped."],
+  ["What do I get with a subscription?", "A subscription unlocks deeper daily readings, Sky Map insights, practices, affirmations, and account-based digital access to premium features."],
+  ["How do I access paid features?", "Paid features are delivered through your eLuna account after subscription activation."],
+  ["How do I cancel?", "Contact support@myeluna.com with the email address linked to your account."],
+  ["How do I request a refund?", "Contact support@myeluna.com. Refund requests are reviewed according to account status, subscription activity, and applicable law."],
+  ["Is eLuna medical, legal, financial, or psychological advice?", "No. eLuna is for self-reflection and entertainment only. It is not professional advice."],
 ];
 
 const footerLinks = [
@@ -178,172 +129,138 @@ const footerLinks = [
   { label: "Fulfillment Policy", href: "/delivery" },
 ];
 
-const proofStats = [
-  ["Daily", "readings and reflection prompts"],
-  ["Sky Map", "symbolic personal insight system"],
-  ["$1", "3-day introductory access"],
-];
-
-const complianceCards = [
-  {
-    title: "Digital delivery",
-    icon: "orbit",
-    body: "Access is delivered through the user's eLuna account after account creation and subscription activation.",
-  },
-  {
-    title: "Cancellation",
-    icon: "moon",
-    body: "Users can request cancellation by contacting support with the email address linked to the account.",
-  },
-  {
-    title: "Refund review",
-    icon: "spark",
-    body: "Refund requests are reviewed according to account status, subscription activity, and applicable law.",
-  },
-  {
-    title: "Support",
-    icon: "star",
-    body: "Billing, refund, cancellation, and account questions go to support@myeluna.com.",
-  },
-];
-
 const pageWrap: CSSProperties = {
-  width: "min(100%, 1180px)",
+  width: "min(100%, 1220px)",
   margin: "0 auto",
-  padding: "0 22px",
+  padding: "0 24px",
   position: "relative",
   zIndex: 2,
 };
 
-const sectionShell: CSSProperties = {
-  border: "1px solid rgba(216,168,95,.18)",
+const glassPanel: CSSProperties = {
+  border: "1px solid rgba(216,168,95,.16)",
   borderRadius: 28,
-  background: "linear-gradient(145deg, rgba(16,10,36,.86), rgba(8,6,22,.72))",
-  boxShadow: "0 24px 70px rgba(0,0,0,.34)",
+  background: "linear-gradient(145deg, rgba(17,12,38,.88), rgba(8,7,22,.74))",
+  boxShadow: "0 24px 70px rgba(0,0,0,.30)",
   backdropFilter: "blur(14px)",
   WebkitBackdropFilter: "blur(14px)",
 };
 
 function GoldLink({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <a href={href} style={{ color: "var(--gold-2)", fontWeight: 900, textDecoration: "none", overflowWrap: "anywhere" }}>
+    <a href={href} style={{ color: "var(--gold-2)", fontWeight: 850, textDecoration: "none", overflowWrap: "anywhere" }}>
       {children}
     </a>
   );
 }
 
-function VisualBadge({ src, label }: { src: string; label: string }) {
+function SmartText({ text, href = supportHref }: { text: string; href?: string }) {
+  if (!text.includes(SUPPORT_EMAIL_ADDRESS)) return <>{text}</>;
+  const [before, after] = text.split(SUPPORT_EMAIL_ADDRESS);
   return (
-    <div style={{ width: 56, height: 56, borderRadius: 18, display: "grid", placeItems: "center", background: "linear-gradient(145deg, rgba(216,168,95,.14), rgba(128,64,192,.12))", border: "1px solid rgba(216,168,95,.22)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.10)" }}>
-      <Image src={src} width={38} height={38} alt={label} style={{ width: 38, height: 38, objectFit: "contain" }} />
+    <>
+      {before}
+      <GoldLink href={href}>{SUPPORT_EMAIL_ADDRESS}</GoldLink>
+      {after}
+    </>
+  );
+}
+
+function Icon({ name, size = 22 }: { name: string; size?: number }) {
+  const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  const props = { width: size, height: size, viewBox: "0 0 24 24", ...common };
+
+  if (name === "moon") return <svg {...props}><path d="M20 14.4A8 8 0 1 1 9.6 4a7 7 0 0 0 10.4 10.4Z" /></svg>;
+  if (name === "card") return <svg {...props}><rect x="6" y="3" width="12" height="18" rx="2" /><path d="M10 8h4M10 12h4M10 16h2" /></svg>;
+  if (name === "orbit") return <svg {...props}><circle cx="12" cy="12" r="2.5" /><path d="M3 12c3-5.5 15-5.5 18 0-3 5.5-15 5.5-18 0Z" /><path d="M12 3c5.5 3 5.5 15 0 18-5.5-3-5.5-15 0-18Z" /></svg>;
+  if (name === "spark") return <svg {...props}><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z" /><path d="M19 16l.7 1.8L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z" /></svg>;
+  if (name === "journal") return <svg {...props}><path d="M6 4h11a2 2 0 0 1 2 2v16H7a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z" /><path d="M9 8h6M9 12h6M9 16h4" /></svg>;
+  if (name === "ai") return <svg {...props}><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" /><circle cx="12" cy="12" r="4" /></svg>;
+  if (name === "star") return <svg {...props}><path d="M12 3l2.7 5.5 6.1.9-4.4 4.2 1 6-5.4-2.9-5.4 2.9 1-6-4.4-4.2 6.1-.9L12 3Z" /></svg>;
+  if (name === "shield") return <svg {...props}><path d="M12 3l7 3v5c0 5-3.2 8.5-7 10-3.8-1.5-7-5-7-10V6l7-3Z" /><path d="M9 12l2 2 4-5" /></svg>;
+  if (name === "device") return <svg {...props}><rect x="6" y="3" width="12" height="18" rx="2" /><path d="M10 17h4" /></svg>;
+  if (name === "mail") return <svg {...props}><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 7 9-7" /></svg>;
+  if (name === "receipt") return <svg {...props}><path d="M7 3h10v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4V3Z" /><path d="M10 8h4M10 12h4M10 16h2" /></svg>;
+  return <svg {...props}><circle cx="12" cy="12" r="8" /><path d="M9.5 12.5 11 14l4-5" /></svg>;
+}
+
+function IconFrame({ icon, compact = false }: { icon: string; compact?: boolean }) {
+  return (
+    <div style={{ width: compact ? 42 : 48, height: compact ? 42 : 48, borderRadius: compact ? 15 : 17, display: "grid", placeItems: "center", color: "var(--gold-2)", background: "linear-gradient(145deg, rgba(216,168,95,.13), rgba(128,64,192,.10))", border: "1px solid rgba(216,168,95,.22)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.08)" }}>
+      <Icon name={icon} size={compact ? 19 : 22} />
     </div>
   );
 }
 
-function SectionHeader({ eyebrow, title, body }: { eyebrow: string; title: string; body?: string }) {
+function SectionHeader({ eyebrow, title, body, centered = false }: { eyebrow: string; title: string; body?: string; centered?: boolean }) {
   return (
-    <div style={{ display: "grid", gap: 10, maxWidth: 760, marginBottom: 22 }}>
+    <div style={{ display: "grid", gap: 10, maxWidth: 760, margin: centered ? "0 auto 26px" : "0 0 26px", textAlign: centered ? "center" : "left" }}>
       <p style={{ color: "var(--gold)", fontSize: 11, fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" }}>{eyebrow}</p>
-      <h2 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 600, lineHeight: 1 }}>
+      <h2 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: "clamp(32px, 5vw, 50px)", fontWeight: 600, lineHeight: 1.04 }}>
         {title}
       </h2>
-      {body && <p style={{ color: "var(--muted)", fontSize: 15, lineHeight: 1.7 }}>{body}</p>}
+      {body && <p style={{ color: "var(--muted)", fontSize: 15, lineHeight: 1.68 }}>{body}</p>}
     </div>
   );
 }
 
-function PreviewIcon({ type }: { type: string }) {
-  const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
-  if (type === "moon") {
-    return (
-      <svg viewBox="0 0 24 24" width="20" height="20" {...common}>
-        <path d="M20 14.6A8 8 0 0 1 9.4 4 8.5 8.5 0 1 0 20 14.6Z" />
-      </svg>
-    );
-  }
-  if (type === "orbit") {
-    return (
-      <svg viewBox="0 0 24 24" width="20" height="20" {...common}>
-        <circle cx="12" cy="12" r="3" />
-        <path d="M3 12c3-6 15-6 18 0-3 6-15 6-18 0Z" />
-        <path d="M12 3c6 3 6 15 0 18-6-3-6-15 0-18Z" />
-      </svg>
-    );
-  }
-  if (type === "spark") {
-    return (
-      <svg viewBox="0 0 24 24" width="20" height="20" {...common}>
-        <path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2Z" />
-        <path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16Z" />
-      </svg>
-    );
-  }
+function AppMockup({ compact = false }: { compact?: boolean }) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" {...common}>
-      <path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2L12 3Z" />
-    </svg>
-  );
-}
+    <div style={{ ...glassPanel, width: compact ? "min(100%, 360px)" : "min(100%, 445px)", padding: compact ? 12 : 14, borderRadius: compact ? 30 : 34, margin: compact ? "0 auto" : undefined }}>
+      <div style={{ borderRadius: compact ? 22 : 26, overflow: "hidden", background: "linear-gradient(180deg, #171132, #090817)", border: "1px solid rgba(255,255,255,.08)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px 16px", borderBottom: "1px solid rgba(255,255,255,.08)" }}>
+          <div>
+            <p style={{ color: "var(--muted-2)", fontSize: 11, marginBottom: 3 }}>Today</p>
+            <p style={{ color: "var(--text)", fontSize: 15, fontWeight: 900 }}>Your reflection space</p>
+          </div>
+          <span style={{ width: 38, height: 38, borderRadius: "50%", display: "grid", placeItems: "center", color: "var(--gold-2)", background: "rgba(216,168,95,.10)", border: "1px solid rgba(216,168,95,.20)" }}>
+            <Icon name="moon" size={19} />
+          </span>
+        </div>
 
-function ProductPreview() {
-  return (
-    <div style={{ position: "relative", minHeight: 620, display: "grid", placeItems: "center", isolation: "isolate" }}>
-      <div style={{ position: "absolute", inset: "8% 2% 4%", borderRadius: 44, background: "radial-gradient(circle at 52% 35%, rgba(128,64,192,.36), transparent 38%), radial-gradient(circle at 70% 64%, rgba(216,168,95,.18), transparent 34%)", filter: "blur(6px)", zIndex: -2 }} />
-      <div style={{ position: "absolute", width: "78%", aspectRatio: "1", borderRadius: "50%", border: "1px solid rgba(216,168,95,.12)", boxShadow: "0 0 0 38px rgba(216,168,95,.025), 0 0 0 78px rgba(128,64,192,.035)", zIndex: -1 }} />
+        <div style={{ padding: 16, display: "grid", gap: 12 }}>
+          <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 20, padding: 16, background: "linear-gradient(145deg, rgba(128,64,192,.22), rgba(255,255,255,.055))" }}>
+            <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Daily reading</p>
+            <h3 style={{ color: "var(--text)", fontSize: compact ? 20 : 23, fontFamily: "var(--font-display)", fontWeight: 600, lineHeight: 1.08, marginBottom: 8 }}>
+              A clear signal for today
+            </h3>
+            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.55 }}>
+              Pause, name the pattern, and choose one grounded action.
+            </p>
+          </div>
 
-      <div style={{ ...sectionShell, width: "min(100%, 390px)", padding: 12, borderRadius: 42, position: "relative", border: "1px solid rgba(255,255,255,.16)", background: "linear-gradient(145deg, rgba(20,14,44,.96), rgba(7,8,22,.90))" }}>
-        <div style={{ borderRadius: 34, overflow: "hidden", minHeight: 560, position: "relative", background: "linear-gradient(180deg, rgba(10,8,28,.25), rgba(10,8,28,.92))" }}>
-          <Image src={appVisuals.background} width={720} height={1040} alt="eLuna app cosmic preview" priority style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: .5 }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,22,.20), rgba(7,8,22,.86) 62%, rgba(7,8,22,.96))" }} />
-          <div style={{ position: "relative", padding: 18, display: "grid", gap: 13 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".15em", textTransform: "uppercase" }}>eLuna</p>
-              <span style={{ color: "var(--gold-2)", fontSize: 11, fontWeight: 900, border: "1px solid rgba(216,168,95,.24)", borderRadius: 999, padding: "5px 9px", background: "rgba(216,168,95,.08)" }}>Premium preview</span>
-            </div>
-
-            <div style={{ border: "1px solid rgba(216,168,95,.26)", borderRadius: 26, padding: 18, background: "linear-gradient(145deg, rgba(128,64,192,.34), rgba(255,255,255,.07))", boxShadow: "0 18px 42px rgba(0,0,0,.28)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-                <VisualBadge src={appVisuals.meditation} label="daily reading icon" />
-                <div>
-                  <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".13em", textTransform: "uppercase", marginBottom: 4 }}>Today's reading</p>
-                  <h3 style={{ color: "var(--text)", fontSize: 25, fontFamily: "var(--font-display)", fontWeight: 600, lineHeight: 1.05 }}>
-                    A quieter signal before the next step
-                  </h3>
-                </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {[
+              ["Symbolic card", "Meaning + action", "card"],
+              ["Sky Map", "Path preview", "orbit"],
+            ].map(([title, body, icon]) => (
+              <div key={title} style={{ border: "1px solid rgba(255,255,255,.09)", borderRadius: 18, background: "rgba(255,255,255,.045)", padding: 13, minHeight: 126 }}>
+                <IconFrame icon={icon} compact />
+                <p style={{ color: "var(--text)", fontSize: 13, fontWeight: 900, lineHeight: 1.25, margin: "10px 0 5px" }}>{title}</p>
+                <p style={{ color: "var(--muted)", fontSize: 11, lineHeight: 1.45 }}>{body}</p>
               </div>
-              <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>
-                Pause, name the pattern, and choose one grounded action for the day.
-              </p>
-            </div>
+            ))}
+          </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12 }}>
-              {previewCards.map((card, index) => (
-                <article key={card.title} style={{ border: "1px solid rgba(255,255,255,.12)", borderRadius: 22, background: "rgba(8,7,24,.68)", padding: 13, minHeight: 154, boxShadow: "inset 0 1px 0 rgba(255,255,255,.06)" }}>
-                  <div style={{ width: 34, height: 34, borderRadius: "50%", display: "grid", placeItems: "center", color: "var(--gold-2)", background: "rgba(216,168,95,.10)", border: "1px solid rgba(216,168,95,.18)", marginBottom: 10 }}>
-                    <PreviewIcon type={card.icon} />
-                  </div>
-                  <p style={{ color: "var(--gold)", fontSize: 9, fontWeight: 900, letterSpacing: ".11em", textTransform: "uppercase", marginBottom: 5 }}>{card.tag}</p>
-                  <h4 style={{ color: "var(--text)", fontSize: 14, lineHeight: 1.22, fontWeight: 900, marginBottom: 6 }}>{card.title}</h4>
-                  <p style={{ color: "var(--muted)", fontSize: 11, lineHeight: 1.45 }}>{index === 0 ? "Meaning, action, and reflection in one daily view." : card.body}</p>
-                </article>
-              ))}
+          <div style={{ border: "1px solid rgba(255,255,255,.09)", borderRadius: 18, background: "rgba(255,255,255,.04)", padding: 13, display: "grid", gap: 10 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+              <div>
+                <p style={{ color: "var(--text)", fontSize: 13, fontWeight: 900 }}>Practice rhythm</p>
+                <p style={{ color: "var(--muted-2)", fontSize: 11, marginTop: 4 }}>Affirmation and journal prompt</p>
+              </div>
+              <IconFrame icon="spark" compact />
+            </div>
+            <div style={{ height: 7, borderRadius: 999, background: "rgba(255,255,255,.08)", overflow: "hidden" }}>
+              <div style={{ width: "62%", height: "100%", borderRadius: 999, background: "linear-gradient(90deg, #d8a85f, #8d55d6)" }} />
             </div>
           </div>
-        </div>
-      </div>
 
-      <div style={{ position: "absolute", left: 0, top: 92, width: "min(44%, 190px)", border: "1px solid rgba(216,168,95,.22)", borderRadius: 24, background: "rgba(12,8,28,.82)", padding: 14, boxShadow: "0 18px 48px rgba(0,0,0,.36)", backdropFilter: "blur(12px)" }}>
-        <VisualBadge src={appVisuals.card} label="symbolic card" />
-        <p style={{ color: "var(--gold)", fontSize: 9, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", margin: "10px 0 5px" }}>Symbolic card</p>
-        <p style={{ color: "var(--text)", fontSize: 13, fontWeight: 900, lineHeight: 1.3 }}>Draw once, reflect deeper.</p>
-      </div>
-
-      <div style={{ position: "absolute", right: 0, bottom: 82, width: "min(46%, 205px)", border: "1px solid rgba(128,64,192,.30)", borderRadius: 24, background: "rgba(12,8,28,.84)", padding: 14, boxShadow: "0 18px 48px rgba(0,0,0,.36)", backdropFilter: "blur(12px)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <VisualBadge src={appVisuals.soulmate} label="sky map emblem" />
-          <div>
-            <p style={{ color: "var(--gold)", fontSize: 9, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 4 }}>Sky Map</p>
-            <p style={{ color: "var(--text)", fontSize: 13, fontWeight: 900, lineHeight: 1.3 }}>Personal insight path</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, paddingTop: 2 }}>
+            {["Home", "Today", "Sky", "Journal"].map((item, index) => (
+              <div key={item} style={{ height: 38, borderRadius: 14, display: "grid", placeItems: "center", color: index === 1 ? "var(--gold-2)" : "var(--muted-2)", background: index === 1 ? "rgba(216,168,95,.10)" : "rgba(255,255,255,.035)", fontSize: 10, fontWeight: 900 }}>
+                {item}
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -353,11 +270,11 @@ function ProductPreview() {
 
 export default function WelcomeHeadPage() {
   return (
-    <main className="app no-nav" style={{ width: "100vw", maxWidth: "none", minHeight: "100dvh", padding: 0, border: "none", overflowX: "hidden", background: "radial-gradient(circle at 18% 10%, rgba(128,64,192,.18), transparent 30%), radial-gradient(circle at 86% 8%, rgba(216,168,95,.10), transparent 28%), #070816" }}>
+    <main className="app no-nav" style={{ width: "100vw", maxWidth: "none", minHeight: "100dvh", padding: 0, border: "none", overflowX: "hidden", background: "radial-gradient(circle at 18% 8%, rgba(128,64,192,.16), transparent 30%), radial-gradient(circle at 86% 6%, rgba(216,168,95,.08), transparent 28%), #070816" }}>
       <StarField />
 
       <div style={pageWrap}>
-        <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18, padding: "20px 0", position: "relative", zIndex: 3 }}>
+        <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18, padding: "22px 0", position: "relative", zIndex: 3 }}>
           <Link href="/" aria-label="eLuna home" style={{ textDecoration: "none" }}>
             <Logo variant="header" priority />
           </Link>
@@ -368,207 +285,151 @@ export default function WelcomeHeadPage() {
               </a>
             ))}
           </nav>
-          <a href={appLoginUrl} style={{ minHeight: 40, borderRadius: 999, padding: "0 16px", display: "inline-flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(216,168,95,.28)", background: "rgba(255,255,255,.05)", color: "var(--gold-2)", fontSize: 13, fontWeight: 900, textDecoration: "none", whiteSpace: "nowrap" }}>
+          <a href={appLoginUrl} style={{ minHeight: 40, borderRadius: 999, padding: "0 16px", display: "inline-flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(216,168,95,.28)", background: "rgba(255,255,255,.045)", color: "var(--gold-2)", fontSize: 13, fontWeight: 900, textDecoration: "none", whiteSpace: "nowrap" }}>
             Sign in
           </a>
         </header>
 
-        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 390px), 1fr))", gap: 34, alignItems: "center", padding: "54px 0 72px" }}>
-          <div style={{ display: "grid", gap: 20 }}>
+        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 430px), 1fr))", gap: 48, alignItems: "center", padding: "44px 0 58px" }}>
+          <div style={{ display: "grid", gap: 19, maxWidth: 660 }}>
             <p style={{ color: "var(--gold)", fontSize: 11, fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" }}>ELUNA DIGITAL SUBSCRIPTION APP</p>
-            <h1 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: "clamp(46px, 7vw, 76px)", fontWeight: 600, lineHeight: 1.02, maxWidth: 760 }}>
+            <h1 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: "clamp(42px, 5.7vw, 70px)", fontWeight: 600, lineHeight: 1.03, maxWidth: 640 }}>
               AI-powered self-reflection for your inner world
             </h1>
-            <p style={{ color: "var(--muted)", fontSize: "clamp(16px, 2vw, 19px)", lineHeight: 1.7, maxWidth: 660 }}>
+            <p style={{ color: "var(--muted)", fontSize: "clamp(16px, 1.8vw, 19px)", lineHeight: 1.65, maxWidth: 570 }}>
               eLuna helps you pause, reflect, and explore symbolic guidance through daily readings, personal insights, and AI-powered reflection tools.
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-              <a href={appRegisterUrl} style={{ minHeight: 54, borderRadius: 999, padding: "0 24px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #8d55d6 0%, #5a2090 100%)", color: "#fff", fontSize: 15, fontWeight: 900, textDecoration: "none", boxShadow: "0 14px 34px rgba(90,32,144,.45)" }}>
+              <a href={appRegisterUrl} style={{ minHeight: 52, borderRadius: 999, padding: "0 23px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #8d55d6 0%, #5a2090 100%)", color: "#fff", fontSize: 15, fontWeight: 900, textDecoration: "none", boxShadow: "0 14px 34px rgba(90,32,144,.40)" }}>
                 Create account
               </a>
-              <a href={appLoginUrl} style={{ minHeight: 54, borderRadius: 999, padding: "0 24px", display: "inline-flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(216,168,95,.30)", background: "rgba(255,255,255,.05)", color: "var(--text)", fontSize: 15, fontWeight: 900, textDecoration: "none" }}>
+              <a href={appLoginUrl} style={{ minHeight: 52, borderRadius: 999, padding: "0 23px", display: "inline-flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(216,168,95,.30)", background: "rgba(255,255,255,.045)", color: "var(--text)", fontSize: 15, fontWeight: 900, textDecoration: "none" }}>
                 Sign in
               </a>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 10, maxWidth: 670 }}>
-              {trustBullets.map((item) => (
-                <div key={item} style={{ border: "1px solid rgba(255,255,255,.10)", borderRadius: 16, background: "rgba(255,255,255,.045)", padding: "11px 12px", color: "var(--muted)", fontSize: 12, lineHeight: 1.45 }}>
-                  {item === "Support: support@myeluna.com" ? (
-                    <>
-                      Support: <GoldLink href={supportHref}>{SUPPORT_EMAIL_ADDRESS}</GoldLink>
-                    </>
-                  ) : (
-                    item
-                  )}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10, maxWidth: 610 }}>
+              {trustItems.map((item) => (
+                <div key={item} style={{ border: "1px solid rgba(255,255,255,.09)", borderRadius: 16, background: "rgba(255,255,255,.035)", padding: "11px 12px", color: "var(--muted)", fontSize: 12, lineHeight: 1.45 }}>
+                  <SmartText text={item} />
                 </div>
               ))}
             </div>
-            <p style={{ color: "var(--muted-2)", fontSize: 12, lineHeight: 1.6, maxWidth: 620 }}>
+            <p style={{ color: "var(--muted-2)", fontSize: 12, lineHeight: 1.6, maxWidth: 600 }}>
               eLuna is for self-reflection and entertainment. It is not medical, legal, financial, psychological, or crisis advice.
             </p>
           </div>
 
-          <ProductPreview />
+          <div style={{ display: "grid", placeItems: "center" }}>
+            <AppMockup />
+          </div>
         </section>
 
-        <section aria-label="Product proof" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14, margin: "-24px 0 54px" }}>
-          {proofStats.map(([value, label]) => (
-            <article key={value} style={{ ...sectionShell, padding: "18px 20px", display: "flex", alignItems: "center", gap: 14 }}>
-              <div style={{ width: 54, height: 54, borderRadius: 18, display: "grid", placeItems: "center", color: "var(--gold-2)", border: "1px solid rgba(216,168,95,.22)", background: "rgba(216,168,95,.09)", fontSize: 20, fontWeight: 900 }}>
-                {value}
-              </div>
-              <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>{label}</p>
-            </article>
-          ))}
-        </section>
-
-        <section id="product" style={{ ...sectionShell, padding: "34px 26px", marginBottom: 22 }}>
+        <section id="product" style={{ padding: "42px 0" }}>
           <SectionHeader
             eyebrow="Product"
             title="What is eLuna?"
             body="eLuna is a digital subscription app that provides AI-powered readings, daily symbolic guidance, personal reflection prompts, affirmations, and spiritual self-awareness tools. The app is designed for personal reflection and entertainment, not professional advice."
+            centered
           />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 14 }}>
-            {features.map((feature) => (
-              <article key={feature.title} style={{ border: "1px solid rgba(255,255,255,.10)", borderRadius: 22, background: "linear-gradient(145deg, rgba(255,255,255,.055), rgba(128,64,192,.055))", padding: 18, minHeight: 218, display: "grid", alignContent: "start", boxShadow: "inset 0 1px 0 rgba(255,255,255,.06)" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 16 }}>
-                  <VisualBadge src={feature.visual} label={feature.title} />
-                  <div style={{ width: 54, height: 54, borderRadius: "50%", border: "1px solid rgba(216,168,95,.12)", opacity: .8 }} />
-                </div>
-                <h3 style={{ color: "var(--text)", fontSize: 18, lineHeight: 1.22, fontWeight: 900, marginBottom: 8 }}>{feature.title}</h3>
-                <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.65 }}>{feature.body}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section style={{ padding: "42px 0" }}>
-          <SectionHeader eyebrow="How it works" title="Digital access in four steps" />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 14 }}>
-            {steps.map(([title, body], index) => (
-              <article key={title} style={{ ...sectionShell, padding: 18, minHeight: 174 }}>
-                <div style={{ width: 36, height: 36, borderRadius: "50%", display: "grid", placeItems: "center", background: "rgba(216,168,95,.12)", border: "1px solid rgba(216,168,95,.22)", color: "var(--gold-2)", fontWeight: 900, marginBottom: 14 }}>
-                  {index + 1}
-                </div>
-                <h3 style={{ color: "var(--text)", fontSize: 17, fontWeight: 900, lineHeight: 1.24, marginBottom: 8 }}>{title}</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: 16 }}>
+            {features.map(([title, body, icon]) => (
+              <article key={title} style={{ ...glassPanel, padding: 20, minHeight: 214, display: "grid", alignContent: "start", gap: 13 }}>
+                <IconFrame icon={icon} />
+                <h3 style={{ color: "var(--text)", fontSize: 18, lineHeight: 1.25, fontWeight: 900 }}>{title}</h3>
                 <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.62 }}>{body}</p>
               </article>
             ))}
           </div>
-          <p style={{ color: "var(--muted-2)", fontSize: 13, lineHeight: 1.65, marginTop: 14 }}>
+        </section>
+
+        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))", gap: 34, alignItems: "center", padding: "40px 0 58px" }}>
+          <AppMockup compact />
+          <div>
+            <SectionHeader eyebrow="Product proof" title="A personal reflection space in your pocket" body="The public landing shows how eLuna delivers a real digital experience: daily guidance, structured personal insight, and a journal-friendly rhythm." />
+            <div style={{ display: "grid", gap: 12 }}>
+              {proofBenefits.map(([title, body], index) => (
+                <article key={title} style={{ ...glassPanel, padding: 18, display: "grid", gridTemplateColumns: "auto 1fr", gap: 14, alignItems: "start" }}>
+                  <IconFrame icon={index === 0 ? "moon" : index === 1 ? "orbit" : "journal"} compact />
+                  <div>
+                    <h3 style={{ color: "var(--text)", fontSize: 16, fontWeight: 900, lineHeight: 1.25, marginBottom: 5 }}>{title}</h3>
+                    <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>{body}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="how-it-works" style={{ padding: "34px 0 48px" }}>
+          <SectionHeader eyebrow="How it works" title="Digital access in four steps" centered />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 230px), 1fr))", gap: 14 }}>
+            {steps.map(([title, body], index) => (
+              <article key={title} style={{ ...glassPanel, padding: 18, minHeight: 180 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                  <div style={{ width: 34, height: 34, borderRadius: 13, display: "grid", placeItems: "center", color: "var(--gold-2)", background: "rgba(216,168,95,.10)", border: "1px solid rgba(216,168,95,.22)", fontWeight: 900 }}>{index + 1}</div>
+                  <div style={{ height: 1, flex: 1, background: "rgba(216,168,95,.18)" }} />
+                </div>
+                <h3 style={{ color: "var(--text)", fontSize: 16, fontWeight: 900, lineHeight: 1.25, marginBottom: 8 }}>{title}</h3>
+                <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.58 }}>{body}</p>
+              </article>
+            ))}
+          </div>
+          <p style={{ color: "var(--muted-2)", fontSize: 13, lineHeight: 1.65, margin: "14px auto 0", textAlign: "center", maxWidth: 720 }}>
             Access is delivered digitally through your eLuna account. No physical products are shipped.
           </p>
         </section>
 
-        <section id="pricing" style={{ ...sectionShell, padding: "34px 26px", marginBottom: 22 }}>
-          <SectionHeader eyebrow="Pricing" title="Simple digital subscription pricing" />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
-            {plans.map((plan) => (
-              <article key={plan.name} style={{ border: plan.highlighted ? "1px solid rgba(216,168,95,.38)" : "1px solid rgba(255,255,255,.10)", borderRadius: 22, background: plan.highlighted ? "linear-gradient(145deg, rgba(128,64,192,.25), rgba(216,168,95,.08))" : "rgba(255,255,255,.045)", padding: 18, display: "grid", gap: 12 }}>
-                <div>
-                  <div style={{ width: 42, height: 42, borderRadius: 16, display: "grid", placeItems: "center", color: "var(--gold-2)", border: "1px solid rgba(216,168,95,.24)", background: "rgba(216,168,95,.10)", marginBottom: 12 }}>
-                    <PreviewIcon type={plan.icon} />
-                  </div>
-                  <h3 style={{ color: "var(--text)", fontSize: 18, lineHeight: 1.22, fontWeight: 900, marginBottom: 8 }}>{plan.name}</h3>
-                  <p style={{ color: "var(--gold-2)", fontSize: 24, lineHeight: 1.12, fontWeight: 900 }}>{plan.price}</p>
-                  {plan.subprice && <p style={{ color: "var(--muted-2)", fontSize: 12, lineHeight: 1.5, marginTop: 5 }}>{plan.subprice}</p>}
-                </div>
-                <ul style={{ display: "grid", gap: 8, margin: "0 0 0 17px", padding: 0 }}>
-                  {plan.bullets.map((bullet) => (
-                    <li key={bullet} style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.5, paddingLeft: 2 }}>
-                      {bullet}
-                    </li>
-                  ))}
-                </ul>
-                <a href={appRegisterUrl} style={{ minHeight: 44, borderRadius: 999, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "0 16px", background: "rgba(216,168,95,.12)", border: "1px solid rgba(216,168,95,.24)", color: "var(--gold-2)", fontSize: 13, fontWeight: 900, textDecoration: "none" }}>
-                  Create account
-                </a>
-              </article>
+        <section id="pricing" style={{ padding: "42px 0" }}>
+          <SectionHeader eyebrow="Pricing" title="Simple digital subscription pricing" body="Create an account first. Paid access is only activated after subscription checkout is available and completed." centered />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: 16, alignItems: "stretch" }}>
+            {plans.slice(0, 3).map((plan) => (
+              <PlanCard key={plan.name} plan={plan} />
             ))}
           </div>
-          <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.65, marginTop: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: 16, marginTop: 16, width: "min(100%, 780px)", marginLeft: "auto", marginRight: "auto" }}>
+            {plans.slice(3).map((plan) => (
+              <PlanCard key={plan.name} plan={plan} compact />
+            ))}
+          </div>
+          <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.65, margin: "16px auto 0", textAlign: "center", maxWidth: 820 }}>
             Subscriptions renew automatically unless cancelled. For cancellation, refund, or billing questions, contact{" "}
             <GoldLink href={billingSupportHref}>{SUPPORT_EMAIL_ADDRESS}</GoldLink>.
           </p>
         </section>
 
-        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: 18, padding: "22px 0 42px" }}>
-          <article style={{ ...sectionShell, padding: 24 }}>
-            <SectionHeader eyebrow="Fulfillment" title="Digital delivery" />
-            <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.7 }}>
-              eLuna is a digital service. After account creation and successful subscription activation, access to paid digital features is delivered through the user's eLuna account. No physical goods are shipped.
-            </p>
-            <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.7, marginTop: 10 }}>
-              Free preview features are available after account creation. Paid features become available after subscription activation.
-            </p>
-          </article>
-          <article style={{ ...sectionShell, padding: 24 }}>
-            <SectionHeader eyebrow="Billing support" title="Cancellation and refunds" />
-            <div style={{ display: "grid", gap: 14 }}>
-              <div style={{ border: "1px solid rgba(255,255,255,.10)", borderRadius: 18, background: "rgba(255,255,255,.04)", padding: 15 }}>
-                <h3 style={{ color: "var(--text)", fontSize: 16, fontWeight: 900, marginBottom: 7 }}>Cancellation</h3>
-                <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.65 }}>
-                  Users can request cancellation by contacting <GoldLink href={billingSupportHref}>{SUPPORT_EMAIL_ADDRESS}</GoldLink>. Cancellation requests should include the email address associated with the eLuna account.
-                </p>
-              </div>
-              <div style={{ border: "1px solid rgba(255,255,255,.10)", borderRadius: 18, background: "rgba(255,255,255,.04)", padding: 15 }}>
-                <h3 style={{ color: "var(--text)", fontSize: 16, fontWeight: 900, marginBottom: 7 }}>Refunds</h3>
-                <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.65 }}>
-                  Refund requests should be sent to <GoldLink href={billingSupportHref}>{SUPPORT_EMAIL_ADDRESS}</GoldLink>. Each request is reviewed according to account status, subscription activity, and applicable law. If approved, refunds are processed back to the original payment method where possible.
-                </p>
-              </div>
-            </div>
-          </article>
-        </section>
-
-        <section aria-label="Compliance summary" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 14, marginBottom: 42 }}>
-          {complianceCards.map((card) => (
-            <article key={card.title} style={{ border: "1px solid rgba(216,168,95,.16)", borderRadius: 22, background: "rgba(255,255,255,.04)", padding: 18, display: "grid", gap: 10 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 15, display: "grid", placeItems: "center", color: "var(--gold-2)", border: "1px solid rgba(216,168,95,.22)", background: "rgba(216,168,95,.09)" }}>
-                <PreviewIcon type={card.icon} />
-              </div>
-              <h3 style={{ color: "var(--text)", fontSize: 16, fontWeight: 900, lineHeight: 1.25 }}>{card.title}</h3>
-              <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>
-                {card.body.includes(SUPPORT_EMAIL_ADDRESS) ? (
-                  <>
-                    {card.body.split(SUPPORT_EMAIL_ADDRESS)[0]}
-                    <GoldLink href={supportHref}>{SUPPORT_EMAIL_ADDRESS}</GoldLink>
-                    {card.body.split(SUPPORT_EMAIL_ADDRESS)[1]}
-                  </>
-                ) : (
-                  card.body
-                )}
-              </p>
-            </article>
-          ))}
-        </section>
-
-        <section id="faq" style={{ ...sectionShell, padding: "34px 26px", marginBottom: 22 }}>
-          <SectionHeader eyebrow="FAQ" title="Questions reviewers and customers ask" />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 14 }}>
-            {faqs.map((faq) => (
-              <article key={faq.question} style={{ border: "1px solid rgba(255,255,255,.10)", borderRadius: 18, background: "rgba(255,255,255,.04)", padding: 16 }}>
-                <h3 style={{ color: "var(--text)", fontSize: 15, fontWeight: 900, lineHeight: 1.3, marginBottom: 8 }}>{faq.question}</h3>
-                <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.65 }}>
-                  {faq.answer.includes(SUPPORT_EMAIL_ADDRESS) ? (
-                    <>
-                      {faq.answer.split(SUPPORT_EMAIL_ADDRESS)[0]}
-                      <GoldLink href={supportHref}>{SUPPORT_EMAIL_ADDRESS}</GoldLink>
-                      {faq.answer.split(SUPPORT_EMAIL_ADDRESS)[1]}
-                    </>
-                  ) : (
-                    faq.answer
-                  )}
+        <section style={{ padding: "42px 0" }}>
+          <SectionHeader eyebrow="Trust and policies" title="Digital delivery, support, cancellation, and refunds" centered />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 245px), 1fr))", gap: 14 }}>
+            {complianceCards.map((card) => (
+              <article key={card.title} style={{ ...glassPanel, padding: 18, minHeight: 230 }}>
+                <IconFrame icon={card.icon} />
+                <h3 style={{ color: "var(--text)", fontSize: 17, fontWeight: 900, lineHeight: 1.25, margin: "14px 0 8px" }}>{card.title}</h3>
+                <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>
+                  <SmartText text={card.body} href={billingSupportHref} />
                 </p>
               </article>
             ))}
           </div>
         </section>
 
-        <section id="contact" style={{ ...sectionShell, padding: "30px 26px", marginBottom: 24 }}>
-          <SectionHeader eyebrow="Company details" title="Official contact and business details" />
-          {/* TODO: Replace company details before Stripe review with the exact details used in the Stripe account. */}
-          <dl style={{ display: "grid", gap: 12, margin: 0 }}>
+        <section id="faq" style={{ padding: "36px 0 44px" }}>
+          <SectionHeader eyebrow="FAQ" title="Clear answers for a digital subscription" centered />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))", gap: 12 }}>
+            {faqs.map(([question, answer]) => (
+              <article key={question} style={{ border: "1px solid rgba(255,255,255,.09)", borderRadius: 18, background: "rgba(255,255,255,.035)", padding: 16 }}>
+                <h3 style={{ color: "var(--text)", fontSize: 15, fontWeight: 900, lineHeight: 1.3, marginBottom: 7 }}>{question}</h3>
+                <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.62 }}>
+                  <SmartText text={answer} href={supportHref} />
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="contact" style={{ ...glassPanel, padding: "26px 24px", margin: "16px 0 26px" }}>
+          <SectionHeader eyebrow="Company details" title="Official contact and business details" body="These details are visible for customers and payment review. Replace placeholders with the exact legal information used in the Stripe account." />
+          {/* TODO: Replace company placeholders before Stripe review with exact Stripe account details. */}
+          <dl style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 12, margin: 0 }}>
             {[
               ["Legal name", "[LEGAL COMPANY NAME]"],
               ["Registered address", "[REGISTERED ADDRESS]"],
@@ -576,9 +437,9 @@ export default function WelcomeHeadPage() {
               ["Contact", SUPPORT_EMAIL_ADDRESS],
               ["Website", "https://www.myeluna.com"],
             ].map(([label, value]) => (
-              <div key={label} style={{ display: "grid", gridTemplateColumns: "minmax(138px, .34fr) 1fr", gap: 12, alignItems: "baseline" }}>
-                <dt style={{ color: "var(--muted-2)", fontSize: 12, fontWeight: 900 }}>{label}</dt>
-                <dd style={{ color: "var(--text)", fontSize: 14, lineHeight: 1.55, margin: 0, overflowWrap: "anywhere" }}>
+              <div key={label} style={{ border: "1px solid rgba(255,255,255,.08)", borderRadius: 16, background: "rgba(255,255,255,.035)", padding: 14 }}>
+                <dt style={{ color: "var(--muted-2)", fontSize: 11, fontWeight: 900, marginBottom: 5 }}>{label}</dt>
+                <dd style={{ color: "var(--text)", fontSize: 14, lineHeight: 1.5, margin: 0, overflowWrap: "anywhere" }}>
                   {label === "Contact" ? (
                     <GoldLink href={supportHref}>{value}</GoldLink>
                   ) : label === "Website" ? (
@@ -590,9 +451,6 @@ export default function WelcomeHeadPage() {
               </div>
             ))}
           </dl>
-          <p style={{ color: "var(--muted-2)", fontSize: 12, lineHeight: 1.55, marginTop: 14 }}>
-            Replace these placeholders with the exact legal company details used in the Stripe account before review.
-          </p>
         </section>
 
         <footer style={{ display: "grid", gap: 14, justifyItems: "center", padding: "24px 0 38px", color: "var(--muted-2)", fontSize: 12 }}>
@@ -606,11 +464,33 @@ export default function WelcomeHeadPage() {
               Support
             </a>
           </nav>
-          <p style={{ textAlign: "center", lineHeight: 1.55 }}>
-            © eLuna. Digital AI-powered self-reflection subscription service.
-          </p>
+          <p style={{ textAlign: "center", lineHeight: 1.55 }}>© eLuna. Digital AI-powered self-reflection subscription service.</p>
         </footer>
       </div>
     </main>
+  );
+}
+
+function PlanCard({ plan, compact = false }: { plan: (typeof plans)[number]; compact?: boolean }) {
+  return (
+    <article style={{ ...glassPanel, padding: compact ? 18 : 20, minHeight: compact ? 260 : 330, display: "grid", gap: 14, border: plan.featured ? "1px solid rgba(216,168,95,.34)" : glassPanel.border, background: plan.featured ? "linear-gradient(145deg, rgba(128,64,192,.22), rgba(216,168,95,.08))" : glassPanel.background }}>
+      <div>
+        <IconFrame icon={plan.icon} compact />
+        <h3 style={{ color: "var(--text)", fontSize: 18, lineHeight: 1.22, fontWeight: 900, margin: "14px 0 8px" }}>{plan.name}</h3>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+          <p style={{ color: "var(--gold-2)", fontSize: compact ? 25 : 29, lineHeight: 1.05, fontWeight: 900 }}>{plan.price}</p>
+          <p style={{ color: "var(--muted-2)", fontSize: 12, lineHeight: 1.4 }}>{plan.period}</p>
+        </div>
+        {plan.subprice && <p style={{ color: "var(--muted-2)", fontSize: 12, lineHeight: 1.5, marginTop: 6 }}>{plan.subprice}</p>}
+      </div>
+      <ul style={{ display: "grid", gap: 8, margin: "0 0 0 17px", padding: 0 }}>
+        {plan.bullets.map((bullet) => (
+          <li key={bullet} style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.5, paddingLeft: 2 }}>{bullet}</li>
+        ))}
+      </ul>
+      <a href={appRegisterUrl} style={{ minHeight: 44, borderRadius: 999, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "0 16px", background: plan.featured ? "linear-gradient(135deg, #8d55d6 0%, #5a2090 100%)" : "rgba(216,168,95,.10)", border: plan.featured ? "none" : "1px solid rgba(216,168,95,.22)", color: plan.featured ? "#fff" : "var(--gold-2)", fontSize: 13, fontWeight: 900, textDecoration: "none", alignSelf: "end" }}>
+        Create account
+      </a>
+    </article>
   );
 }
