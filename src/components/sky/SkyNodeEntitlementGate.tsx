@@ -51,7 +51,7 @@ export function SkyNodeEntitlementGate({
               Unlock this deeper insight
             </h2>
             <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 18 }}>
-              Start your 3-day trial or use an account with full access to open this node.
+              Start 3-day introductory access for $1 or use an account with full access to open this node.
             </p>
             <button
               type="button"
@@ -78,7 +78,7 @@ export function SkyNodeEntitlementGate({
           isOpen={subscriptionOpen}
           onClose={() => setSubscriptionOpen(false)}
           contextTitle={`Unlock ${title}`}
-          contextDescription="Start your 3-day trial to unlock premium Sky Map nodes, deeper practices, and full readings."
+          contextDescription="Start 3-day introductory access for $1 to unlock premium Sky Map nodes, deeper practices, and full readings."
         />
       </>
     );

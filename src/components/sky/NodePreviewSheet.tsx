@@ -40,7 +40,7 @@ export function NodePreviewSheet({ node, onClose, onOpenSubscription }: NodePrev
 
   const isLocked = node.status === "locked";
   const isPremium = node.status === "premium";
-  const primaryLabel = isPremium ? "Start 3-day trial" : isLocked ? "Continue today's path" : "Open node";
+  const primaryLabel = isPremium ? "Start 3-day access for $1" : isLocked ? "Continue today's path" : "Open node";
   const primaryHref = isLocked ? "/today" : node.route;
 
   return (

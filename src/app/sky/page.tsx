@@ -58,7 +58,7 @@ function getOrbitalPosition(node: SkyNode) {
 function statusCopy(status: SkyNodeStatus) {
   if (status === "active") return { label: "Active", text: "Ready to open now" };
   if (status === "available") return { label: "Available", text: "Can be explored after your next step" };
-  if (status === "premium") return { label: "Premium", text: "Available with Trial or Premium" };
+  if (status === "premium") return { label: "Premium", text: "Available with Intro access or Premium" };
   if (status === "completed") return { label: "Completed", text: "Already opened" };
   return { label: "Locked", text: "Opens after more daily progress" };
 }
@@ -134,7 +134,7 @@ export default function SkyPage() {
     }
     setPaywallContext({
       title: `Unlock ${node.title}`,
-      description: `Start your 3-day trial to unlock this insight and continue your path. ${node.description}`,
+      description: `Start 3-day introductory access for $1 to unlock this insight and continue your path. ${node.description}`,
     });
     setSubscriptionOpen(true);
   }
@@ -181,7 +181,7 @@ export default function SkyPage() {
           {howOpen && (
             <div style={{ border: "1px solid rgba(216,168,95,.14)", borderRadius: 16, background: "rgba(255,255,255,.035)", padding: 12, marginTop: 12 }}>
               <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 5 }}>Learn how unlocks work</p>
-              <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Free gives you a preview of your map. Trial and Premium unlock deeper nodes, full readings, reports, and saved progress.</p>
+              <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Free gives you a preview of your map. Intro access and Premium unlock deeper nodes, full readings, reports, and saved progress.</p>
             </div>
           )}
         </section>
@@ -301,7 +301,7 @@ export default function SkyPage() {
       <BottomNav />
       {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
       <NodePreviewSheet node={selectedNode} onClose={() => setSelectedNode(null)} onOpenSubscription={openNodePaywall} />
-      <SubscriptionModal isOpen={subscriptionOpen} onClose={() => setSubscriptionOpen(false)} contextTitle={paywallContext?.title ?? "Unlock this Sky Map node"} contextDescription={paywallContext?.description ?? "Start your 3-day trial to unlock this insight and continue your path."} trialCtaLabel={prelandExperience ? "Unlock for $1" : undefined} />
+      <SubscriptionModal isOpen={subscriptionOpen} onClose={() => setSubscriptionOpen(false)} contextTitle={paywallContext?.title ?? "Unlock this Sky Map node"} contextDescription={paywallContext?.description ?? "Start 3-day introductory access for $1 to unlock this insight and continue your path."} trialCtaLabel={prelandExperience ? "Unlock for $1" : undefined} />
     </div>
   );
 }

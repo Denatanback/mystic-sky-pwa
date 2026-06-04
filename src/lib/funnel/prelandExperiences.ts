@@ -32,7 +32,7 @@ export const pastlifeExperiences: Record<string, PrelandExperience> = {
     pathWhere: "Look for moments where you moved into protection before asking what you needed.",
     pathNext: "Choose one small response that protects your energy without closing your heart.",
     paywallTitle: "Unlock your Past Life reading",
-    paywallDescription: "Start your 3-day trial to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
+    paywallDescription: "Start 3-day introductory access for $1 to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
   },
   healer: {
     title: "Your Past Life reading is ready",
@@ -44,7 +44,7 @@ export const pastlifeExperiences: Record<string, PrelandExperience> = {
     pathWhere: "Look for moments where someone else’s feeling stayed in your body after the moment passed.",
     pathNext: "Release one feeling that does not belong to you before choosing your response.",
     paywallTitle: "Unlock your Past Life reading",
-    paywallDescription: "Start your 3-day trial to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
+    paywallDescription: "Start 3-day introductory access for $1 to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
   },
   wanderer: {
     title: "Your Past Life reading is ready",
@@ -56,7 +56,7 @@ export const pastlifeExperiences: Record<string, PrelandExperience> = {
     pathWhere: "Look for moments where change felt urgent, even when the next step was still forming.",
     pathNext: "Name what you are moving toward before you move away from what is here.",
     paywallTitle: "Unlock your Past Life reading",
-    paywallDescription: "Start your 3-day trial to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
+    paywallDescription: "Start 3-day introductory access for $1 to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
   },
   mystic: {
     title: "Your Past Life reading is ready",
@@ -68,7 +68,7 @@ export const pastlifeExperiences: Record<string, PrelandExperience> = {
     pathWhere: "Look for moments where your body knew something before your thoughts caught up.",
     pathNext: "Give one quiet signal enough space to become clear before you act.",
     paywallTitle: "Unlock your Past Life reading",
-    paywallDescription: "Start your 3-day trial to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
+    paywallDescription: "Start 3-day introductory access for $1 to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
   },
   warrior: {
     title: "Your Past Life reading is ready",
@@ -80,7 +80,7 @@ export const pastlifeExperiences: Record<string, PrelandExperience> = {
     pathWhere: "Look for moments where you braced, defended, or pushed through before checking what you felt.",
     pathNext: "Let strength become steadiness instead of reaction in one small moment today.",
     paywallTitle: "Unlock your Past Life reading",
-    paywallDescription: "Start your 3-day trial to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
+    paywallDescription: "Start 3-day introductory access for $1 to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
   },
   hidden: {
     title: "Your Past Life reading is ready",
@@ -92,7 +92,7 @@ export const pastlifeExperiences: Record<string, PrelandExperience> = {
     pathWhere: "Look for the emotional theme that repeated today, even if the outer situation changed.",
     pathNext: "Choose one small response that belongs to the present, not to the old pattern.",
     paywallTitle: "Unlock your Past Life reading",
-    paywallDescription: "Start your 3-day trial to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
+    paywallDescription: "Start 3-day introductory access for $1 to open the deeper pattern behind your quiz result, daily practices, and Sky Map.",
   },
 };
 
@@ -107,7 +107,7 @@ export const soulmateExperiences: Record<string, PrelandExperience> = {
     pathWhere: "Look for the person, memory, or feeling you kept returning to today.",
     pathNext: "Choose one response that keeps you honest with yourself inside the connection.",
     paywallTitle: "Unlock your Soulmate insight",
-    paywallDescription: "Start your 3-day trial to reveal deeper relationship patterns, connection signals, and your evolving path.",
+    paywallDescription: "Start 3-day introductory access for $1 to reveal deeper relationship patterns, connection signals, and your evolving path.",
   },
   slow_flame: {
     title: "Your Soulmate signal is ready",
@@ -119,7 +119,7 @@ export const soulmateExperiences: Record<string, PrelandExperience> = {
     pathWhere: "Look for signs of calm care, steady attention, or the absence of pressure.",
     pathNext: "Let one connection move at a pace your body can actually trust.",
     paywallTitle: "Unlock your Soulmate insight",
-    paywallDescription: "Start your 3-day trial to reveal deeper relationship patterns, connection signals, and your evolving path.",
+    paywallDescription: "Start 3-day introductory access for $1 to reveal deeper relationship patterns, connection signals, and your evolving path.",
   },
   twin_signal: {
     title: "Your Soulmate signal is ready",
@@ -131,7 +131,7 @@ export const soulmateExperiences: Record<string, PrelandExperience> = {
     pathWhere: "Look for moments where someone else’s presence made your own pattern easier to see.",
     pathNext: "Separate the signal from the fantasy by naming one grounded fact.",
     paywallTitle: "Unlock your Soulmate insight",
-    paywallDescription: "Start your 3-day trial to reveal deeper relationship patterns, connection signals, and your evolving path.",
+    paywallDescription: "Start 3-day introductory access for $1 to reveal deeper relationship patterns, connection signals, and your evolving path.",
   },
   unfinished_thread: {
     title: "Your Soulmate signal is ready",
@@ -143,7 +143,7 @@ export const soulmateExperiences: Record<string, PrelandExperience> = {
     pathWhere: "Look for repeated thoughts, old conversations, or emotional loops that returned today.",
     pathNext: "Give the unfinished feeling one honest sentence without making it your whole direction.",
     paywallTitle: "Unlock your Soulmate insight",
-    paywallDescription: "Start your 3-day trial to reveal deeper relationship patterns, connection signals, and your evolving path.",
+    paywallDescription: "Start 3-day introductory access for $1 to reveal deeper relationship patterns, connection signals, and your evolving path.",
   },
   hidden: {
     title: "Your Soulmate signal is ready",
@@ -155,7 +155,7 @@ export const soulmateExperiences: Record<string, PrelandExperience> = {
     pathWhere: "Look for the emotional pattern that repeated around love, memory, or longing today.",
     pathNext: "Choose one response that honors both your heart and your stability.",
     paywallTitle: "Unlock your Soulmate insight",
-    paywallDescription: "Start your 3-day trial to reveal deeper relationship patterns, connection signals, and your evolving path.",
+    paywallDescription: "Start 3-day introductory access for $1 to reveal deeper relationship patterns, connection signals, and your evolving path.",
   },
 };
 
@@ -169,7 +169,7 @@ export const genericPrelandExperience: PrelandExperience = {
   pathWhere: "Look for the moment that repeated emotionally, even if the outside situation changed.",
   pathNext: "Choose one small action that respects what you noticed.",
   paywallTitle: "Unlock your full eLuna path",
-  paywallDescription: "Start your 3-day trial to open deeper readings, premium practices, and the parts of your Sky Map that stay locked on Free.",
+  paywallDescription: "Start 3-day introductory access for $1 to open deeper readings, premium practices, and the parts of your Sky Map that stay locked on Free.",
 };
 
 export function getExperienceForPreland(kind: PrelandKind | null, result?: string | null): PrelandExperience | null {

@@ -1405,7 +1405,7 @@ export default function WelcomeHeadPage() {
         </section>
 
         <section id="pricing" style={{ padding: "36px 0", scrollMarginTop: 24 }}>
-          <SectionHeader eyebrow="Pricing" title="Simple digital subscription pricing" body="Create an account first. Paid access is only activated after subscription checkout is available and completed." centered />
+          <SectionHeader eyebrow="Pricing" title="Simple digital subscription pricing" body="Create an account first. Paid access is activated inside your account after subscription checkout is completed." centered />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: 16, alignItems: "stretch" }}>
             {plans.slice(0, 3).map((plan) => (
               <PlanCard key={plan.name} plan={plan} />

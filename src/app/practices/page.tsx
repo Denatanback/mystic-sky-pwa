@@ -506,7 +506,7 @@ export default function PracticesPage() {
         isOpen={subscriptionOpen}
         onClose={() => setSubscriptionOpen(false)}
         contextTitle={prelandExperience?.paywallTitle ?? "Unlock full practice library"}
-        contextDescription={prelandExperience?.paywallDescription ?? "Start your 3-day trial to unlock advanced affirmations, premium categories, and the full daily practice library."}
+        contextDescription={prelandExperience?.paywallDescription ?? "Start 3-day introductory access for $1 to unlock advanced affirmations, premium categories, and the full daily practice library."}
         trialCtaLabel={prelandExperience ? "Unlock for $1" : undefined}
       />
     </div>

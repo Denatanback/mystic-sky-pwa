@@ -366,8 +366,8 @@ export default function TodayPage() {
               <button type="button" onClick={saveCardReflection} style={{ width: "100%", minHeight: 42, borderRadius: 999, border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", marginTop: 10 }}>
                 {dailyCardState.reflection || cardReflectionSaved ? (ru ? "Otrazhenie sokhraneno" : "Card reflection saved") : (ru ? "Sokhranit otrazhenie" : "Save reflection")}
               </button>
-              <button type="button" onClick={() => setFeatureInfo({ title: "Card pattern history", description: "Card pattern history unlocks with Trial/Premium. Soon you’ll be able to track recurring symbols and themes across your path.", statusLabel: "Premium preview", primaryActionLabel: "Got it" })} style={{ width: "100%", minHeight: 38, borderRadius: 999, border: "none", background: "transparent", color: "var(--muted)", fontSize: 12, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", marginTop: 8 }}>
-                {ru ? "Istoriya kart otkroetsya pozzhe" : "Card pattern history unlocks with Trial/Premium"}
+              <button type="button" onClick={() => setFeatureInfo({ title: "Card pattern history", description: "Card pattern history unlocks with Intro access/Premium. Soon you’ll be able to track recurring symbols and themes across your path.", statusLabel: "Premium preview", primaryActionLabel: "Got it" })} style={{ width: "100%", minHeight: 38, borderRadius: 999, border: "none", background: "transparent", color: "var(--muted)", fontSize: 12, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", marginTop: 8 }}>
+                {ru ? "Istoriya kart otkroetsya pozzhe" : "Card pattern history unlocks with Intro access/Premium"}
               </button>
             </>
           )}
