@@ -10,11 +10,9 @@ const appRegisterUrl = "https://www.myeluna.com/register";
 const supportHref = "mailto:support@myeluna.com?subject=eLuna%20Support";
 const billingSupportHref = "mailto:support@myeluna.com?subject=eLuna%20Billing%20Question";
 
-// TODO: Swap these fallback assets for public/assets/welcome-head/eluna-phone-hero.webp,
-// eluna-feature-collage.webp, and eluna-final-cta-phones.webp once those files exist in the repo.
-const heroVisualImage = "/assets/welcome-bg.png";
-const featureCollageImage = "/assets/main_screen/background-main.png";
-const finalCtaImage = "/assets/sky-background/sky-background-main.png";
+const heroVisualImage = "/assets/landing/eluna-hero-product.png";
+const featureCollageImage = "/assets/landing/eluna-feature-collage.png";
+const finalCtaImage = "/assets/landing/eluna-final-cta-phones.png";
 
 const navLinks = [
   { label: "Product", href: "#product" },
@@ -217,6 +215,7 @@ function VisualFrame({
   aspectRatio,
   priority = false,
   objectPosition = "center",
+  imageTransform,
   overlay = "linear-gradient(90deg, rgba(7,8,22,.42), transparent 40%), linear-gradient(180deg, transparent 52%, rgba(7,8,22,.72))",
   children,
 }: {
@@ -225,6 +224,7 @@ function VisualFrame({
   aspectRatio: string;
   priority?: boolean;
   objectPosition?: string;
+  imageTransform?: string;
   overlay?: string;
   children?: ReactNode;
 }) {
@@ -236,7 +236,7 @@ function VisualFrame({
         fill
         priority={priority}
         sizes="(max-width: 760px) 92vw, 48vw"
-        style={{ objectFit: "cover", objectPosition }}
+        style={{ objectFit: "cover", objectPosition, transform: imageTransform }}
       />
       <div style={{ position: "absolute", inset: 0, background: overlay }} />
       <div style={{ position: "absolute", inset: 0, boxShadow: "inset 0 1px 0 rgba(255,255,255,.10), inset 0 -80px 100px rgba(7,8,22,.45)" }} />
@@ -266,8 +266,9 @@ function HeroVisual() {
         alt="eLuna app preview with daily reflection screens"
         aspectRatio="4 / 5"
         priority
-        objectPosition="center 48%"
-        overlay="linear-gradient(90deg, rgba(7,8,22,.54), transparent 42%), linear-gradient(180deg, rgba(7,8,22,.22), transparent 34%, rgba(7,8,22,.76))"
+        objectPosition="center 50%"
+        imageTransform="scale(1.18) translateY(2%)"
+        overlay="linear-gradient(90deg, rgba(7,8,22,.38), transparent 46%), linear-gradient(180deg, rgba(7,8,22,.08), transparent 42%, rgba(7,8,22,.72))"
       >
         <div style={{ position: "absolute", left: 18, right: 18, bottom: 18, display: "grid", gap: 8, padding: 16, borderRadius: 24, background: "linear-gradient(145deg, rgba(7,8,22,.76), rgba(24,16,49,.64))", border: "1px solid rgba(255,255,255,.10)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}>
           <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".14em", textTransform: "uppercase" }}>Today in eLuna</p>
@@ -288,8 +289,8 @@ function FeatureCollage() {
       <VisualFrame
         src={featureCollageImage}
         alt="eLuna product feature collage"
-        aspectRatio="16 / 10"
-        objectPosition="center"
+        aspectRatio="5 / 4"
+        objectPosition="center 52%"
         overlay="linear-gradient(90deg, rgba(7,8,22,.18), rgba(7,8,22,.08) 45%, rgba(7,8,22,.48)), linear-gradient(180deg, transparent 42%, rgba(7,8,22,.76))"
       >
       <div style={{ position: "absolute", left: 18, right: 18, bottom: 18, display: "flex", flexWrap: "wrap", gap: 9 }}>
@@ -335,8 +336,8 @@ function FinalCta() {
               sizes="(max-width: 760px) 86vw, 42vw"
               style={{
                 objectFit: "cover",
-                objectPosition: "center 42%",
-                transform: "scale(1.08) translateX(4%)",
+                objectPosition: "center 48%",
+                transform: "scale(1.10) translate(4%, 2%)",
                 filter: "drop-shadow(0 28px 52px rgba(0,0,0,.42))",
                 maskImage: "radial-gradient(ellipse at 58% 50%, #000 0%, #000 58%, transparent 82%)",
                 WebkitMaskImage: "radial-gradient(ellipse at 58% 50%, #000 0%, #000 58%, transparent 82%)",
