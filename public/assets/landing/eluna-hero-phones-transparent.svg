@@ -1,0 +1,128 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Transparent eLuna premium phone mockups">
+  <defs>
+    <linearGradient id="phoneEdge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6F6687"/>
+      <stop offset="0.18" stop-color="#14101F"/>
+      <stop offset="0.48" stop-color="#080711"/>
+      <stop offset="0.76" stop-color="#7D6B84"/>
+      <stop offset="1" stop-color="#0B0914"/>
+    </linearGradient>
+    <linearGradient id="screenGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E1657"/>
+      <stop offset="0.45" stop-color="#110B27"/>
+      <stop offset="1" stop-color="#070713"/>
+    </linearGradient>
+    <linearGradient id="panelGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3B2168" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#0C0917" stop-opacity="0.85"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFF0AE"/>
+      <stop offset="0.4" stop-color="#F7C86C"/>
+      <stop offset="1" stop-color="#9D6B24"/>
+    </linearGradient>
+    <linearGradient id="purpleBtn" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#A55AF7"/>
+      <stop offset="1" stop-color="#6E25C9"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="28" stdDeviation="28" flood-color="#000000" flood-opacity="0.65"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="18" flood-color="#9A50FF" flood-opacity="0.2"/>
+    </filter>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      .ui-sans{font-family: Manrope, Inter, Arial, sans-serif;}
+      .ui-serif{font-family: Cormorant Garamond, Georgia, serif;}
+      .goldStroke{stroke:url(#gold);}
+      .muted{fill:#AFA4C5;}
+      .label{fill:#F4C86C;font-weight:700;letter-spacing:.13em;}
+      .small{font-size:14px}.xs{font-size:11px}.md{font-size:18px}.lg{font-size:30px}.xl{font-size:42px}
+    </style>
+  </defs>
+
+  <!-- decorative transparent glows only; no solid background -->
+  <circle cx="630" cy="430" r="310" fill="#8D4CFF" opacity="0.10" filter="url(#glow)"/>
+  <circle cx="760" cy="470" r="220" fill="#F5C76E" opacity="0.06" filter="url(#glow)"/>
+
+  <!-- rear phone -->
+  <g transform="translate(675 185) rotate(9)" filter="url(#shadow)">
+    <rect x="0" y="0" width="330" height="620" rx="62" fill="url(#phoneEdge)"/>
+    <rect x="16" y="16" width="298" height="588" rx="48" fill="url(#screenGrad)" stroke="#2C2641" stroke-width="2"/>
+    <rect x="112" y="28" width="106" height="28" rx="14" fill="#05040A"/>
+    <text x="64" y="86" class="ui-sans xs" fill="#D7C7F0">‹</text>
+    <text x="129" y="88" class="ui-sans xs label">YOUR SKY MAP</text>
+    <circle cx="165" cy="278" r="122" fill="#0B0820" stroke="#DDAA55" stroke-opacity="0.35" stroke-width="1.5"/>
+    <circle cx="165" cy="278" r="92" stroke="#C99B52" stroke-opacity="0.45" stroke-width="1"/>
+    <circle cx="165" cy="278" r="58" stroke="#A95CFF" stroke-opacity="0.28" stroke-width="1"/>
+    <path d="M165 156V400M43 278H287" stroke="#DDAA55" stroke-opacity="0.25"/>
+    <path d="M98 218L165 156L232 218L287 278L232 338L165 400L98 338L43 278Z" stroke="#DDAA55" stroke-opacity="0.22" stroke-dasharray="7 9"/>
+    <g filter="url(#glow)">
+      <circle cx="165" cy="278" r="9" fill="#FBD776"/>
+      <circle cx="118" cy="230" r="5" fill="#A966FF"/>
+      <circle cx="216" cy="232" r="5" fill="#F3BE66"/>
+      <circle cx="112" cy="330" r="5" fill="#69D7D0"/>
+      <circle cx="218" cy="334" r="5" fill="#F66DAA"/>
+    </g>
+    <path d="M118 230L165 278L216 232M112 330L165 278L218 334" stroke="#F5C76E" stroke-opacity="0.65"/>
+    <rect x="42" y="452" width="246" height="108" rx="24" fill="url(#panelGrad)" stroke="#DDAA55" stroke-opacity="0.22"/>
+    <text x="66" y="493" class="ui-serif lg" fill="#FFF7E5">Sun Sign</text>
+    <text x="66" y="522" class="ui-sans small" fill="#B8A7CA">Astrology • Your core light</text>
+    <rect x="66" y="538" width="118" height="34" rx="17" fill="#171125" stroke="#DDAA55" stroke-opacity="0.35"/>
+    <text x="91" y="560" class="ui-sans xs" fill="#F6CF77">View details</text>
+  </g>
+
+  <!-- front phone -->
+  <g transform="translate(330 85) rotate(-4)" filter="url(#shadow)">
+    <rect x="0" y="0" width="390" height="730" rx="74" fill="url(#phoneEdge)"/>
+    <rect x="18" y="18" width="354" height="694" rx="58" fill="url(#screenGrad)" stroke="#3B324D" stroke-width="2"/>
+    <rect x="139" y="32" width="112" height="32" rx="16" fill="#05040A"/>
+    <text x="45" y="90" class="ui-sans xs" fill="#E5DEF3">9:41</text>
+    <text x="160" y="96" class="ui-serif lg" fill="#E5C982">eLuna</text>
+    <rect x="276" y="72" width="72" height="30" rx="15" fill="#221734" stroke="#DDAA55" stroke-opacity="0.22"/>
+    <text x="291" y="92" class="ui-sans xs" fill="#F8DB8A">Full</text>
+
+    <g transform="translate(44 120)">
+      <circle cx="0" cy="0" r="18" fill="#32204D" stroke="#DDAA55" stroke-opacity="0.35"/><text x="-5" y="5" class="ui-sans xs" fill="#F6D477">M</text>
+      <circle cx="54" cy="0" r="18" fill="#32204D" stroke="#DDAA55" stroke-opacity="0.35"/><text x="49" y="5" class="ui-sans xs" fill="#F6D477">T</text>
+      <circle cx="108" cy="0" r="20" fill="#7C3DCE" stroke="#DDAA55" stroke-opacity="0.45"/><text x="102" y="5" class="ui-sans xs" fill="#fff">W</text>
+      <circle cx="164" cy="0" r="18" fill="#32204D"/><text x="160" y="5" class="ui-sans xs" fill="#B7A8C9">T</text>
+      <circle cx="218" cy="0" r="18" fill="#32204D"/><text x="215" y="5" class="ui-sans xs" fill="#B7A8C9">F</text>
+    </g>
+
+    <!-- stars texture -->
+    <g opacity="0.55">
+      <circle cx="88" cy="206" r="1.7" fill="#F6D17D"/><circle cx="158" cy="236" r="1.1" fill="#B969FF"/><circle cx="289" cy="198" r="1.4" fill="#fff"/><circle cx="315" cy="322" r="1.2" fill="#F6D17D"/>
+      <path d="M70 270L119 236L162 286L217 252L302 304" stroke="#A96DFF" stroke-opacity="0.24"/>
+      <circle cx="70" cy="270" r="2" fill="#F6D17D"/><circle cx="119" cy="236" r="2" fill="#F6D17D"/><circle cx="162" cy="286" r="2" fill="#F6D17D"/><circle cx="217" cy="252" r="2" fill="#F6D17D"/><circle cx="302" cy="304" r="2" fill="#F6D17D"/>
+    </g>
+
+    <rect x="44" y="172" width="302" height="250" rx="30" fill="url(#panelGrad)" stroke="#DDAA55" stroke-opacity="0.24"/>
+    <text x="72" y="216" class="ui-sans small label">GUIDANCE FOR TODAY</text>
+    <text x="72" y="275" class="ui-serif xl" fill="#FFF6E6">Trust the quiet</text>
+    <text x="72" y="320" class="ui-serif xl" fill="#FFF6E6">nudges of your</text>
+    <text x="72" y="365" class="ui-serif xl" fill="#FFF6E6">intuition.</text>
+    <text x="72" y="394" class="ui-sans small" fill="#B9ACC8">The signal you keep sensing</text>
+    <rect x="72" y="430" width="246" height="54" rx="27" fill="url(#purpleBtn)"/>
+    <text x="124" y="463" class="ui-sans small" fill="#fff" font-weight="700">Open today’s guidance</text>
+
+    <rect x="44" y="514" width="138" height="132" rx="26" fill="#100C1B" stroke="#FFF" stroke-opacity="0.09"/>
+    <circle cx="113" cy="562" r="25" stroke="#DDAA55" stroke-opacity="0.5"/>
+    <path d="M113 532V592M83 562H143" stroke="#DDAA55" stroke-opacity="0.4"/>
+    <circle cx="113" cy="562" r="5" fill="#F8D77F" filter="url(#glow)"/>
+    <text x="70" y="614" class="ui-sans small label">TODAY’S</text>
+    <text x="70" y="636" class="ui-sans small" fill="#DCD2EC">Reading</text>
+
+    <rect x="208" y="514" width="138" height="132" rx="26" fill="#100C1B" stroke="#FFF" stroke-opacity="0.09"/>
+    <rect x="250" y="548" width="44" height="62" rx="8" fill="#1D1230" stroke="#DDAA55" stroke-opacity="0.7"/>
+    <path d="M272 558L282 578L272 598L262 578Z" stroke="#F8D77F" stroke-opacity="0.8"/>
+    <text x="236" y="614" class="ui-sans small label">DAILY CARD</text>
+    <text x="236" y="636" class="ui-sans small" fill="#DCD2EC">Draw card</text>
+
+    <g transform="translate(55 674)">
+      <circle cx="0" cy="0" r="10" fill="#15101B" stroke="#6C5B84"/><circle cx="62" cy="0" r="10" fill="#15101B" stroke="#6C5B84"/><circle cx="124" cy="0" r="10" fill="#15101B" stroke="#6C5B84"/><circle cx="186" cy="0" r="10" fill="#15101B" stroke="#6C5B84"/><circle cx="248" cy="0" r="10" fill="#15101B" stroke="#6C5B84"/>
+    </g>
+  </g>
+</svg>

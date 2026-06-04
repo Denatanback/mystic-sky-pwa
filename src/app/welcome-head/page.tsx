@@ -19,8 +19,10 @@ const billingSupportHref = "mailto:support@myeluna.com?subject=eLuna%20Billing%2
 const desktopBackgroundImage = "/assets/landing/eluna-bg-desktop.png";
 const mobileBackgroundImage = "/assets/landing/eluna-bg-mobile.png";
 const constellationOverlayImage = "/assets/landing/eluna-constellation-overlay-clean.png";
-const symbolicCardImage = "/assets/landing/eluna-symbolic-card-clean.png";
 const zodiacHaloImage = "/assets/landing/eluna-zodiac-halo-clean.png";
+const heroPhonesImage = "/assets/landing/eluna-hero-phones-transparent.svg";
+const dailyGuidanceScreenImage = "/assets/landing/eluna-phone-screen-daily-guidance.svg";
+const skyMapScreenImage = "/assets/landing/eluna-phone-screen-sky-map.svg";
 
 const navLinks = [
   { label: "Product", href: "#product" },
@@ -235,81 +237,11 @@ function SkyMapMini({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function PhoneMockup({ variant = "daily", compact = false, className = "" }: { variant?: "daily" | "sky" | "practice"; compact?: boolean; className?: string }) {
+function ScreenPhone({ screen, className = "" }: { screen: "daily" | "sky"; className?: string }) {
   return (
-    <div className={`phone-mockup ${compact ? "phone-compact" : ""} ${className}`} aria-label="eLuna app interface preview">
-      <div className="phone-speaker" />
-      <div className="phone-screen">
-        <div className="phone-topbar">
-          <span>9:41</span>
-          <span className="phone-brand">eLuna</span>
-          <span>Full Access</span>
-        </div>
-        {variant === "sky" ? (
-          <>
-            <div className="phone-pill-row">
-              <span>Energy</span>
-              <span>Mood</span>
-              <span>Focus</span>
-            </div>
-            <div style={{ display: "grid", placeItems: "center", padding: compact ? "8px 0" : "12px 0" }}>
-              <SkyMapMini compact={compact} />
-            </div>
-            <div className="phone-card accent">
-              <p>Today's energy</p>
-              <h4>Transformative</h4>
-              <span>A day for inner shifts and reflection.</span>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="streak-row">
-              {["M", "T", "W", "T", "F"].map((day, index) => (
-                <span key={`${day}-${index}`} className={index < 3 ? "done" : ""}>{day}</span>
-              ))}
-            </div>
-            <div className="phone-card hero-card">
-              <p>Guidance for today</p>
-              <h4>Notice what pulls your attention</h4>
-              <span>The signal that repeats today may point to your next step.</span>
-              <span className="mock-cta">Open today's reading</span>
-            </div>
-            <div className="phone-card-grid">
-              <div className="phone-card mini">
-                <p>Today's reading</p>
-                <span>Personal insight</span>
-              </div>
-              <div className="phone-card mini">
-                <p>Daily card</p>
-                <span>Draw card</span>
-              </div>
-            </div>
-          </>
-        )}
-        {variant === "practice" && (
-          <div className="phone-card accent">
-            <p>Repeat affirmation</p>
-            <h4>Ready</h4>
-            <span>Choose your daily affirmation.</span>
-          </div>
-        )}
-        <div className="phone-nav">
-          <span />
-          <span />
-          <span />
-          <span />
-          <span />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SymbolicCard() {
-  return (
-    <div className="symbolic-card" aria-label="Daily card symbolic guidance preview">
-      <div className="symbolic-card-image" />
-      <span>Daily card</span>
+    <div className={`screen-phone ${className}`} aria-hidden="true">
+      <span className="screen-phone-notch" />
+      <span className={`screen-phone-display screen-${screen}`} />
     </div>
   );
 }
@@ -322,9 +254,7 @@ function HeroVisual() {
       <div className="constellation-layer hero-constellation" />
       <div className="zodiac-halo hero-halo" />
       <div className="scene-shadow" />
-      <PhoneMockup variant="daily" className="phone-main" />
-      <PhoneMockup variant="sky" compact className="phone-secondary" />
-      <SymbolicCard />
+      <img className="hero-phones-svg" src={heroPhonesImage} alt="eLuna app screens showing daily guidance and a personal sky map" draggable={false} />
     </div>
   );
 }
@@ -365,7 +295,8 @@ function ProductProofVisual() {
           </div>
         </div>
       </div>
-      <PhoneMockup variant="practice" compact className="proof-phone" />
+      <ScreenPhone screen="sky" className="proof-screen-phone" />
+      <ScreenPhone screen="daily" className="proof-screen-phone proof-screen-phone-secondary" />
     </div>
   );
 }
@@ -390,8 +321,7 @@ function FinalCta() {
           <div className="scene-glow main" />
           <div className="constellation-layer cta-constellation" />
           <div className="zodiac-halo cta-halo" />
-          <PhoneMockup variant="sky" compact className="cta-phone-back" />
-          <PhoneMockup variant="daily" compact className="cta-phone-front" />
+          <img className="cta-phones-svg" src={heroPhonesImage} alt="" draggable={false} />
         </div>
       </div>
     </section>
@@ -466,6 +396,25 @@ export default function WelcomeHeadPage() {
           width: min(100%, 640px);
           min-height: 560px;
           margin: 0 auto;
+        }
+
+        .hero-phones-svg {
+          position: absolute;
+          right: -18px;
+          top: 0;
+          z-index: 3;
+          width: min(112%, 690px);
+          height: min(690px, 76vh);
+          max-height: 690px;
+          object-fit: contain;
+          object-position: center;
+          user-select: none;
+          pointer-events: none;
+          filter:
+            drop-shadow(0 34px 72px rgba(0,0,0,.48))
+            drop-shadow(0 0 34px rgba(141,85,214,.24))
+            drop-shadow(0 0 12px rgba(216,168,95,.10));
+          animation: phoneFloat 7.5s ease-in-out infinite;
         }
 
         .scene-glow {
@@ -562,35 +511,30 @@ export default function WelcomeHeadPage() {
           opacity: .22;
         }
 
-        .phone-mockup {
-          position: relative;
-          width: 274px;
-          height: 548px;
-          border-radius: 42px;
-          padding: 10px;
-          background: linear-gradient(145deg, #171423, #05050c 62%, #201635);
+        .screen-phone {
+          position: absolute;
+          width: 214px;
+          height: 428px;
+          border-radius: 38px;
+          padding: 9px;
+          background: linear-gradient(145deg, #171423, #05050c 64%, #22153b);
           border: 1px solid rgba(255,255,255,.18);
           box-shadow:
             inset 0 0 0 1px rgba(255,255,255,.05),
-            0 34px 80px rgba(0,0,0,.48),
-            0 0 44px rgba(128,64,192,.18);
+            0 30px 76px rgba(0,0,0,.46),
+            0 0 42px rgba(141,85,214,.18);
           z-index: 2;
-          animation: phoneFloat 7s ease-in-out infinite;
+          pointer-events: none;
+          user-select: none;
+          animation: phoneFloat 7.5s ease-in-out infinite;
         }
 
-        .phone-compact {
-          width: 208px;
-          height: 416px;
-          border-radius: 34px;
-          padding: 8px;
-        }
-
-        .phone-speaker {
+        .screen-phone-notch {
           position: absolute;
-          top: 20px;
+          top: 18px;
           left: 50%;
-          width: 78px;
-          height: 22px;
+          width: 62px;
+          height: 18px;
           transform: translateX(-50%);
           border-radius: 999px;
           background: #05050d;
@@ -598,89 +542,42 @@ export default function WelcomeHeadPage() {
           z-index: 4;
         }
 
-        .phone-compact .phone-speaker {
-          top: 16px;
-          width: 60px;
-          height: 18px;
-        }
-
-        .phone-screen {
-          position: relative;
+        .screen-phone-display {
+          display: block;
+          width: 100%;
           height: 100%;
-          border-radius: 32px;
+          border-radius: 30px;
           overflow: hidden;
-          padding: 44px 14px 14px;
-          color: var(--text);
-          background:
-            radial-gradient(circle at 50% 5%, rgba(141,85,214,.32), transparent 34%),
-            radial-gradient(circle at 90% 28%, rgba(216,168,95,.08), transparent 28%),
-            linear-gradient(180deg, #171033, #090719 72%, #060510);
-          box-shadow: inset 0 0 0 1px rgba(255,255,255,.07);
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
         }
 
-        .phone-compact .phone-screen {
-          border-radius: 27px;
-          padding: 36px 11px 12px;
+        .screen-daily {
+          background-image: url("${dailyGuidanceScreenImage}");
         }
 
-        .phone-topbar,
-        .phone-pill-row,
-        .streak-row,
-        .phone-card-grid,
-        .phone-nav {
-          display: flex;
-          align-items: center;
+        .screen-sky {
+          background-image: url("${skyMapScreenImage}");
         }
 
-        .phone-topbar {
-          justify-content: space-between;
-          gap: 8px;
-          color: rgba(255,255,255,.62);
-          font-size: 9px;
-          font-weight: 800;
+        .proof-screen-phone {
+          right: -2px;
+          bottom: -10px;
+          transform: rotate(8deg) scale(.82);
+          transform-origin: bottom right;
         }
 
-        .phone-brand {
-          color: var(--gold-2);
-          font-family: var(--font-display);
-          font-size: 14px;
-          font-weight: 600;
+        .proof-screen-phone-secondary {
+          right: 160px;
+          bottom: 28px;
+          opacity: .62;
+          transform: rotate(-8deg) scale(.56);
+          z-index: 1;
+          animation-delay: -2.4s;
         }
 
-        .phone-pill-row,
-        .streak-row {
-          gap: 7px;
-          margin: 14px 0 12px;
-        }
-
-        .phone-pill-row span,
-        .streak-row span {
-          min-width: 28px;
-          height: 22px;
-          border-radius: 999px;
-          display: grid;
-          place-items: center;
-          color: rgba(255,255,255,.58);
-          background: rgba(255,255,255,.045);
-          border: 1px solid rgba(255,255,255,.08);
-          font-size: 8px;
-          font-weight: 800;
-        }
-
-        .streak-row span.done {
-          border-color: rgba(216,168,95,.32);
-          color: var(--gold-2);
-        }
-
-        .phone-card {
-          border: 1px solid rgba(255,255,255,.09);
-          border-radius: 18px;
-          background: rgba(255,255,255,.045);
-          padding: 12px;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
-        }
-
-        .phone-card p,
         .proof-daily p,
         .proof-bottom p {
           color: var(--gold);
@@ -690,16 +587,6 @@ export default function WelcomeHeadPage() {
           text-transform: uppercase;
         }
 
-        .phone-card h4 {
-          color: var(--text);
-          font-family: var(--font-display);
-          font-size: 21px;
-          line-height: 1.1;
-          font-weight: 600;
-          margin: 8px 0 7px;
-        }
-
-        .phone-card span,
         .proof-card span,
         .proof-bottom span {
           color: var(--muted);
@@ -707,7 +594,6 @@ export default function WelcomeHeadPage() {
           line-height: 1.45;
         }
 
-        .phone-card button,
         .mock-cta {
           width: 100%;
           min-height: 34px;
@@ -722,97 +608,6 @@ export default function WelcomeHeadPage() {
           display: grid;
           place-items: center;
           text-align: center;
-        }
-
-        .phone-card-grid {
-          gap: 9px;
-          margin-top: 10px;
-        }
-
-        .phone-card.mini {
-          flex: 1;
-          min-height: 82px;
-          padding: 10px;
-        }
-
-        .phone-card.accent {
-          margin-top: 10px;
-          background: linear-gradient(145deg, rgba(216,168,95,.08), rgba(128,64,192,.08));
-        }
-
-        .phone-nav {
-          position: absolute;
-          left: 22px;
-          right: 22px;
-          bottom: 13px;
-          justify-content: space-between;
-        }
-
-        .phone-nav span {
-          width: 18px;
-          height: 18px;
-          border-radius: 8px;
-          border: 1px solid rgba(216,168,95,.22);
-          background: rgba(255,255,255,.035);
-        }
-
-        .phone-main {
-          position: absolute;
-          right: 115px;
-          top: 0;
-          transform: rotate(-4deg);
-        }
-
-        .phone-secondary {
-          position: absolute;
-          right: 0;
-          top: 108px;
-          transform: rotate(7deg);
-          z-index: 1;
-          opacity: .95;
-          animation-delay: -1.8s;
-        }
-
-        .symbolic-card {
-          position: absolute;
-          left: 40px;
-          bottom: 82px;
-          width: 138px;
-          height: 188px;
-          border-radius: 24px;
-          display: grid;
-          align-content: end;
-          justify-items: center;
-          padding: 12px 10px 18px;
-          color: var(--gold-2);
-          background: transparent;
-          border: 0;
-          box-shadow: none;
-          transform: rotate(-9deg);
-          z-index: 3;
-          animation: cardFloat 8s ease-in-out infinite;
-        }
-
-        .symbolic-card-image {
-          position: absolute;
-          inset: 0;
-          background-image: url("${symbolicCardImage}");
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: contain;
-          filter: drop-shadow(0 24px 42px rgba(0,0,0,.42)) drop-shadow(0 0 24px rgba(216,168,95,.15));
-        }
-
-        .symbolic-card span {
-          position: relative;
-          z-index: 2;
-          color: var(--muted);
-          font-size: 11px;
-          font-weight: 900;
-          padding: 5px 10px;
-          border-radius: 999px;
-          background: rgba(8,7,22,.54);
-          border: 1px solid rgba(216,168,95,.16);
         }
 
         .symbolic-orbit {
@@ -887,13 +682,6 @@ export default function WelcomeHeadPage() {
           backdrop-filter: blur(14px);
           -webkit-backdrop-filter: blur(14px);
           z-index: 1;
-          transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
-        }
-
-        .proof-panel:hover {
-          border-color: rgba(216,168,95,.22);
-          box-shadow: 0 30px 82px rgba(0,0,0,.34), 0 0 48px rgba(128,64,192,.10);
-          transform: translateY(-2px);
         }
 
         .proof-panel-top {
@@ -960,35 +748,25 @@ export default function WelcomeHeadPage() {
           padding: 14px;
         }
 
-        .proof-phone {
-          position: absolute;
-          right: -4px;
-          bottom: -8px;
-          transform: rotate(8deg) scale(.72);
-          transform-origin: bottom right;
-          z-index: 2;
-        }
-
         .cta-phone-scene {
           min-height: 330px;
         }
 
-        .cta-phone-back {
+        .cta-phones-svg {
           position: absolute;
-          right: 0;
-          top: 18px;
-          transform: rotate(8deg) scale(.88);
-          z-index: 1;
-          opacity: .82;
-          animation-delay: -2.2s;
-        }
-
-        .cta-phone-front {
-          position: absolute;
-          right: 132px;
-          top: -2px;
-          transform: rotate(-6deg);
-          z-index: 2;
+          right: -22px;
+          top: -24px;
+          z-index: 3;
+          width: min(112%, 520px);
+          height: 360px;
+          object-fit: contain;
+          object-position: center;
+          user-select: none;
+          pointer-events: none;
+          filter:
+            drop-shadow(0 30px 58px rgba(0,0,0,.46))
+            drop-shadow(0 0 28px rgba(141,85,214,.22));
+          animation: phoneFloat 8s ease-in-out infinite;
         }
 
         .feature-grid {
@@ -1000,23 +778,148 @@ export default function WelcomeHeadPage() {
         .feature-card {
           min-height: 158px;
           padding: 18px;
-          transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
         }
 
-        .feature-card:hover {
-          border-color: rgba(216,168,95,.22);
-          box-shadow: 0 22px 60px rgba(0,0,0,.24), 0 0 34px rgba(128,64,192,.08);
-          transform: translateY(-2px);
+        .contact-footer-area {
+          position: relative;
+          margin: 20px 0 0;
+          padding: 34px 0 44px;
+        }
+
+        .contact-footer-area::before {
+          content: "";
+          position: absolute;
+          inset: 0 -24px;
+          pointer-events: none;
+          background:
+            radial-gradient(circle at 18% 18%, rgba(216,168,95,.10), transparent 24%),
+            radial-gradient(circle at 78% 10%, rgba(141,85,214,.16), transparent 30%);
+          opacity: .9;
+        }
+
+        .contact-support-panel,
+        .footer-shell {
+          position: relative;
+          z-index: 1;
+        }
+
+        .contact-support-panel {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+          gap: 20px;
+          align-items: center;
+          padding: 24px;
+          border-radius: 28px;
+          border: 1px solid rgba(216,168,95,.14);
+          background: linear-gradient(145deg, rgba(24,16,50,.34), rgba(8,7,22,.22));
+          box-shadow: 0 20px 58px rgba(0,0,0,.22);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+        }
+
+        .contact-support-card {
+          display: grid;
+          gap: 8px;
+          padding: 18px;
+          border-radius: 22px;
+          border: 1px solid rgba(216,168,95,.16);
+          background: rgba(255,255,255,.035);
+        }
+
+        .contact-support-card p,
+        .company-strip span,
+        .footer-column h3 {
+          color: var(--gold);
+          font-size: 11px;
+          font-weight: 900;
+          letter-spacing: .13em;
+          text-transform: uppercase;
+        }
+
+        .contact-support-card a,
+        .footer-column a,
+        .company-strip a {
+          color: var(--gold-2);
+          font-weight: 900;
+          text-decoration: none;
+          overflow-wrap: anywhere;
+        }
+
+        .contact-support-card span,
+        .footer-column span,
+        .footer-brand p,
+        .footer-bottom p {
+          color: var(--muted);
+          font-size: 13px;
+          line-height: 1.62;
+        }
+
+        .footer-shell {
+          margin-top: 18px;
+          padding: 26px 0 0;
+          border-top: 1px solid rgba(216,168,95,.13);
+        }
+
+        .footer-grid {
+          display: grid;
+          grid-template-columns: minmax(220px, 1.35fr) repeat(4, minmax(140px, 1fr));
+          gap: 22px;
+          align-items: start;
+          padding: 8px 0 26px;
+        }
+
+        .footer-brand {
+          display: grid;
+          gap: 12px;
+          max-width: 300px;
+        }
+
+        .footer-column {
+          display: grid;
+          gap: 9px;
+          align-content: start;
+        }
+
+        .footer-column a,
+        .footer-column span {
+          font-size: 13px;
+          line-height: 1.5;
+        }
+
+        .company-strip {
+          display: grid;
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+          gap: 10px;
+          padding: 16px 0;
+          border-top: 1px solid rgba(255,255,255,.08);
+          border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .company-strip div {
+          display: grid;
+          gap: 5px;
+          min-width: 0;
+        }
+
+        .company-strip strong {
+          color: var(--text);
+          font-size: 12.5px;
+          line-height: 1.5;
+          font-weight: 800;
+          overflow-wrap: anywhere;
+        }
+
+        .footer-bottom {
+          display: grid;
+          gap: 8px;
+          padding: 18px 0 0;
+          color: var(--muted-2);
+          text-align: center;
         }
 
         @keyframes phoneFloat {
           0%, 100% { translate: 0 0; }
           50% { translate: 0 -10px; }
-        }
-
-        @keyframes cardFloat {
-          0%, 100% { translate: 0 0; }
-          50% { translate: 0 -8px; }
         }
 
         @keyframes haloRotate {
@@ -1030,22 +933,23 @@ export default function WelcomeHeadPage() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .phone-mockup,
-          .symbolic-card,
+          .hero-phones-svg,
+          .cta-phones-svg,
+          .screen-phone,
           .zodiac-halo,
           .constellation-layer {
             animation: none !important;
-          }
-
-          .feature-card,
-          .proof-panel {
-            transition: none !important;
           }
         }
 
         @media (max-width: 980px) {
           .feature-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+
+          .footer-grid,
+          .company-strip {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
           }
         }
 
@@ -1087,25 +991,12 @@ export default function WelcomeHeadPage() {
             opacity: .18;
           }
 
-          .phone-main {
-            right: 70px;
-            top: 8px;
-            transform: rotate(-4deg) scale(.84);
-            transform-origin: top right;
-          }
-
-          .phone-secondary {
-            right: -8px;
-            top: 94px;
-            transform: rotate(7deg) scale(.74);
-            transform-origin: top right;
-          }
-
-          .symbolic-card {
-            left: 0;
-            bottom: 66px;
-            transform: rotate(-8deg) scale(.82);
-            transform-origin: bottom left;
+          .hero-phones-svg {
+            right: -12%;
+            top: 14px;
+            width: 124%;
+            height: 430px;
+            max-height: 430px;
           }
 
           .feature-grid {
@@ -1122,7 +1013,7 @@ export default function WelcomeHeadPage() {
           }
 
           .proof-scene {
-            min-height: 520px;
+            min-height: 500px;
           }
 
           .proof-halo {
@@ -1135,16 +1026,23 @@ export default function WelcomeHeadPage() {
           .proof-panel {
             margin-top: 18px;
             padding: 16px;
+            min-height: 330px;
           }
 
           .proof-layout {
             grid-template-columns: 1fr;
           }
 
-          .proof-phone {
-            right: -20px;
-            bottom: -48px;
+          .proof-screen-phone {
+            right: -18px;
+            bottom: -42px;
             transform: rotate(8deg) scale(.58);
+          }
+
+          .proof-screen-phone-secondary {
+            right: 120px;
+            bottom: 0;
+            transform: rotate(-8deg) scale(.42);
           }
 
           .cta-phone-scene {
@@ -1157,18 +1055,34 @@ export default function WelcomeHeadPage() {
             right: 42px;
           }
 
-          .cta-phone-front {
-            right: 96px;
+          .cta-phones-svg {
+            right: -12%;
             top: 0;
-            transform: rotate(-6deg) scale(.62);
-            transform-origin: top right;
+            width: 124%;
+            height: 250px;
           }
 
-          .cta-phone-back {
-            right: -12px;
-            top: 22px;
-            transform: rotate(8deg) scale(.54);
-            transform-origin: top right;
+          .contact-footer-area {
+            padding: 26px 0 34px;
+          }
+
+          .contact-support-panel {
+            grid-template-columns: 1fr;
+            padding: 18px;
+            border-radius: 24px;
+          }
+
+          .footer-grid,
+          .company-strip {
+            grid-template-columns: 1fr;
+          }
+
+          .footer-grid {
+            gap: 18px;
+          }
+
+          .footer-brand {
+            max-width: none;
           }
         }
       `}</style>
@@ -1328,44 +1242,87 @@ export default function WelcomeHeadPage() {
 
         <FinalCta />
 
-        <section id="contact" style={{ ...glassPanel, padding: "26px 24px", margin: "16px 0 26px", scrollMarginTop: 24 }}>
-          <SectionHeader eyebrow="Company details" title="Official contact and business details" body="These details are visible for customers and payment review and should match the Stripe account." />
-          <dl style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 12, margin: 0 }}>
-            {[
-              ["Legal name", LEGAL_ENTITY_NAME],
-              ["Registered address", LEGAL_ENTITY_ADDRESS],
-              ["Registration number", COMPANY_REGISTRATION_NUMBER],
-              ["Country", COMPANY_COUNTRY],
-              ["Contact", SUPPORT_EMAIL_ADDRESS],
-              ["Website", WEBSITE_URL],
-            ].map(([label, value]) => (
-              <div key={label} style={{ border: "1px solid rgba(255,255,255,.08)", borderRadius: 16, background: "rgba(255,255,255,.035)", padding: 14 }}>
-                <dt style={{ color: "var(--muted-2)", fontSize: 11, fontWeight: 900, marginBottom: 5 }}>{label}</dt>
-                <dd style={{ color: "var(--text)", fontSize: 14, lineHeight: 1.5, margin: 0, overflowWrap: "anywhere" }}>
-                  {label === "Contact" ? (
-                    <GoldLink href={supportHref}>{value}</GoldLink>
-                  ) : label === "Website" ? (
-                    <a href={WEBSITE_URL} style={{ color: "var(--gold-2)", fontWeight: 900, textDecoration: "none" }}>{value}</a>
-                  ) : (
-                    value
-                  )}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
+        <section id="contact" className="contact-footer-area" style={{ scrollMarginTop: 24 }}>
+          <div className="contact-support-panel">
+            <div style={{ display: "grid", gap: 10 }}>
+              <p style={{ color: "var(--gold)", fontSize: 11, fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" }}>Contact</p>
+              <h2 style={{ color: "var(--text)", fontFamily: "var(--font-display)", fontSize: "clamp(32px, 4.5vw, 48px)", lineHeight: 1.04, fontWeight: 600 }}>Contact & support</h2>
+              <p style={{ color: "var(--muted)", fontSize: 15, lineHeight: 1.68, maxWidth: 650 }}>
+                Questions about payments, subscriptions, refunds, data usage, or account access? Contact eLuna support with the email address connected to your account.
+              </p>
+            </div>
+            <div className="contact-support-card">
+              <p>Support email</p>
+              <a href={supportHref}>{SUPPORT_EMAIL_ADDRESS}</a>
+              <span>Typical response time: 2-3 business days</span>
+            </div>
+          </div>
 
-        <footer style={{ display: "grid", gap: 14, justifyItems: "center", padding: "24px 0 38px", color: "var(--muted-2)", fontSize: 12 }}>
-          <nav aria-label="Policy links" style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "10px 14px" }}>
-            {footerLinks.map((link) => (
-              <Link key={link.href} href={link.href} style={{ color: "var(--gold-2)", fontWeight: 900, textDecoration: "none" }}>
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-          <p style={{ textAlign: "center", lineHeight: 1.55 }}>© eLuna. Digital AI-powered self-reflection subscription service.</p>
-          <p style={{ textAlign: "center", lineHeight: 1.55, maxWidth: 760 }}>{GLOBAL_DISCLAIMER}</p>
-        </footer>
+          <footer className="footer-shell">
+            <div className="footer-grid">
+              <div className="footer-brand">
+                <Logo variant="header" />
+                <p>Digital AI-powered self-reflection, symbolic guidance, daily readings, and journaling-style tools.</p>
+              </div>
+              <nav className="footer-column" aria-label="Product links">
+                <h3>Product</h3>
+                <a href="#product">About eLuna</a>
+                <a href="#how-it-works">How it works</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#faq">FAQ</a>
+              </nav>
+              <div className="footer-column">
+                <h3>Features</h3>
+                <span>Daily readings</span>
+                <span>Symbolic cards</span>
+                <span>Personal Sky Map</span>
+                <span>Reflection tools</span>
+              </div>
+              <nav className="footer-column" aria-label="Legal links">
+                <h3>Legal</h3>
+                {footerLinks.slice(0, 6).map((link) => (
+                  <Link key={link.href} href={link.href}>
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+              <div className="footer-column">
+                <h3>Contact</h3>
+                <Link href="/support">Support / Contact</Link>
+                <a href={supportHref}>{SUPPORT_EMAIL_ADDRESS}</a>
+                <span>Response time: 2-3 business days</span>
+              </div>
+            </div>
+
+            <div className="company-strip" aria-label="Company details">
+              <div>
+                <span>Legal name</span>
+                <strong>{LEGAL_ENTITY_NAME}</strong>
+              </div>
+              <div>
+                <span>Registered address</span>
+                <strong>{LEGAL_ENTITY_ADDRESS}</strong>
+              </div>
+              <div>
+                <span>Registration number</span>
+                <strong>{COMPANY_REGISTRATION_NUMBER}</strong>
+              </div>
+              <div>
+                <span>Website</span>
+                <a href={WEBSITE_URL}>{WEBSITE_URL}</a>
+              </div>
+              <div>
+                <span>Support</span>
+                <a href={supportHref}>{SUPPORT_EMAIL_ADDRESS}</a>
+              </div>
+            </div>
+
+            <div className="footer-bottom">
+              <p>© eLuna. Digital AI-powered self-reflection subscription service.</p>
+              <p>{GLOBAL_DISCLAIMER}</p>
+            </div>
+          </footer>
+        </section>
       </div>
     </main>
   );
