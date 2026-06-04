@@ -10,6 +10,16 @@ type LegalPageProps = {
   document: LegalDocument;
 };
 
+const legalFooterLinks = [
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Billing Terms", href: "/billing" },
+  { label: "Refund Policy", href: "/money-back" },
+  { label: "Cancellation Policy", href: "/cancellation" },
+  { label: "Fulfillment Policy", href: "/delivery" },
+  { label: "Support", href: "/support" },
+];
+
 const cardStyle: CSSProperties = {
   border: "1px solid rgba(216,168,95,.20)",
   borderRadius: 24,
@@ -144,6 +154,16 @@ export function LegalPage({ document }: LegalPageProps) {
             </a>
           </section>
         </article>
+
+        <footer style={{ padding: "18px 0 0", textAlign: "center" }}>
+          <nav aria-label="Legal links" style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "8px 12px" }}>
+            {legalFooterLinks.map((link) => (
+              <Link key={link.href} href={legalHref(link.href, returnTo)} style={{ color: "var(--gold-2)", fontSize: 12, lineHeight: 1.4, fontWeight: 800, textDecoration: "none" }}>
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </footer>
       </div>
     </main>
   );

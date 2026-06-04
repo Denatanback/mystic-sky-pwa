@@ -12,7 +12,7 @@ export type LegalDocument = {
 };
 
 export const LEGAL_ENTITY_NAME = "EvoScale Company Limited";
-export const LEGAL_ENTITY_ADDRESS = "Unit 04-05, 16/F The Broadway, 54-62 Lockhart Road, Wan Chai, Hong Kong";
+export const LEGAL_ENTITY_ADDRESS = "Unit 04-05, 16/F The Broadway, 54–62 Lockhart Road, Wan Chai, Hong Kong";
 export const COMPANY_REGISTRATION_NUMBER = "77569495";
 export const COMPANY_COUNTRY = "Hong Kong";
 export const SUPPORT_EMAIL = "[support@myeluna.com](mailto:support@myeluna.com)";
@@ -41,7 +41,7 @@ export const privacyPolicy: LegalDocument = {
       title: "Information We Collect",
       body: ["We collect information that you provide directly, information created through your use of the service, and technical information needed to operate eLuna."],
       bullets: [
-        "Account information, such as your name, email address, login details, and account settings.",
+        "Account information, such as your name, email address, login details, and account preferences.",
         "Birth data, such as date of birth, optional time of birth, place of birth, zodiac sign, and manual zodiac override.",
         "Onboarding preferences, such as focus areas, practice styles, interests, and personalization choices.",
         "Quiz answers, profile details, and reflection preferences used to personalize the digital experience.",
@@ -166,13 +166,13 @@ export const privacyPolicy: LegalDocument = {
 
 export const termsOfUse: LegalDocument = {
   slug: "terms",
-  title: "Terms of Use",
+  title: "Terms of Service",
   effectiveDate: "Effective as of May 2026",
   sections: [
     {
       title: "Agreement to Terms",
       body: [
-        `These Terms of Use govern your access to and use of ${APP_NAME}, ${WEBSITE_URL}, the eLuna web app, content, features, and related services.`,
+        `These Terms of Service govern your access to and use of ${APP_NAME}, ${WEBSITE_URL}, the eLuna web app, content, features, and related services.`,
         "By using eLuna, you agree to these Terms, the Privacy Policy, Billing Terms, Cancellation Policy, Fulfillment / Delivery Policy, and Refund Policy. If you do not agree, do not use the service.",
       ],
     },
@@ -311,7 +311,7 @@ export const moneyBackPolicy: LegalDocument = {
     {
       title: "Introduction",
       body: [
-        "This Refund Policy explains cancellation and refund review rules for purchases made directly through myeluna.com. It forms part of the Terms of Use.",
+        "This Refund Policy explains cancellation and refund review rules for purchases made directly through myeluna.com. It forms part of the Terms of Service.",
         "eLuna is a digital subscription service. No physical goods are shipped. Digital access begins online after account creation and successful subscription activation.",
       ],
     },
@@ -581,6 +581,7 @@ export const supportContactPolicy: LegalDocument = {
     {
       title: "Contact eLuna Support",
       body: [
+        "Questions about payments, subscriptions, refunds, data usage, or account access? Contact eLuna support.",
         `For billing questions, cancellation requests, refund requests, account access issues, delivery/access questions, or general support, contact ${SUPPORT_EMAIL_ADDRESS}.`,
         SUPPORT_RESPONSE_TIME,
       ],

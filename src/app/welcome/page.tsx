@@ -3,6 +3,24 @@ import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { useLang } from "@/lib/i18n";
+import {
+  GLOBAL_DISCLAIMER,
+  LEGAL_ENTITY_ADDRESS,
+  LEGAL_ENTITY_NAME,
+  SUPPORT_EMAIL_ADDRESS,
+  SUPPORT_MAILTO,
+  WEBSITE_URL,
+} from "@/lib/legal/legalContent";
+
+const welcomeFooterLinks = [
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Billing Terms", href: "/billing" },
+  { label: "Refund Policy", href: "/money-back" },
+  { label: "Cancellation Policy", href: "/cancellation" },
+  { label: "Fulfillment Policy", href: "/delivery" },
+  { label: "Support", href: "/support" },
+];
 
 export default function WelcomePage() {
   const { t } = useLang();
@@ -97,6 +115,40 @@ export default function WelcomePage() {
             </div>
           ))}
         </div>
+
+        <footer style={{
+          margin: "22px auto 0",
+          padding: "18px 12px 0",
+          display: "grid",
+          gap: 10,
+          textAlign: "center",
+          color: "var(--muted-2)",
+          fontSize: 11,
+          lineHeight: 1.55,
+          maxWidth: 420,
+        }}>
+          <p>© 2026 eLuna. Digital AI-powered self-reflection subscription service.</p>
+          <p>
+            Support:{" "}
+            <a href={SUPPORT_MAILTO} style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none", overflowWrap: "anywhere" }}>
+              {SUPPORT_EMAIL_ADDRESS}
+            </a>
+          </p>
+          <p>
+            {LEGAL_ENTITY_NAME} · {LEGAL_ENTITY_ADDRESS} ·{" "}
+            <a href={WEBSITE_URL} style={{ color: "var(--muted)", textDecoration: "none", overflowWrap: "anywhere" }}>
+              {WEBSITE_URL}
+            </a>
+          </p>
+          <nav aria-label="Legal links" style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "7px 10px" }}>
+            {welcomeFooterLinks.map((link) => (
+              <Link key={link.href} href={link.href} style={{ color: "var(--gold-2)", textDecoration: "none", fontWeight: 750 }}>
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <p>{GLOBAL_DISCLAIMER}</p>
+        </footer>
 
       </div>
     </main>
