@@ -2,8 +2,6 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 import {
-  COMPANY_COUNTRY,
-  COMPANY_REGISTRATION_NUMBER,
   GLOBAL_DISCLAIMER,
   LEGAL_ENTITY_ADDRESS,
   LEGAL_ENTITY_NAME,
@@ -15,6 +13,7 @@ const appLoginUrl = "https://www.myeluna.com/login";
 const appRegisterUrl = "https://www.myeluna.com/register";
 const supportHref = "mailto:support@myeluna.com?subject=eLuna%20Support";
 const billingSupportHref = "mailto:support@myeluna.com?subject=eLuna%20Billing%20Question";
+const footerAddress = LEGAL_ENTITY_ADDRESS.replace("54-62", "54–62");
 
 const desktopBackgroundImage = "/assets/landing/eluna-bg-desktop.png";
 const mobileBackgroundImage = "/assets/landing/eluna-bg-mobile.png";
@@ -1004,7 +1003,6 @@ export default function WelcomeHeadPage() {
         }
 
         .contact-support-card p,
-        .company-strip span,
         .footer-column h3 {
           color: var(--gold);
           font-size: 11px;
@@ -1015,7 +1013,7 @@ export default function WelcomeHeadPage() {
 
         .contact-support-card a,
         .footer-column a,
-        .company-strip a {
+        .footer-legal-note a {
           color: var(--gold-2);
           font-weight: 900;
           text-decoration: none;
@@ -1025,7 +1023,8 @@ export default function WelcomeHeadPage() {
         .contact-support-card span,
         .footer-column span,
         .footer-brand p,
-        .footer-bottom p {
+        .footer-bottom p,
+        .footer-legal-note {
           color: var(--muted);
           font-size: 13px;
           line-height: 1.62;
@@ -1063,35 +1062,20 @@ export default function WelcomeHeadPage() {
           line-height: 1.5;
         }
 
-        .company-strip {
-          display: grid;
-          grid-template-columns: repeat(5, minmax(0, 1fr));
-          gap: 10px;
-          padding: 16px 0;
-          border-top: 1px solid rgba(255,255,255,.08);
-          border-bottom: 1px solid rgba(255,255,255,.08);
-        }
-
-        .company-strip div {
-          display: grid;
-          gap: 5px;
-          min-width: 0;
-        }
-
-        .company-strip strong {
-          color: var(--text);
-          font-size: 12.5px;
-          line-height: 1.5;
-          font-weight: 800;
-          overflow-wrap: anywhere;
-        }
-
         .footer-bottom {
           display: grid;
-          gap: 8px;
+          gap: 10px;
           padding: 18px 0 0;
+          border-top: 1px solid rgba(255,255,255,.08);
           color: var(--muted-2);
           text-align: center;
+        }
+
+        .footer-legal-note {
+          width: min(100%, 980px);
+          margin: 0 auto;
+          color: var(--muted-2);
+          font-size: 11.5px;
         }
 
         @keyframes phoneFloat {
@@ -1127,8 +1111,7 @@ export default function WelcomeHeadPage() {
             grid-template-columns: repeat(2, minmax(0, 1fr));
           }
 
-          .footer-grid,
-          .company-strip {
+          .footer-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
           }
         }
@@ -1274,8 +1257,7 @@ export default function WelcomeHeadPage() {
             border-radius: 24px;
           }
 
-          .footer-grid,
-          .company-strip {
+          .footer-grid {
             grid-template-columns: 1fr;
           }
 
@@ -1477,13 +1459,13 @@ export default function WelcomeHeadPage() {
               <p style={{ color: "var(--gold)", fontSize: 11, fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" }}>Contact</p>
               <h2 style={{ color: "var(--text)", fontFamily: "var(--font-display)", fontSize: "clamp(32px, 4.5vw, 48px)", lineHeight: 1.04, fontWeight: 600 }}>Contact & support</h2>
               <p style={{ color: "var(--muted)", fontSize: 15, lineHeight: 1.68, maxWidth: 650 }}>
-                Questions about payments, subscriptions, refunds, data usage, or account access? Contact eLuna support with the email address connected to your account.
+                Questions about payments, subscriptions, refunds, data usage, or account access? Contact eLuna support.
               </p>
             </div>
             <div className="contact-support-card">
               <p>Support email</p>
               <a href={supportHref}>{SUPPORT_EMAIL_ADDRESS}</a>
-              <span>Typical response time: 2-3 business days</span>
+              <span>Typical response time: 2–3 business days</span>
             </div>
           </div>
 
@@ -1491,7 +1473,7 @@ export default function WelcomeHeadPage() {
             <div className="footer-grid">
               <div className="footer-brand">
                 <Logo variant="header" />
-                <p>Digital AI-powered self-reflection, symbolic guidance, daily readings, and journaling-style tools.</p>
+                <p>AI-powered self-reflection for your inner world.</p>
               </div>
               <nav className="footer-column" aria-label="Product links">
                 <h3>Product</h3>
@@ -1519,35 +1501,15 @@ export default function WelcomeHeadPage() {
                 <h3>Contact</h3>
                 <Link href="/support">Support / Contact</Link>
                 <a href={supportHref}>{SUPPORT_EMAIL_ADDRESS}</a>
-                <span>Response time: 2-3 business days</span>
-              </div>
-            </div>
-
-            <div className="company-strip" aria-label="Company details">
-              <div>
-                <span>Legal name</span>
-                <strong>{LEGAL_ENTITY_NAME}</strong>
-              </div>
-              <div>
-                <span>Registered address</span>
-                <strong>{LEGAL_ENTITY_ADDRESS}</strong>
-              </div>
-              <div>
-                <span>Registration number</span>
-                <strong>{COMPANY_REGISTRATION_NUMBER}</strong>
-              </div>
-              <div>
-                <span>Website</span>
-                <a href={WEBSITE_URL}>{WEBSITE_URL}</a>
-              </div>
-              <div>
-                <span>Support</span>
-                <a href={supportHref}>{SUPPORT_EMAIL_ADDRESS}</a>
+                <span>Response time: 2–3 business days</span>
               </div>
             </div>
 
             <div className="footer-bottom">
-              <p>© eLuna. Digital AI-powered self-reflection subscription service.</p>
+              <p>© 2026 eLuna. Digital AI-powered self-reflection subscription service.</p>
+              <p className="footer-legal-note">
+                {LEGAL_ENTITY_NAME} · {footerAddress} · Support: <a href={supportHref}>{SUPPORT_EMAIL_ADDRESS}</a> · Website: <a href={WEBSITE_URL}>{WEBSITE_URL}</a>
+              </p>
               <p>{GLOBAL_DISCLAIMER}</p>
             </div>
           </footer>
