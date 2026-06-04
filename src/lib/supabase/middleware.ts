@@ -17,6 +17,9 @@ const publicExactRoutes = new Set([
   "/billing",
   "/money-back",
   "/money",
+  "/cancellation",
+  "/delivery",
+  "/welcome-head",
   "/manifest.webmanifest",
 ]);
 
@@ -56,6 +59,13 @@ function redirectToLogin(request: NextRequest) {
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
   const pathname = request.nextUrl.pathname;
+  const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
+
+  if (host === "welcome-head.myeluna.com" && pathname === "/") {
+    const rewriteUrl = request.nextUrl.clone();
+    rewriteUrl.pathname = "/welcome-head";
+    return NextResponse.rewrite(rewriteUrl);
+  }
 
   if (isPublicRoute(pathname)) {
     return response;

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { sendPasswordReset, signIn, signInWithOAuth, type OAuthProvider } from "@/lib/auth/authAdapter";
 import { LangToggle } from "@/components/app-shell/LangToggle";
+import { PolicyFooterLinks } from "@/components/legal/PolicyFooterLinks";
 import { useLang } from "@/lib/i18n";
 
 export default function LoginPage() {
@@ -22,14 +23,18 @@ export default function LoginPage() {
   const [resetError, setResetError] = useState("");
   const [resetSuccess, setResetSuccess] = useState("");
   const [returnTo, setReturnTo] = useState("/home");
+  const [legalReturnTo, setLegalReturnTo] = useState("/login");
   const [socialLoading, setSocialLoading] = useState<OAuthProvider | null>(null);
 
   useEffect(() => {
-    const value = new URLSearchParams(window.location.search).get("returnTo");
-    if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("http://") || value.includes("https://")) return;
-    setReturnTo(value);
+    setLegalReturnTo(`${window.location.pathname}${window.location.search}`);
+    const params = new URLSearchParams(window.location.search);
+    const value = params.get("returnTo");
+    if (value && value.startsWith("/") && !value.startsWith("//") && !value.includes("http://") && !value.includes("https://")) {
+      setReturnTo(value);
+    }
 
-    const error = new URLSearchParams(window.location.search).get("error");
+    const error = params.get("error");
     if (error === "oauth_failed") setAuthError("Could not start Google sign-in. Please try again.");
   }, []);
 
@@ -364,6 +369,7 @@ export default function LoginPage() {
             </form>
           )}
         </div>
+        <PolicyFooterLinks returnTo={legalReturnTo} />
 
       </div>
     </main>

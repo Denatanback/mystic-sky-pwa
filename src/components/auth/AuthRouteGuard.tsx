@@ -18,6 +18,9 @@ const publicExactRoutes = new Set([
   "/billing",
   "/money-back",
   "/money",
+  "/cancellation",
+  "/delivery",
+  "/welcome-head",
   "/manifest.webmanifest",
 ]);
 

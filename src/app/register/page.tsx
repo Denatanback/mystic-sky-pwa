@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
 import { LangToggle } from "@/components/app-shell/LangToggle";
+import { PolicyFooterLinks } from "@/components/legal/PolicyFooterLinks";
 import { existingAccountErrorMessage, register, signInWithOAuth, type OAuthProvider } from "@/lib/auth/authAdapter";
 import { cleanLaunchContext, saveLaunchContext } from "@/lib/launch/launchContext";
 import { parsePrelandContext, savePrelandContext, type PrelandContext } from "@/lib/funnel/prelandContext";
@@ -208,6 +209,7 @@ export default function RegisterPage() {
             <Link href={legalHref("/privacy")} style={{ color: "var(--gold-2)", fontWeight: 800, textDecoration: "none" }}>Privacy Policy</Link>
             .
           </p>
+          <PolicyFooterLinks returnTo={legalReturnTo} />
         </div>
 
         <p style={{ textAlign: "center", fontSize: 13, color: "var(--muted-2)", marginTop: 20 }}>

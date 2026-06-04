@@ -397,3 +397,87 @@ export const billingTerms: LegalDocument = {
     },
   ],
 };
+
+export const cancellationPolicy: LegalDocument = {
+  slug: "cancellation",
+  title: "Cancellation Policy",
+  effectiveDate: "Effective as of May 2026",
+  sections: [
+    {
+      title: "How to Cancel",
+      body: [
+        `To request cancellation of an eLuna trial or subscription, contact ${SUPPORT_EMAIL_ADDRESS}. Include the email address associated with your eLuna account so support can locate your subscription.`,
+        "Cancellation requests should be sent at least 24 hours before a trial ends or a subscription renews. This helps us review the request before the next scheduled charge.",
+      ],
+    },
+    {
+      title: "What Does Not Cancel a Subscription",
+      body: [
+        "Deleting browser data, removing an app shortcut, deleting local files, or simply stopping use of eLuna does not automatically cancel billing.",
+        "If subscription management tools become available in your account later, you may also follow the instructions shown there.",
+      ],
+    },
+    {
+      title: "After Cancellation",
+      body: [
+        "When a cancellation is processed, access to paid features may continue until the end of the current paid period unless otherwise required by law or stated in the plan terms shown at checkout.",
+        "Support will provide confirmation or next steps after reviewing your request.",
+      ],
+    },
+    {
+      title: "Refund Requests",
+      body: [
+        "Refund questions should be sent to support and are reviewed according to the Money-Back Policy, account status, subscription activity, payment records, and applicable law.",
+        "This Cancellation Policy does not limit any rights you may have under applicable consumer protection laws.",
+      ],
+    },
+    {
+      title: "Contact",
+      body: [`Cancellation questions may be sent to ${SUPPORT_EMAIL_ADDRESS}.`],
+    },
+  ],
+};
+
+export const deliveryPolicy: LegalDocument = {
+  slug: "delivery",
+  title: "Fulfillment / Delivery Policy",
+  effectiveDate: "Effective as of May 2026",
+  sections: [
+    {
+      title: "Digital Service Delivery",
+      body: [
+        "eLuna is a digital service. No physical goods are shipped.",
+        "After account creation and successful subscription activation, access to paid digital features is delivered through the user's eLuna account.",
+      ],
+    },
+    {
+      title: "Free Preview Access",
+      body: [
+        "Free preview features are available after account creation. Free access may include limited readings, symbolic guidance previews, daily prompts, and other preview content.",
+      ],
+    },
+    {
+      title: "Paid Feature Access",
+      body: [
+        "Paid features become available after subscription activation and account verification. Available features may depend on the plan selected, account status, and technical availability.",
+        "If payment processing is interrupted, delayed, reversed, canceled, or unsuccessful, paid access may be paused, downgraded, or unavailable.",
+      ],
+    },
+    {
+      title: "Delivery Issues",
+      body: [
+        `If you believe your digital access was not delivered after subscription activation, contact ${SUPPORT_EMAIL_ADDRESS}. Include your account email, purchase date, amount, and any receipt or transaction details available.`,
+      ],
+    },
+    {
+      title: "No Professional Advice",
+      body: [
+        "eLuna content is delivered for self-reflection, entertainment, and self-awareness. It is not medical, legal, financial, psychological, crisis, or other professional advice.",
+      ],
+    },
+    {
+      title: "Contact",
+      body: [`Delivery and access questions may be sent to ${SUPPORT_EMAIL_ADDRESS}.`],
+    },
+  ],
+};

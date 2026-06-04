@@ -21,7 +21,7 @@ const cardStyle: CSSProperties = {
 
 function supportHrefForDocument(document: LegalDocument) {
   if (document.slug === "money-back") return REFUND_SUPPORT_MAILTO;
-  if (document.slug === "billing") return BILLING_SUPPORT_MAILTO;
+  if (document.slug === "billing" || document.slug === "cancellation") return BILLING_SUPPORT_MAILTO;
   return SUPPORT_MAILTO;
 }
 
