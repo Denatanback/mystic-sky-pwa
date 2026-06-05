@@ -280,7 +280,7 @@ export default function PracticesPage() {
   }
 
   return (
-    <ProductAccessGate featureName="Practices" description="Choose 3-day intro access or a subscription to use practices, affirmations, Oracle, and reflection actions.">
+    <ProductAccessGate featureName="Practices" description="Choose 3-day intro access or a subscription to use practices, affirmations, reflection actions, and future Oracle features.">
       <div className="app">
         <StarField />
         <div className="content" style={{ paddingBottom: "calc(132px + env(safe-area-inset-bottom))" }}>

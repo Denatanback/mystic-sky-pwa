@@ -1,6 +1,7 @@
 "use client";
 
-import { lunaCardStyle } from "./shared";
+import { productFeatureFlags } from "@/lib/productFeatureFlags";
+import { ComingSoonBadge, lunaCardStyle } from "./shared";
 
 const tokenRows = [
   ["Open your daily card", "+10 tokens"],
@@ -10,6 +11,17 @@ const tokenRows = [
 ];
 
 export function TokenEducationCard() {
+  if (!productFeatureFlags.lunarTokensEnabled) {
+    return (
+      <section style={{ ...lunaCardStyle, padding: 16, background: "radial-gradient(circle at 82% 0%, rgba(216,168,95,.12), transparent 34%), rgba(12,8,28,.64)" }}>
+        <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Lunar Tokens</p>
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 7 }}>Future reward system</h2>
+        <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>A future reward system for consistent reflection and deeper Oracle access. We are preparing this carefully before release.</p>
+        <ComingSoonBadge />
+      </section>
+    );
+  }
+
   return (
     <section style={{ ...lunaCardStyle, padding: 16 }}>
       <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Lunar Tokens</p>

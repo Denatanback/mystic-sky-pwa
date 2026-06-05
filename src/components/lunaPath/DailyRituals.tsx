@@ -4,6 +4,7 @@ import { useState } from "react";
 import { completeDailyRitual, getLocalDateKey } from "@/lib/lunaPath/progress";
 import { ritualRewards } from "@/lib/lunaPath/rewards";
 import type { DailyMood, DailyRitualKey, LunaPathState } from "@/lib/lunaPath/types";
+import { productFeatureFlags } from "@/lib/productFeatureFlags";
 import { lunaCardStyle, lunaInputStyle, lunaPrimaryButtonStyle, lunaSecondaryButtonStyle } from "./shared";
 
 type Props = {
@@ -17,7 +18,7 @@ function RewardLabel({ ritualKey }: { ritualKey: DailyRitualKey }) {
   const reward = ritualRewards[ritualKey];
   return (
     <span style={{ color: "var(--muted-2)", fontSize: 11, fontWeight: 800 }}>
-      +{reward.moonlight} Moonlight · +{reward.tokens} tokens
+      +{reward.moonlight} Moonlight{productFeatureFlags.lunarTokensEnabled ? ` · +${reward.tokens} tokens` : ""}
     </span>
   );
 }

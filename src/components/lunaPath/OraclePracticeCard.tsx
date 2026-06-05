@@ -6,7 +6,8 @@ import { askOracle } from "@/lib/lunaPath/progress";
 import { oracleModeCosts, oracleModeDescriptions, oracleModeLabels } from "@/lib/lunaPath/rewards";
 import { deleteOracleHistoryItem, getVisibleOracleHistory, readLunaPathState } from "@/lib/lunaPath/storage";
 import type { LunaPathState, OracleHistoryItem, OracleMode } from "@/lib/lunaPath/types";
-import { OracleFallbackBadge, lunaCardStyle, lunaInputStyle, lunaPrimaryButtonStyle, lunaSecondaryButtonStyle } from "./shared";
+import { productFeatureFlags } from "@/lib/productFeatureFlags";
+import { ComingSoonBadge, OracleFallbackBadge, lunaCardStyle, lunaInputStyle, lunaPrimaryButtonStyle, lunaSecondaryButtonStyle } from "./shared";
 
 const paidModes: Array<Exclude<OracleMode, "free">> = ["quick", "deep", "three-card"];
 
@@ -38,6 +39,31 @@ function getQuestionPreview(question: string) {
 }
 
 export function OraclePracticeCard() {
+  if (!productFeatureFlags.oracleEnabled) {
+    return (
+      <section id="oracle" style={{ ...lunaCardStyle, scrollMarginTop: 18, padding: 18, background: "radial-gradient(circle at 14% 0%, rgba(216,168,95,.14), transparent 32%), radial-gradient(circle at 90% 12%, rgba(141,85,214,.22), transparent 34%), rgba(12,8,28,.72)", overflow: "hidden" }}>
+        <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap", overflow: "visible" }}>
+          <OracleFallbackBadge size={64} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".13em", textTransform: "uppercase", marginBottom: 7 }}>Premium practice</p>
+            <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap", marginBottom: 7 }}>
+              <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", fontWeight: 600, lineHeight: 1.08 }}>eLuna Oracle</h2>
+              <ComingSoonBadge />
+            </div>
+            <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.58 }}>
+              A reflective AI guide for symbolic questions, daily cards, and Luna Path insights. This feature is being prepared carefully for a future release.
+            </p>
+          </div>
+        </div>
+        {/* TODO: Re-enable Oracle after server-side AI, token ledger, and payment entitlements are implemented. */}
+      </section>
+    );
+  }
+
+  return <OraclePracticeCardActive />;
+}
+
+function OraclePracticeCardActive() {
   const [state, setState] = useState<LunaPathState>(() => readLunaPathState());
   const [mode, setMode] = useState<Exclude<OracleMode, "free">>("quick");
   const [question, setQuestion] = useState("");

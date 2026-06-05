@@ -1,6 +1,7 @@
 "use client";
 
 import type { LunaPathState } from "@/lib/lunaPath/types";
+import { productFeatureFlags } from "@/lib/productFeatureFlags";
 import { lunaCardStyle } from "./shared";
 
 type Props = {
@@ -8,6 +9,8 @@ type Props = {
 };
 
 export function TokenLedgerPreview({ state }: Props) {
+  if (!productFeatureFlags.lunarTokensEnabled) return null;
+
   const entries = state.ledger.slice(0, 5);
 
   return (

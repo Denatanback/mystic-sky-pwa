@@ -51,12 +51,12 @@ export default function PathPage() {
 
   if (!state) {
     return (
-      <ProductAccessGate featureName="Luna Path" description="Choose 3-day intro access or a subscription to use Luna Path, tokens, rituals, and Oracle entry points.">
+      <ProductAccessGate featureName="Luna Path" description="Choose 3-day intro access or a subscription to use Luna Path, rituals, and future Oracle entry points.">
         <PathShell>
           <section style={{ ...lunaCardStyle, padding: "22px 20px", marginTop: 10 }}>
             <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 9 }}>Path</p>
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 10 }}>Preparing Luna Path...</h1>
-            <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>Loading your progress, rituals, and token balance.</p>
+            <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>Loading your progress and rituals.</p>
           </section>
         </PathShell>
       </ProductAccessGate>
@@ -64,7 +64,7 @@ export default function PathPage() {
   }
 
   return (
-    <ProductAccessGate featureName="Luna Path" description="Choose 3-day intro access or a subscription to use Luna Path, tokens, rituals, and Oracle entry points.">
+    <ProductAccessGate featureName="Luna Path" description="Choose 3-day intro access or a subscription to use Luna Path, rituals, and future Oracle entry points.">
       <PathShell>
         <div style={{ display: "grid", gap: 14, marginTop: 10 }}>
           <LunaPathStatusCard state={state} />
@@ -76,7 +76,7 @@ export default function PathPage() {
         <section style={{ ...lunaCardStyle, padding: 16 }}>
           <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Streak repair</p>
           <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 7 }}>Restore continuity</h2>
-          <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>Each restored day will cost 50 Lunar Tokens.</p>
+          <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>This continuity feature is being prepared for a future release.</p>
           <button type="button" disabled style={{ ...lunaSecondaryButtonStyle, opacity: .62, cursor: "default" }}>Soon</button>
         </section>
 

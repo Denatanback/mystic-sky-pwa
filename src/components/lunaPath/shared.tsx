@@ -97,3 +97,27 @@ export function OracleFallbackBadge({ size = 64 }: { size?: number }) {
     </span>
   );
 }
+
+export function ComingSoonBadge({ label = "Coming soon" }: { label?: string }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: 30,
+        borderRadius: 999,
+        border: "1px solid rgba(216,168,95,.30)",
+        background: "rgba(216,168,95,.08)",
+        color: "var(--gold-2)",
+        fontSize: 11,
+        fontWeight: 900,
+        letterSpacing: ".08em",
+        textTransform: "uppercase",
+        padding: "0 12px",
+      }}
+    >
+      {label}
+    </span>
+  );
+}
