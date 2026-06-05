@@ -94,6 +94,7 @@ export default function TodayPage() {
   const [dailyCardState, setDailyCardState] = useState<DailyCardState>({ drawn: false, card: null, reflection: "" });
   const [cardReflectionText, setCardReflectionText] = useState("");
   const [cardReflectionSaved, setCardReflectionSaved] = useState(false);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
   const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
   const [prelandExperience, setPrelandExperience] = useState<PrelandExperience | null>(null);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
@@ -118,6 +119,12 @@ export default function TodayPage() {
     if (user && !user.onboardingCompleted) {
       router.replace("/onboarding");
       return;
+    }
+    if (user?.id) {
+      setUserId(user.id);
+      const personalizedCardState = getTodayDailyCard(todayKey, user.id);
+      setDailyCardState(personalizedCardState);
+      setCardReflectionText(personalizedCardState.reflection);
     }
     if (user?.fullName) setUserName(user.fullName.split(" ")[0]);
 
@@ -147,10 +154,10 @@ export default function TodayPage() {
     setDiscProgress(prog);
     setPracticeCompleted(getTodayProgress(todayKey).practiceCompleted);
     setPracticeReflection(getTodayPracticeReflection(todayKey));
-    const cardState = getTodayDailyCard(todayKey);
+    const cardState = getTodayDailyCard(todayKey, userId);
     setDailyCardState(cardState);
     setCardReflectionText(cardState.reflection);
-  }, [lang, todayKey, router]);
+  }, [lang, todayKey, router, userId]);
 
   function completePractice(result: GuidedPracticeResult) {
     markPracticeCompleted(result, todayKey);
@@ -168,14 +175,14 @@ export default function TodayPage() {
   }
 
   function drawTodayCard() {
-    const cardState = drawDailyCard(todayKey);
+    const cardState = drawDailyCard(todayKey, userId);
     setDailyCardState(cardState);
     setCardReflectionText(cardState.reflection);
   }
 
   function saveCardReflection() {
-    const value = saveDailyCardReflection(cardReflectionText, todayKey);
-    setDailyCardState(getTodayDailyCard(todayKey));
+    const value = saveDailyCardReflection(cardReflectionText, todayKey, userId);
+    setDailyCardState(getTodayDailyCard(todayKey, userId));
     setCardReflectionText(value);
     setCardReflectionSaved(Boolean(value));
   }

@@ -360,6 +360,25 @@ export type DailyCardReflection = {
   savedAt: string;
 };
 
+export const DAILY_CARD_REFLECTIONS_KEY = "eluna_daily_card_reflections";
+
+export type DailyCardReflectionEntry = {
+  id: string;
+  date: string;
+  dayKey: string;
+  cardId: number;
+  cardSlug: string;
+  cardName: string;
+  cardImage: string;
+  cardTags: string[];
+  meaning: string;
+  action: string;
+  reflectionQuestion: string;
+  reflection: string;
+  savedAt: string;
+  updatedAt: string;
+};
+
 export function getLocalDayKey(date = new Date()) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -413,8 +432,57 @@ export function getDailyCardReflectionKey(dateKey = getLocalDayKey()) {
   return `eluna_daily_card_reflection_${dateKey}`;
 }
 
+function normalizeReflectionEntry(value: Partial<DailyCardReflectionEntry>): DailyCardReflectionEntry | null {
+  if (!value.dayKey || !value.cardId || !value.cardSlug || typeof value.reflection !== "string") return null;
+  const card = getDailyCardById(value.cardId) ?? getDailyCardBySlug(value.cardSlug);
+  return {
+    id: value.id ?? `daily_card_reflection_${value.dayKey}`,
+    date: value.date ?? value.dayKey,
+    dayKey: value.dayKey,
+    cardId: value.cardId,
+    cardSlug: value.cardSlug,
+    cardName: value.cardName ?? card?.name ?? value.cardSlug,
+    cardImage: value.cardImage ?? card?.image ?? "",
+    cardTags: Array.isArray(value.cardTags) ? value.cardTags : card?.tags ?? [],
+    meaning: value.meaning ?? card?.meaning ?? "",
+    action: value.action ?? card?.action ?? "",
+    reflectionQuestion: value.reflectionQuestion ?? card?.reflectionQuestion ?? "",
+    reflection: value.reflection,
+    savedAt: value.savedAt ?? new Date().toISOString(),
+    updatedAt: value.updatedAt ?? value.savedAt ?? new Date().toISOString(),
+  };
+}
+
+export function getDailyCardReflectionEntries() {
+  if (typeof window === "undefined") return [] as DailyCardReflectionEntry[];
+  try {
+    const raw = window.localStorage.getItem(DAILY_CARD_REFLECTIONS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((entry) => normalizeReflectionEntry(entry as Partial<DailyCardReflectionEntry>))
+      .filter((entry): entry is DailyCardReflectionEntry => entry !== null)
+      .sort((a, b) => b.dayKey.localeCompare(a.dayKey) || b.updatedAt.localeCompare(a.updatedAt));
+  } catch {
+    return [];
+  }
+}
+
+function writeDailyCardReflectionEntries(entries: DailyCardReflectionEntry[]) {
+  if (typeof window === "undefined") return entries;
+  window.localStorage.setItem(DAILY_CARD_REFLECTIONS_KEY, JSON.stringify(entries));
+  return entries;
+}
+
+export function getTodayDailyCardReflection(dayKey = getLocalDayKey()) {
+  return getDailyCardReflectionEntries().find((entry) => entry.dayKey === dayKey) ?? null;
+}
+
 export function readDailyCardReflection(dateKey = getLocalDayKey()) {
   if (typeof window === "undefined") return "";
+  const entry = getTodayDailyCardReflection(dateKey);
+  if (entry) return entry.reflection;
   try {
     const raw = window.localStorage.getItem(getDailyCardReflectionKey(dateKey));
     if (!raw) return "";
@@ -426,8 +494,28 @@ export function readDailyCardReflection(dateKey = getLocalDayKey()) {
 }
 
 export function saveDailyCardReflection(card: DailyCard, reflection: string, dateKey = getLocalDayKey()) {
-  if (typeof window === "undefined") return "";
+  if (typeof window === "undefined") return null;
   const value = reflection.trim();
+  const entries = getDailyCardReflectionEntries();
+  const now = new Date().toISOString();
+  const existing = entries.find((entry) => entry.dayKey === dateKey);
+  const entry: DailyCardReflectionEntry = {
+    id: existing?.id ?? `daily_card_reflection_${dateKey}`,
+    date: dateKey,
+    dayKey: dateKey,
+    cardId: card.id,
+    cardSlug: card.slug,
+    cardName: card.name,
+    cardImage: card.image,
+    cardTags: card.tags,
+    meaning: card.meaning,
+    action: card.action,
+    reflectionQuestion: card.reflectionQuestion,
+    reflection: value,
+    savedAt: existing?.savedAt ?? now,
+    updatedAt: now,
+  };
+  writeDailyCardReflectionEntries([entry, ...entries.filter((item) => item.dayKey !== dateKey)]);
   const payload: DailyCardReflection = {
     date: dateKey,
     cardId: card.id,
@@ -436,5 +524,16 @@ export function saveDailyCardReflection(card: DailyCard, reflection: string, dat
     savedAt: new Date().toISOString(),
   };
   window.localStorage.setItem(getDailyCardReflectionKey(dateKey), JSON.stringify(payload));
-  return value;
+  return entry;
+}
+
+export function deleteDailyCardReflection(entryId: string) {
+  const entries = getDailyCardReflectionEntries();
+  const entry = entries.find((item) => item.id === entryId);
+  const nextEntries = entries.filter((item) => item.id !== entryId);
+  writeDailyCardReflectionEntries(nextEntries);
+  if (entry && typeof window !== "undefined") {
+    window.localStorage.removeItem(getDailyCardReflectionKey(entry.dayKey));
+  }
+  return nextEntries;
 }

@@ -14,9 +14,10 @@ import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchCo
 import { getPrelandContext, getPrelandExperience, getPrelandKind, parsePrelandContext, savePrelandContext, type PrelandContext, type PrelandExperience } from "@/lib/funnel/prelandContext";
 import { DAILY_PROGRESS_UPDATED_EVENT, getCurrentStreak, getDailyActionKey, getFirstSignalState, getTodayKey, getTodayPracticeReflection, getTodayProgress, getWeeklyStreakState, isDailyActive, markAffirmationRepeated, markDailyActionCompleted, notifyDailyProgressUpdated, type DailyAction, type DailyProgress, type FirstSignalState, type PracticeReflection, type WeeklyStreakDay } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
-import { drawDailyCard as drawDailyCardForToday, getTodayDailyCard, type DailyCardState } from "@/lib/cards/dailyCardProgress";
+import { getTodayDailyCard, readDailyCardReflection, type DailyCard } from "@/lib/dailyCards";
 
 type ActiveAffirmation = { id: string; categoryId?: string; category: string; text: string };
+type DailyCardState = { drawn: boolean; card: DailyCard | null; reflection: string };
 
 const cardStyle: CSSProperties = {
   border: "1px solid rgba(216,168,95,.20)",
@@ -162,6 +163,7 @@ export default function HomePage() {
   const [activeAffirmation, setActiveAffirmation] = useState<ActiveAffirmation | null>(null);
   const [dailyCardState, setDailyCardState] = useState<DailyCardState>({ drawn: false, card: null, reflection: "" });
   const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [profileResolved, setProfileResolved] = useState(false);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [todayActive, setTodayActive] = useState(false);
   const [weeklyStreak, setWeeklyStreak] = useState<WeeklyStreakDay[]>([]);
@@ -176,6 +178,15 @@ export default function HomePage() {
   const continuationContext = prelandKind && prelandKind !== "generic" ? prelandKind : isPastLifeContext(launchContext) ? "pastlife" : "personal";
 
   const calendarDays = useMemo(() => Array.from({ length: 5 }, (_, index) => addDays(today, index - 1)), [today]);
+
+  function loadDailyCardState(seedUserId = userId): DailyCardState {
+    const card = getTodayDailyCard(seedUserId, today);
+    return {
+      drawn: localStorage.getItem(getDailyActionKey("cardOpened", todayKey)) === "true",
+      card,
+      reflection: readDailyCardReflection(todayKey),
+    };
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -206,7 +217,7 @@ export default function HomePage() {
       setDailyState(getTodayProgress(todayKey));
       setPracticeReflection(getTodayPracticeReflection(todayKey));
       setFirstSignalState(getFirstSignalState(todayKey));
-      setDailyCardState(getTodayDailyCard(todayKey, userId));
+      if (profileResolved) setDailyCardState(loadDailyCardState(userId));
       setTodayActive(isDailyActive(todayKey));
       setCurrentStreak(getCurrentStreak(today));
       setWeeklyStreak(getWeeklyStreakState(today));
@@ -222,9 +233,11 @@ export default function HomePage() {
       setActiveAffirmation(null);
     }
     void getCurrentProfile().then((user) => {
-      if (!cancelled && user?.id) {
-        setUserId(user.id);
-        setDailyCardState(getTodayDailyCard(todayKey, user.id));
+      if (!cancelled) {
+        const nextUserId = user?.id;
+        setUserId(nextUserId);
+        setProfileResolved(true);
+        setDailyCardState(loadDailyCardState(nextUserId));
       }
       if (!cancelled && user && !user.onboardingCompleted) {
         router.replace("/onboarding");
@@ -239,7 +252,7 @@ export default function HomePage() {
       window.removeEventListener(DAILY_PROGRESS_UPDATED_EVENT, refreshProgressState);
       window.removeEventListener("storage", refreshProgressState);
     };
-  }, [todayKey, today, router, userId]);
+  }, [todayKey, today, router, userId, profileResolved]);
 
   function setDailyField(field: DailyAction, value = true) {
     if (value) {
@@ -273,12 +286,13 @@ export default function HomePage() {
   });
 
   function drawDailyCard() {
-    const cardState = drawDailyCardForToday(todayKey, userId);
+    markDailyActionCompleted("cardOpened", todayKey);
+    const cardState = loadDailyCardState(userId);
     setDailyCardState(cardState);
     setDailyState(getTodayProgress(todayKey));
     setFeatureInfo({
-      title: cardState.card?.title ?? "Daily card",
-      description: cardState.card ? `${cardState.card.theme}. ${cardState.card.meaning}` : "Your symbol for today is saved.",
+      title: cardState.card?.name ?? "Daily card",
+      description: cardState.card ? `${cardState.card.tags[0]?.replace(/-/g, " ") ?? "symbol"}. ${cardState.card.meaning}` : "Your symbol for today is saved.",
       statusLabel: "Drawn today",
       primaryActionLabel: "View card",
       primaryHref: "/daily-card",
@@ -374,10 +388,10 @@ export default function HomePage() {
             <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{dailyState.readingOpened ? "Opened" : "Open"}</span>
           </Link>
           <Link href="/daily-card" onClick={drawDailyCard} style={{ ...cardStyle, padding: 14, minHeight: 228, display: "flex", flexDirection: "column", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)", overflow: "hidden", textDecoration: "none" }}>
-            <img src={dailyCardState.card?.image ?? "/assets/home/eluna-daily-card-icon.png"} alt={dailyCardState.card ? `${dailyCardState.card.title} card artwork` : "Daily card illustration"} style={{ ...homeCardIllustrationStyle, width: "min(100%, 118px)", height: 112, filter: "drop-shadow(0 16px 24px rgba(90,32,144,.34)) drop-shadow(0 0 16px rgba(216,168,95,.16))" }} draggable={false} />
+            <img src={dailyCardState.card?.image ?? "/assets/home/eluna-daily-card-icon.png"} alt={dailyCardState.card ? `${dailyCardState.card.name} card` : "Daily card illustration"} style={{ ...homeCardIllustrationStyle, width: "min(100%, 118px)", height: 112, filter: "drop-shadow(0 16px 24px rgba(90,32,144,.34)) drop-shadow(0 0 16px rgba(216,168,95,.16))" }} draggable={false} />
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Daily card</h2>
             <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>
-              {dailyCardState.card ? `${dailyCardState.card.title} · ${dailyCardState.card.theme}` : "Reveal today’s symbol."}
+              {dailyCardState.card ? `${dailyCardState.card.name} · ${dailyCardState.card.tags[0]?.replace(/-/g, " ") ?? "symbol"}` : "Reveal today’s symbol."}
             </p>
             <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>View card</span>
           </Link>

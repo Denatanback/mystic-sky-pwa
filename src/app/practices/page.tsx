@@ -26,6 +26,7 @@ import {
 } from "@/lib/progress/dailyProgress";
 import { getTodayDailyCard, type DailyCardState } from "@/lib/cards/dailyCardProgress";
 import { getPrelandContext, getPrelandExperience, type PrelandExperience } from "@/lib/funnel/prelandContext";
+import { getCurrentProfile } from "@/lib/profile/currentProfile";
 import { affirmationCategories, type AffirmationCategory, type AffirmationItem } from "@/lib/practices/affirmations";
 import { useEntitlements } from "@/lib/subscription/entitlements";
 
@@ -146,6 +147,7 @@ export default function PracticesPage() {
   const [prelandExperience, setPrelandExperience] = useState<PrelandExperience | null>(null);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
 
   const activeLimit = hasFullAccess(plan) ? 3 : 1;
   const firstActiveAffirmation = activeAffirmations[0] ?? null;
@@ -158,19 +160,24 @@ export default function PracticesPage() {
     setAffirmationCompleted(currentProgress.affirmationCompleted);
     setReflectionCompleted(currentProgress.practiceCompleted);
     setGroundingCompleted(isGroundingCompleted(todayKey));
-    setDailyCardState(getTodayDailyCard(todayKey));
+    setDailyCardState(getTodayDailyCard(todayKey, userId));
     setAffirmationRepeat(getTodayAffirmationRepeat(todayKey));
     setPracticeReflection(getTodayPracticeReflection(todayKey));
     setActiveAffirmations(readActiveAffirmations());
     setPrelandExperience(getPrelandExperience(getPrelandContext()));
-  }, [todayKey]);
+    void getCurrentProfile().then((user) => {
+      if (!user?.id) return;
+      setUserId(user.id);
+      setDailyCardState(getTodayDailyCard(todayKey, user.id));
+    });
+  }, [todayKey, userId]);
 
   function refreshDailyState() {
     const currentProgress = getTodayProgress(todayKey);
     setAffirmationCompleted(currentProgress.affirmationCompleted);
     setReflectionCompleted(currentProgress.practiceCompleted);
     setGroundingCompleted(isGroundingCompleted(todayKey));
-    setDailyCardState(getTodayDailyCard(todayKey));
+    setDailyCardState(getTodayDailyCard(todayKey, userId));
     setAffirmationRepeat(getTodayAffirmationRepeat(todayKey));
     setPracticeReflection(getTodayPracticeReflection(todayKey));
   }

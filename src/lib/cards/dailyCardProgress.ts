@@ -51,7 +51,7 @@ export function saveDailyCardReflection(text: string, dayKey = getTodayKey(), us
   if (!isBrowser()) return "";
   const state = getTodayDailyCard(dayKey, userId);
   if (!state.card) return "";
-  return persistDailyCardReflection(state.card, text, dayKey);
+  return persistDailyCardReflection(state.card, text, dayKey)?.reflection ?? "";
 }
 
 export function getDailyCardReflection(dayKey = getTodayKey()) {
