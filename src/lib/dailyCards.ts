@@ -361,6 +361,7 @@ export type DailyCardReflection = {
 };
 
 export const DAILY_CARD_REFLECTIONS_KEY = "eluna_daily_card_reflections";
+export const DAILY_CARD_REVEAL_KEY = "eluna_daily_card_reveal_state";
 
 export type DailyCardReflectionEntry = {
   id: string;
@@ -377,6 +378,13 @@ export type DailyCardReflectionEntry = {
   reflection: string;
   savedAt: string;
   updatedAt: string;
+};
+
+export type DailyCardRevealState = {
+  dayKey: string;
+  cardId: number;
+  cardSlug: string;
+  revealedAt: string;
 };
 
 export function getLocalDayKey(date = new Date()) {
@@ -417,6 +425,42 @@ export function getTodayDailyCard(userId?: string, date = new Date()) {
   const offset = hashString(seed) % dailyCards.length;
   const index = (daysSinceEpoch + offset) % dailyCards.length;
   return dailyCards[index];
+}
+
+export function readDailyCardRevealState() {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(DAILY_CARD_REVEAL_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<DailyCardRevealState>;
+    if (!parsed.dayKey || !parsed.cardId || !parsed.cardSlug || !parsed.revealedAt) return null;
+    return {
+      dayKey: parsed.dayKey,
+      cardId: Number(parsed.cardId),
+      cardSlug: parsed.cardSlug,
+      revealedAt: parsed.revealedAt,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function isDailyCardRevealed(card: DailyCard, date = new Date()) {
+  const dayKey = getLocalDayKey(date);
+  const revealState = readDailyCardRevealState();
+  return Boolean(revealState && revealState.dayKey === dayKey && revealState.cardId === card.id);
+}
+
+export function revealDailyCard(card: DailyCard, date = new Date()) {
+  if (typeof window === "undefined") return null;
+  const payload: DailyCardRevealState = {
+    dayKey: getLocalDayKey(date),
+    cardId: card.id,
+    cardSlug: card.slug,
+    revealedAt: new Date().toISOString(),
+  };
+  window.localStorage.setItem(DAILY_CARD_REVEAL_KEY, JSON.stringify(payload));
+  return payload;
 }
 
 export function getDailyCardById(id: number | string | null | undefined) {

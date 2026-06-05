@@ -1,4 +1,4 @@
-import type { LunaPathState, OracleHistoryItem, OracleSession } from "./types";
+import type { LunaPathLedgerEntry, LunaPathState, OracleHistoryItem, OracleSession } from "./types";
 
 export const LUNA_PATH_STORAGE_KEY = "eluna_luna_path_state";
 export const ORACLE_HISTORY_STORAGE_KEY = "eluna_oracle_history";
@@ -19,6 +19,25 @@ export function createDefaultLunaPathState(): LunaPathState {
   };
 }
 
+function normalizeLedgerReason(reason: string) {
+  const replacements: Record<string, string> = {
+    "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043d\u0430 \u043f\u0440\u0430\u043a\u0442\u0438\u043a\u0430": "Practice completed",
+    "\u041e\u0442\u043c\u0435\u0447\u0435\u043d\u043e \u0441\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435": "Mood checked in",
+    "\u041e\u0442\u043a\u0440\u044b\u0442\u0430 \u043a\u0430\u0440\u0442\u0430 \u0434\u043d\u044f": "Daily card opened",
+    "Completed a practice": "Practice completed",
+    "Checked in with mood": "Mood checked in",
+    "Opened daily card": "Daily card opened",
+  };
+  return replacements[reason] ?? reason;
+}
+
+function normalizeLedger(entries: LunaPathLedgerEntry[]) {
+  return entries.map((entry) => ({
+    ...entry,
+    reason: normalizeLedgerReason(entry.reason),
+  }));
+}
+
 function normalizeState(value: Partial<LunaPathState> | null | undefined): LunaPathState {
   const fallback = createDefaultLunaPathState();
   const legacyOracleSessions = Array.isArray(value?.oracleSessions) ? value.oracleSessions : fallback.oracleSessions;
@@ -32,7 +51,7 @@ function normalizeState(value: Partial<LunaPathState> | null | undefined): LunaP
     streakDays: Number.isFinite(value?.streakDays) ? Number(value?.streakDays) : fallback.streakDays,
     oracleFreeQuestionAvailable: getOracleFreeQuestionAvailable(value?.oracleFreeQuestionAvailable ?? fallback.oracleFreeQuestionAvailable),
     dailyProgress: value?.dailyProgress ?? fallback.dailyProgress,
-    ledger: Array.isArray(value?.ledger) ? value.ledger : fallback.ledger,
+    ledger: normalizeLedger(Array.isArray(value?.ledger) ? value.ledger : fallback.ledger),
     oracleSessions: readOracleHistory(legacyOracleSessions),
   };
 }

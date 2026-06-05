@@ -10,7 +10,7 @@ export const ritualRewards: Record<DailyRitualKey, RitualReward> = {
   cardOpened: {
     moonlight: 15,
     tokens: 10,
-    reason: "Opened daily card",
+    reason: "Daily card opened",
   },
   reflectionCompleted: {
     moonlight: 30,
@@ -20,12 +20,12 @@ export const ritualRewards: Record<DailyRitualKey, RitualReward> = {
   moodChecked: {
     moonlight: 10,
     tokens: 5,
-    reason: "Checked in with mood",
+    reason: "Mood checked in",
   },
   practiceCompleted: {
     moonlight: 20,
     tokens: 15,
-    reason: "Completed a practice",
+    reason: "Practice completed",
   },
 };
 
