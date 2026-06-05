@@ -45,6 +45,16 @@ const primaryButtonStyle: CSSProperties = {
   boxShadow: "0 10px 28px rgba(90,32,144,.40), inset 0 1px 0 rgba(255,255,255,.12)",
 };
 
+const homeCardIllustrationStyle: CSSProperties = {
+  width: "min(100%, 124px)",
+  height: 104,
+  objectFit: "contain",
+  alignSelf: "center",
+  margin: "-4px auto 8px",
+  filter: "drop-shadow(0 14px 22px rgba(90,32,144,.30)) drop-shadow(0 0 14px rgba(216,168,95,.12))",
+  pointerEvents: "none",
+};
+
 function addDays(date: Date, amount: number) {
   const next = new Date(date);
   next.setDate(next.getDate() + amount);
@@ -352,14 +362,14 @@ export default function HomePage() {
         </section>
 
         <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 12 }}>
-          <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...cardStyle, padding: 14, minHeight: 136, display: "flex", flexDirection: "column", textDecoration: "none" }}>
-            <span style={{ color: "var(--gold-2)", marginBottom: 10 }}><IconSpark /></span>
+          <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...cardStyle, padding: 14, minHeight: 228, display: "flex", flexDirection: "column", textDecoration: "none", overflow: "hidden" }}>
+            <img src="/assets/home/eluna-todays-reading-icon.png" alt="Today’s reading illustration" style={homeCardIllustrationStyle} draggable={false} />
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Today’s reading</h2>
             <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>Open your personal insight.</p>
             <span style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800 }}>{dailyState.readingOpened ? "Opened" : "Open"}</span>
           </Link>
-          <button type="button" onClick={drawDailyCard} style={{ ...cardStyle, padding: 14, minHeight: 136, display: "flex", flexDirection: "column", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
-            <span style={{ color: "var(--gold-2)", marginBottom: 10 }}><IconSpark /></span>
+          <button type="button" onClick={drawDailyCard} style={{ ...cardStyle, padding: 14, minHeight: 228, display: "flex", flexDirection: "column", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)", overflow: "hidden" }}>
+            <img src="/assets/home/eluna-daily-card-icon.png" alt="Daily card illustration" style={homeCardIllustrationStyle} draggable={false} />
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Daily card</h2>
             <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45, flex: 1 }}>
               {dailyCardState.card ? `${dailyCardState.card.title} · ${dailyCardState.card.theme}` : "Reveal today’s symbol."}
