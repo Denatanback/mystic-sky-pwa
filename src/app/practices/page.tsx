@@ -80,6 +80,14 @@ const secondaryButtonStyle: CSSProperties = {
   cursor: "pointer",
 };
 
+const practiceIllustrationStyle: CSSProperties = {
+  width: "clamp(96px, 28vw, 126px)",
+  height: "clamp(86px, 24vw, 116px)",
+  objectFit: "contain",
+  flexShrink: 0,
+  filter: "drop-shadow(0 16px 24px rgba(74,32,124,.24)) drop-shadow(0 0 18px rgba(216,168,95,.10))",
+};
+
 function hasFullAccess(plan: PlanAccess) {
   return plan === "intro" || plan === "premium";
 }
@@ -340,10 +348,8 @@ export default function PracticesPage() {
             />
 
             <section style={{ ...cardStyle, padding: 16 }}>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                <div style={{ width: 42, height: 42, borderRadius: "50%", border: "1px solid rgba(216,168,95,.30)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "grid", placeItems: "center", flexShrink: 0 }}>
-                  <IconSpark />
-                </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+                <img src="/assets/practice-icons/breathing-practice-icon.webp" alt="Breathing practice illustration" style={practiceIllustrationStyle} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 4 }}>Breathing practice</h2>
                   <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 8 }}>2 minutes</p>
@@ -360,10 +366,8 @@ export default function PracticesPage() {
             </section>
 
             <section style={{ ...cardStyle, padding: 16 }}>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                <div style={{ width: 42, height: 42, borderRadius: "50%", border: "1px solid rgba(216,168,95,.30)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "grid", placeItems: "center", flexShrink: 0 }}>
-                  <IconSpark />
-                </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+                <img src="/assets/practice-icons/symbol-practice-icon.webp" alt="Symbol practice illustration" style={practiceIllustrationStyle} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 4 }}>Symbol practice</h2>
                   <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 8 }}>{dailyCardState.drawn ? "Drawn" : "Ready"}</p>

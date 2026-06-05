@@ -6,7 +6,7 @@ import { askOracle } from "@/lib/lunaPath/progress";
 import { oracleModeCosts, oracleModeDescriptions, oracleModeLabels } from "@/lib/lunaPath/rewards";
 import { deleteOracleHistoryItem, getVisibleOracleHistory, readLunaPathState } from "@/lib/lunaPath/storage";
 import type { LunaPathState, OracleHistoryItem, OracleMode } from "@/lib/lunaPath/types";
-import { lunaCardStyle, lunaInputStyle, lunaPrimaryButtonStyle, lunaSecondaryButtonStyle, LunaGlyph } from "./shared";
+import { lunaCardStyle, lunaInputStyle, lunaPrimaryButtonStyle, lunaSecondaryButtonStyle } from "./shared";
 
 const paidModes: Array<Exclude<OracleMode, "free">> = ["quick", "deep", "three-card"];
 
@@ -93,8 +93,12 @@ export function OraclePracticeCard() {
 
   return (
     <section id="oracle" style={{ ...lunaCardStyle, scrollMarginTop: 18, padding: 16, background: "radial-gradient(circle at 16% 0%, rgba(216,168,95,.10), transparent 30%), rgba(12,8,28,.70)" }}>
-      <div style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 14 }}>
-        <LunaGlyph />
+      <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
+        <img
+          src="/assets/practice-icons/eluna-oracle-icon.png"
+          alt="eLuna Oracle illustration"
+          style={{ width: "clamp(98px, 28vw, 124px)", height: "clamp(88px, 24vw, 114px)", objectFit: "contain", flexShrink: 0, filter: "drop-shadow(0 16px 24px rgba(74,32,124,.24)) drop-shadow(0 0 18px rgba(216,168,95,.10))" }}
+        />
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
             <div>
