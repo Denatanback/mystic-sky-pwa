@@ -52,8 +52,8 @@ export function NodePreviewSheet({ node, onClose, onOpenSubscription }: NodePrev
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 14, alignItems: "flex-start", marginBottom: 14 }}>
           <div>
-            <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 6 }}>{node.category}</p>
-            <h2 id="node-preview-title" style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", fontWeight: 600, lineHeight: 1.05, marginBottom: 8 }}>{node.title}</h2>
+            <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 6 }}>{node.mapLabel}</p>
+            <h2 id="node-preview-title" style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", fontWeight: 600, lineHeight: 1.05, marginBottom: 8 }}>{node.mapLabel}</h2>
             <span style={{ display: "inline-flex", border: "1px solid rgba(216,168,95,.28)", borderRadius: 999, color: isPremium ? "var(--gold-2)" : node.status === "locked" ? "var(--muted)" : "var(--gold-2)", background: "rgba(216,168,95,.08)", padding: "5px 10px", fontSize: 11, fontWeight: 900 }}>{statusLabel(node)}</span>
           </div>
           <button type="button" aria-label="Close" onClick={onClose} style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(255,255,255,.1)", background: "rgba(255,255,255,.06)", color: "var(--muted-2)", display: "grid", placeItems: "center", cursor: "pointer", flexShrink: 0 }}>x</button>

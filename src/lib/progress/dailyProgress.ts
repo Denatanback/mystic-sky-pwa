@@ -307,9 +307,10 @@ export function getCurrentStreak(date = new Date()) {
 
 export function getWeeklyStreakState(date = new Date()): WeeklyStreakDay[] {
   const todayKey = getLocalDateKey(date);
+  const weekStart = addDays(date, -date.getDay());
 
   return Array.from({ length: 7 }, (_, index) => {
-    const day = addDays(date, index - 6);
+    const day = addDays(weekStart, index);
     const dateKey = getLocalDateKey(day);
     return {
       dateKey,

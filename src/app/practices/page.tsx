@@ -10,7 +10,6 @@ import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { OraclePracticeCard } from "@/components/lunaPath/OraclePracticeCard";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
-import { ProductAccessGate } from "@/components/subscription/ProductAccessGate";
 import { SubscriptionModal } from "@/components/subscription/SubscriptionModal";
 import { GuidedDailyPractice, type GuidedPracticeResult } from "@/components/practices/GuidedDailyPractice";
 import {
@@ -280,7 +279,6 @@ export default function PracticesPage() {
   }
 
   return (
-    <ProductAccessGate featureName="Practices" description="Choose 3-day intro access or a subscription to use practices, affirmations, reflection actions, and future Oracle features.">
       <div className="app">
         <StarField />
         <div className="content" style={{ paddingBottom: "calc(132px + env(safe-area-inset-bottom))" }}>
@@ -525,6 +523,5 @@ export default function PracticesPage() {
         trialCtaLabel={prelandExperience ? "Unlock for $1" : undefined}
       />
       </div>
-    </ProductAccessGate>
   );
 }

@@ -124,7 +124,7 @@ export const baseSkyNodes: SkyNode[] = [
     id: "soulmate-pattern",
     num: 6,
     title: "Soulmate Pattern",
-    mapLabel: "Soul Mate",
+    mapLabel: "Soulmate",
     category: "Soulmate",
     discipline: disciplineDescriptions.soulmate,
     description: "This node previews attraction themes, relationship mirrors, and the signals that repeat in connection.",
@@ -138,6 +138,11 @@ export const baseSkyNodes: SkyNode[] = [
     deg: 120,
     previewBullets: ["Your connection pattern", "A relationship mirror", "One grounded reflection", "A deeper premium insight"],
   },
+];
+
+// Future-only node: keep the data available, but do not include it in resolved /sky nodes
+// until Weekly Soul Report has a dedicated implementation and unlock logic.
+export const futureSkyNodes: SkyNode[] = [
   {
     id: "weekly-report",
     num: 7,

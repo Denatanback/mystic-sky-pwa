@@ -10,7 +10,6 @@ import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
-import { ProductAccessGate } from "@/components/subscription/ProductAccessGate";
 import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchContext } from "@/lib/launch/launchContext";
 import { getPrelandContext, getPrelandExperience, getPrelandKind, parsePrelandContext, savePrelandContext, type PrelandContext, type PrelandExperience } from "@/lib/funnel/prelandContext";
 import { DAILY_PROGRESS_UPDATED_EVENT, getCurrentStreak, getDailyActionKey, getFirstSignalState, getTodayKey, getTodayPracticeReflection, getTodayProgress, getWeeklyStreakState, isDailyActive, markAffirmationRepeated, markDailyActionCompleted, notifyDailyProgressUpdated, type DailyAction, type DailyProgress, type FirstSignalState, type PracticeReflection, type WeeklyStreakDay } from "@/lib/progress/dailyProgress";
@@ -335,7 +334,6 @@ export default function HomePage() {
         : { label: "Open first signal", type: "link" as const, href: "/path" };
 
   return (
-    <ProductAccessGate featureName="Home" description="Choose 3-day intro access or a subscription to use Home, daily progress, readings, and path actions.">
       <div className="app">
         <StarField />
         <div className="content">
@@ -550,6 +548,5 @@ export default function HomePage() {
         <BottomNav />
         {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
       </div>
-    </ProductAccessGate>
   );
 }

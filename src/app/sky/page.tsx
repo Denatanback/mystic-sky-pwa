@@ -8,7 +8,6 @@ import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
-import { ProductAccessGate } from "@/components/subscription/ProductAccessGate";
 import { SubscriptionModal } from "@/components/subscription/SubscriptionModal";
 import { NodePreviewSheet } from "@/components/sky/NodePreviewSheet";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
@@ -29,12 +28,11 @@ const ORY = (ORB / CH) * 100;
 
 const orbitalNodePositions: Record<string, { x: number; y: number }> = {
   "sun-sign": { x: 50, y: 13 },
-  "life-path": { x: 20, y: 29 },
-  "energy-rhythm": { x: 80, y: 29 },
-  "past-life-signal": { x: 20, y: 55 },
-  "soulmate-pattern": { x: 80, y: 55 },
-  "weekly-report": { x: 28, y: 79 },
-  "grounding-practice": { x: 68, y: 79 },
+  "life-path": { x: 20, y: 32 },
+  "energy-rhythm": { x: 80, y: 32 },
+  "past-life-signal": { x: 20, y: 66 },
+  "grounding-practice": { x: 50, y: 82 },
+  "soulmate-pattern": { x: 80, y: 66 },
 };
 
 const cardStyle = {
@@ -165,7 +163,7 @@ export default function SkyPage() {
       return;
     }
     setPaywallContext({
-      title: `Unlock ${node.title}`,
+      title: `Unlock ${node.mapLabel}`,
       description: `Start 3-day introductory access for $1 to unlock this insight and continue your path. ${node.description}`,
     });
     setSubscriptionOpen(true);
@@ -176,7 +174,6 @@ export default function SkyPage() {
   }
 
   return (
-    <ProductAccessGate featureName="Sky Map" description="Choose 3-day intro access or a subscription to use Sky Map nodes, readings, and unlock paths.">
       <div className="app sky-page">
         <StarField orbits={false} />
         <div className="content" style={{ paddingBottom: 100 }}>
@@ -228,9 +225,9 @@ export default function SkyPage() {
             const size = isActive ? 64 : 56;
             return (
               <div key={node.id} style={{ position: "absolute", left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%,-50%)", zIndex: isActive ? 8 : 4 + node.num, opacity: dim ? .22 : 1, transition: "opacity .25s", pointerEvents: dim ? "none" : "auto" }}>
-                <button type="button" onClick={() => setSelectedNode(node)} aria-label={`${node.title} node preview`} style={{ border: "none", background: "transparent", padding: 0, width: 82, minHeight: 88, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, cursor: "pointer", fontFamily: "var(--font-ui)", touchAction: "manipulation" }}>
+                <button type="button" onClick={() => setSelectedNode(node)} aria-label={`${node.mapLabel} node preview`} style={{ border: "none", background: "transparent", padding: 0, width: 82, minHeight: 88, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, cursor: "pointer", fontFamily: "var(--font-ui)", touchAction: "manipulation" }}>
                   <div style={{ width: size, height: size, borderRadius: "50%", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", flexShrink: 0 }}>
-                    <Image src={node.emblem} alt={node.title} fill style={{ objectFit: "contain", opacity: isLocked || isPremium ? .56 : 1 }} />
+                    <Image src={node.emblem} alt={node.mapLabel} fill style={{ objectFit: "contain", opacity: isLocked || isPremium ? .56 : 1 }} />
                     {isActive && <div style={{ position: "absolute", top: -4, left: "50%", transform: "translateX(-50%)", width: 16, height: 16, borderRadius: "50%", background: "linear-gradient(135deg, #d8a85f, #8040c0)", border: "1.5px solid rgba(216,168,95,.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, zIndex: 5, boxShadow: "0 0 8px rgba(216,168,95,.5)" }}>★</div>}
                     {(isLocked || isPremium) && <div style={{ position: "absolute", bottom: 4, right: 4, zIndex: 5, lineHeight: 0, filter: "drop-shadow(0 1px 3px rgba(0,0,0,.8))" }}><Image src="/assets/icons/icon-lock.png" alt="Locked" width={24} height={24} style={{ objectFit: "contain" }} /></div>}
                   </div>
@@ -248,10 +245,10 @@ export default function SkyPage() {
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", marginBottom: 10 }}>Current point</p>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div style={{ width: 52, height: 52, borderRadius: "50%", flexShrink: 0, position: "relative", overflow: "hidden" }}>
-              <Image src={activeNode.emblem} alt={activeNode.title} fill style={{ objectFit: "contain" }} />
+              <Image src={activeNode.emblem} alt={activeNode.mapLabel} fill style={{ objectFit: "contain" }} />
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 2 }}>{activeNode.title}</p>
+              <p style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 2 }}>{activeNode.mapLabel}</p>
               <p style={{ fontSize: 12, color: "var(--muted)" }}>Start here, then continue today's path to open deeper map areas.</p>
             </div>
             <button type="button" onClick={() => setSelectedNode(activeNode)} style={{ display: "flex", alignItems: "center", gap: 5, border: "1px solid rgba(216,168,95,.35)", borderRadius: 999, padding: "8px 14px", fontSize: 12, color: "var(--gold-2)", fontWeight: 800, background: "rgba(216,168,95,.06)", whiteSpace: "nowrap", flexShrink: 0, cursor: "pointer" }}>
@@ -261,7 +258,7 @@ export default function SkyPage() {
           {nextLocked && (
             <div style={{ borderTop: "1px solid rgba(255,255,255,.07)", marginTop: 14, paddingTop: 14 }}>
               <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--muted)", marginBottom: 6 }}>Next unlock</p>
-              <p style={{ fontSize: 13, color: "var(--text)", fontWeight: 800 }}>{nextLocked.title}</p>
+              <p style={{ fontSize: 13, color: "var(--text)", fontWeight: 800 }}>{nextLocked.mapLabel}</p>
               <p style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 3 }}>{nextLocked.requirement}</p>
             </div>
           )}
@@ -273,6 +270,5 @@ export default function SkyPage() {
         <NodePreviewSheet node={selectedNode} onClose={() => setSelectedNode(null)} onOpenSubscription={openNodePaywall} />
         <SubscriptionModal isOpen={subscriptionOpen} onClose={() => setSubscriptionOpen(false)} contextTitle={paywallContext?.title ?? "Unlock this Sky Map node"} contextDescription={paywallContext?.description ?? "Start 3-day introductory access for $1 to unlock this insight and continue your path."} trialCtaLabel={prelandExperience ? "Unlock for $1" : undefined} />
       </div>
-    </ProductAccessGate>
   );
 }
