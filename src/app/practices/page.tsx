@@ -31,7 +31,7 @@ import { affirmationCategories, type AffirmationCategory, type AffirmationItem }
 import { useEntitlements } from "@/lib/subscription/entitlements";
 
 type Tab = "today" | "my" | "library";
-type PlanAccess = "free" | "intro" | "premium";
+type PlanAccess = "inactive" | "intro" | "premium";
 type ActiveAffirmation = { id: string; categoryId?: string; category: string; text: string };
 
 const ACTIVE_AFFIRMATIONS_KEY = "eluna:activeAffirmations";
@@ -127,15 +127,13 @@ function isAffirmationRepeatedToday(item: ActiveAffirmation, repeat: Affirmation
   return repeat.text ? repeat.text === item.text : true;
 }
 
-function canOpenCategory(category: AffirmationCategory, plan: PlanAccess) {
+function canOpenCategory(_category: AffirmationCategory, plan: PlanAccess) {
   if (hasFullAccess(plan)) return true;
-  return category.freeAccess !== "locked";
+  return false;
 }
 
-function canActivateAffirmation(category: AffirmationCategory, affirmation: AffirmationItem, plan: PlanAccess, index: number) {
+function canActivateAffirmation(_category: AffirmationCategory, _affirmation: AffirmationItem, plan: PlanAccess, _index: number) {
   if (hasFullAccess(plan)) return true;
-  if (category.freeAccess === "full") return true;
-  if (category.freeAccess === "preview") return index < 2;
   return false;
 }
 
@@ -143,7 +141,7 @@ export default function PracticesPage() {
   const todayKey = useMemo(() => getTodayKey(), []);
   const [tab, setTab] = useState<Tab>("today");
   const { entitlements } = useEntitlements();
-  const plan: PlanAccess = entitlements.hasFullAccess ? entitlements.isTrial ? "intro" : "premium" : "free";
+  const plan: PlanAccess = entitlements.hasFullAccess ? entitlements.isTrial ? "intro" : "premium" : "inactive";
   const [affirmationCompleted, setAffirmationCompleted] = useState(false);
   const [reflectionCompleted, setReflectionCompleted] = useState(false);
   const [groundingCompleted, setGroundingCompleted] = useState(false);
@@ -157,7 +155,7 @@ export default function PracticesPage() {
   const [subscriptionOpen, setSubscriptionOpen] = useState(false);
   const [userId, setUserId] = useState<string | undefined>(undefined);
 
-  const activeLimit = hasFullAccess(plan) ? 3 : 1;
+  const activeLimit = hasFullAccess(plan) ? 3 : 0;
   const firstActiveAffirmation = activeAffirmations[0] ?? null;
 
   useEffect(() => {
@@ -299,7 +297,7 @@ export default function PracticesPage() {
           <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 6 }}>Practices</h1>
           <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.55 }}>Small daily actions that keep your path active.</p>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "1px solid rgba(216,168,95,.24)", borderRadius: 999, background: "rgba(216,168,95,.08)", color: "var(--gold-2)", padding: "7px 12px", fontSize: 12, fontWeight: 800, marginTop: 12 }}>
-            <IconSpark /> Active: {activeAffirmations.length} / {activeLimit}
+            <IconSpark /> Active: {hasFullAccess(plan) ? `${activeAffirmations.length} / ${activeLimit}` : "Requires access"}
           </div>
         </section>
 
@@ -417,12 +415,11 @@ export default function PracticesPage() {
           <div style={{ display: "grid", gap: 12 }}>
             {affirmationCategories.map((category) => {
               const locked = !canOpenCategory(category, plan);
-              const preview = !hasFullAccess(plan) && category.freeAccess === "preview";
               return (
                 <button key={category.id} type="button" onClick={() => setSelectedCategory(category)} style={{ ...cardStyle, padding: 16, textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)", opacity: locked ? .82 : 1 }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 7 }}>
                     <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase" }}>{category.tag}</p>
-                    <span style={{ border: "1px solid rgba(216,168,95,.24)", borderRadius: 999, color: category.premium || preview ? "var(--gold-2)" : "var(--muted-2)", background: "rgba(216,168,95,.07)", padding: "4px 8px", fontSize: 10, fontWeight: 900 }}>{locked ? "Premium" : preview ? "Preview" : "Free"}</span>
+                    <span style={{ border: "1px solid rgba(216,168,95,.24)", borderRadius: 999, color: locked ? "var(--gold-2)" : "var(--muted-2)", background: "rgba(216,168,95,.07)", padding: "4px 8px", fontSize: 10, fontWeight: 900 }}>{locked ? "Requires access" : "Included"}</span>
                   </div>
                   <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 6 }}>{category.title}</h2>
                   <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>{category.description}</p>
@@ -461,7 +458,7 @@ export default function PracticesPage() {
           <section role="dialog" aria-modal="true" aria-labelledby="affirmation-category-title" style={{ position: "fixed", left: "50%", bottom: 0, transform: "translateX(-50%)", width: "min(100vw, 430px)", maxHeight: "88dvh", overflowY: "auto", zIndex: 221, borderRadius: "24px 24px 0 0", border: "1px solid rgba(216,168,95,.24)", borderBottom: "none", background: "rgba(10,6,28,.97)", boxShadow: "0 -12px 46px rgba(0,0,0,.58)", padding: "18px 20px calc(92px + env(safe-area-inset-bottom))" }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", marginBottom: 14 }}>
               <div>
-                <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 6 }}>{selectedCategory.premium ? "Premium practice" : selectedCategory.freeAccess === "preview" && !hasFullAccess(plan) ? "Preview practice" : "Affirmation practice"}</p>
+                <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 6 }}>{hasFullAccess(plan) ? "Affirmation practice" : "Requires active access"}</p>
                 <h2 id="affirmation-category-title" style={{ fontFamily: "var(--font-display)", fontSize: 25, color: "var(--text)", fontWeight: 600, lineHeight: 1.1 }}>{selectedCategory.title}</h2>
               </div>
               <button type="button" aria-label="Close" onClick={() => setSelectedCategory(null)} style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(255,255,255,.1)", background: "rgba(255,255,255,.06)", color: "var(--muted-2)", display: "grid", placeItems: "center", cursor: "pointer", flexShrink: 0 }}>x</button>
@@ -508,7 +505,7 @@ export default function PracticesPage() {
               {renderInfoBlock("Reflection question", selectedCategory.reflectionQuestion)}
             </div>
 
-            {!hasFullAccess(plan) && selectedCategory.freeAccess !== "full" && (
+            {!hasFullAccess(plan) && (
               <button type="button" onClick={openSubscription} style={{ ...primaryButtonStyle, width: "100%", marginTop: 14 }}>
                 Unlock full practice library
               </button>

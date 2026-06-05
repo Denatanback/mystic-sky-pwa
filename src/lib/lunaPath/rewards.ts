@@ -36,7 +36,7 @@ export const oracleModeCosts: Record<Exclude<OracleMode, "free">, number> = {
 };
 
 export const oracleModeLabels: Record<OracleMode, string> = {
-  free: "First question",
+  free: "Oracle answer",
   quick: "Quick question",
   deep: "Deep reflection",
   "three-card": "3-card reading",

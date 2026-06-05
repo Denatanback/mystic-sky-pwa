@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 import { GLOBAL_DISCLAIMER } from "@/lib/legal/legalContent";
 import { useEntitlements } from "@/lib/subscription/entitlements";
 
-type PlanId = "free" | "trial_3_day_1_usd" | "premium_monthly_2999" | "premium_3_month_5999" | "premium_6_month_8999";
+type PlanId = "trial_3_day_1_usd" | "premium_monthly_2999" | "premium_3_month_5999" | "premium_6_month_8999";
 
 const SUPPORT_EMAIL = "support@myeluna.com";
 const SUPPORT_MAILTO = "mailto:support@myeluna.com?subject=eLuna%20Billing%20Question";
@@ -27,7 +27,6 @@ const unlocks = [
   ["Reports", "Unlock weekly soul reports and monthly pattern previews."],
 ];
 
-const freePreview = ["Basic daily guidance preview", "1 daily card per day", "1 active affirmation", "Starter Sky Map preview"];
 const trialUnlocks = ["Full daily readings", "Premium Sky Map nodes", "Full affirmation and practice library", "Past-life and relationship insights", "Weekly and monthly report previews", "Progress and reflection features"];
 
 const premiumPreviews = [
@@ -97,18 +96,10 @@ const plans: Array<{
     includes: ["Unlimited daily readings", "Full practice library", "Personal chart insights", "Past-life and relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Progress and reflection features"],
     cta: "Choose Monthly",
   },
-  {
-    id: "free",
-    label: "Free",
-    price: "$0 USD",
-    description: "Stay with the preview experience and keep basic daily guidance.",
-    includes: ["Basic daily guidance preview", "1 daily card per day", "1 active affirmation", "Starter Sky Map preview"],
-    cta: "Current plan",
-  },
 ];
 
 export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescription, trialCtaLabel }: SubscriptionModalProps) {
-  const [notice, setNotice] = useState<"free" | "checkout-unavailable" | null>(null);
+  const [notice, setNotice] = useState<"checkout-unavailable" | null>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<PlanId | null>(null);
   const [mounted, setMounted] = useState(false);
   const { entitlements } = useEntitlements();
@@ -134,10 +125,6 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
 
   function choosePlan(planId: PlanId) {
     setSelectedPlanId(planId);
-    if (planId === "free") {
-      setNotice("free");
-      return;
-    }
     setNotice("checkout-unavailable");
   }
 
@@ -201,17 +188,11 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
             <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 7 }}>{contextTitle ?? "Subscription"}</p>
             <h2 id="subscription-title" style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 8 }}>{contextTitle ?? "Unlock your full eLuna path"}</h2>
             <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>
-              {contextDescription ?? "Start with 3 days of full access for $1.00 USD. Open deeper readings, premium practices, and the parts of your Sky Map that stay locked on Free."}
+              {contextDescription ?? "Start with 3 days of full access for $1.00 USD. Open deeper readings, premium practices, and the parts of your Sky Map that stay locked without active access."}
             </p>
           </div>
           <button type="button" onClick={onClose} aria-label="Close" style={{ width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(255,255,255,.1)", background: "rgba(255,255,255,.06)", color: "var(--muted-2)", display: "grid", placeItems: "center", cursor: "pointer", flexShrink: 0 }}>×</button>
         </div>
-
-        {notice === "free" && (
-          <div style={{ border: "1px solid rgba(216,168,95,.24)", borderRadius: 18, background: "rgba(216,168,95,.08)", padding: 13, marginBottom: 12 }}>
-            <p style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 800 }}>You’re staying on the Free plan.</p>
-          </div>
-        )}
 
         {hasInternalAccess && (
           <div style={{ border: "1px solid rgba(216,168,95,.28)", borderRadius: 18, background: "rgba(216,168,95,.10)", padding: 13, marginBottom: 12 }}>
@@ -243,8 +224,8 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
         <section style={{ ...sectionStyle, marginBottom: 12 }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             <div>
-              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 8 }}>Free preview includes</p>
-              {freePreview.map((item) => <p key={item} style={{ color: "var(--muted)", fontSize: 11, lineHeight: 1.45, marginTop: 5 }}>• {item}</p>)}
+              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 8 }}>Account setup</p>
+              {["Create your account", "Choose intro access or a subscription", "Paid access activates product features", "No physical goods are shipped"].map((item) => <p key={item} style={{ color: "var(--muted)", fontSize: 11, lineHeight: 1.45, marginTop: 5 }}>• {item}</p>)}
             </div>
             <div>
               <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 8 }}>Intro access unlocks</p>
@@ -256,8 +237,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
         <div style={{ display: "grid", gap: 12 }}>
           {plans.map((plan, index) => {
             const isTrial = plan.id === "trial_3_day_1_usd";
-            const isFree = plan.id === "free";
-            const compact = index > 0 && !isFree;
+            const compact = index > 0;
             const isSixMonth = plan.id === "premium_6_month_8999";
             const isLongPlan = plan.id === "premium_6_month_8999" || plan.id === "premium_3_month_5999";
             const borderColor = isTrial ? "rgba(216,168,95,.56)" : isSixMonth ? "rgba(247,217,139,.62)" : isLongPlan ? "rgba(216,168,95,.42)" : "rgba(216,168,95,.18)";
@@ -309,8 +289,8 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
                       </div>
                     ))}
                   </div>
-                  <button type="button" onClick={() => choosePlan(plan.id)} style={{ width: "100%", height: 44, borderRadius: 999, border: isFree ? "1px solid rgba(216,168,95,.30)" : "none", background: isFree ? "rgba(255,255,255,.05)" : "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: isFree ? "var(--gold-2)" : "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", boxShadow: isFree ? "none" : "0 8px 24px rgba(90,32,144,.38)" }}>
-                    {isFree && entitlements.isFree ? "Current plan" : isTrial && trialCtaLabel ? trialCtaLabel : plan.cta}
+                  <button type="button" onClick={() => choosePlan(plan.id)} style={{ width: "100%", height: 44, borderRadius: 999, border: "none", background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", cursor: "pointer", boxShadow: "0 8px 24px rgba(90,32,144,.38)" }}>
+                    {isTrial && trialCtaLabel ? trialCtaLabel : plan.cta}
                   </button>
                   {isTrial && (
                     <p style={{ color: "var(--muted-2)", fontSize: 10.5, lineHeight: 1.45, textAlign: "center", marginTop: 8 }}>

@@ -203,7 +203,7 @@ export const termsOfUse: LegalDocument = {
       title: "Subscriptions and Paid Features",
       body: [
         "Some eLuna features may require a paid subscription or introductory access plan. Pricing and plan terms are shown before checkout when checkout is available.",
-        "Current public pricing is shown in USD: Free preview $0 USD, 3-day introductory access $1.00 USD, Monthly Premium $29.99 USD/month, 3-Month Premium $59.99 USD every 3 months, and 6-Month Premium $89.99 USD every 6 months.",
+        "Current public pricing is shown in USD: 3-day introductory access $1.00 USD, Monthly Premium $29.99 USD/month, 3-Month Premium $59.99 USD every 3 months, and 6-Month Premium $89.99 USD every 6 months.",
         "By subscribing, you authorize recurring charges according to the plan selected at checkout until you cancel.",
         "Billing is governed by the Billing Terms. Refund requests are governed by the Refund Policy.",
       ],
@@ -397,7 +397,7 @@ export const billingTerms: LegalDocument = {
       title: "Pricing",
       body: [
         "Current pricing is shown before checkout in U.S. dollars (USD). Prices may exclude taxes, bank fees, currency conversion charges, app store fees, or payment-provider charges.",
-        "Current public pricing: Free preview $0 USD, 3-day introductory access $1.00 USD, Monthly Premium $29.99 USD/month, 3-Month Premium $59.99 USD every 3 months, and 6-Month Premium $89.99 USD every 6 months.",
+        "Current public pricing: 3-day introductory access $1.00 USD, Monthly Premium $29.99 USD/month, 3-Month Premium $59.99 USD every 3 months, and 6-Month Premium $89.99 USD every 6 months.",
         "eLuna may change prices in the future. If you do not agree with a future price or plan change, you may cancel before the next renewal.",
       ],
     },
@@ -413,7 +413,6 @@ export const billingTerms: LegalDocument = {
       title: "Subscription Plans",
       body: ["The currently planned eLuna plan structure is listed below. Exact available plan names, prices, currencies, taxes, and renewal terms shown at checkout control if they differ."],
       bullets: [
-        "Free preview: $0 USD.",
         "3-day introductory access: $1.00 USD.",
         "Monthly Premium: $29.99 USD/month.",
         "3-Month Premium: $59.99 USD every 3 months.",
@@ -537,9 +536,9 @@ export const deliveryPolicy: LegalDocument = {
       ],
     },
     {
-      title: "Free Preview Access",
+      title: "Account Access Before Subscription",
       body: [
-        "Free preview features are available after account creation. Free access may include limited readings, symbolic guidance previews, daily prompts, and other preview content.",
+        "Account creation is a technical step and does not create an active eLuna plan. Product feature access requires successful introductory access or subscription activation.",
       ],
     },
     {

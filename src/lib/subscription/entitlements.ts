@@ -144,7 +144,7 @@ export function getEntitlementLabel(entitlements: Entitlements) {
   if (entitlements.planId === "internal_full_access" && entitlements.status === "internal") return "Full Access";
   if (entitlements.isTrial) return "Intro access";
   if (entitlements.isPremium && entitlements.hasFullAccess) return "Premium";
-  return "Free";
+  return "No active plan";
 }
 
 async function fetchSubscriptionRows(userId: string) {

@@ -12,7 +12,7 @@ const paidModes: Array<Exclude<OracleMode, "free">> = ["quick", "deep", "three-c
 
 const oracleInfo = "The Oracle is not a fortune-telling tool. It helps you reflect on symbols, emotional patterns, and possible next steps. Your answer is shaped by your question and your eLuna activity.";
 const tokenInfo = "Lunar Tokens are earned by completing daily rituals: opening your card, writing a reflection, checking in with your mood, and finishing practices. You can spend them on deeper Oracle answers.";
-const deleteConfirmation = "Delete this Oracle answer from your history? This will not restore your free question.";
+const deleteConfirmation = "Delete this Oracle answer from your history? This will not restore spent tokens.";
 
 function InfoButton({ label, open, onToggle }: { label: string; open: boolean; onToggle: () => void }) {
   return (
@@ -50,9 +50,8 @@ export function OraclePracticeCard() {
     setState(readLunaPathState());
   }, []);
 
-  const isFree = state.oracleFreeQuestionAvailable;
   const selectedCost = oracleModeCosts[mode];
-  const canAffordSelectedMode = isFree || state.tokenBalance >= selectedCost;
+  const canAffordSelectedMode = state.tokenBalance >= selectedCost;
   const visibleHistory = getVisibleOracleHistory(state.oracleSessions);
 
   function submitQuestion() {
@@ -82,14 +81,12 @@ export function OraclePracticeCard() {
       oracleSessions: nextHistory,
       oracleFreeQuestionAvailable: currentState.oracleFreeQuestionAvailable,
     }));
-    setMessage("Oracle answer removed from history. Free access was not restored.");
+    setMessage("Oracle answer removed from history.");
   }
 
-  const buttonLabel = isFree
-    ? "Ask your first question"
-    : canAffordSelectedMode
-      ? `Ask the Oracle · ${selectedCost} tokens`
-      : "Earn tokens first";
+  const buttonLabel = canAffordSelectedMode
+    ? `Ask the Oracle · ${selectedCost} tokens`
+    : "Earn tokens first";
 
   return (
     <section id="oracle" style={{ ...lunaCardStyle, scrollMarginTop: 18, padding: 16, background: "radial-gradient(circle at 16% 0%, rgba(216,168,95,.10), transparent 30%), rgba(12,8,28,.70)" }}>
@@ -131,36 +128,29 @@ export function OraclePracticeCard() {
           <div style={{ border: "1px solid rgba(216,168,95,.14)", borderRadius: 14, background: "rgba(216,168,95,.055)", padding: 10 }}>
             <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 900, marginBottom: 4 }}>No Lunar Tokens yet</p>
             <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.45, marginBottom: 9 }}>
-              {isFree ? "Your first question is free — try the Oracle once before spending tokens." : "Complete small rituals in Luna Path to earn tokens. You can use them for deeper Oracle answers."}
+              Complete small rituals in Luna Path to earn tokens. You can use them for deeper Oracle answers.
             </p>
             <Link href="/path" style={{ ...lunaSecondaryButtonStyle, minHeight: 34 }}>Go to Luna Path</Link>
           </div>
         )}
       </div>
 
-      {isFree ? (
-        <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 16, background: "rgba(216,168,95,.08)", padding: 12, marginBottom: 12 }}>
-          <p style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 900, marginBottom: 4 }}>Your first Oracle question is free.</p>
-          <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.45 }}>Use it to see how the Oracle reflects your question and recent eLuna activity.</p>
-        </div>
-      ) : (
-        <div style={{ display: "grid", gap: 8, marginBottom: 12 }}>
-          {paidModes.map((item) => {
-            const active = mode === item;
-            const affordable = state.tokenBalance >= oracleModeCosts[item];
-            return (
-              <button key={item} type="button" disabled={!affordable} onClick={() => setMode(item)} style={{ borderRadius: 17, border: `1px solid ${active ? "rgba(216,168,95,.48)" : "rgba(255,255,255,.09)"}`, background: active ? "rgba(216,168,95,.10)" : "rgba(255,255,255,.035)", color: active ? "var(--gold-2)" : "var(--muted)", fontFamily: "var(--font-ui)", textAlign: "left", padding: 12, cursor: affordable ? "pointer" : "default", opacity: affordable ? 1 : .58 }}>
-                <span style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", marginBottom: 5 }}>
-                  <strong style={{ color: active ? "var(--gold-2)" : "var(--text)", fontSize: 13 }}>{oracleModeLabels[item]}</strong>
-                  <span style={{ color: affordable ? "var(--gold-2)" : "var(--muted-2)", fontSize: 11, fontWeight: 900 }}>{oracleModeCosts[item]} tokens</span>
-                </span>
-                <span style={{ display: "block", color: "var(--muted)", fontSize: 12, lineHeight: 1.45 }}>{oracleModeDescriptions[item]}</span>
-                {!affordable && <span style={{ display: "block", color: "var(--muted-2)", fontSize: 11, fontWeight: 800, marginTop: 6 }}>Earn more tokens in Luna Path.</span>}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      <div style={{ display: "grid", gap: 8, marginBottom: 12 }}>
+        {paidModes.map((item) => {
+          const active = mode === item;
+          const affordable = state.tokenBalance >= oracleModeCosts[item];
+          return (
+            <button key={item} type="button" disabled={!affordable} onClick={() => setMode(item)} style={{ borderRadius: 17, border: `1px solid ${active ? "rgba(216,168,95,.48)" : "rgba(255,255,255,.09)"}`, background: active ? "rgba(216,168,95,.10)" : "rgba(255,255,255,.035)", color: active ? "var(--gold-2)" : "var(--muted)", fontFamily: "var(--font-ui)", textAlign: "left", padding: 12, cursor: affordable ? "pointer" : "default", opacity: affordable ? 1 : .58 }}>
+              <span style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", marginBottom: 5 }}>
+                <strong style={{ color: active ? "var(--gold-2)" : "var(--text)", fontSize: 13 }}>{oracleModeLabels[item]}</strong>
+                <span style={{ color: affordable ? "var(--gold-2)" : "var(--muted-2)", fontSize: 11, fontWeight: 900 }}>{oracleModeCosts[item]} tokens</span>
+              </span>
+              <span style={{ display: "block", color: "var(--muted)", fontSize: 12, lineHeight: 1.45 }}>{oracleModeDescriptions[item]}</span>
+              {!affordable && <span style={{ display: "block", color: "var(--muted-2)", fontSize: 11, fontWeight: 800, marginTop: 6 }}>Earn more tokens in Luna Path.</span>}
+            </button>
+          );
+        })}
+      </div>
 
       <textarea value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Ask about a feeling, choice, relationship pattern, or inner signal..." style={{ ...lunaInputStyle, minHeight: 104, marginBottom: 10 }} />
 
@@ -190,7 +180,7 @@ export function OraclePracticeCard() {
               <details key={session.id} style={{ border: "1px solid rgba(255,255,255,.08)", borderRadius: 16, background: "rgba(255,255,255,.03)", overflow: "hidden" }}>
                 <summary style={{ listStyle: "none", cursor: "pointer", padding: 12, display: "grid", gap: 7 }}>
                   <span style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
-                    <span style={{ color: "var(--gold-2)", fontSize: 11, fontWeight: 900 }}>{oracleModeLabels[session.mode]} · {session.cost === 0 ? "free" : `${session.cost} tokens`}</span>
+                    <span style={{ color: "var(--gold-2)", fontSize: 11, fontWeight: 900 }}>{oracleModeLabels[session.mode]} · {session.cost} tokens</span>
                     <span aria-hidden="true" style={{ color: "var(--muted-2)", fontSize: 15, lineHeight: 1 }}>v</span>
                   </span>
                   <span style={{ color: "var(--text)", fontSize: 12, lineHeight: 1.4 }}>{getQuestionPreview(session.question)}</span>

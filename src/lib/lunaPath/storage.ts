@@ -12,7 +12,7 @@ export function createDefaultLunaPathState(): LunaPathState {
     lifetimeTokensSpent: 0,
     streakDays: 0,
     lastActiveDate: null,
-    oracleFreeQuestionAvailable: true,
+    oracleFreeQuestionAvailable: false,
     dailyProgress: {},
     ledger: [],
     oracleSessions: [],
@@ -111,7 +111,7 @@ export function getVisibleOracleHistory(history: OracleSession[]) {
     .filter((item) => !item.deletedAt);
 }
 
-export function readOracleFreeQuestionUsed(fallbackAvailable = true) {
+export function readOracleFreeQuestionUsed(fallbackAvailable = false) {
   if (typeof window === "undefined") return !fallbackAvailable;
   const raw = window.localStorage.getItem(ORACLE_FREE_QUESTION_USED_STORAGE_KEY);
   if (raw === "true") return true;
@@ -126,7 +126,7 @@ export function writeOracleFreeQuestionUsed(used: boolean) {
   return used;
 }
 
-export function getOracleFreeQuestionAvailable(fallbackAvailable = true) {
+export function getOracleFreeQuestionAvailable(fallbackAvailable = false) {
   return !readOracleFreeQuestionUsed(fallbackAvailable);
 }
 

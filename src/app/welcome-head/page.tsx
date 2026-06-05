@@ -93,13 +93,6 @@ const testimonials = [
 
 const plans = [
   {
-    name: "Free preview",
-    price: "$0 USD",
-    period: "Preview access",
-    icon: "moon",
-    bullets: ["Basic daily guidance preview", "Limited daily card preview", "Starter Sky Map preview"],
-  },
-  {
     name: "Introductory access",
     price: "$1.00 USD",
     period: "3-day access",
@@ -330,10 +323,10 @@ function FinalCta() {
       <div className="final-cta-vignette" aria-hidden="true" />
       <div className="final-cta-grid">
         <div className="final-cta-copy">
-          <p style={{ color: "var(--gold)", fontSize: 11, fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" }}>Start with a free preview</p>
+          <p style={{ color: "var(--gold)", fontSize: 11, fontWeight: 900, letterSpacing: ".16em", textTransform: "uppercase" }}>Start with intro access</p>
           <h2 style={{ color: "var(--text)", fontFamily: "var(--font-display)", fontSize: "clamp(32px, 5vw, 52px)", lineHeight: 1.04, fontWeight: 600 }}>Start your eLuna journey today</h2>
           <p style={{ color: "var(--muted)", fontSize: 15, lineHeight: 1.7 }}>
-            Create your account and begin with a free preview. Paid features unlock after subscription activation.
+            Create your account, then choose 3-day intro access or a subscription to activate product features.
           </p>
           <div>
             <a href={appRegisterUrl} style={{ minHeight: 50, borderRadius: 999, padding: "0 22px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #8d55d6 0%, #5a2090 100%)", color: "#fff", fontSize: 14, fontWeight: 900, textDecoration: "none", boxShadow: "0 14px 34px rgba(90,32,144,.40)" }}>

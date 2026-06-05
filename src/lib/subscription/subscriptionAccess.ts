@@ -28,5 +28,5 @@ export async function hasPremiumAccess(userId?: string | null): Promise<boolean>
 }
 
 export function getMockSubscriptionLabel() {
-  return getMockUser() ? "Free" : "Guest";
+  return getMockUser() ? "No active plan" : "Guest";
 }

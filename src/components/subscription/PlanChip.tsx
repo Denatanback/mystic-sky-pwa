@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { SubscriptionModal } from "./SubscriptionModal";
 import { getEntitlementLabel, useEntitlements } from "@/lib/subscription/entitlements";
 
-type PlanLabel = "Free" | "Intro access" | "Premium" | "Full Access";
+type PlanLabel = "No active plan" | "Intro access" | "Premium" | "Full Access";
 
 export function PlanChip() {
   const [open, setOpen] = useState(false);
-  const [label, setLabel] = useState<PlanLabel>("Free");
+  const [label, setLabel] = useState<PlanLabel>("No active plan");
   const { entitlements, loading } = useEntitlements();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export function PlanChip() {
           borderRadius: 999,
           border: "1px solid rgba(160,130,220,.24)",
           background: "rgba(160,100,240,.08)",
-          color: label === "Free" ? "var(--muted)" : "var(--gold-2)",
+          color: label === "No active plan" ? "var(--muted)" : "var(--gold-2)",
           display: "inline-flex",
           alignItems: "center",
           padding: "0 9px",

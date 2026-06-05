@@ -2,6 +2,8 @@ import { oracleModeCosts, oracleModeLabels, ritualRewards } from "./rewards";
 import { createDefaultLunaPathState, writeLunaPathState } from "./storage";
 import type { DailyMood, DailyRitualKey, LunaPathDailyProgress, LunaPathState, OracleMode } from "./types";
 
+type PaidOracleMode = Exclude<OracleMode, "free">;
+
 function makeId(prefix: string) {
   return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -148,7 +150,7 @@ export function generateOracleAnswer({
   lunaPathState,
 }: {
   question: string;
-  mode: OracleMode;
+  mode: PaidOracleMode;
   lunaPathState: LunaPathState;
 }) {
   const theme = getQuestionTheme(question);
@@ -156,7 +158,7 @@ export function generateOracleAnswer({
   const quotedQuestion = question.length > 140 ? `${question.slice(0, 137).trim()}...` : question;
   const safetyNote = "This is symbolic self-reflection, not a guaranteed prediction or professional advice.";
 
-  if (mode === "quick" || mode === "free") {
+  if (mode === "quick") {
     return `Preview response\n\n${safetyNote}\n\nYour question about “${quotedQuestion}” seems to circle around ${theme}. ${activity} For today, do not force a final answer. Choose one small action that protects your peace: pause, name what you feel, and respond from self-respect rather than urgency.`;
   }
 
@@ -167,11 +169,11 @@ export function generateOracleAnswer({
   return `Preview response\n\n${safetyNote}\n\nCard 1 — What is behind you\nYour question about “${quotedQuestion}” carries traces of ${theme}. Something old may still be asking to be witnessed, not repeated.\n\nCard 2 — What is present\n${activity} The present card points to a pause: the space between emotional reaction and self-respecting response. This is where your agency returns.\n\nCard 3 — What is emerging\nWhat is emerging is not a fixed prediction. It is a possible next rhythm: clearer boundaries, a softer inner voice, and one choice made from alignment rather than pressure.`;
 }
 
-export function askOracle(currentState: LunaPathState, params: { mode: OracleMode; question: string; dateKey?: string }) {
+export function askOracle(currentState: LunaPathState, params: { mode: PaidOracleMode; question: string; dateKey?: string }) {
   const dateKey = params.dateKey ?? getLocalDateKey();
   const question = params.question.trim();
-  const mode = currentState.oracleFreeQuestionAvailable ? "free" : params.mode;
-  const cost = mode === "free" ? 0 : oracleModeCosts[mode];
+  const mode = params.mode;
+  const cost = oracleModeCosts[mode];
 
   if (!question) {
     return { state: currentState, session: null, error: "Write a question first." };
@@ -201,7 +203,7 @@ export function askOracle(currentState: LunaPathState, params: { mode: OracleMod
     ...currentState,
     tokenBalance: Math.max(0, currentState.tokenBalance - cost),
     lifetimeTokensSpent: currentState.lifetimeTokensSpent + cost,
-    oracleFreeQuestionAvailable: mode === "free" ? false : currentState.oracleFreeQuestionAvailable,
+    oracleFreeQuestionAvailable: false,
     oracleSessions: [session, ...currentState.oracleSessions],
     ledger: cost > 0
       ? [

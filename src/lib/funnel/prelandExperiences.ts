@@ -169,7 +169,7 @@ export const genericPrelandExperience: PrelandExperience = {
   pathWhere: "Look for the moment that repeated emotionally, even if the outside situation changed.",
   pathNext: "Choose one small action that respects what you noticed.",
   paywallTitle: "Unlock your full eLuna path",
-  paywallDescription: "Start 3-day introductory access for $1 to open deeper readings, premium practices, and the parts of your Sky Map that stay locked on Free.",
+  paywallDescription: "Start 3-day introductory access for $1 to open deeper readings, premium practices, and the parts of your Sky Map that stay locked without active access.",
 };
 
 export function getExperienceForPreland(kind: PrelandKind | null, result?: string | null): PrelandExperience | null {
