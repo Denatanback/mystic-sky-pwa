@@ -153,12 +153,12 @@ function HDNode1() {
           <div style={{ textAlign: "center", marginBottom: 20 }}>
             <div style={{ fontSize: 48, marginBottom: 12 }}>&#9650;</div>
             <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", marginBottom: 10 }}>
-              {false ? "Uznay svoy Tip" : "Discover Your Type"}
+              {false ? "Uznay svoy Tip" : "Discover Your Energy Type"}
             </h3>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
               {false
                 ? "V Human Design est 5 Tipov. Tvoy tip -- osnova strategii zhizni. Otvet na 5 voprosov."
-                : "Human Design has 5 energy Types. Your type is the foundation of your life strategy. Answer 5 questions to discover yours."}
+                : "Human Design has 5 Energy Types. Answer 5 questions to reveal how your energy naturally moves through the world."}
             </p>
           </div>
           <button onClick={() => setQIdx(0)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
@@ -191,11 +191,14 @@ function HDNode1() {
       {result && typeData && qIdx === TYPE_QUESTIONS.length && (
         <div>
           <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>
+              Your Energy Type
+            </p>
             <div style={{ width: 110, height: 110, margin: "0 auto 14px", borderRadius: "50%", background: `radial-gradient(circle at 38% 32%, ${typeData.color}33, rgba(14,10,32,.95))`, border: `2px solid ${typeData.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 40px ${typeData.color}44` }}>
               <span style={{ fontSize: 46 }}>&#9651;</span>
             </div>
             <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{typeData.en}</h2>
-            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{false ? "Tvoy Tip Human Design" : "Your Human Design Type"}</p>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{false ? "Tvoy Tip Human Design" : "Human Design Energy Type"}</p>
           </div>
           <div style={{ border: `1px solid ${typeData.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 12 }}>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{typeData.desc.en}</p>
@@ -365,7 +368,7 @@ function HDNode2() {
 }
 
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
-  "1": { en: "Type",      ru: "Tip",       sub: { en: "Foundation",       ru: "Osnova" } },
+  "1": { en: "Energy Type",      ru: "Tip",       sub: { en: "Foundation",       ru: "Osnova" } },
   "2": { en: "Authority", ru: "Avtoritet", sub: { en: "Decision making", ru: "Prinyatie resheniy" } },
 };
 

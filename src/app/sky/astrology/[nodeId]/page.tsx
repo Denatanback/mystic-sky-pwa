@@ -13,6 +13,75 @@ import { resolveUserZodiac } from "@/lib/astrology/resolveZodiac";
 const TOTAL = 8;
 const DISCIPLINE = "astrology";
 
+type CosmicArchetype = {
+  name: string;
+  desc: string;
+  signal: string;
+};
+
+const COSMIC_ARCHETYPES: Record<string, CosmicArchetype> = {
+  "fire-cardinal": {
+    name: "Inspirer",
+    desc: "You are built to spark movement. Your fire starts quickly, and your cardinal rhythm helps you act before the path is fully visible.",
+    signal: "cardinal fire",
+  },
+  "fire-fixed": {
+    name: "Guardian",
+    desc: "You protect what matters by standing in your own light. Your fire is steady, loyal, and strongest when your heart is fully involved.",
+    signal: "fixed fire",
+  },
+  "fire-mutable": {
+    name: "Explorer",
+    desc: "You grow through movement, meaning, and possibility. Your fire needs horizons, truth, and room to keep expanding.",
+    signal: "mutable fire",
+  },
+  "earth-cardinal": {
+    name: "Strategist",
+    desc: "You turn ambition into structure. Your earth gives you patience, while your cardinal rhythm knows when to begin building.",
+    signal: "cardinal earth",
+  },
+  "earth-fixed": {
+    name: "Guardian",
+    desc: "You create safety through presence, loyalty, and consistency. Your power is quiet, durable, and hard to shake.",
+    signal: "fixed earth",
+  },
+  "earth-mutable": {
+    name: "Strategist",
+    desc: "You notice what can be improved and make life work better. Your gift is practical insight that becomes real care.",
+    signal: "mutable earth",
+  },
+  "air-cardinal": {
+    name: "Diplomat",
+    desc: "You read the space between people and know how to restore balance. Your mind naturally looks for fairness, beauty, and connection.",
+    signal: "cardinal air",
+  },
+  "air-fixed": {
+    name: "Visionary",
+    desc: "You see patterns before they become obvious. Your fixed air signature gives you original ideas and a future-facing point of view.",
+    signal: "fixed air",
+  },
+  "air-mutable": {
+    name: "Inspirer",
+    desc: "You move through ideas quickly and wake people up through language, curiosity, and unexpected connections.",
+    signal: "mutable air",
+  },
+  "water-cardinal": {
+    name: "Guardian",
+    desc: "You lead through care. Your emotional instincts notice what needs protection, comfort, and belonging before anyone says it out loud.",
+    signal: "cardinal water",
+  },
+  "water-fixed": {
+    name: "Strategist",
+    desc: "You understand hidden motives and emotional depth. Your power is focused, magnetic, and transformational.",
+    signal: "fixed water",
+  },
+  "water-mutable": {
+    name: "Visionary",
+    desc: "You receive life through intuition, dreams, and subtle feeling. Your imagination turns sensitivity into guidance.",
+    signal: "mutable water",
+  },
+};
+
 // ── Shared card flip component ───────────────────────────────────────────────
 function FlipCard({ front, back, flipped, onClick }: { front: string; back: string; flipped: boolean; onClick: () => void }) {
   return (
@@ -43,6 +112,7 @@ function AstroNode1() {
     : null;
   const traits = sign ? (SUN_TRAITS[sign.key] ?? []) : [];
   const elementTraits = sign ? (ELEMENT_TRAITS[sign.element] ?? null) : null;
+  const cosmicArchetype = sign ? COSMIC_ARCHETYPES[`${sign.element}-${sign.quality}`] : null;
 
   useEffect(() => {
     startNode(DISCIPLINE, 1);
@@ -73,19 +143,26 @@ function AstroNode1() {
   return (
     <div>
       {/* Step 0: Intro + sign reveal */}
-      {step === 0 && sign && (
+      {step === 0 && sign && cosmicArchetype && (
         <div>
           <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>
+              Your Cosmic Archetype
+            </p>
             <div style={{ width: 120, height: 120, margin: "0 auto 16px", borderRadius: "50%", background: `radial-gradient(circle at 38% 32%, ${sign.color}33, rgba(14,10,32,.95))`, border: `2px solid ${sign.color}88`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 40px ${sign.color}44` }}>
               <span style={{ fontSize: 56 }}>{sign.symbol}</span>
             </div>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 36, color: "var(--text)", marginBottom: 4 }}>{sign.en}</h2>
-            <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 8 }}>{false ? "Tvoy znak Solntsa" : "Your Sun sign"}</p>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 36, color: "var(--text)", marginBottom: 4 }}>{cosmicArchetype.name}</h2>
+            <p style={{ fontSize: 13, color: "var(--gold-2)", marginBottom: 8 }}>{`Sun in ${sign.en} - ${cosmicArchetype.signal}`}</p>
             <div style={{ display: "inline-flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
               <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, background: `${ELEMENT_COLOR[sign.element]}22`, border: `1px solid ${ELEMENT_COLOR[sign.element]}66`, color: ELEMENT_COLOR[sign.element] }}>{sign.element}</span>
               <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, background: "rgba(216,168,95,.1)", border: "1px solid rgba(216,168,95,.3)", color: "var(--gold-2)" }}>{sign.quality}</span>
               <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, background: "rgba(160,130,220,.1)", border: "1px solid rgba(160,130,220,.3)", color: "rgba(180,150,240,1)" }}>{false ? "Upravitel: " : "Ruler: "}{sign.ruling}</span>
             </div>
+          </div>
+
+          <div style={{ border: "1px solid rgba(216,168,95,.25)", borderRadius: 16, padding: "16px", background: "rgba(216,168,95,.06)", marginBottom: 16 }}>
+            <p style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.65 }}>{cosmicArchetype.desc}</p>
           </div>
 
           <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 16, padding: "14px 16px", background: "rgba(14,10,32,.5)", marginBottom: 16 }}>
@@ -98,7 +175,7 @@ function AstroNode1() {
           </div>
 
           <button onClick={() => setStep(1)} style={{ width: "100%", height: 48, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 6px 20px rgba(110,30,130,.4)" }}>
-            {false ? "Izuchit cherty kharaktera →" : "Explore your traits →"}
+            {false ? "Izuchit cherty kharaktera →" : "Explore your cosmic traits →"}
           </button>
         </div>
       )}
@@ -130,7 +207,7 @@ function AstroNode1() {
       )}
 
       {/* Step 2: Reflection + complete */}
-      {step === 2 && sign && (
+      {step === 2 && sign && cosmicArchetype && (
         <div>
           <div style={{ border: "1px solid rgba(216,168,95,.25)", borderRadius: 18, padding: "20px 16px", background: "rgba(14,10,32,.6)", marginBottom: 20, textAlign: "center" }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>&#9733;</div>
@@ -138,7 +215,7 @@ function AstroNode1() {
               {false ? "Otrazhenie" : "Reflection"}
             </h3>
             <p style={{ fontSize: 14, color: "var(--muted)", lineHeight: 1.6, marginBottom: 0 }}>
-              {`You are ${sign.en}. Which trait you just uncovered resonates with you most strongly?`}
+              {`You are the ${cosmicArchetype.name}. Which trait you just uncovered resonates with you most strongly?`}
             </p>
           </div>
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
@@ -257,13 +334,13 @@ function AstroNode2() {
 
 // ── Router ───────────────────────────────────────────────────────────────────
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
-  "1": { en: "The Sun", ru: "Solntse", sub: { en: "Beginning of path", ru: "Nachalo puti" } },
+  "1": { en: "Cosmic Archetype", ru: "Solntse", sub: { en: "Beginning of path", ru: "Nachalo puti" } },
   "2": { en: "The Moon", ru: "Luna", sub: { en: "Emotions & intuition", ru: "Emotsii i intuitsiya" } },
 };
 
 const NODE_CONTEXT: Record<string, { en: string; ru: string }> = {
   "1": {
-    en: "Your Sun sign is the first visible point of your chart. It shows the energy you naturally return to when choosing, creating, and seeking meaning.",
+    en: "Your Cosmic Archetype layers your Sun sign, element, and quality into a fast view of the energy you naturally return to.",
     ru: "Tvoy znak Solntsa — pervaya vidimaya tochka karty. On pokazyvaet energiyu, k kotoroy ty vozvraschaeshsya v vybore, tvorchestve i poiske smysla.",
   },
   "2": {

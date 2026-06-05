@@ -9,6 +9,60 @@ import { startNode, completeNode, getNodeState, isNodeLocked } from "@/lib/nodeP
 const TOTAL = 8;
 const DISCIPLINE = "spiritual";
 
+type SpiritualPath = "seeker" | "mystic" | "guide" | "healer" | "guardian" | "creator";
+
+const SPIRITUAL_PATHS: Record<SpiritualPath, {
+  en: string;
+  desc: string;
+  strength: string;
+  practice: string;
+  reminder: string;
+  color: string;
+}> = {
+  seeker: { en: "Seeker", desc: "Your answers point to a path of questions, discovery, and honest inner searching.", strength: "You keep moving toward truth, even when the next step is not fully clear.", practice: "Try a three-minute morning intention: ask one real question and carry it gently through the day.", reminder: "This path may reflect curiosity as devotion. You do not need every answer before you begin.", color: "#d8a85f" },
+  mystic: { en: "Mystic", desc: "Your answers point to a path of intuition, symbols, dreams, and unseen patterns.", strength: "You can sense meaning beneath ordinary moments and notice what others overlook.", practice: "Keep a dream or synchronicity note for seven days, writing only the image or feeling that stays with you.", reminder: "This path may reflect deep sensitivity. Ground the mystery in simple daily rituals.", color: "#9070d8" },
+  guide: { en: "Guide", desc: "Your answers point to a path of perspective, listening, and helping others find their own direction.", strength: "You can hold space without forcing answers, and people often trust your calm perspective.", practice: "Before giving advice, place one hand on your heart and ask: what is mine to say, and what is theirs to discover?", reminder: "This path may reflect wisdom in relationship. Guide without carrying everyone else's journey.", color: "#7ab8d8" },
+  healer: { en: "Healer", desc: "Your answers point to a path of restoration, compassion, and emotional repair.", strength: "You notice pain gently and can help make space for what needs care.", practice: "Use a five-breath body scan: inhale into the tense place, exhale the need to fix it immediately.", reminder: "This path may reflect a gift for repair. Healing includes receiving, resting, and having boundaries.", color: "#7ab04a" },
+  guardian: { en: "Guardian", desc: "Your answers point to a path of protection, steadiness, and devotion to what is sacred.", strength: "You create safety through consistency, loyalty, and a strong inner code.", practice: "Choose one small boundary today and honor it as a sacred practice, not a wall.", reminder: "This path may reflect protective power. Let devotion stay warm, not rigid.", color: "#c0a0d8" },
+  creator: { en: "Creator", desc: "Your answers point to a path where spirit moves through beauty, expression, and making.", strength: "You can turn feeling into form and make invisible meaning easier to touch.", practice: "Make one small offering with your hands: a sketch, note, sound, altar, meal, or arrangement of objects.", reminder: "This path may reflect creativity as prayer. Let the act matter before the outcome.", color: "#e06090" },
+};
+
+const SPIRITUAL_PATH_Q: { q: { en: string; ru: string }; opts: { label: { en: string; ru: string }; score: Partial<Record<SpiritualPath, number>> }[] }[] = [
+  { q: { en: "What most often pulls you back toward yourself?", ru: "Chto chasche vsego vozvraschaet tebya k sebe?" }, opts: [
+    { label: { en: "A question I cannot stop following", ru: "Vopros, za kotorym ya ne mogu ne idti" }, score: { seeker: 2 } },
+    { label: { en: "A dream, sign, or subtle feeling", ru: "Son, znak ili tonkoe chuvstvo" }, score: { mystic: 2 } },
+    { label: { en: "Someone needing calm, care, or repair", ru: "Kto-to, komu nuzhny spokoystvie, zabota ili vosstanovlenie" }, score: { healer: 2, guide: 1 } },
+    { label: { en: "The need to make something meaningful", ru: "Potrebnost sozdat chto-to osmyslennoe" }, score: { creator: 2 } },
+  ] },
+  { q: { en: "Where does your spiritual strength feel most natural?", ru: "Gde tvoya dukhovnaya sila chuvstvuetsya estestvennee vsego?" }, opts: [
+    { label: { en: "Protecting what matters and staying devoted", ru: "Zaschischat vazhnoe i ostavatsya predannym" }, score: { guardian: 2 } },
+    { label: { en: "Listening deeply and reflecting truth back", ru: "Gluboko slushat i otrazhat pravdu" }, score: { guide: 2 } },
+    { label: { en: "Feeling energy, symbols, and hidden connections", ru: "Chuvstvovat energiyu, simvoly i skrytye svyazi" }, score: { mystic: 2 } },
+    { label: { en: "Learning, exploring, and testing what is true", ru: "Uchitsya, issledovat i proveriyat, chto istinno" }, score: { seeker: 2 } },
+  ] },
+  { q: { en: "Which practice sounds most nourishing today?", ru: "Kakaya praktika segodnya zvuchit samoy pitayuschey?" }, opts: [
+    { label: { en: "Journaling one honest question", ru: "Zapisat odin chestnyy vopros" }, score: { seeker: 2 } },
+    { label: { en: "A quiet ritual with candle, card, or symbol", ru: "Tikhiy ritual so svechoy, kartoy ili simvolom" }, score: { mystic: 2 } },
+    { label: { en: "A grounding boundary or protective prayer", ru: "Zazemlyayuschaya granitsa ili zaschitnaya molitva" }, score: { guardian: 2 } },
+    { label: { en: "Creating something with my hands", ru: "Sozdat chto-to svoimi rukami" }, score: { creator: 2 } },
+  ] },
+  { q: { en: "What growth edge feels most familiar?", ru: "Kakaya tochka rosta kazhetsya samoy znakomoy?" }, opts: [
+    { label: { en: "I help others before checking my own energy", ru: "Ya pomogayu drugim prezhde chem proveryayu svoyu energiyu" }, score: { healer: 2, guide: 1 } },
+    { label: { en: "I know things intuitively but struggle to ground them", ru: "Ya znayu veschi intuitivno, no mne trudno ikh zazemlit" }, score: { mystic: 2 } },
+    { label: { en: "I can become rigid when I am trying to protect peace", ru: "Ya mogu stanovitsya zhestkim, kogda pytayus zaschitit mir" }, score: { guardian: 2 } },
+    { label: { en: "I wait for perfection before sharing what wants to move through me", ru: "Ya zhdu sovershenstva prezhde chem delitsya tem, chto khochet proyti cherez menya" }, score: { creator: 2 } },
+  ] },
+];
+
+function calcSpiritualPath(answers: number[]): SpiritualPath {
+  const scores: Record<SpiritualPath, number> = { seeker: 0, mystic: 0, guide: 0, healer: 0, guardian: 0, creator: 0 };
+  answers.forEach((a, qi) => {
+    const opt = SPIRITUAL_PATH_Q[qi]?.opts[a];
+    if (opt) Object.entries(opt.score).forEach(([k, v]) => { scores[k as SpiritualPath] += v ?? 0; });
+  });
+  return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as SpiritualPath;
+}
+
 // ── Node 1: Meditation Timer ──────────────────────────────────────────────────
 const DURATIONS = [
   { min: 3, label: { en: "3 min", ru: "3 min" } },
@@ -16,7 +70,7 @@ const DURATIONS = [
   { min: 10, label: { en: "10 min", ru: "10 min" } },
 ];
 
-function SpiritNode1() {
+function SpiritNode1MeditationLegacy() {
   const { lang } = useLang();
   const router = useRouter();
   const [phase, setPhase] = useState<"choose" | "active" | "done">("choose");
@@ -159,6 +213,101 @@ function SpiritNode1() {
 }
 
 // ── Node 2: Breathwork ────────────────────────────────────────────────────────
+function SpiritNode1() {
+  const router = useRouter();
+  const [qIdx, setQIdx] = useState(-1);
+  const [answers, setAnswers] = useState<number[]>([]);
+  const [result, setResult] = useState<SpiritualPath | null>(null);
+
+  useEffect(() => { startNode(DISCIPLINE, 1); }, []);
+
+  const answer = (i: number) => {
+    const next = [...answers, i];
+    setAnswers(next);
+    if (next.length >= SPIRITUAL_PATH_Q.length) {
+      setResult(calcSpiritualPath(next));
+      setQIdx(SPIRITUAL_PATH_Q.length);
+    } else {
+      setQIdx(qIdx + 1);
+    }
+  };
+
+  const q = qIdx >= 0 && qIdx < SPIRITUAL_PATH_Q.length ? SPIRITUAL_PATH_Q[qIdx] : null;
+  const data = result ? SPIRITUAL_PATHS[result] : null;
+
+  return (
+    <div>
+      {qIdx === -1 && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <div style={{ fontSize: 52, marginBottom: 10 }}>&#10024;</div>
+            <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", marginBottom: 10 }}>
+              Your Spiritual Path
+            </h3>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
+              Answer a few questions to reveal the kind of spiritual path you naturally resonate with. Your answers point to a practical way your inner life wants to move.
+            </p>
+          </div>
+          <button onClick={() => setQIdx(0)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
+            {false ? "Proyti test в†’" : "Take the quiz в†’"}
+          </button>
+        </div>
+      )}
+
+      {q && (
+        <div>
+          <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
+            {SPIRITUAL_PATH_Q.map((_, i) => <div key={i} style={{ flex: 1, height: 3, borderRadius: 99, background: i <= qIdx ? "var(--gold)" : "rgba(255,255,255,.1)" }} />)}
+          </div>
+          <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 8 }}>{qIdx + 1} / {SPIRITUAL_PATH_Q.length}</p>
+          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--text)", marginBottom: 20, lineHeight: 1.35 }}>
+            {q.q.en}
+          </h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {q.opts.map((opt, i) => (
+              <button key={i} onClick={() => answer(i)} style={{ textAlign: "left", padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(216,168,95,.25)", background: "rgba(14,10,32,.55)", color: "var(--text)", fontSize: 14, lineHeight: 1.45, cursor: "pointer", fontFamily: "var(--font-sans)" }}>
+                {opt.label.en}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {result && data && qIdx === SPIRITUAL_PATH_Q.length && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>
+              Your Spiritual Path
+            </p>
+            <div style={{ width: 100, height: 100, margin: "0 auto 12px", borderRadius: "50%", background: `radial-gradient(circle, ${data.color}33, rgba(14,10,32,.95))`, border: `2px solid ${data.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 30px ${data.color}44` }}>
+              <span style={{ fontSize: 46 }}>&#10024;</span>
+            </div>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{data.en}</h2>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>Your answers point to this path</p>
+          </div>
+
+          {[
+            { label: "PATH DESCRIPTION", body: data.desc },
+            { label: "NATURAL STRENGTH", body: data.strength },
+            { label: "GROUNDING PRACTICE", body: data.practice },
+            { label: "GROWTH REMINDER", body: data.reminder },
+          ].map((item) => (
+            <div key={item.label} style={{ border: `1px solid ${data.color}44`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
+              <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{item.label}</p>
+              <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{item.body}</p>
+            </div>
+          ))}
+
+          <div style={{ marginBottom: 20 }} />
+          <button onClick={() => { completeNode(DISCIPLINE, 1, { meditationMin: 0 }); router.push("/sky/spiritual"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
+            {false ? "Zavershit uzel вњ“" : "Complete node вњ“"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 type BreathTech = "478" | "box" | "energising";
 const BREATH_TECHS: Record<BreathTech, {
   name: { en: string; ru: string };
@@ -340,7 +489,7 @@ function SpiritNode2() {
 
 // ── Router ────────────────────────────────────────────────────────────────────
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
-  "1": { en: "Meditation",  ru: "Meditatsiya", sub: { en: "Foundation",  ru: "Osnova" } },
+  "1": { en: "Spiritual Path",  ru: "Meditatsiya", sub: { en: "Foundation",  ru: "Osnova" } },
   "2": { en: "Breathwork",  ru: "Dykhanie",   sub: { en: "Energy",      ru: "Energiya" } },
 };
 

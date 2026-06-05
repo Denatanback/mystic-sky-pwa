@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { NodePage } from "@/components/sky/NodePage";
 import { SkyNodeEntitlementGate } from "@/components/sky/SkyNodeEntitlementGate";
 import { useLang } from "@/lib/i18n";
-import { getMockUser } from "@/lib/mockAuth";
-import { getVenusSign, ZODIAC } from "@/lib/astroCalc";
 import { startNode, completeNode, getNodeState, isNodeLocked } from "@/lib/nodeProgress";
 
 const TOTAL = 8;
@@ -81,13 +79,60 @@ function calcAttach(answers: number[]): AttachType {
   return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as AttachType;
 }
 
+type SoulmateType = "protector" | "adventurer" | "mystic" | "creator" | "intellectual" | "healer";
+
+const SOULMATE_TYPES: Record<SoulmateType, { en: string; draws: string; feel: string; challenge: string; color: string }> = {
+  protector: { en: "Protector", draws: "They are drawn to your tenderness, loyalty, and the way you make love feel emotionally real.", feel: "The connection may feel steady, safe, and deeply reassuring, like someone finally choosing to stay.", challenge: "The mirror is learning not to confuse protection with control, or safety with predictability.", color: "#7ab04a" },
+  adventurer: { en: "Adventurer", draws: "They are drawn to your curiosity, spark, and the parts of you that still want life to surprise you.", feel: "The connection may feel alive, playful, and expansive, like a door opening into a bigger world.", challenge: "The mirror is learning how to keep freedom and commitment in the same room.", color: "#d8a85f" },
+  mystic: { en: "Mystic", draws: "They are drawn to your intuition, emotional depth, and the quiet mystery you do not explain to everyone.", feel: "The connection may feel fated, dreamlike, and strangely familiar before it fully makes sense.", challenge: "The mirror is learning to ground the magic instead of disappearing into fantasy or silence.", color: "#9070d8" },
+  creator: { en: "Creator", draws: "They are drawn to your expressiveness, imagination, and the way your feelings become beauty.", feel: "The connection may feel inspiring, romantic, and creatively charged, as if you bring out each other's color.", challenge: "The mirror is learning to be seen clearly, not only admired or idealized.", color: "#e06090" },
+  intellectual: { en: "Intellectual", draws: "They are drawn to your mind, your questions, and the way conversation can become intimacy for you.", feel: "The connection may feel mentally electric, honest, and full of discovery.", challenge: "The mirror is learning to let the heart speak before the mind explains everything away.", color: "#7ab8d8" },
+  healer: { en: "Healer", draws: "They are drawn to your softness, empathy, and the part of you that understands pain without judging it.", feel: "The connection may feel gentle, restorative, and emotionally cleansing.", challenge: "The mirror is learning to receive care without turning love into a rescue mission.", color: "#c0a0d8" },
+};
+
+const SOULMATE_TYPE_Q: { q: { en: string; ru: string }; opts: { label: { en: string; ru: string }; score: Partial<Record<SoulmateType, number>> }[] }[] = [
+  { q: { en: "What kind of presence makes you feel most magnetized?", ru: "Kakoe prisutstvie silnee vsego tebya prityagivaet?" }, opts: [
+    { label: { en: "Steady, loyal, and emotionally safe", ru: "Ustoychivoe, vernoe i emotsionalno bezopasnoe" }, score: { protector: 2 } },
+    { label: { en: "Free, bold, and always moving toward life", ru: "Svobodnoe, smeloe i iduschee navstrechu zhizni" }, score: { adventurer: 2 } },
+    { label: { en: "Deep, intuitive, and hard to fully explain", ru: "Glubokoe, intuitivnoe i trudno obyasnimoe" }, score: { mystic: 2 } },
+    { label: { en: "Bright, expressive, and full of imagination", ru: "Yarkoe, vyrazitelnoe i polnoe voobrazheniya" }, score: { creator: 2 } },
+  ] },
+  { q: { en: "What do people often notice in you first?", ru: "Chto lyudi chasto zamechayut v tebe pervym?" }, opts: [
+    { label: { en: "My sensitivity and emotional honesty", ru: "Moyu chuvstvitelnost i emotsionalnuyu chestnost" }, score: { healer: 2, protector: 1 } },
+    { label: { en: "My curiosity and mental quickness", ru: "Moe lyubopytstvo i bystryy um" }, score: { intellectual: 2 } },
+    { label: { en: "My creativity and unusual way of seeing things", ru: "Moyu kreativnost i neobychnyy vzglyad" }, score: { creator: 2 } },
+    { label: { en: "My independence and hunger for experience", ru: "Moyu nezavisimost i zhazhdu opyta" }, score: { adventurer: 2 } },
+  ] },
+  { q: { en: "What kind of connection do you keep returning to?", ru: "K kakoy svyazi ty snova i snova vozvraschaeshsya?" }, opts: [
+    { label: { en: "A bond that feels safe enough to soften in", ru: "Svyaz, v kotoroy bezopasno myagchet" }, score: { protector: 2, healer: 1 } },
+    { label: { en: "A bond that feels like a shared quest", ru: "Svyaz, pokhozhaya na obschiy poisk" }, score: { adventurer: 2 } },
+    { label: { en: "A bond that feels soulful or almost psychic", ru: "Svyaz, kotoraya chuvstvuetsya dushevnoy ili pochti telepaticheskoy" }, score: { mystic: 2 } },
+    { label: { en: "A bond built on endless conversation", ru: "Svyaz, postroennaya na beskonechnom razgovore" }, score: { intellectual: 2 } },
+  ] },
+  { q: { en: "Which mirror would help you grow most in love?", ru: "Kakoe zerkalo silnee pomozhet tebe rasti v lyubvi?" }, opts: [
+    { label: { en: "Someone who helps me receive care", ru: "Kto-to, kto pomozhet mne prinimat zabotu" }, score: { healer: 2 } },
+    { label: { en: "Someone who helps me feel secure without shrinking", ru: "Kto-to, kto dast bezopasnost bez szhatiya" }, score: { protector: 2 } },
+    { label: { en: "Someone who helps me speak from the heart, not only the mind", ru: "Kto-to, kto pomozhet govorit iz serdtsa, a ne tolko iz uma" }, score: { intellectual: 2 } },
+    { label: { en: "Someone who helps me make the invisible real", ru: "Kto-to, kto pomozhet sdelat nevidimoe realnym" }, score: { mystic: 1, creator: 2 } },
+  ] },
+];
+
+function calcSoulmateType(answers: number[]): SoulmateType {
+  const scores: Record<SoulmateType, number> = { protector: 0, adventurer: 0, mystic: 0, creator: 0, intellectual: 0, healer: 0 };
+  answers.forEach((a, qi) => {
+    const opt = SOULMATE_TYPE_Q[qi]?.opts[a];
+    if (opt) Object.entries(opt.score).forEach(([k, v]) => { scores[k as SoulmateType] += v ?? 0; });
+  });
+  return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as SoulmateType;
+}
+
 // ── Node 1: Venus Sign ────────────────────────────────────────────────────────
-function SMNode1() {
+function SMNode1Legacy() {
   const { lang } = useLang();
   const router = useRouter();
   const [revealed, setRevealed] = useState(false);
-  const user = typeof window !== "undefined" ? getMockUser() : null;
-  const venusSign = user?.birthDate ? getVenusSign(user.birthDate) : null;
+  const user = undefined as unknown as { birthDate?: string } | null;
+  const venusSign = undefined as unknown as { key: string; en: string; color: string; symbol: string; element: "fire" | "earth" | "air" | "water" } | null;
   const loveData = venusSign ? VENUS_LOVE[venusSign.key] : null;
   const ELEM_COLOR: Record<string, string> = { fire: "#e84040", earth: "#7ab04a", air: "#d8a85f", water: "#4090c0" };
 
@@ -144,6 +189,100 @@ function SMNode1() {
 }
 
 // ── Node 2: Attachment Style ──────────────────────────────────────────────────
+function SMNode1() {
+  const router = useRouter();
+  const [qIdx, setQIdx] = useState(-1);
+  const [answers, setAnswers] = useState<number[]>([]);
+  const [result, setResult] = useState<SoulmateType | null>(null);
+
+  useEffect(() => { startNode(DISCIPLINE, 1); }, []);
+
+  const answer = (i: number) => {
+    const next = [...answers, i];
+    setAnswers(next);
+    if (next.length >= SOULMATE_TYPE_Q.length) {
+      setResult(calcSoulmateType(next));
+      setQIdx(SOULMATE_TYPE_Q.length);
+    } else {
+      setQIdx(qIdx + 1);
+    }
+  };
+
+  const q = qIdx >= 0 && qIdx < SOULMATE_TYPE_Q.length ? SOULMATE_TYPE_Q[qIdx] : null;
+  const data = result ? SOULMATE_TYPES[result] : null;
+
+  return (
+    <div>
+      {qIdx === -1 && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <div style={{ fontSize: 48, marginBottom: 10 }}>&#10084;</div>
+            <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", marginBottom: 10 }}>
+              Your Soulmate Type
+            </h3>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
+              This is not your own archetype. It points to the type of soulmate or person your energy is most likely to attract.
+            </p>
+          </div>
+          <button onClick={() => setQIdx(0)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
+            {false ? "Proyti test в†’" : "Take the quiz в†’"}
+          </button>
+        </div>
+      )}
+
+      {q && (
+        <div>
+          <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
+            {SOULMATE_TYPE_Q.map((_, i) => <div key={i} style={{ flex: 1, height: 3, borderRadius: 99, background: i <= qIdx ? "var(--gold)" : "rgba(255,255,255,.1)" }} />)}
+          </div>
+          <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 8 }}>{qIdx + 1} / {SOULMATE_TYPE_Q.length}</p>
+          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--text)", marginBottom: 20, lineHeight: 1.35 }}>
+            {q.q.en}
+          </h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {q.opts.map((opt, i) => (
+              <button key={i} onClick={() => answer(i)} style={{ textAlign: "left", padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(216,168,95,.25)", background: "rgba(14,10,32,.55)", color: "var(--text)", fontSize: 14, lineHeight: 1.45, cursor: "pointer", fontFamily: "var(--font-sans)" }}>
+                {opt.label.en}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {result && data && qIdx === SOULMATE_TYPE_Q.length && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>
+              Your Soulmate Type
+            </p>
+            <div style={{ width: 100, height: 100, margin: "0 auto 12px", borderRadius: "50%", background: `radial-gradient(circle, ${data.color}33, rgba(14,10,32,.95))`, border: `2px solid ${data.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 30px ${data.color}44` }}>
+              <span style={{ fontSize: 48 }}>&#10084;</span>
+            </div>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{data.en}</h2>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{`You are most likely to attract a ${data.en}`}</p>
+          </div>
+
+          {[
+            { label: "WHAT DRAWS THEM TO YOU", body: data.draws },
+            { label: "WHAT THE CONNECTION MAY FEEL LIKE", body: data.feel },
+            { label: "POTENTIAL CHALLENGE / MIRROR", body: data.challenge },
+          ].map((item) => (
+            <div key={item.label} style={{ border: `1px solid ${data.color}44`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
+              <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{item.label}</p>
+              <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{item.body}</p>
+            </div>
+          ))}
+
+          <div style={{ marginBottom: 20 }} />
+          <button onClick={() => { completeNode(DISCIPLINE, 1, { venusSign: result }); router.push("/sky/soulmate"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
+            {false ? "Zavershit uzel вњ“" : "Complete node вњ“"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SMNode2() {
   const { lang } = useLang();
   const router = useRouter();
@@ -229,7 +368,7 @@ function SMNode2() {
 
 // ── Router ────────────────────────────────────────────────────────────────────
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
-  "1": { en: "Venus",       ru: "Venera",         sub: { en: "Love nature", ru: "Priroda lyubvi" } },
+  "1": { en: "Soulmate Type",       ru: "Venera",         sub: { en: "Love nature", ru: "Priroda lyubvi" } },
   "2": { en: "Heart Line",  ru: "Liniya serdtsa",   sub: { en: "Connection",  ru: "Svyaz" } },
 };
 

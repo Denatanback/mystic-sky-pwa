@@ -11,6 +11,21 @@ import { getCurrentProfile, type CurrentProfile } from "@/lib/profile/currentPro
 const TOTAL = 8;
 const DISCIPLINE = "numerology";
 
+const DESTINY_CODES: Record<number, { name: string; interpretation: string }> = {
+  1: { name: "Leader", interpretation: "You are here to initiate, choose boldly, and move first when a path needs direction." },
+  2: { name: "Diplomat", interpretation: "You are here to sense what others miss and create trust where people need connection." },
+  3: { name: "Creator", interpretation: "You are here to express, uplift, and turn emotion into something others can feel." },
+  4: { name: "Builder", interpretation: "You are here to make ideas real through structure, patience, and steady devotion." },
+  5: { name: "Explorer", interpretation: "You are here to keep life moving, open new doors, and learn through freedom." },
+  6: { name: "Protector", interpretation: "You are here to care deeply, restore harmony, and become a safe place for others." },
+  7: { name: "Mystic", interpretation: "You are here to look beneath the surface and follow the quiet truth inside you." },
+  8: { name: "Strategist", interpretation: "You are here to work with power, resources, and ambition in a conscious way." },
+  9: { name: "Teacher", interpretation: "You are here to transform experience into wisdom that can help more than yourself." },
+  11: { name: "Visionary", interpretation: "You are here to translate intuition into inspiration others can recognize and follow." },
+  22: { name: "Master Builder", interpretation: "You are here to build something larger than personal success, with vision and discipline." },
+  33: { name: "Healer", interpretation: "You are here to lead through compassion, service, and emotional truth." },
+};
+
 // ── Node 1: Life Path Number ─────────────────────────────────────────────────
 function NumNode1() {
   const { lang } = useLang();
@@ -21,6 +36,7 @@ function NumNode1() {
 
   const calc = user?.birthDate ? lifePathNumber(user.birthDate) : null;
   const traits = calc ? (NUMBER_TRAITS[calc.result] ?? null) : null;
+  const destiny = calc ? DESTINY_CODES[calc.result] : null;
 
   useEffect(() => {
     startNode(DISCIPLINE, 1);
@@ -69,7 +85,7 @@ function NumNode1() {
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
               {false
                 ? "Chislo Zhiznennogo Puti — glavnoe chislo v numerologii. Ono vychislyaetsya iz daty rozhdeniya i raskryvaet osnovnuyu vibratsiyu tvoego puti na Zemle."
-                : "The Life Path Number is the most important in numerology. Calculated from your birth date, it reveals the core vibration of your path on Earth."}
+                : "Your Destiny Code is calculated from your birth date. It turns your Life Path number into a clear archetype for the way you naturally move through life."}
             </p>
           </div>
           <button onClick={startAnim} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
@@ -92,16 +108,23 @@ function NumNode1() {
         </div>
       )}
 
-      {step === 2 && calc && traits && (
+      {step === 2 && calc && traits && destiny && (
         <div>
           <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>
+              Your Destiny Code
+            </p>
             <div style={{ width: 110, height: 110, margin: "0 auto 14px", borderRadius: "50%", background: "radial-gradient(circle at 38% 32%, rgba(216,168,95,.25), rgba(80,30,160,.9))", border: "2px solid rgba(216,168,95,.7)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 40px rgba(216,168,95,.35)" }}>
               <span style={{ fontSize: 52, fontFamily: "var(--font-serif)", color: "var(--gold)", fontWeight: 400 }}>{calc.result}</span>
             </div>
             <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 30, color: "var(--text)", marginBottom: 4 }}>
-              {traits.name.en}
+              {destiny.name}
             </h2>
-            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{`Life Path: ${calc.result}`}</p>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{`Number ${calc.result} - ${traits.name.en}`}</p>
+          </div>
+
+          <div style={{ border: "1px solid rgba(216,168,95,.25)", borderRadius: 16, padding: "16px", background: "rgba(216,168,95,.06)", marginBottom: 14 }}>
+            <p style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.65 }}>{destiny.interpretation}</p>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
@@ -243,13 +266,13 @@ function NumNode2() {
 
 // ── Router ───────────────────────────────────────────────────────────────────
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
-  "1": { en: "Life Path",   ru: "Chislo puti",  sub: { en: "Foundation", ru: "Osnova" } },
+  "1": { en: "Destiny Code",   ru: "Chislo puti",  sub: { en: "Foundation", ru: "Osnova" } },
   "2": { en: "Soul Number", ru: "Chislo dushi",  sub: { en: "Inner world", ru: "Vnutrenniy mir" } },
 };
 
 const NODE_CONTEXT: Record<string, { en: string; ru: string }> = {
   "1": {
-    en: "Your Life Path number shows the rhythm behind your choices, challenges, and recurring direction.",
+    en: "Your Destiny Code turns your Life Path number into a clear archetype for your choices, challenges, and recurring direction.",
     ru: "Chislo zhiznennogo puti pokazyvaet ritm tvoikh vyborov, vyzovov i povtoryayuschegosya napravleniya.",
   },
   "2": {

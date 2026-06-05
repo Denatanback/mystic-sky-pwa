@@ -109,6 +109,74 @@ function calcSoulAge(answers: number[]): SoulAge {
   return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as SoulAge;
 }
 
+type PastLifeRole = "healer" | "warrior" | "priestess" | "scientist" | "artist" | "explorer" | "teacher" | "ruler";
+
+const PAST_LIFE_ROLES: Record<PastLifeRole, {
+  en: string;
+  desc: string;
+  gifts: string[];
+  lesson: string;
+  color: string;
+  emoji: string;
+}> = {
+  healer: { en: "Healer", desc: "Your answers point to a past-life role centered on repair, comfort, and restoring what was wounded.", gifts: ["Calming presence", "Emotional repair", "Deep compassion"], lesson: "This role may reflect a recurring pattern of helping others without forgetting your own needs.", color: "#7ab04a", emoji: "&#10045;" },
+  warrior: { en: "Warrior", desc: "Your answers point to a past-life role shaped by courage, protection, and decisive action under pressure.", gifts: ["Courage", "Protection", "Endurance"], lesson: "This role may reflect a pattern of learning when to fight, when to soften, and when to trust peace.", color: "#e05050", emoji: "&#9876;" },
+  priestess: { en: "Priest / Priestess", desc: "Your answers point to a past-life role devoted to ritual, intuition, and carrying meaning for others.", gifts: ["Intuition", "Ritual", "Spiritual devotion"], lesson: "This role may reflect a recurring pattern of trusting inner knowing without isolating yourself from ordinary life.", color: "#9070d8", emoji: "&#9789;" },
+  scientist: { en: "Scientist", desc: "Your answers point to a past-life role that studied patterns, solved problems, and searched for hidden laws.", gifts: ["Analysis", "Discovery", "Precision"], lesson: "This role may reflect a pattern of balancing the mind's certainty with the soul's mystery.", color: "#7ab8d8", emoji: "&#9883;" },
+  artist: { en: "Artist", desc: "Your answers point to a past-life role that transformed emotion, beauty, and longing into visible form.", gifts: ["Expression", "Beauty", "Emotional truth"], lesson: "This role may reflect a pattern of letting yourself be seen instead of hiding your sensitivity.", color: "#e06090", emoji: "&#10022;" },
+  explorer: { en: "Explorer", desc: "Your answers point to a past-life role drawn toward movement, foreign horizons, and unknown paths.", gifts: ["Freedom", "Curiosity", "Adaptability"], lesson: "This role may reflect a recurring pattern of seeking freedom while learning where you truly belong.", color: "#d8a85f", emoji: "&#10023;" },
+  teacher: { en: "Teacher", desc: "Your answers point to a past-life role that carried knowledge, guided others, and translated experience into wisdom.", gifts: ["Guidance", "Patience", "Wisdom"], lesson: "This role may reflect a pattern of sharing wisdom without needing to carry everyone's path for them.", color: "#c0a0d8", emoji: "&#10021;" },
+  ruler: { en: "Ruler", desc: "Your answers point to a past-life role of leadership, responsibility, and decisions that affected many lives.", gifts: ["Leadership", "Responsibility", "Command"], lesson: "This role may reflect a recurring pattern of using power with humility instead of control.", color: "#d8a85f", emoji: "&#9812;" },
+};
+
+const PAST_LIFE_ROLE_Q: { q: { en: string; ru: string }; opts: { label: { en: string; ru: string }; scores: Partial<Record<PastLifeRole, number>> }[] }[] = [
+  {
+    q: { en: "Which scene feels strangely familiar?", ru: "Kakaya stsena kazhetsya stranno znakomoy?" },
+    opts: [
+      { label: { en: "A quiet room where people came to be comforted", ru: "Tikhaya komnata, kuda lyudi prikhodili za utesheniem" }, scores: { healer: 2 } },
+      { label: { en: "A threshold I had to defend", ru: "Porog, kotoryy nuzhno bylo zaschischat" }, scores: { warrior: 2 } },
+      { label: { en: "A candlelit temple or sacred circle", ru: "Khram pri svechakh ili svyaschennyy krug" }, scores: { priestess: 2 } },
+      { label: { en: "A table covered with notes, tools, or maps", ru: "Stol s zapisyami, instrumentami ili kartami" }, scores: { scientist: 2, explorer: 1 } },
+    ],
+  },
+  {
+    q: { en: "What kind of responsibility do you naturally take on?", ru: "Kakuyu otvetstvennost ty estestvenno beresh na sebya?" },
+    opts: [
+      { label: { en: "Helping someone feel safe enough to heal", ru: "Pomoch komu-to pochuvstvovat bezopasnost dlya istseleniya" }, scores: { healer: 2, teacher: 1 } },
+      { label: { en: "Making the hard decision others avoid", ru: "Prinyat slozhnoe reshenie, kotorogo drugie izbegayut" }, scores: { ruler: 2, warrior: 1 } },
+      { label: { en: "Turning emotion into something beautiful", ru: "Prevratit emotsiyu vo chto-to krasivoe" }, scores: { artist: 2 } },
+      { label: { en: "Finding the truth underneath the obvious answer", ru: "Nayti istinu pod ochevidnym otvetom" }, scores: { scientist: 2, priestess: 1 } },
+    ],
+  },
+  {
+    q: { en: "What gift do people often seek from you?", ru: "Kakoy dar lyudi chasto ischut v tebe?" },
+    opts: [
+      { label: { en: "Guidance, patience, and perspective", ru: "Nastavlenie, terpenie i perspektivu" }, scores: { teacher: 2 } },
+      { label: { en: "Courage when something must be faced", ru: "Smelost, kogda s chem-to nuzhno vstretitsya" }, scores: { warrior: 2 } },
+      { label: { en: "Permission to dream, create, or feel", ru: "Razreshenie mechtat, tvorit ili chuvstvovat" }, scores: { artist: 2 } },
+      { label: { en: "A way forward into unknown territory", ru: "Put vpered na neizvestnuyu territoriyu" }, scores: { explorer: 2 } },
+    ],
+  },
+  {
+    q: { en: "Which pattern feels most familiar in this life?", ru: "Kakoy pattern kazhetsya naibolee znakomym v etoy zhizni?" },
+    opts: [
+      { label: { en: "Carrying too much for other people", ru: "Nesti slishkom mnogo za drugikh" }, scores: { healer: 2, ruler: 1 } },
+      { label: { en: "Feeling called to lead, even when it is lonely", ru: "Chuvstvovat prizvanie vesti, dazhe kogda odinoko" }, scores: { ruler: 2 } },
+      { label: { en: "Knowing things without knowing how I know", ru: "Znat veschi, ne ponimaya otkuda eto znanie" }, scores: { priestess: 2 } },
+      { label: { en: "Needing freedom more than approval", ru: "Nuzhdatsya v svobode bolshe, chem v odobrenii" }, scores: { explorer: 2 } },
+    ],
+  },
+];
+
+function calcPastLifeRole(answers: number[]): PastLifeRole {
+  const scores: Record<PastLifeRole, number> = { healer: 0, warrior: 0, priestess: 0, scientist: 0, artist: 0, explorer: 0, teacher: 0, ruler: 0 };
+  answers.forEach((a, qi) => {
+    const opts = PAST_LIFE_ROLE_Q[qi]?.opts[a];
+    if (opts) Object.entries(opts.scores).forEach(([k, v]) => { scores[k as PastLifeRole] += v ?? 0; });
+  });
+  return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as PastLifeRole;
+}
+
 // ── Karma types ───────────────────────────────────────────────────────────────
 type KarmaTheme = "worth" | "trust" | "voice" | "freedom" | "love" | "power" | "surrender";
 const KARMA_THEMES: Record<KarmaTheme, { en: string; ru: string; lesson: { en: string; ru: string }; gift: { en: string; ru: string }; color: string }> = {
@@ -223,31 +291,45 @@ function PLNode1() {
     <div>
       <div style={{ textAlign: "center", marginBottom: 20 }}>
         <div style={{ fontSize: 48, marginBottom: 10 }}>&#9790;</div>
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", marginBottom: 10 }}>
+          Your Past Life Role
+        </h3>
         <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
           {false
             ? "Vozrast dushi — uroven evolyutsionnogo razvitiya, nakoplennogo cherez mnogie voploscheniya."
-            : "Soul age is the level of evolutionary development accumulated across many incarnations."}
+            : "Answer a few intuitive questions. Your result does not claim certainty; it points to a symbolic role that may reflect old gifts and recurring patterns."}
         </p>
       </div>
       <Quiz
-        questions={SOUL_AGE_Q}
-        calcResult={calcSoulAge}
+        questions={PAST_LIFE_ROLE_Q}
+        calcResult={calcPastLifeRole}
         lang={lang}
-        renderResult={(r: SoulAge) => {
-          const data = SOUL_AGES[r];
+        renderResult={(r: PastLifeRole) => {
+          const data = PAST_LIFE_ROLES[r];
           return (
             <div>
               <div style={{ textAlign: "center", marginBottom: 20 }}>
+                <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>
+                  Your Past Life Role
+                </p>
                 <div style={{ fontSize: 56, marginBottom: 10 }} dangerouslySetInnerHTML={{ __html: data.emoji }} />
                 <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{data.en}</h2>
+                <p style={{ fontSize: 12, color: "var(--gold-2)" }}>Your answers point to this role</p>
               </div>
               <div style={{ border: `1px solid ${data.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 12 }}>
-                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{data.desc.en}</p>
+                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{data.desc}</p>
               </div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
-                {(data.traits.en).map((t, i) => (
+              <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 14, padding: "14px 16px", background: "rgba(216,168,95,.05)", marginBottom: 12 }}>
+                <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 8 }}>GIFTS CARRIED INTO THIS LIFE</p>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {data.gifts.map((t, i) => (
                   <span key={i} style={{ fontSize: 12, padding: "4px 12px", borderRadius: 999, background: `${data.color}18`, border: `1px solid ${data.color}44`, color: "var(--text)" }}>{t}</span>
                 ))}
+                </div>
+              </div>
+              <div style={{ border: `1px solid ${data.color}33`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.45)", marginBottom: 20 }}>
+                <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>RECURRING LESSON</p>
+                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{data.lesson}</p>
               </div>
               <button onClick={() => { completeNode(DISCIPLINE, 1, { soulAge: r }); router.push("/sky/pastlife"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
                 {false ? "Zavershit uzel ✓" : "Complete node ✓"}
@@ -312,7 +394,7 @@ function PLNode2() {
 
 // ── Router ─────────────────────────────────────────────────────────────────────
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
-  "1": { en: "Soul Age",  ru: "Vozrast dushi", sub: { en: "Beginning",  ru: "Nachalo" } },
+  "1": { en: "Past Life Role",  ru: "Vozrast dushi", sub: { en: "Beginning",  ru: "Nachalo" } },
   "2": { en: "Karma",     ru: "Karma",        sub: { en: "Patterns",   ru: "Patterny" } },
 };
 
