@@ -1,134 +1,78 @@
-# eLuna Stage 1 Product Cleanup Remediation
+# Stage 1 Product Cleanup Remediation
 
 Date: 2026-06-05 local workspace date
-Audited by: Codex
-Scope: main product cleanup before Stripe implementation
+Production URL: https://www.myeluna.com
+Scope: Stage 1 cleanup before Stripe payment integration.
 
 ## Summary
 
-Stage 1 cleanup was completed for the main product without changing Stripe/payment logic, onboarding logic, legal pages, or route names.
+Stage 1 cleanup has been completed as a follow-up to the main product audit. The remediation focused on user-facing product trust issues before Stripe work: authenticated Daily Card access, route policy consistency, paid-access wording, Sky Map unlock consistency, English-only visible labels, and paywall copy that does not overpromise server-backed saved history.
 
-Status:
-- READY FOR VERIFICATION / DEPLOY
+## Remediated Items
 
-## Changes Made
+### Route protection and route policy
 
-### Daily Card Protection
+- `/daily-card` is included in the protected route set on both server middleware and client guard.
+- `/support` is explicitly included in both server and client public route sets.
+- Production route check after remediation: `/daily-card` returns `307` to `/login?returnTo=%2Fdaily-card` for anonymous requests.
 
-`/daily-card` was added to both server and client protected route lists.
+### User-facing paid access wording
 
-Files:
-- `src/lib/supabase/middleware.ts`
-- `src/components/auth/AuthRouteGuard.tsx`
+- User-facing plan label uses `Intro access`, not `Trial`.
+- Search for `free trial`, `3-day trial`, and user-facing `Trial` found no visible copy requiring replacement.
+- Internal identifiers such as `trial_3_day_1_usd` remain as internal plan IDs only.
 
-Expected result:
-- Anonymous users should be redirected to login with `returnTo=/daily-card`.
+### Daily Card route consistency
 
-### Intro Access Wording
+- Search for `/today#daily-card` and `#daily-card` returned no matches in product source.
+- Practices Symbol practice links to `/daily-card`.
 
-User-facing entitlement label `Trial` was replaced with `Intro access`.
+### Sky Map unlock consistency
 
-Files:
-- `src/lib/subscription/entitlements.ts`
-- `src/components/subscription/PlanChip.tsx`
-- `src/app/practices/page.tsx`
+- Past Life Signal no longer promises a practice-progress unlock while the route gate requires premium/full access.
+- Grounding Practice now starts as a premium node in base data.
+- Premium node requirements now consistently say `Available with Intro access or Premium`.
 
-Notes:
-- Existing internal subscription status `trialing` and the existing plan id are preserved because they are part of entitlement compatibility.
-- The product UI no longer returns the `Trial` display label.
+### Path and token labels
 
-### Daily Card Route Link
+- Visible reward labels are English:
+  - `Practice completed`
+  - `Mood checked in`
+  - `Daily card opened`
+- Legacy localStorage ledger reasons are normalized to the English labels before display.
+- The remaining non-English strings in `src/lib/lunaPath/storage.ts` are escaped legacy migration keys, not visible labels.
 
-Practices daily card CTA now routes to the dedicated Daily Card page.
+### Language cleanup
 
-File:
-- `src/app/practices/page.tsx`
+- Cyrillic source search returned `0` matches for `src/app`, `src/components`, and `src/lib`.
+- `ru:` branches and romanized RU data remain in calculators and Sky node data, but current UI forces English:
+  - `ENABLE_RU_LOCALE = false`
+  - stored `ru` preferences are migrated to `en`
+  - `LanguageProvider` passes `T.en`
+  - checked Sky UI branches use English-only runtime paths
+- Remaining `ru:` data is not user-facing in the current product state.
 
-Change:
-- `/today#daily-card` -> `/daily-card`
+### Paywall and saved-history wording
 
-### Russian Branch Cleanup
+- Subscription modal checkout notice now explicitly says checkout is not connected and no charge/subscription is created.
+- Subscription benefit wording avoids promising server-backed saved history while major history systems are still browser-local.
+- Welcome-head and Journal copy were softened from saved/account-record language to reflection/progress space language.
+- Remaining `account-based access` copy refers to account access/entitlement, not server-backed saved history.
 
-User-facing `lang === "ru"` / `lang === 'ru'` rendering branches were disabled and simplified to English output across Today and Sky node pages.
+### Fake clickability
 
-Files:
-- `src/app/today/page.tsx`
-- `src/components/sky/NodePathPage.tsx`
-- `src/app/sky/astrology/page.tsx`
-- `src/app/sky/numerology/page.tsx`
-- `src/app/sky/humandesign/page.tsx`
-- `src/app/sky/pastlife/page.tsx`
-- `src/app/sky/spiritual/page.tsx`
-- `src/app/sky/soulmate/page.tsx`
-- `src/app/sky/astrology/[nodeId]/page.tsx`
-- `src/app/sky/numerology/[nodeId]/page.tsx`
-- `src/app/sky/humandesign/[nodeId]/page.tsx`
-- `src/app/sky/pastlife/[nodeId]/page.tsx`
-- `src/app/sky/spiritual/[nodeId]/page.tsx`
-- `src/app/sky/soulmate/[nodeId]/page.tsx`
-- `src/lib/dailyCalc.ts`
-
-Final search:
-- `rg -n "/today#daily-card|lang === \"ru\"|lang === 'ru'" src/app src/components src/lib`: PASS, no matches.
-- `rg -n "[А-Яа-яЁё]" src/app src/components src/lib`: PASS, no matches.
-
-### Path / Tokens Labels
-
-Path and token-facing labels were checked. Current visible labels are English:
-- Moonlight
-- Lunar Tokens
-- Practice completed
-- Mood checked in
-- Daily card opened
-
-Note:
-- `src/lib/lunaPath/storage.ts` keeps legacy normalization for older stored local ledger strings. This is compatibility cleanup, not active UI copy.
-
-### Bottom Navigation Polish
-
-The centered Sky tab remains primary, but its glow and elevation were softened.
-
-File:
-- `src/components/app-shell/bottom-nav.css`
-
-Changes:
-- reduced glow size, blur, and opacity;
-- reduced Sky vertical offset;
-- reduced Sky circle and icon size;
-- softened panel shadow and inactive tab colors.
-
-### Paywall Benefit Copy
-
-Paid benefit copy that implied server-backed saved progress/history was softened.
-
-Files:
-- `src/components/subscription/SubscriptionModal.tsx`
-- `src/app/sky/page.tsx`
-
-Examples:
-- `Saved progress` -> `Progress features`
-- `Saved history and progress` -> `Progress and reflection features`
-- Sky unlock explainer now says `progress features`.
-
-## Fake Clickability Check
-
-No new fake checkout, fake payment, or fake subscription buttons were added. The existing subscription modal still keeps checkout unavailable instead of pretending to complete payment.
-
-Decorative navigation and visual changes did not introduce independent fake-clickable image elements.
+- Checked disabled and `Soon` elements in the Stage 1 product areas.
+- The Path `Soon` control is disabled and uses `cursor: default`.
+- Completed ritual/practice buttons use disabled states and default cursor.
+- No Stage 1 non-interactive chips/badges were left with active click affordance.
 
 ## Verification
 
-Commands:
-- `npm run type-check`: PASS
-- `npm run build`: PASS
-
-Build warning:
-- Next.js still reports an existing custom Babel configuration. This is pre-existing and did not block the build.
-
-Final wrong-string search:
-- `rg -n -i "free trial|3-day trial|\bTrial\b|support@visage|visage-ai|azora|telegram" src/app src/components src/lib public`: PASS, no matches.
+- `npm run type-check`: PASS.
+- `npm run build`: PASS. Existing Next.js custom Babel configuration warning remains.
+- Production `/daily-card`: pending final check after deploy.
 
 ## Remaining Notes
 
-- Stripe Checkout, webhook-backed entitlements, server-backed token/progress state, and customer portal remain separate launch blockers from the prior full audit.
-- `/daily-card` protection must be confirmed on production after deploy.
+- The product is still not ready for live Stripe payments until server-backed checkout, entitlements, token ledger, progress validation, Oracle generation/spend, and customer portal/cancellation flows are implemented.
+- Existing unrelated dirty files were not included in Stage 1 remediation commits.

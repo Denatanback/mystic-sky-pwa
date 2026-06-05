@@ -62,7 +62,7 @@ export function PersonalSkyMap() {
   const stars = useMemo(() => bgStars(180), []);
 
   return (
-    <section aria-label="Lichnoe nebo" style={{ width: "100%", position: "relative" }}>
+    <section aria-label="Personal sky map" style={{ width: "100%", position: "relative" }}>
       <svg
         viewBox="0 0 420 580"
         width="100%"

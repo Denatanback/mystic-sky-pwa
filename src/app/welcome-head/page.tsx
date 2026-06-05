@@ -47,14 +47,14 @@ const features = [
   ["Symbolic cards", "Draw a card, explore its meaning, and capture a simple action or reflection.", "card"],
   ["Personal Sky Map", "A structured map of astrology-inspired, numerology-inspired, and soul-path insights.", "orbit"],
   ["Affirmations & practices", "Guided practices and affirmations designed for repeat daily use.", "spark"],
-  ["Journal & progress", "A personal space for saved reflections, practice entries, and visible progress.", "journal"],
+  ["Journal & progress", "A personal space for reflections, practice entries, and visible progress.", "journal"],
   ["AI reflection tools", "AI-powered prompts that help users explore patterns and self-awareness themes.", "ai"],
 ];
 
 const proofBenefits = [
   ["Daily symbolic guidance", "A calm daily ritual with reading, card, action, and reflection."],
   ["Personal insight map", "A visual path that makes the product feel ongoing, not one-and-done."],
-  ["Reflection journal", "A simple account-based record for thoughts, prompts, and progress."],
+  ["Reflection journal", "A simple space for thoughts, prompts, and progress."],
 ];
 
 const steps = [

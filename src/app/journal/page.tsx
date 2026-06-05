@@ -22,7 +22,7 @@ export default function JournalPage() {
   const noteRef = useRef<HTMLTextAreaElement | null>(null);
   const openArchive = () => setFeatureInfo({
     title: "Journal Archive",
-    description: "Your saved reflections and completed practices will appear here as your path grows. Complete your first reflection to start your archive.",
+    description: "Your reflections and completed practices will appear here as your path grows. Complete your first reflection to start your archive.",
     statusLabel: "Growing with your path",
     primaryActionLabel: "Start a reflection",
   });

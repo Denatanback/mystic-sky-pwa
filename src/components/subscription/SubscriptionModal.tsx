@@ -223,7 +223,7 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
         {notice === "checkout-unavailable" && (
           <div style={{ border: "1px solid rgba(216,168,95,.24)", borderRadius: 18, background: "rgba(216,168,95,.08)", padding: 13, marginBottom: 12 }}>
             <p style={{ color: "var(--gold-2)", fontSize: 13, fontWeight: 800, marginBottom: 4 }}>Secure checkout is being prepared</p>
-            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Payment checkout needs to be connected before this plan can be purchased.</p>
+            <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Payment checkout is not connected yet. This selection does not create a subscription or charge your card.</p>
             {selectedPlanId && <p style={{ color: "var(--muted-2)", fontSize: 11, lineHeight: 1.45, marginTop: 6 }}>Selected plan: {selectedPlanId}</p>}
           </div>
         )}
