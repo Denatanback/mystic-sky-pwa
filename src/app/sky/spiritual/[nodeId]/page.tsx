@@ -86,23 +86,23 @@ function SpiritNode1() {
           <div style={{ textAlign: "center", marginBottom: 20 }}>
             <div style={{ fontSize: 52, marginBottom: 10 }}>&#129497;</div>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-              {lang === "ru"
+              {false
                 ? "Meditatsiya — osnova dukhovnoy praktiki. Dazhe neskolko minut v tishine menyayut kachestvo vsego dnya."
                 : "Meditation is the foundation of spiritual practice. Even a few minutes of stillness transform the quality of your entire day."}
             </p>
           </div>
           <p style={{ fontSize: 12, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", textAlign: "center", marginBottom: 14 }}>
-            {lang === "ru" ? "VYBERI DLITELNOST" : "CHOOSE DURATION"}
+            {false ? "VYBERI DLITELNOST" : "CHOOSE DURATION"}
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 24 }}>
             {DURATIONS.map(d => (
               <button key={d.min} onClick={() => setChosen(d.min)} style={{ padding: "16px 8px", borderRadius: 14, border: `1.5px solid ${chosen === d.min ? "rgba(216,168,95,.7)" : "rgba(255,255,255,.12)"}`, background: chosen === d.min ? "rgba(216,168,95,.12)" : "rgba(14,10,32,.4)", cursor: "pointer", fontFamily: "var(--font-serif)", fontSize: 22, color: chosen === d.min ? "var(--gold)" : "var(--muted)" }}>
-                {lang === "ru" ? d.label.ru : d.label.en}
+                {d.label.en}
               </button>
             ))}
           </div>
           <button onClick={startMeditation} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Nachat meditatsiyu →" : "Begin meditation →"}
+            {false ? "Nachat meditatsiyu →" : "Begin meditation →"}
           </button>
         </div>
       )}
@@ -110,7 +110,7 @@ function SpiritNode1() {
       {phase === "active" && (
         <div style={{ textAlign: "center" }}>
           <p style={{ fontSize: 11, color: "var(--muted)", letterSpacing: ".08em", marginBottom: 30 }}>
-            {lang === "ru" ? "KONTsENTRIRUYSYa NA DYKhANII" : "FOCUS ON YOUR BREATH"}
+            {false ? "KONTsENTRIRUYSYa NA DYKhANII" : "FOCUS ON YOUR BREATH"}
           </p>
 
           {/* Breathing orb */}
@@ -120,7 +120,7 @@ function SpiritNode1() {
             {/* Main orb */}
             <div style={{ width: 140, height: 140, borderRadius: "50%", background: "radial-gradient(circle at 38% 32%, rgba(180,120,255,.4), rgba(40,20,80,.9))", border: "1.5px solid rgba(160,100,240,.6)", boxShadow: "0 0 40px rgba(140,60,220,.5), inset 0 0 30px rgba(100,40,180,.3)", transform: `scale(${BREATH_SCALE[breathPhase]})`, transition: `transform ${breathPhase === "in" ? 4 : breathPhase === "hold" ? 0.1 : 6}s ease-in-out`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ fontSize: 13, color: "rgba(220,190,255,.9)", fontWeight: 600, letterSpacing: ".1em" }}>
-                {lang === "ru" ? BREATH_LABEL[breathPhase].ru : BREATH_LABEL[breathPhase].en}
+                {BREATH_LABEL[breathPhase].en}
               </span>
             </div>
           </div>
@@ -133,7 +133,7 @@ function SpiritNode1() {
 
           <button onClick={() => { clearInterval(intervalRef.current!); if (breathRef.current) clearTimeout(breathRef.current); setPhase("done"); }}
             style={{ padding: "10px 24px", borderRadius: 999, border: "1px solid rgba(255,255,255,.15)", background: "rgba(255,255,255,.04)", color: "var(--muted)", fontSize: 13, cursor: "pointer" }}>
-            {lang === "ru" ? "Ostanovit" : "Stop"}
+            {false ? "Ostanovit" : "Stop"}
           </button>
         </div>
       )}
@@ -142,15 +142,15 @@ function SpiritNode1() {
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 60, marginBottom: 14 }}>&#10024;</div>
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 10 }}>
-            {lang === "ru" ? "Otlichno sdelano" : "Well done"}
+            {false ? "Otlichno sdelano" : "Well done"}
           </h3>
           <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 24 }}>
-            {lang === "ru"
+            {false
               ? `Ty meditiroval ${chosen} minut. Zamet, kak ty sebya chuvstvuesh pryamo seychas — eto i est tvoya praktika.`
               : `You meditated for ${chosen} minutes. Notice how you feel right now — this is your practice.`}
           </p>
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
-            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+            {false ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       )}
@@ -260,7 +260,7 @@ function SpiritNode2() {
           <div style={{ textAlign: "center", marginBottom: 16 }}>
             <div style={{ fontSize: 48, marginBottom: 8 }}>&#128065;</div>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-              {lang === "ru"
+              {false
                 ? "Dykhanie — samyy bystryy sposob izmenit sostoyanie. Kazhdaya tekhnika sozdaet raznyy effekt."
                 : "Breathing is the fastest way to change your state. Each technique creates a different effect."}
             </p>
@@ -269,13 +269,13 @@ function SpiritNode2() {
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
             {(Object.keys(BREATH_TECHS) as BreathTech[]).map(k => (
               <button key={k} onClick={() => setChosen(k)} style={{ textAlign: "left", padding: "14px 16px", borderRadius: 14, border: `1.5px solid ${chosen === k ? "rgba(216,168,95,.6)" : "rgba(255,255,255,.1)"}`, background: chosen === k ? "rgba(216,168,95,.08)" : "rgba(14,10,32,.4)", cursor: "pointer" }}>
-                <p style={{ fontSize: 14, fontWeight: 600, color: chosen === k ? "var(--gold-2)" : "var(--text)", marginBottom: 4 }}>{lang === "ru" ? BREATH_TECHS[k].name.ru : BREATH_TECHS[k].name.en}</p>
-                <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{lang === "ru" ? BREATH_TECHS[k].desc.ru : BREATH_TECHS[k].desc.en}</p>
+                <p style={{ fontSize: 14, fontWeight: 600, color: chosen === k ? "var(--gold-2)" : "var(--text)", marginBottom: 4 }}>{BREATH_TECHS[k].name.en}</p>
+                <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{BREATH_TECHS[k].desc.en}</p>
               </button>
             ))}
           </div>
           <button onClick={startBreath} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Nachat praktiku →" : "Begin practice →"}
+            {false ? "Nachat praktiku →" : "Begin practice →"}
           </button>
         </div>
       )}
@@ -283,10 +283,10 @@ function SpiritNode2() {
       {phase === "active" && currentPhase && (
         <div style={{ textAlign: "center" }}>
           <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".1em", marginBottom: 4 }}>
-            {lang === "ru" ? tech.name.ru : tech.name.en}
+            {tech.name.en}
           </p>
           <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 24 }}>
-            {lang === "ru" ? `Tsikl ${cycleNum} iz ${totalCycles}` : `Cycle ${cycleNum} of ${totalCycles}`}
+            {false ? `Tsikl ${cycleNum} iz ${totalCycles}` : `Cycle ${cycleNum} of ${totalCycles}`}
           </p>
 
           {/* Breathing circle */}
@@ -303,7 +303,7 @@ function SpiritNode2() {
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
               <span style={{ fontSize: 42, fontFamily: "var(--font-serif)", color: "var(--gold)", fontWeight: 400 }}>{countdown}</span>
               <span style={{ fontSize: 14, color: "var(--text)", fontWeight: 600 }}>
-                {lang === "ru" ? currentPhase.label.ru : currentPhase.label.en}
+                {currentPhase.label.en}
               </span>
             </div>
           </div>
@@ -311,7 +311,7 @@ function SpiritNode2() {
           <div style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 24 }}>
             {tech.phases.map((p, i) => (
               <div key={i} style={{ padding: "4px 12px", borderRadius: 999, fontSize: 11, background: i === phaseIdx ? `${PHASE_COLORS[i % PHASE_COLORS.length]}22` : "rgba(255,255,255,.04)", border: `1px solid ${i === phaseIdx ? PHASE_COLORS[i % PHASE_COLORS.length] : "rgba(255,255,255,.08)"}`, color: i === phaseIdx ? PHASE_COLORS[i % PHASE_COLORS.length] : "var(--muted-2)" }}>
-                {lang === "ru" ? p.label.ru : p.label.en} {p.duration}s
+                {p.label.en} {p.duration}s
               </div>
             ))}
           </div>
@@ -322,15 +322,15 @@ function SpiritNode2() {
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 60, marginBottom: 14 }}>&#10024;</div>
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 10 }}>
-            {lang === "ru" ? "Praktika zavershena" : "Practice complete"}
+            {false ? "Praktika zavershena" : "Practice complete"}
           </h3>
           <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 24 }}>
-            {lang === "ru"
-              ? `${totalCycles} tsiklov ${lang === "ru" ? tech.name.ru : tech.name.en} zaversheno. Kak tvoe telo chuvstvuet sebya seychas?`
+            {false
+              ? `${totalCycles} tsiklov ${tech.name.en} zaversheno. Kak tvoe telo chuvstvuet sebya seychas?`
               : `${totalCycles} cycles of ${tech.name.en} complete. How does your body feel right now?`}
           </p>
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
-            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+            {false ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       )}
@@ -356,8 +356,8 @@ export default function SpiritualNodePage() {
   const meta = NODE_TITLES[nodeId];
   if (!meta) { router.push("/sky/spiritual"); return null; }
   const nodeNum = parseInt(nodeId);
-  const title = lang === "ru" ? meta.ru : meta.en;
-  const subtitle = lang === "ru" ? meta.sub.ru : meta.sub.en;
+  const title = meta.en;
+  const subtitle = meta.sub.en;
 
   if (locked) return (
     <SkyNodeEntitlementGate discipline={DISCIPLINE} nodeId={nodeNum} title={title} subtitle={subtitle} totalNodes={TOTAL} backHref="/sky/spiritual">

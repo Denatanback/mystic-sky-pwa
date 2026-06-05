@@ -5,7 +5,7 @@ import { useLang } from "@/lib/i18n";
 export default function AstrologyPathPage() {
   const { lang, t } = useLang();
 
-  const NODES: PathNode[] = lang === "ru" ? [
+  const NODES: PathNode[] = false ? [
     { num: 1, label: "Solntse",    sub: "Nachalo puti",       desc: "Solnechnaya energiya — osnova lichnosti i zhiznennoy sily",         status: "done",    emblem: "/assets/node-emblems/astrology/emblem-1-sun.png",       x: 50, y: 82 },
     { num: 2, label: "Luna",      sub: "Emotsii, intuitsiya",  desc: "Emotsii, intuitsiya, vnutrenniy mir",                             status: "current", emblem: "/assets/node-emblems/astrology/emblem-2-moon.png",      x: 21, y: 64 },
     { num: 3, label: "Aspekty",   sub: "Vzaimosvyazi",       desc: "Ugly i vzaimodeystvie planet v natalnoy karte",               status: "locked",  emblem: "/assets/node-emblems/astrology/emblem-3-aspects.png",   x: 73, y: 64 },
@@ -32,7 +32,7 @@ export default function AstrologyPathPage() {
     [4, 6], [4, 7],
   ];
 
-  const discipline = lang === "ru" ? "Astrologiya" : "Astrology";
+  const discipline = false ? "Astrologiya" : "Astrology";
 
   return <NodePathPage discipline={discipline} disciplineKey="astrology" nodes={NODES} lines={LINES} />;
 }

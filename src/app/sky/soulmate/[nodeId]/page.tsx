@@ -95,7 +95,7 @@ function SMNode1() {
 
   if (!user?.birthDate) return (
     <div style={{ textAlign: "center", padding: "40px 16px" }}>
-      <p style={{ color: "var(--muted)", marginBottom: 16 }}>{lang === "ru" ? "Ukazhi datu rozhdeniya v profile" : "Add birth date in profile"}</p>
+      <p style={{ color: "var(--muted)", marginBottom: 16 }}>{false ? "Ukazhi datu rozhdeniya v profile" : "Add birth date in profile"}</p>
     </div>
   );
 
@@ -103,14 +103,14 @@ function SMNode1() {
     <div>
       <div style={{ textAlign: "center", marginBottom: 16 }}>
         <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-          {lang === "ru" ? "Venera v tvoey karte raskryvaet tvoyu prirodu lyubvi — kak ty privlekaesh, otdaesh i prinimaesh lyubov." : "Venus in your chart reveals your nature in love — how you attract, give and receive love."}
+          {false ? "Venera v tvoey karte raskryvaet tvoyu prirodu lyubvi — kak ty privlekaesh, otdaesh i prinimaesh lyubov." : "Venus in your chart reveals your nature in love — how you attract, give and receive love."}
         </p>
       </div>
 
       {!revealed ? (
         <button onClick={() => setRevealed(true)} style={{ width: "100%", height: 120, borderRadius: 20, background: "radial-gradient(circle at 40% 35%, rgba(180,80,140,.3), rgba(14,10,32,.95))", border: "1.5px solid rgba(216,168,95,.4)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 }}>
           <span style={{ fontSize: 42 }}>&#9792;</span>
-          <span style={{ fontSize: 14, color: "var(--gold-2)", fontWeight: 600 }}>{lang === "ru" ? "Raskryt znak Venery" : "Reveal Venus sign"}</span>
+          <span style={{ fontSize: 14, color: "var(--gold-2)", fontWeight: 600 }}>{false ? "Raskryt znak Venery" : "Reveal Venus sign"}</span>
         </button>
       ) : venusSign && loveData ? (
         <div>
@@ -118,8 +118,8 @@ function SMNode1() {
             <div style={{ width: 100, height: 100, margin: "0 auto 12px", borderRadius: "50%", background: `radial-gradient(circle, ${venusSign.color}33, rgba(14,10,32,.95))`, border: `2px solid ${venusSign.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 30px ${venusSign.color}44` }}>
               <span style={{ fontSize: 44 }}>{venusSign.symbol}</span>
             </div>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, marginBottom: 4 }}>{lang === "ru" ? loveData.title.ru : loveData.title.en}</h2>
-            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{lang === "ru" ? `Venera v ${venusSign.ru}` : `Venus in ${venusSign.en}`}</p>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, marginBottom: 4 }}>{loveData.title.en}</h2>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{`Venus in ${venusSign.en}`}</p>
           </div>
 
           {[
@@ -128,14 +128,14 @@ function SMNode1() {
             { key: "gift",  label: { en: "YOUR GIFT IN LOVE", ru: "TVOY DAR V LYuBVI" } },
           ].map(({ key, label }) => (
             <div key={key} style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.5)", marginBottom: 10 }}>
-              <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{lang === "ru" ? label.ru : label.en}</p>
-              <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{lang === "ru" ? (loveData as Record<string, { en: string; ru: string }>)[key].ru : (loveData as Record<string, { en: string; ru: string }>)[key].en}</p>
+              <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{label.en}</p>
+              <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{false ? (loveData as Record<string, { en: string; ru: string }>)[key].ru : (loveData as Record<string, { en: string; ru: string }>)[key].en}</p>
             </div>
           ))}
 
           <div style={{ marginBottom: 20 }} />
           <button onClick={() => { completeNode(DISCIPLINE, 1, { venusSign: venusSign.key }); router.push("/sky/soulmate"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+            {false ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       ) : null}
@@ -170,13 +170,13 @@ function SMNode2() {
           <div style={{ textAlign: "center", marginBottom: 20 }}>
             <div style={{ fontSize: 48, marginBottom: 10 }}>&#10084;</div>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-              {lang === "ru"
+              {false
                 ? "Stil privyazannosti formiruetsya v detstve i vliyaet na vse romanticheskie otnosheniya. Ponyat ego — znachit izmenit patterny."
                 : "Attachment style forms in childhood and shapes all romantic relationships. Understanding yours is the first step to changing patterns."}
             </p>
           </div>
           <button onClick={() => setQIdx(0)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Proyti test →" : "Take the quiz →"}
+            {false ? "Proyti test →" : "Take the quiz →"}
           </button>
         </div>
       )}
@@ -188,12 +188,12 @@ function SMNode2() {
           </div>
           <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 8 }}>{qIdx + 1} / {ATTACH_Q.length}</p>
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--text)", marginBottom: 20, lineHeight: 1.35 }}>
-            {lang === "ru" ? q.q.ru : q.q.en}
+            {q.q.en}
           </h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {q.opts.map((opt, i) => (
               <button key={i} onClick={() => answer(i)} style={{ textAlign: "left", padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(216,168,95,.25)", background: "rgba(14,10,32,.55)", color: "var(--text)", fontSize: 14, lineHeight: 1.45, cursor: "pointer", fontFamily: "var(--font-sans)" }}>
-                {lang === "ru" ? opt.label.ru : opt.label.en}
+                {opt.label.en}
               </button>
             ))}
           </div>
@@ -206,20 +206,20 @@ function SMNode2() {
             <div style={{ width: 100, height: 100, margin: "0 auto 12px", borderRadius: "50%", background: `radial-gradient(circle, ${attachData.color}33, rgba(14,10,32,.95))`, border: `2px solid ${attachData.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 30px ${attachData.color}44` }}>
               <span style={{ fontSize: 48 }}>&#10084;</span>
             </div>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{lang === "ru" ? attachData.ru : attachData.en}</h2>
-            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{lang === "ru" ? "Tvoy stil privyazannosti" : "Your attachment style"}</p>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{attachData.en}</h2>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{false ? "Tvoy stil privyazannosti" : "Your attachment style"}</p>
           </div>
 
           <div style={{ border: `1px solid ${attachData.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
-            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{lang === "ru" ? attachData.desc.ru : attachData.desc.en}</p>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{attachData.desc.en}</p>
           </div>
           <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 14, padding: "14px 16px", background: "rgba(216,168,95,.05)", marginBottom: 20 }}>
-            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{lang === "ru" ? "PUT ROSTA" : "GROWTH PATH"}</p>
-            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{lang === "ru" ? attachData.growth.ru : attachData.growth.en}</p>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{false ? "PUT ROSTA" : "GROWTH PATH"}</p>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{attachData.growth.en}</p>
           </div>
 
           <button onClick={() => { completeNode(DISCIPLINE, 2, { attachment: result }); router.push("/sky/soulmate"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+            {false ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       )}
@@ -244,8 +244,8 @@ export default function SoulmateNodePage() {
   const meta = NODE_TITLES[nodeId];
   if (!meta) { router.push("/sky/soulmate"); return null; }
   const nodeNum = parseInt(nodeId);
-  const title = lang === "ru" ? meta.ru : meta.en;
-  const subtitle = lang === "ru" ? meta.sub.ru : meta.sub.en;
+  const title = meta.en;
+  const subtitle = meta.sub.en;
 
   if (locked) return (
     <SkyNodeEntitlementGate discipline={DISCIPLINE} nodeId={nodeNum} title={title} subtitle={subtitle} totalNodes={TOTAL} backHref="/sky/soulmate">

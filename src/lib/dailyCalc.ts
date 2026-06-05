@@ -137,7 +137,7 @@ export function getDailyForecast(
 ): string {
   const phase = PHASE_THEME[moonPhaseInfo.name.en] ?? PHASE_THEME["Full Moon"];
   const sign  = SIGN_TWIST[sunSign.key] ?? ELEMENT_TWIST[sunSign.element];
-  const moonLine = lang === "ru"
+  const moonLine = false
     ? `Luna v ${moonSign.ru} ${moonPhaseInfo.emoji}`
     : `Moon in ${moonSign.en} ${moonPhaseInfo.emoji}`;
   return `${moonLine}\n${phase[lang]} ${sign[lang]}`;

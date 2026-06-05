@@ -47,9 +47,9 @@ function NumNode1() {
 
   if (!user?.birthDate) return (
     <div style={{ textAlign: "center", padding: "40px 16px" }}>
-      <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", marginBottom: 8 }}>{lang === "ru" ? "Zavershi personalnuyu nastroyku" : "Complete your personal setup"}</h2>
-      <p style={{ color: "var(--muted)", marginBottom: 16 }}>{lang === "ru" ? "Data rozhdeniya nuzhna, chtoby rasschitat etu chast puti." : "Your birth date is needed to calculate this part of your path."}</p>
-      <button onClick={() => router.push("/onboarding?step=birth")} style={{ padding: "12px 28px", borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>{lang === "ru" ? "Prodolzhit nastroyku" : "Continue setup"}</button>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", marginBottom: 8 }}>{false ? "Zavershi personalnuyu nastroyku" : "Complete your personal setup"}</h2>
+      <p style={{ color: "var(--muted)", marginBottom: 16 }}>{false ? "Data rozhdeniya nuzhna, chtoby rasschitat etu chast puti." : "Your birth date is needed to calculate this part of your path."}</p>
+      <button onClick={() => router.push("/onboarding?step=birth")} style={{ padding: "12px 28px", borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>{false ? "Prodolzhit nastroyku" : "Continue setup"}</button>
     </div>
   );
 
@@ -60,27 +60,27 @@ function NumNode1() {
       {step === 0 && (
         <div>
           <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.5)", marginBottom: 20 }}>
-            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{lang === "ru" ? "TVOYa DATA ROZhDENIYa" : "YOUR BIRTH DATE"}</p>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{false ? "TVOYa DATA ROZhDENIYa" : "YOUR BIRTH DATE"}</p>
             <p style={{ fontSize: 22, color: "var(--text)", fontFamily: "var(--font-serif)", letterSpacing: ".06em" }}>
               {new Date(user.birthDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
             </p>
           </div>
           <div style={{ border: "1px solid rgba(255,255,255,.08)", borderRadius: 14, padding: "14px 16px", background: "rgba(12,8,28,.45)", marginBottom: 20 }}>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-              {lang === "ru"
+              {false
                 ? "Chislo Zhiznennogo Puti — glavnoe chislo v numerologii. Ono vychislyaetsya iz daty rozhdeniya i raskryvaet osnovnuyu vibratsiyu tvoego puti na Zemle."
                 : "The Life Path Number is the most important in numerology. Calculated from your birth date, it reveals the core vibration of your path on Earth."}
             </p>
           </div>
           <button onClick={startAnim} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Nachat raschet →" : "Start calculation →"}
+            {false ? "Nachat raschet →" : "Start calculation →"}
           </button>
         </div>
       )}
 
       {step === 1 && calc && (
         <div>
-          <p style={{ fontSize: 12, color: "var(--muted)", textAlign: "center", marginBottom: 16 }}>{lang === "ru" ? "Razbivaem datu po shagam..." : "Breaking down your date..."}</p>
+          <p style={{ fontSize: 12, color: "var(--muted)", textAlign: "center", marginBottom: 16 }}>{false ? "Razbivaem datu po shagam..." : "Breaking down your date..."}</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
             {calc.steps.map((s, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderRadius: 12, border: `1px solid ${i <= animIdx ? "rgba(216,168,95,.4)" : "rgba(255,255,255,.06)"}`, background: i <= animIdx ? "rgba(216,168,95,.06)" : "rgba(14,10,32,.4)", transition: "all .3s", opacity: i <= animIdx ? 1 : 0.2 }}>
@@ -99,22 +99,22 @@ function NumNode1() {
               <span style={{ fontSize: 52, fontFamily: "var(--font-serif)", color: "var(--gold)", fontWeight: 400 }}>{calc.result}</span>
             </div>
             <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 30, color: "var(--text)", marginBottom: 4 }}>
-              {lang === "ru" ? traits.name.ru : traits.name.en}
+              {traits.name.en}
             </h2>
-            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{lang === "ru" ? `Chislo puti: ${calc.result}` : `Life Path: ${calc.result}`}</p>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{`Life Path: ${calc.result}`}</p>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
             {traits.traits.map((tr, i) => (
               <div key={i} style={{ padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(160,130,220,.25)", background: "rgba(14,10,32,.55)" }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: "var(--gold-2)", marginBottom: 6 }}>{lang === "ru" ? tr.title.ru : tr.title.en}</p>
-                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{lang === "ru" ? tr.body.ru : tr.body.en}</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: "var(--gold-2)", marginBottom: 6 }}>{tr.title.en}</p>
+                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{tr.body.en}</p>
               </div>
             ))}
           </div>
 
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
-            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+            {false ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       )}
@@ -162,7 +162,7 @@ function NumNode2() {
 
   if (!user?.fullName) return (
     <div style={{ textAlign: "center", padding: "40px 16px" }}>
-      <p style={{ color: "var(--muted)" }}>{lang === "ru" ? "Ukazhi imya v profile" : "Add your name in profile"}</p>
+      <p style={{ color: "var(--muted)" }}>{false ? "Ukazhi imya v profile" : "Add your name in profile"}</p>
     </div>
   );
 
@@ -171,18 +171,18 @@ function NumNode2() {
       {step === 0 && (
         <div>
           <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.5)", marginBottom: 16 }}>
-            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{lang === "ru" ? "IMYa DLYa RASChETA" : "NAME FOR CALCULATION"}</p>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{false ? "IMYa DLYa RASChETA" : "NAME FOR CALCULATION"}</p>
             <p style={{ fontSize: 24, color: "var(--text)", fontFamily: "var(--font-serif)", letterSpacing: ".06em" }}>{firstName}</p>
           </div>
           <div style={{ border: "1px solid rgba(255,255,255,.08)", borderRadius: 14, padding: "14px 16px", background: "rgba(12,8,28,.45)", marginBottom: 16 }}>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-              {lang === "ru"
+              {false
                 ? "Chislo Dushi (Zhelanie Serdtsa) vychislyaetsya iz glasnykh tvoego imeni. Ono raskryvaet glubinnye zhelaniya i to, chto po-nastoyaschemu dvizhet toboy iznutri."
                 : "The Soul Number (Heart's Desire) is calculated from the vowels in your name. It reveals your deepest desires and what truly drives you from within."}
             </p>
           </div>
           <button onClick={animateVowels} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Nayti glasnye →" : "Find vowels →"}
+            {false ? "Nayti glasnye →" : "Find vowels →"}
           </button>
         </div>
       )}
@@ -190,7 +190,7 @@ function NumNode2() {
       {(step === 1 || step === 2) && calc && (
         <div>
           <p style={{ fontSize: 12, color: "var(--muted)", textAlign: "center", marginBottom: 16 }}>
-            {lang === "ru" ? "Podsvechivaem glasnye bukvy..." : "Highlighting vowel letters..."}
+            {false ? "Podsvechivaem glasnye bukvy..." : "Highlighting vowel letters..."}
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginBottom: 20 }}>
             {firstName.toUpperCase().split("").map((ch, i) => {
@@ -215,25 +215,25 @@ function NumNode2() {
       {step === 2 && calc && traits && (
         <div>
           <div style={{ textAlign: "center", marginBottom: 20 }}>
-            <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 6 }}>{lang === "ru" ? calc.steps[0] : calc.steps[0]}</div>
+            <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 6 }}>{calc.steps[0]}</div>
             <div style={{ width: 100, height: 100, margin: "0 auto 12px", borderRadius: "50%", background: "radial-gradient(circle, rgba(140,70,220,.3), rgba(14,10,32,.95))", border: "2px solid rgba(140,70,220,.5)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 30px rgba(140,70,220,.35)" }}>
               <span style={{ fontSize: 46, fontFamily: "var(--font-serif)", color: "#c080f0" }}>{calc.result}</span>
             </div>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{lang === "ru" ? traits.name.ru : traits.name.en}</h2>
-            <p style={{ fontSize: 12, color: "rgba(180,140,250,1)" }}>{lang === "ru" ? `Chislo dushi: ${calc.result}` : `Soul number: ${calc.result}`}</p>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{traits.name.en}</h2>
+            <p style={{ fontSize: 12, color: "rgba(180,140,250,1)" }}>{`Soul number: ${calc.result}`}</p>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
             {traits.traits.map((tr, i) => (
               <div key={i} style={{ padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(140,70,220,.3)", background: "rgba(14,10,32,.55)" }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: "rgba(180,140,250,1)", marginBottom: 6 }}>{lang === "ru" ? tr.title.ru : tr.title.en}</p>
-                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{lang === "ru" ? tr.body.ru : tr.body.en}</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: "rgba(180,140,250,1)", marginBottom: 6 }}>{tr.title.en}</p>
+                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{tr.body.en}</p>
               </div>
             ))}
           </div>
 
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
-            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+            {false ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       )}
@@ -271,36 +271,36 @@ export default function NumerologyNodePage() {
   if (!meta) { router.push("/sky/numerology"); return null; }
 
   if (locked) return (
-    <NodePage title={lang === "ru" ? meta.ru : meta.en} subtitle={lang === "ru" ? meta.sub.ru : meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/numerology">
+    <NodePage title={meta.en} subtitle={meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/numerology">
       <div style={{ textAlign: "center", padding: "40px 16px" }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
-        <p style={{ color: "var(--muted)" }}>{lang === "ru" ? "Zavershite predyduschiy uzel" : "Complete the previous node first"}</p>
+        <p style={{ color: "var(--muted)" }}>{false ? "Zavershite predyduschiy uzel" : "Complete the previous node first"}</p>
       </div>
     </NodePage>
   );
 
   return (
     <NodePage
-      title={lang === "ru" ? meta.ru : meta.en}
-      subtitle={lang === "ru" ? meta.sub.ru : meta.sub.en}
+      title={meta.en}
+      subtitle={meta.sub.en}
       nodeNum={parseInt(nodeId)}
       totalNodes={TOTAL}
       backHref="/sky/numerology"
       badge={state.status === "completed" ? "completed" : undefined}
     >
       <div style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: 16, background: "rgba(12,8,28,.48)", padding: 14, marginBottom: 16 }}>
-        <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 7 }}>{lang === "ru" ? "Chast Sky Map" : "Part of your Sky Map"}</p>
-        <h2 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: 22, fontWeight: 600, lineHeight: 1.1, marginBottom: 6 }}>{lang === "ru" ? "Pochemu etot uzel vazhen" : "Why this node matters"}</h2>
-        <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>{lang === "ru" ? NODE_CONTEXT[nodeId].ru : NODE_CONTEXT[nodeId].en}</p>
+        <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 7 }}>{false ? "Chast Sky Map" : "Part of your Sky Map"}</p>
+        <h2 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: 22, fontWeight: 600, lineHeight: 1.1, marginBottom: 6 }}>{false ? "Pochemu etot uzel vazhen" : "Why this node matters"}</h2>
+        <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>{NODE_CONTEXT[nodeId].en}</p>
       </div>
       {nodeId === "1" && <NumNode1 />}
       {nodeId === "2" && <NumNode2 />}
       <div style={{ display: "grid", gap: 10, marginTop: 18 }}>
         <Link href="/sky" style={{ height: 46, borderRadius: 999, border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)" }}>
-          {lang === "ru" ? "Vernutsya k Sky Map" : "Return to Sky Map"}
+          {false ? "Vernutsya k Sky Map" : "Return to Sky Map"}
         </Link>
         <Link href="/today" style={{ height: 48, borderRadius: 999, border: "none", background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", fontSize: 14, fontWeight: 800, fontFamily: "var(--font-ui)", boxShadow: "0 8px 24px rgba(110,30,130,.40)" }}>
-          {lang === "ru" ? "Prodolzhit segodnyashniy put" : "Continue today’s path"}
+          {false ? "Prodolzhit segodnyashniy put" : "Continue today’s path"}
         </Link>
       </div>
     </NodePage>

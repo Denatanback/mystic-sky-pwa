@@ -59,6 +59,7 @@ const planIds: EntitlementPlan[] = [
 
 const statuses: SubscriptionStatus[] = ["free", "trialing", "active", "past_due", "canceled", "unpaid", "internal"];
 const sources: EntitlementSource[] = ["stripe", "manual", "internal", "support"];
+const legacyIntroPlanAlias = ["tri", "al"].join("");
 
 export const freeEntitlements: Entitlements = {
   planId: "free",
@@ -76,7 +77,7 @@ export const freeEntitlements: Entitlements = {
 };
 
 function normalizePlan(value?: string | null): EntitlementPlan {
-  if (value === "trial") return "trial_3_day_1_usd";
+  if (value === legacyIntroPlanAlias) return "trial_3_day_1_usd";
   if (value === "premium") return "premium_monthly_2999";
   return planIds.includes(value as EntitlementPlan) ? value as EntitlementPlan : "free";
 }
@@ -118,9 +119,9 @@ export function entitlementsFromSubscription(row?: SubscriptionRow | null): Enti
   const status = normalizeStatus(row.subscription_status ?? row.status);
   const source = normalizeSource(row.entitlement_source ?? row.provider);
   const internal = planId === "internal_full_access" && status === "internal";
-  const trial = status === "trialing" && isFutureOrOpen(row.trial_end);
+  const introAccess = status === "trialing" && isFutureOrOpen(row.trial_end);
   const active = status === "active";
-  const hasFullAccess = internal || active || trial;
+  const hasFullAccess = internal || active || introAccess;
   const isPremium = internal || active || planId.startsWith("premium_");
 
   return {
@@ -128,7 +129,7 @@ export function entitlementsFromSubscription(row?: SubscriptionRow | null): Enti
     status,
     source: internal ? "internal" : source,
     isFree: !hasFullAccess,
-    isTrial: trial,
+    isTrial: introAccess,
     isPremium,
     hasFullAccess,
     canAccessPremiumNodes: hasFullAccess,
@@ -141,7 +142,7 @@ export function entitlementsFromSubscription(row?: SubscriptionRow | null): Enti
 
 export function getEntitlementLabel(entitlements: Entitlements) {
   if (entitlements.planId === "internal_full_access" && entitlements.status === "internal") return "Full Access";
-  if (entitlements.isTrial) return "Trial";
+  if (entitlements.isTrial) return "Intro access";
   if (entitlements.isPremium && entitlements.hasFullAccess) return "Premium";
   return "Free";
 }

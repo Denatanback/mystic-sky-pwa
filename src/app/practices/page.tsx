@@ -31,7 +31,7 @@ import { affirmationCategories, type AffirmationCategory, type AffirmationItem }
 import { useEntitlements } from "@/lib/subscription/entitlements";
 
 type Tab = "today" | "my" | "library";
-type PlanAccess = "free" | "trial" | "premium";
+type PlanAccess = "free" | "intro" | "premium";
 type ActiveAffirmation = { id: string; categoryId?: string; category: string; text: string };
 
 const ACTIVE_AFFIRMATIONS_KEY = "eluna:activeAffirmations";
@@ -81,7 +81,7 @@ const secondaryButtonStyle: CSSProperties = {
 };
 
 function hasFullAccess(plan: PlanAccess) {
-  return plan === "trial" || plan === "premium";
+  return plan === "intro" || plan === "premium";
 }
 
 function readActiveAffirmations(): ActiveAffirmation[] {
@@ -135,7 +135,7 @@ export default function PracticesPage() {
   const todayKey = useMemo(() => getTodayKey(), []);
   const [tab, setTab] = useState<Tab>("today");
   const { entitlements } = useEntitlements();
-  const plan: PlanAccess = entitlements.hasFullAccess ? entitlements.isTrial ? "trial" : "premium" : "free";
+  const plan: PlanAccess = entitlements.hasFullAccess ? entitlements.isTrial ? "intro" : "premium" : "free";
   const [affirmationCompleted, setAffirmationCompleted] = useState(false);
   const [reflectionCompleted, setReflectionCompleted] = useState(false);
   const [groundingCompleted, setGroundingCompleted] = useState(false);
@@ -370,7 +370,7 @@ export default function PracticesPage() {
                   <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>
                     {dailyCardState.card ? `${dailyCardState.card.title} · ${dailyCardState.card.theme}` : "Draw one symbol for today and save what it mirrors."}
                   </p>
-                  <Link href="/today#daily-card" style={{ ...primaryButtonStyle, minHeight: 40 }}>
+                  <Link href="/daily-card" style={{ ...primaryButtonStyle, minHeight: 40 }}>
                     {dailyCardState.drawn ? "View card" : "Draw"}
                   </Link>
                 </div>

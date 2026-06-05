@@ -23,12 +23,12 @@ const unlocks = [
   ["Full daily reading", "Go beyond the preview with meaning, action, reflection, and tomorrow’s signal."],
   ["Deeper Sky Map nodes", "Open premium path points like Past Life, Soulmate, and advanced chart insights."],
   ["Full practice library", "Use advanced affirmations, rituals, and multi-day practice sequences."],
-  ["Saved progress", "Keep your readings, reflections, daily cards, and path signals in one place."],
+  ["Progress features", "Continue readings, reflections, daily cards, and path signals while server-backed history is being prepared."],
   ["Reports", "Unlock weekly soul reports and monthly pattern previews."],
 ];
 
 const freePreview = ["Basic daily guidance preview", "1 daily card per day", "1 active affirmation", "Starter Sky Map preview"];
-const trialUnlocks = ["Full daily readings", "Premium Sky Map nodes", "Full affirmation and practice library", "Past-life and relationship insights", "Weekly and monthly report previews", "Saved progress and history"];
+const trialUnlocks = ["Full daily readings", "Premium Sky Map nodes", "Full affirmation and practice library", "Past-life and relationship insights", "Weekly and monthly report previews", "Progress and reflection features"];
 
 const premiumPreviews = [
   ["Past-life signal", "See the repeating emotional pattern your path keeps returning to."],
@@ -72,7 +72,7 @@ const plans: Array<{
     savingsText: "Save $89.95 vs monthly",
     comparison: { monthly: "$179.94 USD", price: "$89.99 USD", savings: "$89.95 USD" },
     description: "Deep transformation plan.",
-    includes: ["Full daily readings", "Full practice library", "Personal chart insights", "Past-life insights", "Relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
+    includes: ["Full daily readings", "Full practice library", "Personal chart insights", "Past-life insights", "Relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Progress and reflection features"],
     cta: "Choose 6 Months",
   },
   {
@@ -85,7 +85,7 @@ const plans: Array<{
     savingsText: "Save $29.98 vs monthly",
     comparison: { monthly: "$89.97 USD", price: "$59.99 USD", savings: "$29.98 USD" },
     description: "Best value for starting your path.",
-    includes: ["Full daily readings", "Full practice library", "Personal chart insights", "Past-life insights", "Relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
+    includes: ["Full daily readings", "Full practice library", "Personal chart insights", "Past-life insights", "Relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Progress and reflection features"],
     cta: "Choose 3 Months",
   },
   {
@@ -94,7 +94,7 @@ const plans: Array<{
     price: "$29.99 USD/month",
     equivalent: "Flexible monthly access",
     description: "Continue your path with deeper insights and monthly reports.",
-    includes: ["Unlimited daily readings", "Full practice library", "Personal chart insights", "Past-life and relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Saved history and progress"],
+    includes: ["Unlimited daily readings", "Full practice library", "Personal chart insights", "Past-life and relationship insights", "Weekly soul reports", "Monthly soul pattern report", "Progress and reflection features"],
     cta: "Choose Monthly",
   },
   {

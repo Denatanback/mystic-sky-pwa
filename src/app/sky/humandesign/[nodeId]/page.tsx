@@ -153,16 +153,16 @@ function HDNode1() {
           <div style={{ textAlign: "center", marginBottom: 20 }}>
             <div style={{ fontSize: 48, marginBottom: 12 }}>&#9650;</div>
             <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", marginBottom: 10 }}>
-              {lang === "ru" ? "Uznay svoy Tip" : "Discover Your Type"}
+              {false ? "Uznay svoy Tip" : "Discover Your Type"}
             </h3>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-              {lang === "ru"
+              {false
                 ? "V Human Design est 5 Tipov. Tvoy tip -- osnova strategii zhizni. Otvet na 5 voprosov."
                 : "Human Design has 5 energy Types. Your type is the foundation of your life strategy. Answer 5 questions to discover yours."}
             </p>
           </div>
           <button onClick={() => setQIdx(0)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Nachat →" : "Start →"}
+            {false ? "Nachat →" : "Start →"}
           </button>
         </div>
       )}
@@ -174,14 +174,14 @@ function HDNode1() {
               <div key={i} style={{ flex: 1, height: 3, borderRadius: 99, background: i <= qIdx ? "var(--gold)" : "rgba(255,255,255,.1)" }} />
             ))}
           </div>
-          <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 8 }}>{lang === "ru" ? `Vopros ${qIdx + 1} iz ${TYPE_QUESTIONS.length}` : `Question ${qIdx + 1} of ${TYPE_QUESTIONS.length}`}</p>
+          <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 8 }}>{false ? `Vopros ${qIdx + 1} iz ${TYPE_QUESTIONS.length}` : `Question ${qIdx + 1} of ${TYPE_QUESTIONS.length}`}</p>
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--text)", marginBottom: 20, lineHeight: 1.35 }}>
-            {lang === "ru" ? q.q.ru : q.q.en}
+            {q.q.en}
           </h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {q.opts.map((opt, i) => (
               <button key={i} onClick={() => answer(i)} style={{ textAlign: "left", padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(216,168,95,.25)", background: "rgba(14,10,32,.55)", color: "var(--text)", fontSize: 14, lineHeight: 1.45, cursor: "pointer", fontFamily: "var(--font-sans)" }}>
-                {lang === "ru" ? opt.label.ru : opt.label.en}
+                {opt.label.en}
               </button>
             ))}
           </div>
@@ -194,24 +194,24 @@ function HDNode1() {
             <div style={{ width: 110, height: 110, margin: "0 auto 14px", borderRadius: "50%", background: `radial-gradient(circle at 38% 32%, ${typeData.color}33, rgba(14,10,32,.95))`, border: `2px solid ${typeData.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 40px ${typeData.color}44` }}>
               <span style={{ fontSize: 46 }}>&#9651;</span>
             </div>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{lang === "ru" ? typeData.ru : typeData.en}</h2>
-            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{lang === "ru" ? "Tvoy Tip Human Design" : "Your Human Design Type"}</p>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{typeData.en}</h2>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{false ? "Tvoy Tip Human Design" : "Your Human Design Type"}</p>
           </div>
           <div style={{ border: `1px solid ${typeData.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 12 }}>
-            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{lang === "ru" ? typeData.desc.ru : typeData.desc.en}</p>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{typeData.desc.en}</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
             <div style={{ padding: "12px", borderRadius: 12, border: "1px solid rgba(100,200,100,.3)", background: "rgba(20,50,20,.4)", textAlign: "center" }}>
-              <p style={{ fontSize: 10, color: "rgba(100,220,100,.8)", letterSpacing: ".08em", fontWeight: 700, marginBottom: 4 }}>{lang === "ru" ? "STRATEGIYa" : "STRATEGY"}</p>
-              <p style={{ fontSize: 12, color: "var(--text)" }}>{lang === "ru" ? typeData.strategy.ru : typeData.strategy.en}</p>
+              <p style={{ fontSize: 10, color: "rgba(100,220,100,.8)", letterSpacing: ".08em", fontWeight: 700, marginBottom: 4 }}>{false ? "STRATEGIYa" : "STRATEGY"}</p>
+              <p style={{ fontSize: 12, color: "var(--text)" }}>{typeData.strategy.en}</p>
             </div>
             <div style={{ padding: "12px", borderRadius: 12, border: "1px solid rgba(216,168,95,.3)", background: "rgba(40,30,0,.4)", textAlign: "center" }}>
-              <p style={{ fontSize: 10, color: "var(--gold-2)", letterSpacing: ".08em", fontWeight: 700, marginBottom: 4 }}>{lang === "ru" ? "SIGNATURA" : "SIGNATURE"}</p>
-              <p style={{ fontSize: 12, color: "var(--text)" }}>{lang === "ru" ? typeData.signature.ru : typeData.signature.en}</p>
+              <p style={{ fontSize: 10, color: "var(--gold-2)", letterSpacing: ".08em", fontWeight: 700, marginBottom: 4 }}>{false ? "SIGNATURA" : "SIGNATURE"}</p>
+              <p style={{ fontSize: 12, color: "var(--text)" }}>{typeData.signature.en}</p>
             </div>
           </div>
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
-            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+            {false ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       )}
@@ -305,16 +305,16 @@ function HDNode2() {
           <div style={{ textAlign: "center", marginBottom: 20 }}>
             <div style={{ fontSize: 48, marginBottom: 12 }}>&#10025;</div>
             <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", marginBottom: 10 }}>
-              {lang === "ru" ? "Tvoy Avtoritet" : "Your Authority"}
+              {false ? "Tvoy Avtoritet" : "Your Authority"}
             </h3>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-              {lang === "ru"
+              {false
                 ? "Avtoritet -- tvoy vnutrenniy mekhanizm prinyatiya resheniy. Ne um, ne logika -- nechto bolee drevnee i nadezhnoe."
                 : "Your Authority is your inner decision-making mechanism. Not the mind, not logic -- something older and more reliable."}
             </p>
           </div>
           <button onClick={() => setQIdx(0)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-            {lang === "ru" ? "Uznat avtoritet →" : "Find my authority →"}
+            {false ? "Uznat avtoritet →" : "Find my authority →"}
           </button>
         </div>
       )}
@@ -326,14 +326,14 @@ function HDNode2() {
               <div key={i} style={{ flex: 1, height: 3, borderRadius: 99, background: i <= qIdx ? "var(--gold)" : "rgba(255,255,255,.1)" }} />
             ))}
           </div>
-          <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 8 }}>{lang === "ru" ? `Vopros ${qIdx + 1} iz ${AUTH_QUESTIONS.length}` : `Question ${qIdx + 1} of ${AUTH_QUESTIONS.length}`}</p>
+          <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 8 }}>{false ? `Vopros ${qIdx + 1} iz ${AUTH_QUESTIONS.length}` : `Question ${qIdx + 1} of ${AUTH_QUESTIONS.length}`}</p>
           <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--text)", marginBottom: 20, lineHeight: 1.35 }}>
-            {lang === "ru" ? q.q.ru : q.q.en}
+            {q.q.en}
           </h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {q.opts.map((opt, i) => (
               <button key={i} onClick={() => answer(i)} style={{ textAlign: "left", padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(216,168,95,.25)", background: "rgba(14,10,32,.55)", color: "var(--text)", fontSize: 14, lineHeight: 1.45, cursor: "pointer", fontFamily: "var(--font-sans)" }}>
-                {lang === "ru" ? opt.label.ru : opt.label.en}
+                {opt.label.en}
               </button>
             ))}
           </div>
@@ -346,17 +346,17 @@ function HDNode2() {
             <div style={{ width: 110, height: 110, margin: "0 auto 14px", borderRadius: "50%", background: `radial-gradient(circle, ${authData.color}33, rgba(14,10,32,.95))`, border: `2px solid ${authData.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 40px ${authData.color}44` }}>
               <span style={{ fontSize: 48 }}>&#9675;</span>
             </div>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{lang === "ru" ? authData.ru : authData.en}</h2>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{authData.en}</h2>
           </div>
           <div style={{ border: `1px solid ${authData.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 12 }}>
-            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{lang === "ru" ? authData.desc.ru : authData.desc.en}</p>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{authData.desc.en}</p>
           </div>
           <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 12, padding: "12px 16px", background: "rgba(216,168,95,.06)", marginBottom: 20 }}>
-            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 4 }}>{lang === "ru" ? "KAK ISPOLZOVAT" : "HOW TO USE IT"}</p>
-            <p style={{ fontSize: 13, color: "var(--text)" }}>{lang === "ru" ? authData.how.ru : authData.how.en}</p>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 4 }}>{false ? "KAK ISPOLZOVAT" : "HOW TO USE IT"}</p>
+            <p style={{ fontSize: 13, color: "var(--text)" }}>{authData.how.en}</p>
           </div>
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
-            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+            {false ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       )}
@@ -381,8 +381,8 @@ export default function HDNodePage() {
   const meta = NODE_TITLES[nodeId];
   if (!meta) { router.push("/sky/humandesign"); return null; }
   const nodeNum = parseInt(nodeId);
-  const title = lang === "ru" ? meta.ru : meta.en;
-  const subtitle = lang === "ru" ? meta.sub.ru : meta.sub.en;
+  const title = meta.en;
+  const subtitle = meta.sub.en;
 
   if (locked) return (
     <SkyNodeEntitlementGate discipline={DISCIPLINE} nodeId={nodeNum} title={title} subtitle={subtitle} totalNodes={TOTAL} backHref="/sky/humandesign">

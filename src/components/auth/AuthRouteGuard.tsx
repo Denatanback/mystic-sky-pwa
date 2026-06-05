@@ -34,6 +34,7 @@ const protectedExactRoutes = new Set([
   "/settings",
   "/journal",
   "/cards",
+  "/daily-card",
   "/sky",
   "/path",
   "/practices",

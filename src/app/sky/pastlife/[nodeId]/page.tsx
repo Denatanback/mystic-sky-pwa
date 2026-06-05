@@ -183,10 +183,10 @@ function Quiz<T extends string>({ questions, calcResult, renderResult, lang }: {
   if (qIdx === -1) return (
     <div style={{ textAlign: "center" }}>
       <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 20, lineHeight: 1.6 }}>
-        {lang === "ru" ? `${questions.length} voprosov · ~2 minuty` : `${questions.length} questions · ~2 minutes`}
+        {false ? `${questions.length} voprosov · ~2 minuty` : `${questions.length} questions · ~2 minutes`}
       </p>
       <button onClick={() => setQIdx(0)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-        {lang === "ru" ? "Nachat →" : "Begin →"}
+        {false ? "Nachat →" : "Begin →"}
       </button>
     </div>
   );
@@ -196,14 +196,14 @@ function Quiz<T extends string>({ questions, calcResult, renderResult, lang }: {
       <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
         {questions.map((_, i) => <div key={i} style={{ flex: 1, height: 3, borderRadius: 99, background: i <= qIdx ? "var(--gold)" : "rgba(255,255,255,.1)" }} />)}
       </div>
-      <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 8 }}>{lang === "ru" ? `${qIdx + 1} / ${questions.length}` : `${qIdx + 1} / ${questions.length}`}</p>
+      <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 8 }}>{false ? `${qIdx + 1} / ${questions.length}` : `${qIdx + 1} / ${questions.length}`}</p>
       <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--text)", marginBottom: 20, lineHeight: 1.35 }}>
-        {lang === "ru" ? q.q.ru : q.q.en}
+        {q.q.en}
       </h3>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {q.opts.map((opt, i) => (
           <button key={i} onClick={() => answer(i)} style={{ textAlign: "left", padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(216,168,95,.25)", background: "rgba(14,10,32,.55)", color: "var(--text)", fontSize: 14, lineHeight: 1.45, cursor: "pointer", fontFamily: "var(--font-sans)" }}>
-            {lang === "ru" ? opt.label.ru : opt.label.en}
+            {opt.label.en}
           </button>
         ))}
       </div>
@@ -224,7 +224,7 @@ function PLNode1() {
       <div style={{ textAlign: "center", marginBottom: 20 }}>
         <div style={{ fontSize: 48, marginBottom: 10 }}>&#9790;</div>
         <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-          {lang === "ru"
+          {false
             ? "Vozrast dushi — uroven evolyutsionnogo razvitiya, nakoplennogo cherez mnogie voploscheniya."
             : "Soul age is the level of evolutionary development accumulated across many incarnations."}
         </p>
@@ -239,18 +239,18 @@ function PLNode1() {
             <div>
               <div style={{ textAlign: "center", marginBottom: 20 }}>
                 <div style={{ fontSize: 56, marginBottom: 10 }} dangerouslySetInnerHTML={{ __html: data.emoji }} />
-                <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{lang === "ru" ? data.ru : data.en}</h2>
+                <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{data.en}</h2>
               </div>
               <div style={{ border: `1px solid ${data.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 12 }}>
-                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{lang === "ru" ? data.desc.ru : data.desc.en}</p>
+                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{data.desc.en}</p>
               </div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
-                {(lang === "ru" ? data.traits.ru : data.traits.en).map((t, i) => (
+                {(data.traits.en).map((t, i) => (
                   <span key={i} style={{ fontSize: 12, padding: "4px 12px", borderRadius: 999, background: `${data.color}18`, border: `1px solid ${data.color}44`, color: "var(--text)" }}>{t}</span>
                 ))}
               </div>
               <button onClick={() => { completeNode(DISCIPLINE, 1, { soulAge: r }); router.push("/sky/pastlife"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
-                {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+                {false ? "Zavershit uzel ✓" : "Complete node ✓"}
               </button>
             </div>
           );
@@ -271,7 +271,7 @@ function PLNode2() {
       <div style={{ textAlign: "center", marginBottom: 20 }}>
         <div style={{ fontSize: 48, marginBottom: 10 }}>&#9775;</div>
         <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-          {lang === "ru"
+          {false
             ? "Karmicheskie uroki — povtoryayuschiesya temy, kotorye tvoya dusha prishla istselit i transformirovat v etoy zhizni."
             : "Karmic lessons are recurring themes your soul came to heal and transform in this lifetime."}
         </p>
@@ -288,19 +288,19 @@ function PLNode2() {
                 <div style={{ width: 90, height: 90, margin: "0 auto 12px", borderRadius: "50%", background: `radial-gradient(circle, ${data.color}33, rgba(14,10,32,.95))`, border: `2px solid ${data.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 30px ${data.color}44` }}>
                   <span style={{ fontSize: 36 }}>&#9775;</span>
                 </div>
-                <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{lang === "ru" ? data.ru : data.en}</h2>
-                <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{lang === "ru" ? "Tvoy karmicheskiy urok" : "Your karmic lesson"}</p>
+                <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{data.en}</h2>
+                <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{false ? "Tvoy karmicheskiy urok" : "Your karmic lesson"}</p>
               </div>
               <div style={{ border: `1px solid ${data.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
-                <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{lang === "ru" ? "UROK" : "LESSON"}</p>
-                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{lang === "ru" ? data.lesson.ru : data.lesson.en}</p>
+                <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{false ? "UROK" : "LESSON"}</p>
+                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{data.lesson.en}</p>
               </div>
               <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 14, padding: "14px 16px", background: "rgba(216,168,95,.05)", marginBottom: 20 }}>
-                <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{lang === "ru" ? "SKRYTYY DAR" : "HIDDEN GIFT"}</p>
-                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{lang === "ru" ? data.gift.ru : data.gift.en}</p>
+                <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{false ? "SKRYTYY DAR" : "HIDDEN GIFT"}</p>
+                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{data.gift.en}</p>
               </div>
               <button onClick={() => { completeNode(DISCIPLINE, 2, { karma: r }); router.push("/sky/pastlife"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-                {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+                {false ? "Zavershit uzel ✓" : "Complete node ✓"}
               </button>
             </div>
           );
@@ -327,8 +327,8 @@ export default function PastLifeNodePage() {
   const meta = NODE_TITLES[nodeId];
   if (!meta) { router.push("/sky/pastlife"); return null; }
   const nodeNum = parseInt(nodeId);
-  const title = lang === "ru" ? meta.ru : meta.en;
-  const subtitle = lang === "ru" ? meta.sub.ru : meta.sub.en;
+  const title = meta.en;
+  const subtitle = meta.sub.en;
 
   if (locked) return (
     <SkyNodeEntitlementGate discipline={DISCIPLINE} nodeId={nodeNum} title={title} subtitle={subtitle} totalNodes={TOTAL} backHref="/sky/pastlife">

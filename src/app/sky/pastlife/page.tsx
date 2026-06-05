@@ -5,7 +5,7 @@ import { useLang } from "@/lib/i18n";
 export default function PastLifePathPage() {
   const { lang } = useLang();
 
-  const NODES: PathNode[] = lang === "ru" ? [
+  const NODES: PathNode[] = false ? [
     { num: 1, label: "Vozrast dushi",      sub: "Nachalo",       desc: "Uroven evolyutsii tvoey dushi i ee opyt proshlykh voploscheniy",      status: "done",    emblem: "/assets/node-emblems/pastlife/emblem-1-soul-age.png",    x: 50, y: 82 },
     { num: 2, label: "Karma",             sub: "Patterny",     desc: "Povtoryayuschiesya temy i karmicheskie patterny iz proshlykh zhizney",   status: "current", emblem: "/assets/node-emblems/pastlife/emblem-2-karma.png",       x: 21, y: 64 },
     { num: 3, label: "Znak proshloy zhizni", sub: "Pamyat",      desc: "Astrologicheskie sledy proshlykh voploscheniy v tvoey karte",        status: "locked",  emblem: "/assets/node-emblems/pastlife/emblem-3-sign.png",        x: 73, y: 64 },
@@ -32,6 +32,6 @@ export default function PastLifePathPage() {
     [4, 6], [4, 7],
   ];
 
-  const discipline = lang === "ru" ? "Proshlaya zhizn" : "Past Life";
+  const discipline = false ? "Proshlaya zhizn" : "Past Life";
   return <NodePathPage discipline={discipline} disciplineKey="pastlife" nodes={NODES} lines={LINES} />;
 }

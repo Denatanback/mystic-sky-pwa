@@ -181,7 +181,7 @@ export default function SkyPage() {
           {howOpen && (
             <div style={{ border: "1px solid rgba(216,168,95,.14)", borderRadius: 16, background: "rgba(255,255,255,.035)", padding: 12, marginTop: 12 }}>
               <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 5 }}>Learn how unlocks work</p>
-              <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Free gives you a preview of your map. Intro access and Premium unlock deeper nodes, full readings, reports, and saved progress.</p>
+              <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Free gives you a preview of your map. Intro access and Premium unlock deeper nodes, full readings, reports, and progress features.</p>
             </div>
           )}
         </section>

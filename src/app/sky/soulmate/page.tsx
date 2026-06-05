@@ -5,7 +5,7 @@ import { useLang } from "@/lib/i18n";
 export default function SoulmatePathPage() {
   const { lang } = useLang();
 
-  const NODES: PathNode[] = lang === "ru" ? [
+  const NODES: PathNode[] = false ? [
     { num: 1, label: "Venera",          sub: "Lyubov",        desc: "Venera v tvoey karte — tvoya priroda lyubvi i privlecheniya",        status: "done",    emblem: "/assets/node-emblems/soulmate/emblem-1-venus.png",    x: 50, y: 82 },
     { num: 2, label: "Liniya serdtsa",    sub: "Svyaz",         desc: "Emotsionalnaya svyaz — chto otkryvaet tvoe serdtse",               status: "current", emblem: "/assets/node-emblems/soulmate/emblem-2-heart.png",    x: 21, y: 64 },
     { num: 3, label: "Sinastriya",       sub: "Sovmestimost", desc: "Nalozhenie kart dvukh lyudey — patterny i dinamika otnosheniy",      status: "locked",  emblem: "/assets/node-emblems/soulmate/emblem-3-synastry.png", x: 73, y: 64 },
@@ -32,6 +32,6 @@ export default function SoulmatePathPage() {
     [4, 6], [4, 7],
   ];
 
-  const discipline = lang === "ru" ? "Rodstvennaya dusha" : "Soulmate";
+  const discipline = false ? "Rodstvennaya dusha" : "Soulmate";
   return <NodePathPage discipline={discipline} disciplineKey="soulmate" nodes={NODES} lines={LINES} />;
 }

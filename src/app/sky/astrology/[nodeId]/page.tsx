@@ -64,9 +64,9 @@ function AstroNode1() {
 
   if (!user?.birthDate) return (
     <div style={{ textAlign: "center", padding: "40px 20px" }}>
-      <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", marginBottom: 8 }}>{lang === "ru" ? "Zavershi personalnuyu nastroyku" : "Complete your personal setup"}</h2>
-      <p style={{ color: "var(--muted)", marginBottom: 20 }}>{lang === "ru" ? "Data rozhdeniya nuzhna, chtoby rasschitat etu chast puti." : "Your birth date is needed to calculate this part of your path."}</p>
-      <button onClick={() => router.push("/onboarding?step=birth")} style={{ padding: "12px 28px", borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>{lang === "ru" ? "Prodolzhit nastroyku" : "Continue setup"}</button>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", marginBottom: 8 }}>{false ? "Zavershi personalnuyu nastroyku" : "Complete your personal setup"}</h2>
+      <p style={{ color: "var(--muted)", marginBottom: 20 }}>{false ? "Data rozhdeniya nuzhna, chtoby rasschitat etu chast puti." : "Your birth date is needed to calculate this part of your path."}</p>
+      <button onClick={() => router.push("/onboarding?step=birth")} style={{ padding: "12px 28px", borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>{false ? "Prodolzhit nastroyku" : "Continue setup"}</button>
     </div>
   );
 
@@ -79,26 +79,26 @@ function AstroNode1() {
             <div style={{ width: 120, height: 120, margin: "0 auto 16px", borderRadius: "50%", background: `radial-gradient(circle at 38% 32%, ${sign.color}33, rgba(14,10,32,.95))`, border: `2px solid ${sign.color}88`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 40px ${sign.color}44` }}>
               <span style={{ fontSize: 56 }}>{sign.symbol}</span>
             </div>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 36, color: "var(--text)", marginBottom: 4 }}>{lang === "ru" ? sign.ru : sign.en}</h2>
-            <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 8 }}>{lang === "ru" ? "Tvoy znak Solntsa" : "Your Sun sign"}</p>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 36, color: "var(--text)", marginBottom: 4 }}>{sign.en}</h2>
+            <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 8 }}>{false ? "Tvoy znak Solntsa" : "Your Sun sign"}</p>
             <div style={{ display: "inline-flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
               <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, background: `${ELEMENT_COLOR[sign.element]}22`, border: `1px solid ${ELEMENT_COLOR[sign.element]}66`, color: ELEMENT_COLOR[sign.element] }}>{sign.element}</span>
               <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, background: "rgba(216,168,95,.1)", border: "1px solid rgba(216,168,95,.3)", color: "var(--gold-2)" }}>{sign.quality}</span>
-              <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, background: "rgba(160,130,220,.1)", border: "1px solid rgba(160,130,220,.3)", color: "rgba(180,150,240,1)" }}>{lang === "ru" ? "Upravitel: " : "Ruler: "}{sign.ruling}</span>
+              <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, background: "rgba(160,130,220,.1)", border: "1px solid rgba(160,130,220,.3)", color: "rgba(180,150,240,1)" }}>{false ? "Upravitel: " : "Ruler: "}{sign.ruling}</span>
             </div>
           </div>
 
           <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 16, padding: "14px 16px", background: "rgba(14,10,32,.5)", marginBottom: 16 }}>
-            <p style={{ fontSize: 12, color: "var(--muted)", marginBottom: 8, fontWeight: 600, letterSpacing: ".08em" }}>{lang === "ru" ? "STIKhIYa" : "ELEMENT"} — {sign.element.toUpperCase()}</p>
+            <p style={{ fontSize: 12, color: "var(--muted)", marginBottom: 8, fontWeight: 600, letterSpacing: ".08em" }}>{false ? "STIKhIYa" : "ELEMENT"} — {sign.element.toUpperCase()}</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {(elementTraits ? (lang === "ru" ? elementTraits.ru : elementTraits.en) : []).map((tr, i) => (
+              {(elementTraits ? (elementTraits.en) : []).map((tr, i) => (
                 <span key={i} style={{ fontSize: 12, padding: "4px 12px", borderRadius: 999, background: `${ELEMENT_COLOR[sign.element]}18`, border: `1px solid ${ELEMENT_COLOR[sign.element]}44`, color: "var(--text)" }}>{tr}</span>
               ))}
             </div>
           </div>
 
           <button onClick={() => setStep(1)} style={{ width: "100%", height: 48, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 6px 20px rgba(110,30,130,.4)" }}>
-            {lang === "ru" ? "Izuchit cherty kharaktera →" : "Explore your traits →"}
+            {false ? "Izuchit cherty kharaktera →" : "Explore your traits →"}
           </button>
         </div>
       )}
@@ -107,14 +107,14 @@ function AstroNode1() {
       {step === 1 && sign && (
         <div>
           <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 16, textAlign: "center" }}>
-            {lang === "ru" ? "Nazhmi na kartochku, chtoby perevernut" : "Tap a card to flip it"}
+            {false ? "Nazhmi na kartochku, chtoby perevernut" : "Tap a card to flip it"}
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
             {traits.map((tr, i) => (
               <FlipCard
                 key={i}
-                front={lang === "ru" ? tr.title.ru : tr.title.en}
-                back={lang === "ru" ? tr.body.ru : tr.body.en}
+                front={tr.title.en}
+                back={tr.body.en}
                 flipped={flipped[i] ?? false}
                 onClick={() => flip(i)}
               />
@@ -122,10 +122,10 @@ function AstroNode1() {
           </div>
           {allFlipped && (
             <button onClick={() => setStep(2)} style={{ width: "100%", height: 48, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
-              {lang === "ru" ? "Prodolzhit →" : "Continue →"}
+              {false ? "Prodolzhit →" : "Continue →"}
             </button>
           )}
-          {!allFlipped && <p style={{ textAlign: "center", fontSize: 11, color: "var(--muted-2)" }}>{lang === "ru" ? `Otkroy vse kartochki (${flipped.filter(Boolean).length}/${traits.length})` : `Open all cards (${flipped.filter(Boolean).length}/${traits.length})`}</p>}
+          {!allFlipped && <p style={{ textAlign: "center", fontSize: 11, color: "var(--muted-2)" }}>{false ? `Otkroy vse kartochki (${flipped.filter(Boolean).length}/${traits.length})` : `Open all cards (${flipped.filter(Boolean).length}/${traits.length})`}</p>}
         </div>
       )}
 
@@ -135,16 +135,14 @@ function AstroNode1() {
           <div style={{ border: "1px solid rgba(216,168,95,.25)", borderRadius: 18, padding: "20px 16px", background: "rgba(14,10,32,.6)", marginBottom: 20, textAlign: "center" }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>&#9733;</div>
             <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", marginBottom: 10 }}>
-              {lang === "ru" ? "Otrazhenie" : "Reflection"}
+              {false ? "Otrazhenie" : "Reflection"}
             </h3>
             <p style={{ fontSize: 14, color: "var(--muted)", lineHeight: 1.6, marginBottom: 0 }}>
-              {lang === "ru"
-                ? `Ty — ${sign.ru}. Kakaya iz chert, kotorye ty tolko chto otkryl, rezoniruet s toboy silnee vsego?`
-                : `You are ${sign.en}. Which trait you just uncovered resonates with you most strongly?`}
+              {`You are ${sign.en}. Which trait you just uncovered resonates with you most strongly?`}
             </p>
           </div>
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
-            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+            {false ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       )}
@@ -201,9 +199,9 @@ function AstroNode2() {
 
   if (!user?.birthDate) return (
     <div style={{ textAlign: "center", padding: "40px 20px" }}>
-      <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", marginBottom: 8 }}>{lang === "ru" ? "Zavershi personalnuyu nastroyku" : "Complete your personal setup"}</h2>
-      <p style={{ color: "var(--muted)", marginBottom: 20 }}>{lang === "ru" ? "Data rozhdeniya nuzhna, chtoby rasschitat etu chast puti." : "Your birth date is needed to calculate this part of your path."}</p>
-      <button onClick={() => router.push("/onboarding?step=birth")} style={{ padding: "12px 28px", borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>{lang === "ru" ? "Prodolzhit nastroyku" : "Continue setup"}</button>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: 28, color: "var(--text)", marginBottom: 8 }}>{false ? "Zavershi personalnuyu nastroyku" : "Complete your personal setup"}</h2>
+      <p style={{ color: "var(--muted)", marginBottom: 20 }}>{false ? "Data rozhdeniya nuzhna, chtoby rasschitat etu chast puti." : "Your birth date is needed to calculate this part of your path."}</p>
+      <button onClick={() => router.push("/onboarding?step=birth")} style={{ padding: "12px 28px", borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>{false ? "Prodolzhit nastroyku" : "Continue setup"}</button>
     </div>
   );
 
@@ -211,7 +209,7 @@ function AstroNode2() {
     <div>
       <div style={{ textAlign: "center", marginBottom: 20 }}>
         <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
-          {lang === "ru"
+          {false
             ? "Luna v natalnoy karte otrazhaet tvoy emotsionalnyy mir, instinkty i vnutrennie potrebnosti."
             : "The Moon in your natal chart reflects your emotional world, instincts and inner needs."}
         </p>
@@ -220,7 +218,7 @@ function AstroNode2() {
       {!revealed ? (
         <button onClick={() => setRevealed(true)} style={{ width: "100%", height: 120, borderRadius: 20, background: "radial-gradient(circle at 40% 35%, rgba(120,50,200,.3), rgba(14,10,32,.95))", border: "1.5px solid rgba(216,168,95,.4)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 }}>
           <span style={{ fontSize: 42 }}>&#9790;</span>
-          <span style={{ fontSize: 14, color: "var(--gold-2)", fontWeight: 600 }}>{lang === "ru" ? "Raskryt znak Luny" : "Reveal Moon sign"}</span>
+          <span style={{ fontSize: 14, color: "var(--gold-2)", fontWeight: 600 }}>{false ? "Raskryt znak Luny" : "Reveal Moon sign"}</span>
         </button>
       ) : moonSign && archetype ? (
         <div>
@@ -228,28 +226,28 @@ function AstroNode2() {
             <div style={{ width: 100, height: 100, margin: "0 auto 12px", borderRadius: "50%", background: `radial-gradient(circle, ${moonSign.color}33, rgba(14,10,32,.95))`, border: `2px solid ${moonSign.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 30px ${moonSign.color}44` }}>
               <span style={{ fontSize: 44 }}>{moonSign.symbol}</span>
             </div>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, marginBottom: 4 }}>{lang === "ru" ? archetype.ru : archetype.en}</h2>
-            <p style={{ fontSize: 12, color: "var(--gold-2)", marginBottom: 4 }}>{lang === "ru" ? `Luna v ${moonSign.ru}` : `Moon in ${moonSign.en}`}</p>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, marginBottom: 4 }}>{archetype.en}</h2>
+            <p style={{ fontSize: 12, color: "var(--gold-2)", marginBottom: 4 }}>{`Moon in ${moonSign.en}`}</p>
             <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, background: `${ELEMENT_COLOR[moonSign.element]}22`, border: `1px solid ${ELEMENT_COLOR[moonSign.element]}55`, color: ELEMENT_COLOR[moonSign.element] }}>{moonSign.element}</span>
           </div>
 
           <div style={{ border: "1px solid rgba(160,130,220,.3)", borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 20 }}>
             <p style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.65 }}>
-              {lang === "ru" ? archetype.desc.ru : archetype.desc.en}
+              {archetype.desc.en}
             </p>
           </div>
 
           <div style={{ border: "1px solid rgba(255,255,255,.08)", borderRadius: 14, padding: "14px 16px", background: "rgba(12,8,28,.45)", marginBottom: 20 }}>
-            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 8 }}>{lang === "ru" ? "LUNA I TVOI EMOTsII" : "MOON & YOUR EMOTIONS"}</p>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 8 }}>{false ? "LUNA I TVOI EMOTsII" : "MOON & YOUR EMOTIONS"}</p>
             <p style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.6 }}>
-              {lang === "ru"
+              {false
                 ? "Znak Luny pokazyvaet ne to, kem ty khochesh byt, a to, kak ty chuvstvuesh. Eto tvoya vnutrennyaya priroda — ta, chto proyavlyaetsya v blizkikh otnosheniyakh i naedine s soboy."
                 : "Your Moon sign doesn't show who you want to be — it shows how you feel. It's your inner nature, revealed in close relationships and private moments."}
             </p>
           </div>
 
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
-            {lang === "ru" ? "Zavershit uzel ✓" : "Complete node ✓"}
+            {false ? "Zavershit uzel ✓" : "Complete node ✓"}
           </button>
         </div>
       ) : null}
@@ -287,36 +285,36 @@ export default function AstrologyNodePage() {
   if (!meta) { router.push("/sky/astrology"); return null; }
 
   if (locked) return (
-    <NodePage title={lang === "ru" ? meta.ru : meta.en} subtitle={lang === "ru" ? meta.sub.ru : meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/astrology">
+    <NodePage title={meta.en} subtitle={meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/astrology">
       <div style={{ textAlign: "center", padding: "40px 16px" }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
-        <p style={{ color: "var(--muted)", fontSize: 14 }}>{lang === "ru" ? "Zavershite predyduschiy uzel, chtoby otkryt etot" : "Complete the previous node to unlock this one"}</p>
+        <p style={{ color: "var(--muted)", fontSize: 14 }}>{false ? "Zavershite predyduschiy uzel, chtoby otkryt etot" : "Complete the previous node to unlock this one"}</p>
       </div>
     </NodePage>
   );
 
   return (
     <NodePage
-      title={lang === "ru" ? meta.ru : meta.en}
-      subtitle={lang === "ru" ? meta.sub.ru : meta.sub.en}
+      title={meta.en}
+      subtitle={meta.sub.en}
       nodeNum={parseInt(nodeId)}
       totalNodes={TOTAL}
       backHref="/sky/astrology"
       badge={state.status === "completed" ? "completed" : undefined}
     >
       <div style={{ border: "1px solid rgba(216,168,95,.18)", borderRadius: 16, background: "rgba(12,8,28,.48)", padding: 14, marginBottom: 16 }}>
-        <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 7 }}>{lang === "ru" ? "Chast Sky Map" : "Part of your Sky Map"}</p>
-        <h2 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: 22, fontWeight: 600, lineHeight: 1.1, marginBottom: 6 }}>{lang === "ru" ? "Pochemu etot uzel vazhen" : "Why this node matters"}</h2>
-        <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>{lang === "ru" ? NODE_CONTEXT[nodeId].ru : NODE_CONTEXT[nodeId].en}</p>
+        <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 7 }}>{false ? "Chast Sky Map" : "Part of your Sky Map"}</p>
+        <h2 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: 22, fontWeight: 600, lineHeight: 1.1, marginBottom: 6 }}>{false ? "Pochemu etot uzel vazhen" : "Why this node matters"}</h2>
+        <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>{NODE_CONTEXT[nodeId].en}</p>
       </div>
       {nodeId === "1" && <AstroNode1 />}
       {nodeId === "2" && <AstroNode2 />}
       <div style={{ display: "grid", gap: 10, marginTop: 18 }}>
         <Link href="/sky" style={{ height: 46, borderRadius: 999, border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)" }}>
-          {lang === "ru" ? "Vernutsya k Sky Map" : "Return to Sky Map"}
+          {false ? "Vernutsya k Sky Map" : "Return to Sky Map"}
         </Link>
         <Link href="/today" style={{ height: 48, borderRadius: 999, border: "none", background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", fontSize: 14, fontWeight: 800, fontFamily: "var(--font-ui)", boxShadow: "0 8px 24px rgba(110,30,130,.40)" }}>
-          {lang === "ru" ? "Prodolzhit segodnyashniy put" : "Continue today’s path"}
+          {false ? "Prodolzhit segodnyashniy put" : "Continue today’s path"}
         </Link>
       </div>
     </NodePage>

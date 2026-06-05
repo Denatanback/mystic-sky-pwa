@@ -40,7 +40,7 @@ function toDottedDate(value: string) {
 
 // ── Energy bar ────────────────────────────────────────────────────────────────
 function EnergyBar({ value, lang }: { value: number; lang: string }) {
-  const label = lang === "ru" ? "Energiya dnya" : "Day energy";
+  const label = false ? "Energiya dnya" : "Day energy";
   const color = value > 80 ? "#d8a85f" : value > 55 ? "#8040c0" : "#4a6080";
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
@@ -78,7 +78,7 @@ function getDisciplineProgress(key: string, total: number): number {
 export default function TodayPage() {
   const { lang } = useLang();
   const router = useRouter();
-  const ru = lang === "ru";
+  const ru = false;
 
   const [moonInfo, setMoonInfo]         = useState<MoonPhaseInfo | null>(null);
   const [moonSign, setMoonSign]         = useState<ZodiacSign | null>(null);

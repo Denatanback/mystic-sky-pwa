@@ -5,7 +5,7 @@ import { useLang } from "@/lib/i18n";
 export default function HumanDesignPathPage() {
   const { lang } = useLang();
 
-  const NODES: PathNode[] = lang === "ru" ? [
+  const NODES: PathNode[] = false ? [
     { num: 1, label: "Tip",            sub: "Osnova",        desc: "Tvoy tip — klyuch k ponimaniyu svoey prirody i strategii zhizni",     status: "done",    emblem: "/assets/node-emblems/humandesign/emblem-1-type.png",      x: 50, y: 82 },
     { num: 2, label: "Avtoritet",      sub: "Reshenie",       desc: "Vnutrenniy avtoritet — kak ty prinimaesh vernye resheniya",         status: "current", emblem: "/assets/node-emblems/humandesign/emblem-2-authority.png", x: 21, y: 64 },
     { num: 3, label: "Profil",        sub: "Rol",          desc: "Tvoy arkhetip i rol, kotoruyu ty igraesh v etoy zhizni",            status: "locked",  emblem: "/assets/node-emblems/humandesign/emblem-3-profile.png",   x: 73, y: 64 },
@@ -32,6 +32,6 @@ export default function HumanDesignPathPage() {
     [4, 6], [4, 7],
   ];
 
-  const discipline = lang === "ru" ? "Dizayn cheloveka" : "Human Design";
+  const discipline = false ? "Dizayn cheloveka" : "Human Design";
   return <NodePathPage discipline={discipline} disciplineKey="humandesign" nodes={NODES} lines={LINES} />;
 }

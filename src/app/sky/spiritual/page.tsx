@@ -5,7 +5,7 @@ import { useLang } from "@/lib/i18n";
 export default function SpiritualPathPage() {
   const { lang } = useLang();
 
-  const NODES: PathNode[] = lang === "ru" ? [
+  const NODES: PathNode[] = false ? [
     { num: 1, label: "Meditatsiya",      sub: "Osnova",        desc: "Tishina uma — pervyy shag k soedineniyu s soboy",                   status: "done",    emblem: "/assets/node-emblems/spiritual/emblem-1-meditation.png",     x: 50, y: 82 },
     { num: 2, label: "Dykhanie",        sub: "Energiya",       desc: "Pranayama i dykhatelnye praktiki dlya probuzhdeniya zhiznennoy sily", status: "current", emblem: "/assets/node-emblems/spiritual/emblem-2-breathwork.png",     x: 21, y: 64 },
     { num: 3, label: "Vizualizatsiya",   sub: "Razum",         desc: "Sila voobrazheniya i rabota s obrazami dlya transformatsii",         status: "locked",  emblem: "/assets/node-emblems/spiritual/emblem-3-visualization.png",  x: 73, y: 64 },
@@ -32,6 +32,6 @@ export default function SpiritualPathPage() {
     [4, 6], [4, 7],
   ];
 
-  const discipline = lang === "ru" ? "Dukhovnye praktiki" : "Spiritual Practices";
+  const discipline = false ? "Dukhovnye praktiki" : "Spiritual Practices";
   return <NodePathPage discipline={discipline} disciplineKey="spiritual" nodes={NODES} lines={LINES} />;
 }

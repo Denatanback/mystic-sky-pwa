@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { SubscriptionModal } from "./SubscriptionModal";
 import { getEntitlementLabel, useEntitlements } from "@/lib/subscription/entitlements";
 
-type PlanLabel = "Free" | "Trial" | "Premium" | "Full Access";
+type PlanLabel = "Free" | "Intro access" | "Premium" | "Full Access";
 
 export function PlanChip() {
   const [open, setOpen] = useState(false);
