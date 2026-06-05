@@ -69,3 +69,31 @@ export function LunaGlyph() {
     </span>
   );
 }
+
+export function OracleFallbackBadge({ size = 64 }: { size?: number }) {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        border: "1px solid rgba(216,168,95,.34)",
+        background: "radial-gradient(circle at 38% 30%, rgba(247,217,139,.22), rgba(141,85,214,.24) 56%, rgba(10,6,28,.82))",
+        color: "var(--gold-2)",
+        display: "grid",
+        placeItems: "center",
+        flexShrink: 0,
+        boxShadow: "0 14px 26px rgba(0,0,0,.24), 0 0 22px rgba(141,85,214,.18), inset 0 1px 0 rgba(255,255,255,.10)",
+      }}
+    >
+      <svg viewBox="0 0 24 24" width={Math.round(size * 0.48)} height={Math.round(size * 0.48)} fill="none" stroke="currentColor" strokeWidth={1.65} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 13.3A7.6 7.6 0 0 1 10.7 4a8.6 8.6 0 1 0 9.3 9.3Z" />
+        <path d="M14.8 4.2v3.4" />
+        <path d="M16.5 5.9h-3.4" />
+        <path d="M6.4 14.1v2.6" />
+        <path d="M7.7 15.4H5.1" />
+      </svg>
+    </span>
+  );
+}

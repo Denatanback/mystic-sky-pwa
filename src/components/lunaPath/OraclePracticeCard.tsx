@@ -6,31 +6,13 @@ import { askOracle } from "@/lib/lunaPath/progress";
 import { oracleModeCosts, oracleModeDescriptions, oracleModeLabels } from "@/lib/lunaPath/rewards";
 import { deleteOracleHistoryItem, getVisibleOracleHistory, readLunaPathState } from "@/lib/lunaPath/storage";
 import type { LunaPathState, OracleHistoryItem, OracleMode } from "@/lib/lunaPath/types";
-import { lunaCardStyle, lunaInputStyle, lunaPrimaryButtonStyle, lunaSecondaryButtonStyle } from "./shared";
+import { OracleFallbackBadge, lunaCardStyle, lunaInputStyle, lunaPrimaryButtonStyle, lunaSecondaryButtonStyle } from "./shared";
 
 const paidModes: Array<Exclude<OracleMode, "free">> = ["quick", "deep", "three-card"];
 
 const oracleInfo = "The Oracle is not a fortune-telling tool. It helps you reflect on symbols, emotional patterns, and possible next steps. Your answer is shaped by your question and your eLuna activity.";
 const tokenInfo = "Lunar Tokens are earned by completing daily rituals: opening your card, writing a reflection, checking in with your mood, and finishing practices. You can spend them on deeper Oracle answers.";
 const deleteConfirmation = "Delete this Oracle answer from your history? This will not restore your free question.";
-
-const oracleIllustrationWrapStyle = {
-  width: "clamp(128px, 36vw, 170px)",
-  maxWidth: "42%",
-  flex: "0 0 auto",
-  display: "grid",
-  placeItems: "center",
-  overflow: "visible",
-};
-
-const oracleIllustrationStyle = {
-  width: "100%",
-  height: "auto",
-  display: "block",
-  objectFit: "contain" as const,
-  objectPosition: "center",
-  filter: "drop-shadow(0 18px 26px rgba(74,32,124,.26)) drop-shadow(0 0 20px rgba(216,168,95,.12))",
-};
 
 function InfoButton({ label, open, onToggle }: { label: string; open: boolean; onToggle: () => void }) {
   return (
@@ -112,13 +94,7 @@ export function OraclePracticeCard() {
   return (
     <section id="oracle" style={{ ...lunaCardStyle, scrollMarginTop: 18, padding: 16, background: "radial-gradient(circle at 16% 0%, rgba(216,168,95,.10), transparent 30%), rgba(12,8,28,.70)" }}>
       <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap", marginBottom: 14, overflow: "visible" }}>
-        <div style={oracleIllustrationWrapStyle}>
-          <img
-            src="/assets/practice-icons/eluna-oracle-icon.png"
-            alt="eLuna Oracle illustration"
-            style={oracleIllustrationStyle}
-          />
-        </div>
+        <OracleFallbackBadge size={64} />
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
             <div>
