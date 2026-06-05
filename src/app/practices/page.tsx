@@ -7,6 +7,7 @@ import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
+import { OraclePracticeCard } from "@/components/lunaPath/OraclePracticeCard";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
 import { SubscriptionModal } from "@/components/subscription/SubscriptionModal";
@@ -286,6 +287,10 @@ export default function PracticesPage() {
             <IconSpark /> Active: {activeAffirmations.length} / {activeLimit}
           </div>
         </section>
+
+        <div style={{ marginBottom: 14 }}>
+          <OraclePracticeCard />
+        </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 14 }}>
           {(["today", "my", "library"] as Tab[]).map((item) => (
