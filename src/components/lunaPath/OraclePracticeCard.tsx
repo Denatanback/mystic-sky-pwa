@@ -4,14 +4,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { askOracle } from "@/lib/lunaPath/progress";
 import { oracleModeCosts, oracleModeDescriptions, oracleModeLabels } from "@/lib/lunaPath/rewards";
-import { readLunaPathState } from "@/lib/lunaPath/storage";
-import type { LunaPathState, OracleMode } from "@/lib/lunaPath/types";
+import { deleteOracleHistoryItem, getVisibleOracleHistory, readLunaPathState } from "@/lib/lunaPath/storage";
+import type { LunaPathState, OracleHistoryItem, OracleMode } from "@/lib/lunaPath/types";
 import { lunaCardStyle, lunaInputStyle, lunaPrimaryButtonStyle, lunaSecondaryButtonStyle, LunaGlyph } from "./shared";
 
 const paidModes: Array<Exclude<OracleMode, "free">> = ["quick", "deep", "three-card"];
 
 const oracleInfo = "The Oracle is not a fortune-telling tool. It helps you reflect on symbols, emotional patterns, and possible next steps. Your answer is shaped by your question and your eLuna activity.";
 const tokenInfo = "Lunar Tokens are earned by completing daily rituals: opening your card, writing a reflection, checking in with your mood, and finishing practices. You can spend them on deeper Oracle answers.";
+const deleteConfirmation = "Delete this Oracle answer from your history? This will not restore your free question.";
 
 function InfoButton({ label, open, onToggle }: { label: string; open: boolean; onToggle: () => void }) {
   return (
@@ -19,6 +20,21 @@ function InfoButton({ label, open, onToggle }: { label: string; open: boolean; o
       {open ? "x" : "i"}
     </button>
   );
+}
+
+function formatOracleDate(item: OracleHistoryItem) {
+  const date = new Date(item.createdAt);
+  if (Number.isNaN(date.getTime())) return item.date;
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function getQuestionPreview(question: string) {
+  return question.length > 86 ? `${question.slice(0, 83).trim()}...` : question;
 }
 
 export function OraclePracticeCard() {
@@ -37,6 +53,7 @@ export function OraclePracticeCard() {
   const isFree = state.oracleFreeQuestionAvailable;
   const selectedCost = oracleModeCosts[mode];
   const canAffordSelectedMode = isFree || state.tokenBalance >= selectedCost;
+  const visibleHistory = getVisibleOracleHistory(state.oracleSessions);
 
   function submitQuestion() {
     if (!canAffordSelectedMode) {
@@ -57,6 +74,17 @@ export function OraclePracticeCard() {
     setAnswer(result.session?.answer ?? "");
   }
 
+  function deleteHistoryItem(id: string) {
+    if (!window.confirm(deleteConfirmation)) return;
+    const nextHistory = deleteOracleHistoryItem(id);
+    setState((currentState) => ({
+      ...currentState,
+      oracleSessions: nextHistory,
+      oracleFreeQuestionAvailable: currentState.oracleFreeQuestionAvailable,
+    }));
+    setMessage("Oracle answer removed from history. Free access was not restored.");
+  }
+
   const buttonLabel = isFree
     ? "Ask your first question"
     : canAffordSelectedMode
@@ -75,7 +103,7 @@ export function OraclePracticeCard() {
             </div>
             <InfoButton label="What is the eLuna Oracle?" open={oracleInfoOpen} onToggle={() => setOracleInfoOpen((value) => !value)} />
           </div>
-          <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>Ask a personal question and receive a reflective AI-guided answer based on your current state, daily cards, and Luna Path.</p>
+          <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>Ask a personal question and receive a reflective English-language answer based on your current state, daily cards, and Luna Path.</p>
         </div>
       </div>
 
@@ -154,16 +182,34 @@ export function OraclePracticeCard() {
         </div>
       )}
 
-      {state.oracleSessions.length > 0 && (
+      {visibleHistory.length > 0 && (
         <div style={{ marginTop: 14 }}>
-          <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 9 }}>Recent Oracle Questions</p>
+          <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 9 }}>Oracle history</p>
           <div style={{ display: "grid", gap: 8 }}>
-            {state.oracleSessions.slice(0, 3).map((session) => (
-              <div key={session.id} style={{ border: "1px solid rgba(255,255,255,.08)", borderRadius: 16, background: "rgba(255,255,255,.03)", padding: 12 }}>
-                <p style={{ color: "var(--gold-2)", fontSize: 11, fontWeight: 900, marginBottom: 5 }}>{oracleModeLabels[session.mode]} · {session.cost === 0 ? "free" : `${session.cost} tokens`}</p>
-                <p style={{ color: "var(--text)", fontSize: 12, lineHeight: 1.45, marginBottom: 6 }}>{session.question}</p>
-                <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, whiteSpace: "pre-wrap" }}>{session.answer}</p>
-              </div>
+            {visibleHistory.slice(0, 6).map((session) => (
+              <details key={session.id} style={{ border: "1px solid rgba(255,255,255,.08)", borderRadius: 16, background: "rgba(255,255,255,.03)", overflow: "hidden" }}>
+                <summary style={{ listStyle: "none", cursor: "pointer", padding: 12, display: "grid", gap: 7 }}>
+                  <span style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
+                    <span style={{ color: "var(--gold-2)", fontSize: 11, fontWeight: 900 }}>{oracleModeLabels[session.mode]} · {session.cost === 0 ? "free" : `${session.cost} tokens`}</span>
+                    <span aria-hidden="true" style={{ color: "var(--muted-2)", fontSize: 15, lineHeight: 1 }}>v</span>
+                  </span>
+                  <span style={{ color: "var(--text)", fontSize: 12, lineHeight: 1.4 }}>{getQuestionPreview(session.question)}</span>
+                  <span style={{ color: "var(--muted-2)", fontSize: 11, fontWeight: 700 }}>{formatOracleDate(session)}</span>
+                </summary>
+                <div style={{ borderTop: "1px solid rgba(255,255,255,.07)", padding: 12, display: "grid", gap: 10 }}>
+                  <div>
+                    <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 5 }}>Question</p>
+                    <p style={{ color: "var(--text)", fontSize: 12, lineHeight: 1.48 }}>{session.question}</p>
+                  </div>
+                  <div>
+                    <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 5 }}>Answer</p>
+                    <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.55, whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{session.answer}</p>
+                  </div>
+                  <button type="button" onClick={() => deleteHistoryItem(session.id)} style={{ justifySelf: "start", border: "1px solid rgba(216,168,95,.20)", borderRadius: 999, background: "rgba(216,168,95,.06)", color: "var(--muted)", fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 800, padding: "8px 12px", cursor: "pointer" }}>
+                    Delete
+                  </button>
+                </div>
+              </details>
             ))}
           </div>
         </div>

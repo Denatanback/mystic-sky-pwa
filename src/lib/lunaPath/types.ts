@@ -50,10 +50,36 @@ export type OracleMode = "free" | "quick" | "deep" | "three-card";
 export type OracleSession = {
   id: string;
   date: string;
+  createdAt?: string;
   mode: OracleMode;
   question: string;
   answer: string;
   cost: number;
+  tokenCost?: number;
+  deletedAt?: string | null;
+};
+
+export type OracleHistoryItem = OracleSession & {
+  createdAt: string;
+  tokenCost: number;
+  deletedAt?: string | null;
+};
+
+export type OracleMessage = {
+  id: string;
+  role: "user" | "oracle";
+  content: string;
+  createdAt: string;
+  mode?: OracleMode;
+  tokenCost?: number;
+};
+
+export type OracleThread = {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  messages: OracleMessage[];
 };
 
 export type LunaPathState = {

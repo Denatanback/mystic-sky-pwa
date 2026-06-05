@@ -6,6 +6,8 @@ function makeId(prefix: string) {
   return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
+export const oracleSystemInstruction = "Always respond in English. Do not switch languages. eLuna is a self-reflection and entertainment app. Do not provide medical, psychological, legal, financial, crisis, or professional advice. Do not claim guaranteed predictions or fortune-telling. Provide symbolic, reflective guidance only.";
+
 export function getLocalDateKey(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -152,16 +154,17 @@ export function generateOracleAnswer({
   const theme = getQuestionTheme(question);
   const activity = getRecentActivitySummary(lunaPathState);
   const quotedQuestion = question.length > 140 ? `${question.slice(0, 137).trim()}...` : question;
+  const safetyNote = "This is symbolic self-reflection, not a guaranteed prediction or professional advice.";
 
   if (mode === "quick" || mode === "free") {
-    return `Preview response\n\nYour question about “${quotedQuestion}” seems to circle around ${theme}. ${activity} For today, do not force a final answer. Choose one small action that protects your peace: pause, name what you feel, and respond from self-respect rather than urgency.`;
+    return `Preview response\n\n${safetyNote}\n\nYour question about “${quotedQuestion}” seems to circle around ${theme}. ${activity} For today, do not force a final answer. Choose one small action that protects your peace: pause, name what you feel, and respond from self-respect rather than urgency.`;
   }
 
   if (mode === "deep") {
-    return `Preview response\n\nWhat your question may be pointing to\n“${quotedQuestion}” may be showing you ${theme}. The important signal is not only the situation itself, but the emotion that keeps returning when you imagine the next step.\n\nPattern to notice\n${activity} Notice whether you are trying to solve discomfort quickly, or whether a quieter part of you is asking for clarity, boundaries, or grief to be acknowledged first.\n\nA gentle next step\nWrite one sentence that begins with: “The truth I am avoiding is...” Then choose one grounded action that does not require certainty, only honesty.`;
+    return `Preview response\n\n${safetyNote}\n\nWhat your question may be pointing to\n“${quotedQuestion}” may be showing you ${theme}. The important signal is not only the situation itself, but the emotion that keeps returning when you imagine the next step.\n\nPattern to notice\n${activity} Notice whether you are trying to solve discomfort quickly, or whether a quieter part of you is asking for clarity, boundaries, or grief to be acknowledged first.\n\nA gentle next step\nWrite one sentence that begins with: “The truth I am avoiding is...” Then choose one grounded action that does not require certainty, only honesty.`;
   }
 
-  return `Preview response\n\nCard 1 — What is behind you\nYour question about “${quotedQuestion}” carries traces of ${theme}. Something old may still be asking to be witnessed, not repeated.\n\nCard 2 — What is present\n${activity} The present card points to a pause: the space between emotional reaction and self-respecting response. This is where your agency returns.\n\nCard 3 — What is emerging\nWhat is emerging is not a fixed prediction. It is a possible next rhythm: clearer boundaries, a softer inner voice, and one choice made from alignment rather than pressure.`;
+  return `Preview response\n\n${safetyNote}\n\nCard 1 — What is behind you\nYour question about “${quotedQuestion}” carries traces of ${theme}. Something old may still be asking to be witnessed, not repeated.\n\nCard 2 — What is present\n${activity} The present card points to a pause: the space between emotional reaction and self-respecting response. This is where your agency returns.\n\nCard 3 — What is emerging\nWhat is emerging is not a fixed prediction. It is a possible next rhythm: clearer boundaries, a softer inner voice, and one choice made from alignment rather than pressure.`;
 }
 
 export function askOracle(currentState: LunaPathState, params: { mode: OracleMode; question: string; dateKey?: string }) {
@@ -179,15 +182,20 @@ export function askOracle(currentState: LunaPathState, params: { mode: OracleMod
   }
 
   // TODO: Replace this mock answer with server-side OpenAI oracle generation.
+  // Future server prompt must include oracleSystemInstruction so Oracle replies stay English-only and safety-scoped.
   const session = {
     id: makeId("oracle"),
     date: dateKey,
+    createdAt: new Date().toISOString(),
     mode,
     question,
     answer: generateOracleAnswer({ question, mode, lunaPathState: currentState }),
     cost,
+    tokenCost: cost,
+    deletedAt: null,
   };
 
+  // Future: migrate OracleHistoryItem into OracleThread for persistent dialogue.
   // TODO: Move spend validation and ledger writes to a server-side token ledger.
   const nextState: LunaPathState = {
     ...currentState,
