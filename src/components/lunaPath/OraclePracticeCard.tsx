@@ -14,6 +14,24 @@ const oracleInfo = "The Oracle is not a fortune-telling tool. It helps you refle
 const tokenInfo = "Lunar Tokens are earned by completing daily rituals: opening your card, writing a reflection, checking in with your mood, and finishing practices. You can spend them on deeper Oracle answers.";
 const deleteConfirmation = "Delete this Oracle answer from your history? This will not restore your free question.";
 
+const oracleIllustrationWrapStyle = {
+  width: "clamp(128px, 36vw, 170px)",
+  maxWidth: "42%",
+  flex: "0 0 auto",
+  display: "grid",
+  placeItems: "center",
+  overflow: "visible",
+};
+
+const oracleIllustrationStyle = {
+  width: "100%",
+  height: "auto",
+  display: "block",
+  objectFit: "contain" as const,
+  objectPosition: "center",
+  filter: "drop-shadow(0 18px 26px rgba(74,32,124,.26)) drop-shadow(0 0 20px rgba(216,168,95,.12))",
+};
+
 function InfoButton({ label, open, onToggle }: { label: string; open: boolean; onToggle: () => void }) {
   return (
     <button type="button" aria-label={label} onClick={onToggle} style={{ width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(216,168,95,.24)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "inline-grid", placeItems: "center", fontSize: 12, fontWeight: 900, cursor: "pointer", flexShrink: 0 }}>
@@ -93,12 +111,14 @@ export function OraclePracticeCard() {
 
   return (
     <section id="oracle" style={{ ...lunaCardStyle, scrollMarginTop: 18, padding: 16, background: "radial-gradient(circle at 16% 0%, rgba(216,168,95,.10), transparent 30%), rgba(12,8,28,.70)" }}>
-      <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
-        <img
-          src="/assets/practice-icons/eluna-oracle-icon.png"
-          alt="eLuna Oracle illustration"
-          style={{ width: "clamp(98px, 28vw, 124px)", height: "clamp(88px, 24vw, 114px)", objectFit: "contain", flexShrink: 0, filter: "drop-shadow(0 16px 24px rgba(74,32,124,.24)) drop-shadow(0 0 18px rgba(216,168,95,.10))" }}
-        />
+      <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap", marginBottom: 14, overflow: "visible" }}>
+        <div style={oracleIllustrationWrapStyle}>
+          <img
+            src="/assets/practice-icons/eluna-oracle-icon.png"
+            alt="eLuna Oracle illustration"
+            style={oracleIllustrationStyle}
+          />
+        </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
             <div>
