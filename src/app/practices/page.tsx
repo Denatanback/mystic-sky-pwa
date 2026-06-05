@@ -268,7 +268,7 @@ export default function PracticesPage() {
   return (
     <div className="app">
       <StarField />
-      <div className="content">
+      <div className="content" style={{ paddingBottom: "calc(132px + env(safe-area-inset-bottom))" }}>
         <header className="app-topbar">
           <div className="app-topbar__logo"><Logo variant="header" /></div>
           <div className="app-topbar__actions">
@@ -287,10 +287,6 @@ export default function PracticesPage() {
             <IconSpark /> Active: {activeAffirmations.length} / {activeLimit}
           </div>
         </section>
-
-        <div style={{ marginBottom: 14 }}>
-          <OraclePracticeCard />
-        </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 14 }}>
           {(["today", "my", "library"] as Tab[]).map((item) => (
@@ -342,7 +338,7 @@ export default function PracticesPage() {
                   <IconSpark />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 4 }}>Grounding ritual</h2>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 4 }}>Breathing practice</h2>
                   <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 8 }}>2 minutes</p>
                   <div style={{ display: "grid", gap: 6, marginBottom: 12 }}>
                     {["Place both feet on the floor.", "Name three things you can see.", "Breathe out what does not belong to you."].map((step, index) => (
@@ -350,7 +346,7 @@ export default function PracticesPage() {
                     ))}
                   </div>
                   <button type="button" disabled={groundingCompleted} onClick={completeGroundingRitual} style={{ ...primaryButtonStyle, minHeight: 40, opacity: groundingCompleted ? .75 : 1, cursor: groundingCompleted ? "default" : "pointer" }}>
-                    {groundingCompleted ? "Completed" : "Begin ritual"}
+                    {groundingCompleted ? "Completed" : "Begin breathing"}
                   </button>
                 </div>
               </div>
@@ -362,7 +358,7 @@ export default function PracticesPage() {
                   <IconSpark />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 4 }}>Daily card</h2>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 23, fontWeight: 600, color: "var(--text)", lineHeight: 1.1, marginBottom: 4 }}>Symbol practice</h2>
                   <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 8 }}>{dailyCardState.drawn ? "Drawn" : "Ready"}</p>
                   <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>
                     {dailyCardState.card ? `${dailyCardState.card.title} · ${dailyCardState.card.theme}` : "Draw one symbol for today and save what it mirrors."}
@@ -424,6 +420,10 @@ export default function PracticesPage() {
             })}
           </div>
         )}
+
+        <div style={{ marginTop: 14 }}>
+          <OraclePracticeCard />
+        </div>
 
         <section style={{ ...cardStyle, marginTop: 14, padding: 16 }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.2, color: "var(--gold)", fontWeight: 800, marginBottom: 6 }}>Unlock more practices</p>

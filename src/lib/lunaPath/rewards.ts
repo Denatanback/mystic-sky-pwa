@@ -10,22 +10,22 @@ export const ritualRewards: Record<DailyRitualKey, RitualReward> = {
   cardOpened: {
     moonlight: 15,
     tokens: 10,
-    reason: "Открыта карта дня",
+    reason: "Opened daily card",
   },
   reflectionCompleted: {
     moonlight: 30,
     tokens: 25,
-    reason: "Сохранена осознанная рефлексия",
+    reason: "Completed mindful reflection",
   },
   moodChecked: {
     moonlight: 10,
     tokens: 5,
-    reason: "Отмечено состояние",
+    reason: "Checked in with mood",
   },
   practiceCompleted: {
     moonlight: 20,
     tokens: 15,
-    reason: "Завершена практика",
+    reason: "Completed a practice",
   },
 };
 
@@ -36,8 +36,14 @@ export const oracleModeCosts: Record<Exclude<OracleMode, "free">, number> = {
 };
 
 export const oracleModeLabels: Record<OracleMode, string> = {
-  free: "Первый вопрос",
-  quick: "Быстрый вопрос",
-  deep: "Глубокий ответ",
-  "three-card": "Расклад 3 карт",
+  free: "First Question",
+  quick: "Quick Question",
+  deep: "Deep Reflection",
+  "three-card": "3-Card Reading",
+};
+
+export const oracleModeDescriptions: Record<Exclude<OracleMode, "free">, string> = {
+  quick: "A short reflective answer for a single question.",
+  deep: "A deeper answer with emotional patterns and one suggested next step.",
+  "three-card": "A symbolic 3-card reading: what is behind you, what is present, and what is emerging.",
 };

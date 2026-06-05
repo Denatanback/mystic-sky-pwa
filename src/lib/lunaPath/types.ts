@@ -21,12 +21,12 @@ export type DailyRitualKey =
   | "practiceCompleted";
 
 export type DailyMood =
-  | "Спокойствие"
-  | "Тревога"
-  | "Радость"
-  | "Усталость"
-  | "Ясность"
-  | "Сомнение";
+  | "Calm"
+  | "Anxious"
+  | "Joyful"
+  | "Tired"
+  | "Clear"
+  | "Uncertain";
 
 export type LunaPathDailyProgress = {
   cardOpened: boolean;

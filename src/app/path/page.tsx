@@ -12,6 +12,7 @@ import { DailyRituals } from "@/components/lunaPath/DailyRituals";
 import { LunaPathLevels } from "@/components/lunaPath/LunaPathLevels";
 import { LunaPathStatusCard } from "@/components/lunaPath/LunaPathStatusCard";
 import { OraclePreviewCard } from "@/components/lunaPath/OraclePreviewCard";
+import { TokenEducationCard } from "@/components/lunaPath/TokenEducationCard";
 import { TokenLedgerPreview } from "@/components/lunaPath/TokenLedgerPreview";
 import { lunaCardStyle, lunaSecondaryButtonStyle } from "@/components/lunaPath/shared";
 import { PlanChip } from "@/components/subscription/PlanChip";
@@ -52,8 +53,8 @@ export default function PathPage() {
       <PathShell>
         <section style={{ ...lunaCardStyle, padding: "22px 20px", marginTop: 10 }}>
           <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 9 }}>Path</p>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 10 }}>Готовим Лунный путь...</h1>
-          <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>Собираем прогресс, ритуалы и баланс токенов.</p>
+          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 10 }}>Preparing Luna Path...</h1>
+          <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>Loading your progress, rituals, and token balance.</p>
         </section>
       </PathShell>
     );
@@ -63,15 +64,16 @@ export default function PathPage() {
     <PathShell>
       <div style={{ display: "grid", gap: 14, marginTop: 10 }}>
         <LunaPathStatusCard state={state} />
+        <TokenEducationCard />
         <LunaPathLevels state={state} />
         <DailyRituals state={state} onStateChange={setState} />
         <ActivityCalendar state={state} />
 
         <section style={{ ...lunaCardStyle, padding: 16 }}>
-          <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Восстановить непрерывность</p>
-          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 7 }}>Восстановить непрерывность</h2>
-          <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>Каждый восстановленный день стоит 50 Лунных токенов.</p>
-          <button type="button" disabled style={{ ...lunaSecondaryButtonStyle, opacity: .62, cursor: "default" }}>Скоро</button>
+          <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Streak repair</p>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 7 }}>Restore continuity</h2>
+          <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>Each restored day will cost 50 Lunar Tokens.</p>
+          <button type="button" disabled style={{ ...lunaSecondaryButtonStyle, opacity: .62, cursor: "default" }}>Soon</button>
         </section>
 
         <OraclePreviewCard />

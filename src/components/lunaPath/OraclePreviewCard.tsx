@@ -10,9 +10,9 @@ export function OraclePreviewCard() {
         <LunaGlyph />
         <div style={{ flex: 1, minWidth: 0 }}>
           <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 7 }}>Preview</p>
-          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 7 }}>Оракул eLuna</h2>
-          <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 13 }}>Оракул доступен в Практиках. Продолжай Лунный путь, чтобы зарабатывать токены для глубоких ответов.</p>
-          <Link href="/practices#oracle" style={{ ...lunaPrimaryButtonStyle, minHeight: 40 }}>Перейти к Оракулу</Link>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 25, color: "var(--text)", fontWeight: 600, lineHeight: 1.1, marginBottom: 7 }}>eLuna Oracle</h2>
+          <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 13 }}>The Oracle is available in Practices. Continue Luna Path to earn tokens for deeper reflective answers.</p>
+          <Link href="/practices#oracle" style={{ ...lunaPrimaryButtonStyle, minHeight: 40 }}>Go to Oracle</Link>
         </div>
       </div>
     </section>

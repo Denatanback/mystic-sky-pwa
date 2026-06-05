@@ -12,9 +12,9 @@ export function TokenLedgerPreview({ state }: Props) {
 
   return (
     <section style={{ ...lunaCardStyle, padding: 16 }}>
-      <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 10 }}>Токены</p>
+      <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 10 }}>Tokens</p>
       {entries.length === 0 ? (
-        <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>Первые начисления появятся после сегодняшних ритуалов.</p>
+        <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>Your first token entries will appear after today’s rituals.</p>
       ) : (
         <div style={{ display: "grid", gap: 8 }}>
           {entries.map((entry) => (
