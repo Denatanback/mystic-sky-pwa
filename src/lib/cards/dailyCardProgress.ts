@@ -1,5 +1,11 @@
 import { getDailyActionKey, getTodayKey, markDailyActionCompleted } from "@/lib/progress/dailyProgress";
-import { dailyCards, getDailyCardById, type DailyCard } from "./dailyCards";
+import {
+  getLocalDayKey,
+  getTodayDailyCard as selectTodayDailyCard,
+  readDailyCardReflection,
+  saveDailyCardReflection as persistDailyCardReflection,
+} from "@/lib/dailyCards";
+import { getDailyCardById, type DailyCard } from "./dailyCards";
 
 export type DailyCardState = {
   drawn: boolean;
@@ -15,47 +21,40 @@ export function getTodayCardKey(field: "id" | "reflection", dayKey = getTodayKey
   return `eluna:daily:${dayKey}:${field === "id" ? "dailyCardId" : "dailyCardReflection"}`;
 }
 
-function pickCardId(dayKey: string) {
-  const seed = dayKey.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  return dailyCards[seed % dailyCards.length].id;
-}
-
 export function isDailyCardDrawnToday(dayKey = getTodayKey()) {
   if (!isBrowser()) return false;
-  return localStorage.getItem(getDailyActionKey("cardOpened", dayKey)) === "true" && Boolean(localStorage.getItem(getTodayCardKey("id", dayKey)));
+  return localStorage.getItem(getDailyActionKey("cardOpened", dayKey)) === "true";
 }
 
-export function getTodayDailyCard(dayKey = getTodayKey()): DailyCardState {
+export function getTodayDailyCard(dayKey = getTodayKey(), userId?: string): DailyCardState {
   if (!isBrowser()) return { drawn: false, card: null, reflection: "" };
-  const cardId = localStorage.getItem(getTodayCardKey("id", dayKey));
-  const card = getDailyCardById(cardId);
+  const date = new Date(`${dayKey}T12:00:00`);
+  const selected = selectTodayDailyCard(userId, date);
+  localStorage.setItem(getTodayCardKey("id", dayKey), String(selected.id));
+  const card = getDailyCardById(selected.id);
   return {
-    drawn: Boolean(cardId && card && localStorage.getItem(getDailyActionKey("cardOpened", dayKey)) === "true"),
+    drawn: localStorage.getItem(getDailyActionKey("cardOpened", dayKey)) === "true",
     card,
-    reflection: localStorage.getItem(getTodayCardKey("reflection", dayKey)) ?? "",
+    reflection: readDailyCardReflection(getLocalDayKey(date)),
   };
 }
 
-export function drawDailyCard(dayKey = getTodayKey()) {
+export function drawDailyCard(dayKey = getTodayKey(), userId?: string) {
   if (!isBrowser()) return { drawn: false, card: null, reflection: "" };
-
-  const existing = getTodayDailyCard(dayKey);
-  if (existing.drawn && existing.card) return existing;
-
-  const cardId = localStorage.getItem(getTodayCardKey("id", dayKey)) ?? pickCardId(dayKey);
-  localStorage.setItem(getTodayCardKey("id", dayKey), cardId);
+  const state = getTodayDailyCard(dayKey, userId);
+  if (state.card) localStorage.setItem(getTodayCardKey("id", dayKey), String(state.card.id));
   markDailyActionCompleted("cardOpened", dayKey);
-  return getTodayDailyCard(dayKey);
+  return getTodayDailyCard(dayKey, userId);
 }
 
-export function saveDailyCardReflection(text: string, dayKey = getTodayKey()) {
+export function saveDailyCardReflection(text: string, dayKey = getTodayKey(), userId?: string) {
   if (!isBrowser()) return "";
-  const value = text.trim();
-  if (value) localStorage.setItem(getTodayCardKey("reflection", dayKey), value);
-  return value;
+  const state = getTodayDailyCard(dayKey, userId);
+  if (!state.card) return "";
+  return persistDailyCardReflection(state.card, text, dayKey);
 }
 
 export function getDailyCardReflection(dayKey = getTodayKey()) {
   if (!isBrowser()) return "";
-  return localStorage.getItem(getTodayCardKey("reflection", dayKey)) ?? "";
+  return readDailyCardReflection(dayKey);
 }
