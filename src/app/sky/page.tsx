@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
@@ -70,6 +69,39 @@ function statusColor(status: SkyNodeStatus) {
   return "var(--muted-2)";
 }
 
+/*
+ * Preserved for future onboarding, intentionally not rendered on /sky:
+ * "Your Sky Map"
+ * "This map shows the areas of your path. Complete daily practices to unlock deeper insights."
+ * "How your Sky Map works"
+ * "Your Sky Map is the long-term map of your personal path. Daily readings, practices, cards, and reflections open new points over time."
+ * "Complete daily actions to open signals."
+ * "Signals unlock deeper nodes in your map."
+ * "Premium nodes reveal past-life, relationship, and deeper chart insights."
+ * "Learn how unlocks work"
+ * "Without active access, deeper map nodes stay locked. Intro access and Premium unlock deeper nodes, full readings, reports, and progress features."
+ */
+function SkyMapOnboardingContent() {
+  return (
+    <>
+      <section style={{ ...cardStyle, padding: 13, marginBottom: 14 }}>
+        <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 10 }}>Node status legend</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
+          {(["active", "available", "locked", "premium", "completed"] as SkyNodeStatus[]).map((status) => {
+            const copy = statusCopy(status);
+            return (
+              <div key={status} style={{ border: "1px solid rgba(216,168,95,.12)", borderRadius: 14, background: "rgba(255,255,255,.03)", padding: 9 }}>
+                <p style={{ color: statusColor(status), fontSize: 11, fontWeight: 900, marginBottom: 3 }}>{copy.label}</p>
+                <p style={{ color: "var(--muted-2)", fontSize: 10, lineHeight: 1.35 }}>{copy.text}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    </>
+  );
+}
+
 export default function SkyPage() {
   const [tab, setTab] = useState<"all" | "active" | "available">("all");
   const [gender, setGender] = useState<"female" | "male">("female");
@@ -77,7 +109,6 @@ export default function SkyPage() {
   const [completedCount, setCompletedCount] = useState(0);
   const { entitlements } = useEntitlements();
   const hasPremiumAccess = entitlements.canAccessPremiumNodes;
-  const [howOpen, setHowOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<SkyNode | null>(null);
   const [paywallContext, setPaywallContext] = useState<{ title: string; description: string } | null>(null);
   const [prelandExperience, setPrelandExperience] = useState<PrelandExperience | null>(null);
@@ -158,50 +189,6 @@ export default function SkyPage() {
             <button className="icon-btn" aria-label="Moon Mode" title="Moon Mode" onClick={openMoonMode}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z"/></svg></button>
           </div>
         </header>
-
-        <section style={{ ...cardStyle, padding: "18px 18px", marginBottom: 12 }}>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", marginBottom: 8, lineHeight: 1.05 }}>Your Sky Map</h1>
-          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, marginBottom: 16 }}>This map shows the areas of your path. Complete daily practices to unlock deeper insights.</p>
-          <Link href="/today" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minHeight: 44, padding: "0 18px", borderRadius: 999, background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)", textDecoration: "none", boxShadow: "0 8px 24px rgba(90,32,144,.38)" }}>
-            Continue today’s path
-          </Link>
-        </section>
-
-        <section style={{ ...cardStyle, padding: 15, marginBottom: 12 }}>
-          <button type="button" onClick={() => setHowOpen((value) => !value)} aria-expanded={howOpen} style={{ width: "100%", border: "none", background: "transparent", color: "inherit", padding: 0, display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
-            <div>
-              <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 6 }}>How your Sky Map works</p>
-              <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55 }}>Your Sky Map is the long-term map of your personal path. Daily readings, practices, cards, and reflections open new points over time.</p>
-            </div>
-            <span style={{ color: "var(--gold-2)", fontSize: 18, lineHeight: 1 }}>{howOpen ? "−" : "+"}</span>
-          </button>
-          <div style={{ display: "grid", gap: 7, marginTop: 12 }}>
-            {["Complete daily actions to open signals.", "Signals unlock deeper nodes in your map.", "Premium nodes reveal past-life, relationship, and deeper chart insights."].map((item) => (
-              <p key={item} style={{ color: "var(--text)", fontSize: 12, lineHeight: 1.45 }}><span style={{ color: "var(--gold-2)", fontWeight: 900 }}>✦</span> {item}</p>
-            ))}
-          </div>
-          {howOpen && (
-            <div style={{ border: "1px solid rgba(216,168,95,.14)", borderRadius: 16, background: "rgba(255,255,255,.035)", padding: 12, marginTop: 12 }}>
-              <p style={{ color: "var(--gold-2)", fontSize: 12, fontWeight: 800, marginBottom: 5 }}>Learn how unlocks work</p>
-              <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5 }}>Without active access, deeper map nodes stay locked. Intro access and Premium unlock deeper nodes, full readings, reports, and progress features.</p>
-            </div>
-          )}
-        </section>
-
-        <section style={{ ...cardStyle, padding: 13, marginBottom: 14 }}>
-          <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 10 }}>Node status legend</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-            {(["active", "available", "locked", "premium", "completed"] as SkyNodeStatus[]).map((status) => {
-              const copy = statusCopy(status);
-              return (
-                <div key={status} style={{ border: "1px solid rgba(216,168,95,.12)", borderRadius: 14, background: "rgba(255,255,255,.03)", padding: 9 }}>
-                  <p style={{ color: statusColor(status), fontSize: 11, fontWeight: 900, marginBottom: 3 }}>{copy.label}</p>
-                  <p style={{ color: "var(--muted-2)", fontSize: 10, lineHeight: 1.35 }}>{copy.text}</p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
 
         <div data-tour="sky-map-filters" style={{ display: "flex", gap: 8, marginBottom: 14 }}>
           {([
