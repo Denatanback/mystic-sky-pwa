@@ -106,5 +106,12 @@ Before live Stripe launch, replace the current placeholder selection behavior wi
 
 ## Commit / Deploy
 
-- Commit hash: pending
-- Production deploy status: pending
+- Implementation commit hash: `e2228af`
+- Production deploy status: Ready
+- Production deployment URL: `https://mystic-sky-cokv9gahk-mikes-projects-ee51be40.vercel.app`
+- Custom domain checks:
+  - `https://welcome-head.myeluna.com`: HTTP 200
+  - `https://www.myeluna.com/welcome`: HTTP 200
+  - `https://www.myeluna.com/home`: HTTP 307 to `/login?returnTo=%2Fhome` when anonymous
+  - `https://www.myeluna.com/practices`: HTTP 307 to `/login?returnTo=%2Fpractices` when anonymous
+  - `https://www.myeluna.com/daily-card`: HTTP 307 to `/login?returnTo=%2Fdaily-card` when anonymous
