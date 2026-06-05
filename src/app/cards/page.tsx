@@ -6,6 +6,7 @@ import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
+import { ProductAccessGate } from "@/components/subscription/ProductAccessGate";
 
 const glassCard: React.CSSProperties = { border: "1px solid rgba(216,168,95,.22)", background: "transparent", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", borderRadius: 20 };
 
@@ -38,9 +39,10 @@ export default function CardsPage() {
     { name: t.cards.candle,    img: "/assets/main_screen/candle-01.png", day: t.cards.mon },
   ];
   return (
-    <div className="app">
-      <StarField />
-      <div className="content">
+    <ProductAccessGate featureName="Cards" description="Choose 3-day intro access or a subscription to use card readings, spreads, and reflection actions.">
+      <div className="app">
+        <StarField />
+        <div className="content">
         <header className="header">
           <div className="screen-title"><h1>{t.cards.title}</h1><p>{t.cards.subtitle}</p></div>
           <button className="icon-btn" aria-label="About card library" title="About card library" onClick={openCardLibrary}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
@@ -102,8 +104,9 @@ export default function CardsPage() {
         </div>
         <div style={{ height: 20 }} />
       </div>
-      <BottomNav />
-      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
-    </div>
+        <BottomNav />
+        {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
+      </div>
+    </ProductAccessGate>
   );
 }

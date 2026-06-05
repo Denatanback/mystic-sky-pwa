@@ -5,6 +5,7 @@ import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
+import { ProductAccessGate } from "@/components/subscription/ProductAccessGate";
 
 const MOON_PHASES = ["\u{1F311}","\u{1F312}","\u{1F313}","\u{1F314}","\u{1F315}","\u{1F316}","\u{1F317}","\u{1F318}"];
 
@@ -39,9 +40,10 @@ export default function JournalPage() {
   function handleSave() { if (!note.trim()) return; setSaved(true); setTimeout(() => { setSaved(false); setNote(""); }, 1800); }
 
   return (
-    <div className="app">
-      <StarField />
-      <div className="content">
+    <ProductAccessGate featureName="Journal" description="Choose 3-day intro access or a subscription to write reflections, view journal history, and use archive actions.">
+      <div className="app">
+        <StarField />
+        <div className="content">
         <header className="header">
           <div className="screen-title"><h1>{t.journal.title}</h1><p>{t.journal.subtitle}</p></div>
           <button className="icon-btn" aria-label="New entry" title="New entry" onClick={() => noteRef.current?.focus()}><IconPen /></button>
@@ -114,8 +116,9 @@ export default function JournalPage() {
         )}
 
       </div>
-      <BottomNav />
-      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
-    </div>
+        <BottomNav />
+        {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
+      </div>
+    </ProductAccessGate>
   );
 }

@@ -16,6 +16,7 @@ import { TokenEducationCard } from "@/components/lunaPath/TokenEducationCard";
 import { TokenLedgerPreview } from "@/components/lunaPath/TokenLedgerPreview";
 import { lunaCardStyle, lunaSecondaryButtonStyle } from "@/components/lunaPath/shared";
 import { PlanChip } from "@/components/subscription/PlanChip";
+import { ProductAccessGate } from "@/components/subscription/ProductAccessGate";
 import { readLunaPathState } from "@/lib/lunaPath/storage";
 import type { LunaPathState } from "@/lib/lunaPath/types";
 
@@ -50,24 +51,27 @@ export default function PathPage() {
 
   if (!state) {
     return (
-      <PathShell>
-        <section style={{ ...lunaCardStyle, padding: "22px 20px", marginTop: 10 }}>
-          <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 9 }}>Path</p>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 10 }}>Preparing Luna Path...</h1>
-          <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>Loading your progress, rituals, and token balance.</p>
-        </section>
-      </PathShell>
+      <ProductAccessGate featureName="Luna Path" description="Choose 3-day intro access or a subscription to use Luna Path, tokens, rituals, and Oracle entry points.">
+        <PathShell>
+          <section style={{ ...lunaCardStyle, padding: "22px 20px", marginTop: 10 }}>
+            <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 9 }}>Path</p>
+            <h1 style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 600, color: "var(--text)", lineHeight: 1.05, marginBottom: 10 }}>Preparing Luna Path...</h1>
+            <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>Loading your progress, rituals, and token balance.</p>
+          </section>
+        </PathShell>
+      </ProductAccessGate>
     );
   }
 
   return (
-    <PathShell>
-      <div style={{ display: "grid", gap: 14, marginTop: 10 }}>
-        <LunaPathStatusCard state={state} />
-        <TokenEducationCard />
-        <LunaPathLevels state={state} />
-        <DailyRituals state={state} onStateChange={setState} />
-        <ActivityCalendar state={state} />
+    <ProductAccessGate featureName="Luna Path" description="Choose 3-day intro access or a subscription to use Luna Path, tokens, rituals, and Oracle entry points.">
+      <PathShell>
+        <div style={{ display: "grid", gap: 14, marginTop: 10 }}>
+          <LunaPathStatusCard state={state} />
+          <TokenEducationCard />
+          <LunaPathLevels state={state} />
+          <DailyRituals state={state} onStateChange={setState} />
+          <ActivityCalendar state={state} />
 
         <section style={{ ...lunaCardStyle, padding: 16 }}>
           <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Streak repair</p>
@@ -76,9 +80,10 @@ export default function PathPage() {
           <button type="button" disabled style={{ ...lunaSecondaryButtonStyle, opacity: .62, cursor: "default" }}>Soon</button>
         </section>
 
-        <OraclePreviewCard />
-        <TokenLedgerPreview state={state} />
-      </div>
-    </PathShell>
+          <OraclePreviewCard />
+          <TokenLedgerPreview state={state} />
+        </div>
+      </PathShell>
+    </ProductAccessGate>
   );
 }

@@ -9,6 +9,7 @@ import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
+import { ProductAccessGate } from "@/components/subscription/ProductAccessGate";
 import { SubscriptionModal } from "@/components/subscription/SubscriptionModal";
 import { NodePreviewSheet } from "@/components/sky/NodePreviewSheet";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
@@ -144,9 +145,10 @@ export default function SkyPage() {
   }
 
   return (
-    <div className="app sky-page">
-      <StarField orbits={false} />
-      <div className="content" style={{ paddingBottom: 100 }}>
+    <ProductAccessGate featureName="Sky Map" description="Choose 3-day intro access or a subscription to use Sky Map nodes, readings, and unlock paths.">
+      <div className="app sky-page">
+        <StarField orbits={false} />
+        <div className="content" style={{ paddingBottom: 100 }}>
         <header className="app-topbar">
           <div className="app-topbar__logo"><Logo variant="header" /></div>
           <div className="app-topbar__actions">
@@ -298,10 +300,11 @@ export default function SkyPage() {
         </section>
       </div>
 
-      <BottomNav />
-      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
-      <NodePreviewSheet node={selectedNode} onClose={() => setSelectedNode(null)} onOpenSubscription={openNodePaywall} />
-      <SubscriptionModal isOpen={subscriptionOpen} onClose={() => setSubscriptionOpen(false)} contextTitle={paywallContext?.title ?? "Unlock this Sky Map node"} contextDescription={paywallContext?.description ?? "Start 3-day introductory access for $1 to unlock this insight and continue your path."} trialCtaLabel={prelandExperience ? "Unlock for $1" : undefined} />
-    </div>
+        <BottomNav />
+        {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
+        <NodePreviewSheet node={selectedNode} onClose={() => setSelectedNode(null)} onOpenSubscription={openNodePaywall} />
+        <SubscriptionModal isOpen={subscriptionOpen} onClose={() => setSubscriptionOpen(false)} contextTitle={paywallContext?.title ?? "Unlock this Sky Map node"} contextDescription={paywallContext?.description ?? "Start 3-day introductory access for $1 to unlock this insight and continue your path."} trialCtaLabel={prelandExperience ? "Unlock for $1" : undefined} />
+      </div>
+    </ProductAccessGate>
   );
 }

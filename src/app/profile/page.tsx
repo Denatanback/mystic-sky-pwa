@@ -9,6 +9,8 @@ import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
+import { SubscriptionModal } from "@/components/subscription/SubscriptionModal";
+import { useEntitlements } from "@/lib/subscription/entitlements";
 import { getDeepPathState, getFirstSignalState, type DeepPathState, type FirstSignalState } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile, type CurrentProfile } from "@/lib/profile/currentProfile";
 import { resolveUserZodiac } from "@/lib/astrology/resolveZodiac";
@@ -36,12 +38,15 @@ function MenuItem({ icon, title, sub, href, onClick, danger=false }: { icon: Rea
 export default function ProfilePage() {
   const router = useRouter();
   const { t } = useLang();
+  const { entitlements } = useEntitlements();
   const [fullName, setFullName] = useState("...");
   const [userProfile, setUserProfile] = useState<CurrentProfile | null>(null);
   const [deepPathState, setDeepPathState] = useState<DeepPathState>(() => getDeepPathState());
   const [firstSignalState, setFirstSignalState] = useState<FirstSignalState>(() => getFirstSignalState());
   const [confirmLogout, setConfirmLogout] = useState(false);
+  const [subscriptionOpen, setSubscriptionOpen] = useState(false);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
+  const hasActiveAccess = entitlements.hasFullAccess;
   const zodiac = resolveUserZodiac(userProfile);
   const zodiacLine = zodiac.key === "unknown" ? "Mystic profile" : `${zodiac.name} · ${zodiac.source === "manual" ? "selected manually" : zodiac.dateRange}`;
   const personalChartSub = zodiac.key === "unknown" ? "Complete setup to reveal your chart" : `Sun sign: ${zodiac.name}${zodiac.source === "manual" ? " · selected manually" : userProfile?.birthPlace ? ` · ${userProfile.birthPlace}` : ""}`;
@@ -125,31 +130,38 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Path progress */}
-        <div style={{ background: "transparent", border: "1px solid rgba(216,168,95,.18)", borderRadius: "var(--radius-lg)", padding: "14px 16px", marginBottom: 20, display: "flex", alignItems: "center", gap: 14, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}>
-          <div style={{ flexShrink: 0, width: 60, height: 60, borderRadius: "50%", border: `1px solid ${deepPathState.firstSignalUnlocked ? "rgba(216,168,95,.54)" : "rgba(216,168,95,.28)"}`, background: deepPathState.firstSignalUnlocked ? "rgba(216,168,95,.14)" : "rgba(216,168,95,.08)", display: "grid", placeItems: "center", color: "var(--gold-2)", fontSize: 22, boxShadow: deepPathState.firstSignalUnlocked ? "0 0 18px rgba(216,168,95,.18)" : "none" }}>
-            ✦
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>{deepPathState.title}</div>
-            <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>{deepPathState.text}</div>
-            <div style={{ fontSize: 11, color: "var(--gold)", marginTop: 4, display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--gold)", display: "inline-block", boxShadow: "0 0 4px var(--gold)" }}/>
-              {firstSignalState.integrated ? "First signal integrated" : deepPathState.firstSignalUnlocked ? "First signal unlocked" : "Locked"}
+        {hasActiveAccess ? (
+          <div style={{ background: "transparent", border: "1px solid rgba(216,168,95,.18)", borderRadius: "var(--radius-lg)", padding: "14px 16px", marginBottom: 20, display: "flex", alignItems: "center", gap: 14, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}>
+            <div style={{ flexShrink: 0, width: 60, height: 60, borderRadius: "50%", border: `1px solid ${deepPathState.firstSignalUnlocked ? "rgba(216,168,95,.54)" : "rgba(216,168,95,.28)"}`, background: deepPathState.firstSignalUnlocked ? "rgba(216,168,95,.14)" : "rgba(216,168,95,.08)", display: "grid", placeItems: "center", color: "var(--gold-2)", fontSize: 22, boxShadow: deepPathState.firstSignalUnlocked ? "0 0 18px rgba(216,168,95,.18)" : "none" }}>
+              ✦
             </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>{deepPathState.title}</div>
+              <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>{deepPathState.text}</div>
+              <div style={{ fontSize: 11, color: "var(--gold)", marginTop: 4, display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--gold)", display: "inline-block", boxShadow: "0 0 4px var(--gold)" }}/>
+                {firstSignalState.integrated ? "First signal integrated" : deepPathState.firstSignalUnlocked ? "First signal unlocked" : "Locked"}
+              </div>
+            </div>
+            {deepPathState.firstSignalUnlocked && (
+              <Link href="/path" style={{ border: "1px solid rgba(216,168,95,.32)", borderRadius: 999, color: "var(--gold-2)", padding: "8px 12px", fontSize: 12, fontWeight: 800, textDecoration: "none", whiteSpace: "nowrap" }}>
+                {firstSignalState.integrated ? "View" : "Open"}
+              </Link>
+            )}
           </div>
-          {deepPathState.firstSignalUnlocked && (
-            <Link href="/path" style={{ border: "1px solid rgba(216,168,95,.32)", borderRadius: 999, color: "var(--gold-2)", padding: "8px 12px", fontSize: 12, fontWeight: 800, textDecoration: "none", whiteSpace: "nowrap" }}>
-              {firstSignalState.integrated ? "View" : "Open"}
-            </Link>
-          )}
-        </div>
+        ) : (
+          <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: "var(--radius-lg)", background: "rgba(216,168,95,.07)", padding: 16, marginBottom: 20 }}>
+            <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 7 }}>No active plan</p>
+            <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>Choose 3-day intro access or a subscription to activate profile insights, journal, path progress, and product features.</p>
+            <button type="button" onClick={() => setSubscriptionOpen(true)} style={{ width: "100%", minHeight: 42, borderRadius: 999, border: "none", background: "linear-gradient(135deg, #8040c0 0%, #5a2090 100%)", color: "#fff", fontSize: 13, fontWeight: 900, fontFamily: "var(--font-ui)", cursor: "pointer" }}>Choose access</button>
+          </div>
+        )}
 
         {/* Menu */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-          <MenuItem icon={<IconMoon />}     title={t.profile.personalChart}  sub={personalChartSub} onClick={openPersonalChart} />
+          {hasActiveAccess && <MenuItem icon={<IconMoon />} title={t.profile.personalChart} sub={personalChartSub} onClick={openPersonalChart} />}
           <MenuItem icon={<IconSettings />} title="Edit birth data" sub="Update your chart source" href="/onboarding?step=birth&mode=edit" />
-          <MenuItem icon={<IconJournal />}  title={t.profile.journalMenu}    sub={t.profile.journalMenuSub}   href="/journal" />
+          {hasActiveAccess && <MenuItem icon={<IconJournal />} title={t.profile.journalMenu} sub={t.profile.journalMenuSub} href="/journal" />}
           <MenuItem icon={<IconSettings />} title={t.profile.settings}       sub={t.profile.settingsSub}      href="/settings" />
           <MenuItem icon={<IconSupport />} title="Support" sub="Questions about your account, intro access, billing, cancellation, or refund request." href={SUPPORT_MAILTO} />
         </div>
@@ -179,6 +191,7 @@ export default function ProfilePage() {
       </div>
       <BottomNav />
       {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
+      <SubscriptionModal isOpen={subscriptionOpen} onClose={() => setSubscriptionOpen(false)} contextTitle="Unlock profile features" contextDescription="Choose 3-day intro access or a subscription to activate profile insights, journal, path progress, and product features." />
     </div>
   );
 }

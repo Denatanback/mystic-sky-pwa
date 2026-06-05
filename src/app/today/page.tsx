@@ -10,6 +10,7 @@ import { useLang } from "@/lib/i18n";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
+import { ProductAccessGate } from "@/components/subscription/ProductAccessGate";
 import { GuidedDailyPractice, type GuidedPracticeResult } from "@/components/practices/GuidedDailyPractice";
 import { getTodayKey, getTodayPracticeReflection, getTodayProgress, markPracticeCompleted, type PracticeReflection } from "@/lib/progress/dailyProgress";
 import { drawDailyCard, getTodayDailyCard, saveDailyCardReflection, type DailyCardState } from "@/lib/cards/dailyCardProgress";
@@ -201,9 +202,10 @@ export default function TodayPage() {
   const overallPct = totalNodes > 0 ? Math.round((totalDone / totalNodes) * 100) : 0;
 
   return (
-    <div className="app">
-      <StarField />
-      <div className="content">
+    <ProductAccessGate featureName="Today" description="Choose 3-day intro access or a subscription to use daily readings, reflections, cards, and practice actions.">
+      <div className="app">
+        <StarField />
+        <div className="content">
 
         {/* Header */}
         <header style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
@@ -439,8 +441,9 @@ export default function TodayPage() {
         </Link>
 
       </div>
-      <BottomNav />
-      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
-    </div>
+        <BottomNav />
+        {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
+      </div>
+    </ProductAccessGate>
   );
 }

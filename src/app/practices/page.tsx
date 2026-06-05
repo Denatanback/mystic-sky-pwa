@@ -10,6 +10,7 @@ import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { OraclePracticeCard } from "@/components/lunaPath/OraclePracticeCard";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
+import { ProductAccessGate } from "@/components/subscription/ProductAccessGate";
 import { SubscriptionModal } from "@/components/subscription/SubscriptionModal";
 import { GuidedDailyPractice, type GuidedPracticeResult } from "@/components/practices/GuidedDailyPractice";
 import {
@@ -279,9 +280,10 @@ export default function PracticesPage() {
   }
 
   return (
-    <div className="app">
-      <StarField />
-      <div className="content" style={{ paddingBottom: "calc(132px + env(safe-area-inset-bottom))" }}>
+    <ProductAccessGate featureName="Practices" description="Choose 3-day intro access or a subscription to use practices, affirmations, Oracle, and reflection actions.">
+      <div className="app">
+        <StarField />
+        <div className="content" style={{ paddingBottom: "calc(132px + env(safe-area-inset-bottom))" }}>
         <header className="app-topbar">
           <div className="app-topbar__logo"><Logo variant="header" /></div>
           <div className="app-topbar__actions">
@@ -450,7 +452,7 @@ export default function PracticesPage() {
         </section>
       </div>
 
-      <BottomNav />
+        <BottomNav />
 
       {selectedCategory && (
         <>
@@ -522,6 +524,7 @@ export default function PracticesPage() {
         contextDescription={prelandExperience?.paywallDescription ?? "Start 3-day introductory access for $1 to unlock advanced affirmations, premium categories, and the full daily practice library."}
         trialCtaLabel={prelandExperience ? "Unlock for $1" : undefined}
       />
-    </div>
+      </div>
+    </ProductAccessGate>
   );
 }

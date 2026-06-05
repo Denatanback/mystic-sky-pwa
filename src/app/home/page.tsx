@@ -10,6 +10,7 @@ import { BottomNav } from "@/components/app-shell/BottomNav";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
+import { ProductAccessGate } from "@/components/subscription/ProductAccessGate";
 import { cleanLaunchContext, isPastLifeContext, loadLaunchContext, type LaunchContext } from "@/lib/launch/launchContext";
 import { getPrelandContext, getPrelandExperience, getPrelandKind, parsePrelandContext, savePrelandContext, type PrelandContext, type PrelandExperience } from "@/lib/funnel/prelandContext";
 import { DAILY_PROGRESS_UPDATED_EVENT, getCurrentStreak, getDailyActionKey, getFirstSignalState, getTodayKey, getTodayPracticeReflection, getTodayProgress, getWeeklyStreakState, isDailyActive, markAffirmationRepeated, markDailyActionCompleted, notifyDailyProgressUpdated, type DailyAction, type DailyProgress, type FirstSignalState, type PracticeReflection, type WeeklyStreakDay } from "@/lib/progress/dailyProgress";
@@ -334,9 +335,10 @@ export default function HomePage() {
         : { label: "Open first signal", type: "link" as const, href: "/path" };
 
   return (
-    <div className="app">
-      <StarField />
-      <div className="content">
+    <ProductAccessGate featureName="Home" description="Choose 3-day intro access or a subscription to use Home, daily progress, readings, and path actions.">
+      <div className="app">
+        <StarField />
+        <div className="content">
         <header style={{ display: "grid", gridTemplateColumns: "40px 1fr auto", alignItems: "center", gap: 10, minHeight: 64, padding: "18px 0 10px" }}>
           <button className="icon-btn" type="button" aria-label="Open menu" title="Menu" onClick={() => openComingSoon("eLuna menu", "This section is being prepared for the full release. For alpha, use the bottom navigation to move through your path.")}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
@@ -545,8 +547,9 @@ export default function HomePage() {
           ))}
         </section>
       </div>
-      <BottomNav />
-      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
-    </div>
+        <BottomNav />
+        {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
+      </div>
+    </ProductAccessGate>
   );
 }

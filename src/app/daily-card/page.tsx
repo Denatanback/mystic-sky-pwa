@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { StarField } from "@/components/app-shell/StarField";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { PlanChip } from "@/components/subscription/PlanChip";
+import { ProductAccessGate } from "@/components/subscription/ProductAccessGate";
+import { useEntitlements } from "@/lib/subscription/entitlements";
 import { getTodayKey, markDailyActionCompleted } from "@/lib/progress/dailyProgress";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
 import {
@@ -78,7 +80,8 @@ function getReflectionPreview(reflection: string) {
 
 export default function DailyCardPage() {
   const todayKey = getTodayKey();
-  const todayDate = getDateFromDayKey(todayKey);
+  const todayDate = useMemo(() => getDateFromDayKey(todayKey), [todayKey]);
+  const { entitlements, loading } = useEntitlements();
   const [card, setCard] = useState<DailyCard | null>(null);
   const [reflectionText, setReflectionText] = useState("");
   const [saved, setSaved] = useState(false);
@@ -89,6 +92,7 @@ export default function DailyCardPage() {
   }
 
   useEffect(() => {
+    if (loading || !entitlements.hasFullAccess) return;
     markDailyActionCompleted("cardOpened", todayKey);
     void getCurrentProfile().then((user) => {
       const nextUserId = user?.id;
@@ -97,7 +101,7 @@ export default function DailyCardPage() {
       setReflectionText(readDailyCardReflection(todayKey));
       loadJournal();
     });
-  }, [todayKey]);
+  }, [entitlements.hasFullAccess, loading, todayDate, todayKey]);
 
   function saveReflection() {
     if (!card) return;
@@ -123,9 +127,10 @@ export default function DailyCardPage() {
   const todayReflection = getTodayDailyCardReflection(todayKey);
 
   return (
-    <div className="app">
-      <StarField />
-      <div className="content" style={{ paddingBottom: "calc(132px + env(safe-area-inset-bottom))" }}>
+    <ProductAccessGate featureName="Daily Card" description="Choose 3-day intro access or a subscription to reveal daily cards, save reflections, and use journal actions.">
+      <div className="app">
+        <StarField />
+        <div className="content" style={{ paddingBottom: "calc(132px + env(safe-area-inset-bottom))" }}>
         <header className="app-topbar">
           <Link href="/home" aria-label="Back home" className="icon-btn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -225,7 +230,8 @@ export default function DailyCardPage() {
           </section>
         )}
       </div>
-      <BottomNav />
-    </div>
+        <BottomNav />
+      </div>
+    </ProductAccessGate>
   );
 }
