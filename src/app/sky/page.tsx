@@ -248,7 +248,7 @@ export default function SkyPage() {
                     {(isLocked || isPremium) && <div style={{ position: "absolute", bottom: 4, right: 4, zIndex: 5, lineHeight: 0, filter: "drop-shadow(0 1px 3px rgba(0,0,0,.8))" }}><Image src="/assets/icons/icon-lock.png" alt="Locked" width={24} height={24} style={{ objectFit: "contain" }} /></div>}
                   </div>
                   <div style={{ textAlign: "center", lineHeight: 1.25 }}>
-                    <div style={{ fontSize: isActive ? 10.5 : 9.5, fontWeight: isActive ? 800 : 700, color: isActive ? "var(--gold-2)" : isPremium ? "var(--muted-2)" : "var(--text)", textShadow: isActive ? "0 0 8px rgba(216,168,95,.5)" : "none", overflowWrap: "anywhere" }}>{node.num}. {node.title}</div>
+                    <div style={{ fontSize: isActive ? 10.5 : 9.5, fontWeight: isActive ? 800 : 700, color: isActive ? "var(--gold-2)" : isPremium ? "var(--muted-2)" : "var(--text)", textShadow: isActive ? "0 0 8px rgba(216,168,95,.5)" : "none", overflowWrap: "anywhere" }}>{node.num}. {node.mapLabel}</div>
                     <div style={{ fontSize: 8.5, color: statusColor(node.status), fontWeight: 800 }}>{statusCopy(node.status).label}</div>
                   </div>
                 </button>
@@ -256,25 +256,6 @@ export default function SkyPage() {
             );
           })}
         </div>
-
-        <section style={{ ...cardStyle, padding: 16, marginBottom: 14 }}>
-          <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 12 }}>Map nodes</p>
-          <div style={{ display: "grid", gap: 10 }}>
-            {nodes.map((node) => (
-              <button key={node.id} type="button" onClick={() => setSelectedNode(node)} style={{ border: "1px solid rgba(216,168,95,.14)", borderRadius: 18, background: "rgba(255,255,255,.035)", padding: 13, textAlign: "left", cursor: "pointer", fontFamily: "var(--font-ui)" }}>
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 6 }}>
-                  <div>
-                    <h2 style={{ fontFamily: "var(--font-display)", color: "var(--text)", fontSize: 22, fontWeight: 600, lineHeight: 1.1 }}>{node.title}</h2>
-                    <p style={{ color: "var(--muted-2)", fontSize: 11, fontWeight: 800, marginTop: 4 }}>{node.category}</p>
-                  </div>
-                  <span style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 999, color: statusColor(node.status), background: "rgba(216,168,95,.07)", padding: "5px 9px", fontSize: 10, fontWeight: 900 }}>{statusCopy(node.status).label}</span>
-                </div>
-                <p style={{ color: "var(--muted)", fontSize: 12, lineHeight: 1.5, marginBottom: 7 }}>{node.meaning}</p>
-                <p style={{ color: "var(--gold-2)", fontSize: 11, lineHeight: 1.4, fontWeight: 800 }}>{node.requirement}</p>
-              </button>
-            ))}
-          </div>
-        </section>
 
         <section style={{ ...cardStyle, padding: 16 }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", marginBottom: 10 }}>Current point</p>

@@ -5,6 +5,7 @@ export type SkyNode = {
   id: string;
   num: number;
   title: string;
+  mapLabel: string;
   category: string;
   discipline: string;
   description: string;
@@ -35,6 +36,7 @@ export const baseSkyNodes: SkyNode[] = [
     id: "sun-sign",
     num: 1,
     title: "Sun Sign",
+    mapLabel: "Astrology",
     category: "Astrology",
     discipline: disciplineDescriptions.astrology,
     description: "Your Sun sign shows the core energy you return to when you make choices, seek meaning, and express identity.",
@@ -51,6 +53,7 @@ export const baseSkyNodes: SkyNode[] = [
     id: "life-path",
     num: 2,
     title: "Life Path",
+    mapLabel: "Numerology",
     category: "Numerology",
     discipline: disciplineDescriptions.numerology,
     description: "Your Life Path number shows the rhythm behind your choices, challenges, and recurring direction.",
@@ -67,6 +70,7 @@ export const baseSkyNodes: SkyNode[] = [
     id: "energy-rhythm",
     num: 3,
     title: "Energy Rhythm",
+    mapLabel: "Human Design",
     category: "Human Design",
     discipline: disciplineDescriptions.humanDesign,
     description: "This node introduces how your energy system moves through choices, rest, and response.",
@@ -84,6 +88,7 @@ export const baseSkyNodes: SkyNode[] = [
     id: "past-life-signal",
     num: 4,
     title: "Past Life Signal",
+    mapLabel: "Past Life",
     category: "Soul Memory",
     discipline: disciplineDescriptions.pastLife,
     description: "This node explores repeating emotional patterns that may feel older than the present moment.",
@@ -101,6 +106,7 @@ export const baseSkyNodes: SkyNode[] = [
     id: "grounding-practice",
     num: 5,
     title: "Grounding Practice",
+    mapLabel: "Spiritual Practices",
     category: "Spiritual Practices",
     discipline: disciplineDescriptions.spiritual,
     description: "This node turns your daily insight into a short practice that helps you integrate the path.",
@@ -118,6 +124,7 @@ export const baseSkyNodes: SkyNode[] = [
     id: "soulmate-pattern",
     num: 6,
     title: "Soulmate Pattern",
+    mapLabel: "Soul Mate",
     category: "Soulmate",
     discipline: disciplineDescriptions.soulmate,
     description: "This node previews attraction themes, relationship mirrors, and the signals that repeat in connection.",
@@ -135,6 +142,7 @@ export const baseSkyNodes: SkyNode[] = [
     id: "weekly-report",
     num: 7,
     title: "Weekly Soul Report",
+    mapLabel: "Weekly Soul Report",
     category: "Reports",
     discipline: "Weekly synthesis of your readings, practices, and recurring signals.",
     description: "A weekly report collects your repeated signals and shows how your path is changing.",
