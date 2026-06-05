@@ -3,6 +3,7 @@
 Date: 2026-06-05 local workspace date
 Production URL: https://www.myeluna.com
 Scope: Stage 1 cleanup before Stripe payment integration.
+Deployment checked: Vercel production deployment `https://mystic-sky-3lf7j5dg4-mikes-projects-ee51be40.vercel.app`, status `Ready`.
 
 ## Summary
 
@@ -15,6 +16,7 @@ Stage 1 cleanup has been completed as a follow-up to the main product audit. The
 - `/daily-card` is included in the protected route set on both server middleware and client guard.
 - `/support` is explicitly included in both server and client public route sets.
 - Production route check after remediation: `/daily-card` returns `307` to `/login?returnTo=%2Fdaily-card` for anonymous requests.
+- Production route check after remediation: `/support` returns `200`.
 
 ### User-facing paid access wording
 
@@ -70,7 +72,7 @@ Stage 1 cleanup has been completed as a follow-up to the main product audit. The
 
 - `npm run type-check`: PASS.
 - `npm run build`: PASS. Existing Next.js custom Babel configuration warning remains.
-- Production `/daily-card`: pending final check after deploy.
+- Production `/daily-card`: PASS, `307` to `/login?returnTo=%2Fdaily-card`.
 
 ## Remaining Notes
 
