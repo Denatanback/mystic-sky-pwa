@@ -76,26 +76,25 @@ export function NodePathPage({ discipline, disciplineKey, nodes, lines, mapVaria
 
         {/* Map */}
         {mapVariant === "body" && bodyMapBackground ? (
-          <div style={{ position: "relative", minHeight: 560, marginBottom: 20, border: "1px solid rgba(216,168,95,.18)", borderRadius: 24, overflow: "hidden", background: "radial-gradient(circle at 50% 20%, rgba(80,30,160,.24), rgba(12,8,28,.78))", boxShadow: "0 18px 44px rgba(0,0,0,.28)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}>
-            <Image src={bodyMapBackground} alt="" fill priority sizes="(max-width: 700px) 94vw, 430px" style={{ objectFit: "contain", padding: "22px 20px 84px", opacity: 0.9, pointerEvents: "none" }} />
-            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(180deg, rgba(6,4,16,.08), rgba(6,4,16,.28))" }} />
+          <div style={{ position: "relative", height: "clamp(580px, 160vw, 720px)", marginBottom: 20, border: "1px solid rgba(216,168,95,.2)", borderRadius: 24, overflow: "hidden", background: "radial-gradient(circle at 50% 28%, rgba(86,36,150,.32), rgba(8,5,22,.88) 74%)", boxShadow: "0 18px 44px rgba(0,0,0,.28)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}>
+            <Image src={bodyMapBackground} alt="" fill priority sizes="(max-width: 700px) 94vw, 430px" style={{ objectFit: "cover", objectPosition: "center center", opacity: 0.94, pointerEvents: "none" }} />
+            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(circle at 50% 42%, rgba(216,168,95,.08), transparent 32%), linear-gradient(180deg, rgba(6,4,16,.1), rgba(6,4,16,.16) 55%, rgba(6,4,16,.34))" }} />
 
             {liveNodes.map((n) => {
               const isDone = n.status === "done", isCurrent = n.status === "current", isLocked = n.status === "locked";
-              const nodeSize = isCurrent ? 58 : 52;
+              const nodeSize = isCurrent ? 46 : 40;
               const marker = (
                 <div style={{ position: "absolute", left: n.x + "%", top: n.y + "%", transform: "translate(-50%, -50%)", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", pointerEvents: "auto" }}>
-                  <div style={{ position: "relative", width: 68, height: 68, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div style={{ position: "relative", width: 54, height: 54, display: "flex", alignItems: "center", justifyContent: "center" }}>
                     {isCurrent && <div style={{ position: "absolute", inset: 3, borderRadius: "50%", boxShadow: "0 0 0 5px rgba(216,168,95,.1), 0 0 20px rgba(216,168,95,.42)" }} />}
                     <div style={{ width: nodeSize, height: nodeSize, borderRadius: "50%", border: (isCurrent ? "2px" : "1.5px") + " solid " + (isCurrent ? "rgba(216,168,95,.95)" : isDone ? "rgba(216,168,95,.62)" : "rgba(160,130,220,.42)"), background: isCurrent ? "radial-gradient(circle at 38% 32%, rgba(216,168,95,.24), rgba(80,30,160,.92))" : isDone ? "radial-gradient(circle at 38% 32%, rgba(216,168,95,.14), rgba(30,14,80,.94))" : "radial-gradient(circle at 38% 32%, rgba(255,255,255,.06), rgba(10,5,26,.94))", boxShadow: isCurrent ? "0 0 0 5px rgba(216,168,95,.08), 0 0 18px rgba(216,168,95,.38)" : isDone ? "0 0 12px rgba(216,168,95,.2)" : "0 4px 12px rgba(0,0,0,.5)", overflow: "hidden", position: "relative", opacity: isLocked ? 0.78 : 1 }}>
-                      <Image src={n.emblem} alt={n.label} fill style={{ objectFit: "contain", padding: 7, opacity: isLocked ? 0.58 : 1 }} />
+                      <Image src={n.emblem} alt={n.label} fill style={{ objectFit: "contain", padding: 6, opacity: isLocked ? 0.58 : 1 }} />
                     </div>
-                    {isCurrent && <div style={{ position: "absolute", top: 5, right: 5, zIndex: 3, width: 18, height: 18, borderRadius: "50%", background: "linear-gradient(135deg, #d8a85f, #8040c0)", border: "1.5px solid rgba(216,168,95,.85)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, color: "#fff", boxShadow: "0 0 10px rgba(216,168,95,.75)" }}>&#9733;</div>}
-                    {isLocked && <div style={{ position: "absolute", bottom: 5, right: 5, zIndex: 3, lineHeight: 0, filter: "drop-shadow(0 1px 4px rgba(0,0,0,.9))" }}><Image src="/assets/icons/icon-lock.png" alt="locked" width={19} height={19} style={{ objectFit: "contain" }} /></div>}
+                    {isCurrent && <div style={{ position: "absolute", top: 4, right: 4, zIndex: 3, width: 15, height: 15, borderRadius: "50%", background: "linear-gradient(135deg, #d8a85f, #8040c0)", border: "1.5px solid rgba(216,168,95,.85)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7, color: "#fff", boxShadow: "0 0 10px rgba(216,168,95,.75)" }}>&#9733;</div>}
+                    {isLocked && <div style={{ position: "absolute", bottom: 5, right: 5, zIndex: 3, lineHeight: 0, filter: "drop-shadow(0 1px 4px rgba(0,0,0,.9))" }}><Image src="/assets/icons/icon-lock.png" alt="locked" width={16} height={16} style={{ objectFit: "contain" }} /></div>}
                   </div>
-                  <div style={{ textAlign: "center", lineHeight: 1.25, marginTop: -2, maxWidth: 104, padding: "3px 7px", borderRadius: 10, background: "rgba(6,4,16,.62)", border: "1px solid rgba(255,255,255,.07)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
-                    <div style={{ fontSize: 10.5, fontWeight: isCurrent ? 800 : 600, color: isCurrent ? "var(--text)" : isDone ? "rgba(216,168,95,.9)" : "var(--muted-2)", whiteSpace: "nowrap" }}>{n.num}. {n.label}</div>
-                    <div style={{ fontSize: 9.5, color: "var(--muted-2)", marginTop: 1 }}>{n.sub}</div>
+                  <div style={{ textAlign: "center", lineHeight: 1.15, marginTop: -4, maxWidth: 94, padding: "3px 6px", borderRadius: 999, background: "rgba(6,4,16,.58)", border: "1px solid rgba(216,168,95,.13)", boxShadow: "0 4px 12px rgba(0,0,0,.24)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
+                    <div style={{ fontSize: 10, fontWeight: isCurrent ? 800 : 650, color: isCurrent ? "var(--text)" : isDone ? "rgba(216,168,95,.9)" : "var(--muted-2)", whiteSpace: "nowrap" }}>{n.num}. {n.label}</div>
                   </div>
                 </div>
               );
