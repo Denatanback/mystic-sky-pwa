@@ -177,6 +177,13 @@ function calcPastLifeRole(answers: number[]): PastLifeRole {
   return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as PastLifeRole;
 }
 
+function normalizePastLifeRole(value: unknown): PastLifeRole | null {
+  if (typeof value !== "string") return null;
+  const normalized = value.trim().toLowerCase().replace(/\s+/g, "_");
+  if (normalized === "priest") return "priestess";
+  return normalized in PAST_LIFE_ROLES ? normalized as PastLifeRole : null;
+}
+
 // ── Karma types ───────────────────────────────────────────────────────────────
 type KarmaTheme = "worth" | "trust" | "voice" | "freedom" | "love" | "power" | "surrender";
 const KARMA_THEMES: Record<KarmaTheme, { en: string; ru: string; lesson: { en: string; ru: string }; gift: { en: string; ru: string }; color: string }> = {
@@ -285,7 +292,51 @@ function Quiz<T extends string>({ questions, calcResult, renderResult, lang }: {
 function PLNode1() {
   const { lang } = useLang();
   const router = useRouter();
-  useEffect(() => { startNode(DISCIPLINE, 1); }, []);
+  const [restoredRole, setRestoredRole] = useState<PastLifeRole | null>(null);
+
+  useEffect(() => {
+    const saved = getNodeState(DISCIPLINE, 1);
+    const role = normalizePastLifeRole(saved.result?.pastLifeRole ?? saved.result?.soulAge);
+    if (saved.status === "completed" && role) {
+      setRestoredRole(role);
+      return;
+    }
+    startNode(DISCIPLINE, 1);
+  }, []);
+
+  if (restoredRole) {
+    const data = PAST_LIFE_ROLES[restoredRole];
+    return (
+      <div>
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>
+            Your Past Life Role
+          </p>
+          <div style={{ fontSize: 56, marginBottom: 10 }} dangerouslySetInnerHTML={{ __html: data.emoji }} />
+          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{data.en}</h2>
+          <p style={{ fontSize: 12, color: "var(--gold-2)" }}>Your saved result</p>
+        </div>
+        <div style={{ border: `1px solid ${data.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 12 }}>
+          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{data.desc}</p>
+        </div>
+        <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 14, padding: "14px 16px", background: "rgba(216,168,95,.05)", marginBottom: 12 }}>
+          <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 8 }}>GIFTS CARRIED INTO THIS LIFE</p>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {data.gifts.map((t, i) => (
+              <span key={i} style={{ fontSize: 12, padding: "4px 12px", borderRadius: 999, background: `${data.color}18`, border: `1px solid ${data.color}44`, color: "var(--text)" }}>{t}</span>
+            ))}
+          </div>
+        </div>
+        <div style={{ border: `1px solid ${data.color}33`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.45)", marginBottom: 20 }}>
+          <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>RECURRING LESSON</p>
+          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{data.lesson}</p>
+        </div>
+        <button onClick={() => router.push("/sky/pastlife")} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
+          Continue
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div>

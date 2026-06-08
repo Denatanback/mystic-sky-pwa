@@ -126,6 +126,12 @@ function calcSoulmateType(answers: number[]): SoulmateType {
   return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as SoulmateType;
 }
 
+function normalizeSoulmateType(value: unknown): SoulmateType | null {
+  if (typeof value !== "string") return null;
+  const normalized = value.trim().toLowerCase().replace(/\s+/g, "_");
+  return normalized in SOULMATE_TYPES ? normalized as SoulmateType : null;
+}
+
 // ── Node 1: Venus Sign ────────────────────────────────────────────────────────
 function SMNode1Legacy() {
   const { lang } = useLang();
@@ -195,7 +201,16 @@ function SMNode1() {
   const [answers, setAnswers] = useState<number[]>([]);
   const [result, setResult] = useState<SoulmateType | null>(null);
 
-  useEffect(() => { startNode(DISCIPLINE, 1); }, []);
+  useEffect(() => {
+    const saved = getNodeState(DISCIPLINE, 1);
+    const soulmateType = normalizeSoulmateType(saved.result?.soulmateType ?? saved.result?.venusSign);
+    if (saved.status === "completed" && soulmateType) {
+      setResult(soulmateType);
+      setQIdx(SOULMATE_TYPE_Q.length);
+      return;
+    }
+    startNode(DISCIPLINE, 1);
+  }, []);
 
   const answer = (i: number) => {
     const next = [...answers, i];
