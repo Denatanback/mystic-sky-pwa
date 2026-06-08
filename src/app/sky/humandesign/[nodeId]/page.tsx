@@ -391,9 +391,494 @@ function HDNode2() {
   );
 }
 
+type HDMvpResult = {
+  key: string;
+  title: string;
+  desc: string;
+  strength: string;
+  reflection: string;
+  color: string;
+};
+
+type HDMvpQuestion = {
+  q: string;
+  opts: Array<{ label: string; score: Record<string, number> }>;
+};
+
+type HDMvpConfig = {
+  nodeId: number;
+  resultKey: "hdProfile" | "hdCenters" | "hdChannels" | "hdGates" | "hdCycles";
+  eyebrow: string;
+  title: string;
+  intro: string;
+  startLabel: string;
+  results: Record<string, HDMvpResult>;
+  questions: HDMvpQuestion[];
+  sections: {
+    pattern: string;
+    practice: string;
+    next: string;
+  };
+};
+
+const PROFILE_RESULTS: Record<string, HDMvpResult> = {
+  guide: { key: "guide", title: "The Guide", desc: "Your answers point to a role that naturally notices direction, timing, and what others may be missing.", strength: "You may help people find clarity by naming the path in simple terms.", reflection: "Where do people already come to you for perspective or direction?", color: "#7ab0d8" },
+  experimenter: { key: "experimenter", title: "The Experimenter", desc: "This pattern may reflect someone who learns by trying, adjusting, and letting life become the teacher.", strength: "You bring movement, curiosity, and permission to test new ways of being.", reflection: "What recent experiment taught you more than planning could have?", color: "#e89040" },
+  stabilizer: { key: "stabilizer", title: "The Stabilizer", desc: "Your answers point to a steady life-role pattern: grounding people, plans, and energy when things scatter.", strength: "You may be trusted because you make the next step feel practical.", reflection: "Where does your calm help others feel safer?", color: "#d8a85f" },
+  mirror: { key: "mirror", title: "The Mirror", desc: "This pattern may reflect a sensitive role that reveals what is true in the room without forcing it.", strength: "You notice subtle shifts and help people see themselves more honestly.", reflection: "What environment brings out your clearest reflection?", color: "#9070d8" },
+  catalyst: { key: "catalyst", title: "The Catalyst", desc: "Your answers point to a role that wakes up movement, change, and honest action around you.", strength: "You may activate what has been waiting beneath the surface.", reflection: "Where do you create change simply by being direct?", color: "#e05050" },
+};
+
+const CENTERS_RESULTS: Record<string, HDMvpResult> = {
+  openMind: { key: "openMind", title: "Open Mind Pattern", desc: "Your answers point to a mind that receives many perspectives and can become wise through discernment.", strength: "You may be gifted at seeing several angles before choosing what is yours.", reflection: "Which thoughts feel truly yours, and which feel absorbed from others?", color: "#9070d8" },
+  definedHeart: { key: "definedHeart", title: "Defined Heart Pattern", desc: "This pattern may reflect consistent will, devotion, and a need to commit only where the heart is real.", strength: "You can bring courage and follow-through when the promise matters.", reflection: "What commitment currently deserves your full heart?", color: "#e05050" },
+  emotionalReceiver: { key: "emotionalReceiver", title: "Emotional Receiver", desc: "Your answers point to sensitivity around emotional atmosphere and relational waves.", strength: "You may understand what others feel before they can explain it.", reflection: "Which emotions belong to you, and which did you pick up today?", color: "#7ab8d8" },
+  groundedBuilder: { key: "groundedBuilder", title: "Grounded Builder", desc: "This pattern may reflect consistent body-based energy for building when your rhythm is respected.", strength: "You turn ideas into something real through repetition and patience.", reflection: "What becomes easier when you stop rushing your pace?", color: "#d8a85f" },
+  adaptiveChannel: { key: "adaptiveChannel", title: "Adaptive Channel", desc: "Your answers point to flexible energy that changes with people, place, and purpose.", strength: "You may adapt quickly and sense which part of you is needed now.", reflection: "Which environments make your energy feel most like yourself?", color: "#7ab04a" },
+};
+
+const CHANNELS_RESULTS: Record<string, HDMvpResult> = {
+  creative: { key: "creative", title: "Creative Flow", desc: "Your energy may move through expression, making, and turning impressions into visible form.", strength: "You bring life to ideas by shaping them into something others can feel.", reflection: "What wants to be made through you this week?", color: "#e89040" },
+  protective: { key: "protective", title: "Protective Flow", desc: "Your answers point to energy that moves toward care, boundaries, and keeping what matters safe.", strength: "You notice what needs protection before others do.", reflection: "Where is a clean boundary actually an act of care?", color: "#e05050" },
+  insight: { key: "insight", title: "Insight Flow", desc: "This pattern may reflect energy that moves through observation, pattern recognition, and clear naming.", strength: "You can translate complexity into a useful insight.", reflection: "What pattern keeps repeating around you?", color: "#7ab0d8" },
+  emotional: { key: "emotional", title: "Emotional Flow", desc: "Your energy may move in waves, revealing truth through feeling rather than force.", strength: "You bring depth and emotional honesty when you allow time.", reflection: "What feels clearer after you let the wave pass?", color: "#7ab8d8" },
+  grounding: { key: "grounding", title: "Grounding Flow", desc: "Your answers point to energy that stabilizes, organizes, and brings people back into the body.", strength: "You can make a situation feel workable again.", reflection: "What simple action would ground your next step?", color: "#d8a85f" },
+};
+
+const GATES_RESULTS: Record<string, HDMvpResult> = {
+  insight: { key: "insight", title: "Gate of Insight", desc: "Your recurring signal may be the moment when something hidden becomes obvious.", strength: "You notice the small clue that changes the whole picture.", reflection: "What quiet insight have you been dismissing?", color: "#7ab0d8" },
+  direction: { key: "direction", title: "Gate of Direction", desc: "Your answers point to sensitivity around path, purpose, and where energy wants to go next.", strength: "You may feel when a direction is aligned before proof appears.", reflection: "Which direction feels calm, even if it is not loud?", color: "#d8a85f" },
+  expression: { key: "expression", title: "Gate of Expression", desc: "This pattern may reflect a recurring need to speak, create, or show the truth plainly.", strength: "You turn inner pressure into language, art, or action.", reflection: "What truth wants a cleaner expression?", color: "#e89040" },
+  devotion: { key: "devotion", title: "Gate of Devotion", desc: "Your recurring signal may be loyalty: noticing what deserves your care and what no longer does.", strength: "You can stay with what matters when the devotion is real.", reflection: "Where is your devotion nourishing you, and where is it draining you?", color: "#e05050" },
+  change: { key: "change", title: "Gate of Change", desc: "Your answers point to a sensitivity for transition, restlessness, and the moment a cycle is complete.", strength: "You may know when a pattern is ready to evolve.", reflection: "What change has already begun inside you?", color: "#9070d8" },
+};
+
+const CYCLES_RESULTS: Record<string, HDMvpResult> = {
+  fastInitiator: { key: "fastInitiator", title: "Fast Initiator", desc: "Your timing pattern may move in sparks: quick starts, clear impulses, and momentum that needs room.", strength: "You can activate a new chapter before others are ready to name it.", reflection: "Which impulse deserves action, and which needs one breath first?", color: "#e05050" },
+  slowIntegrator: { key: "slowIntegrator", title: "Slow Integrator", desc: "Your answers point to timing that deepens through patience, digestion, and lived experience.", strength: "You make better choices when you let truth settle into the body.", reflection: "What are you still integrating?", color: "#7ab0d8" },
+  seasonalMover: { key: "seasonalMover", title: "Seasonal Mover", desc: "This pattern may reflect life in seasons: build, pause, release, and begin again.", strength: "You may thrive when you stop expecting every season to have the same pace.", reflection: "Which season are you in right now?", color: "#7ab04a" },
+  emotionalWave: { key: "emotionalWave", title: "Emotional Wave", desc: "Your timing may clarify through feeling waves rather than instant certainty.", strength: "You can make emotionally honest decisions when you allow time.", reflection: "What choice needs emotional clarity before action?", color: "#7ab8d8" },
+  quietBuilder: { key: "quietBuilder", title: "Quiet Builder", desc: "Your answers point to steady, private accumulation: small actions becoming a durable path.", strength: "You build trust with yourself through repeatable steps.", reflection: "What small step would matter if repeated for seven days?", color: "#d8a85f" },
+};
+
+const HD_MVP_CONFIGS: Record<string, HDMvpConfig> = {
+  "3": {
+    nodeId: 3,
+    resultKey: "hdProfile",
+    eyebrow: "Your Profile Pattern",
+    title: "Discover Your Profile",
+    intro: "This is not a calculated Human Design profile yet. Your answers point to the role pattern you may naturally play in life and relationships.",
+    startLabel: "Find my profile pattern",
+    results: PROFILE_RESULTS,
+    questions: [
+      { q: "When people ask for your help, what do they usually need?", opts: [
+        { label: "Direction and a clearer next step", score: { guide: 2 } },
+        { label: "Permission to try something new", score: { experimenter: 2 } },
+        { label: "Calm, structure and consistency", score: { stabilizer: 2 } },
+        { label: "An honest reflection of what is happening", score: { mirror: 2 } },
+        { label: "A push to finally move or change", score: { catalyst: 2 } },
+      ] },
+      { q: "Which role feels most familiar in a group?", opts: [
+        { label: "I quietly notice the path forward", score: { guide: 2 } },
+        { label: "I test ideas by doing", score: { experimenter: 2 } },
+        { label: "I hold the center when things scatter", score: { stabilizer: 2 } },
+        { label: "I sense the emotional truth in the room", score: { mirror: 2 } },
+        { label: "I activate momentum", score: { catalyst: 2 } },
+      ] },
+      { q: "What kind of growth has shaped you most?", opts: [
+        { label: "Learning to trust my perspective", score: { guide: 1, mirror: 1 } },
+        { label: "Learning through trial, error and repair", score: { experimenter: 2 } },
+        { label: "Learning to be dependable without carrying everyone", score: { stabilizer: 2 } },
+        { label: "Learning to reflect without absorbing", score: { mirror: 2 } },
+        { label: "Learning to create change without burning out", score: { catalyst: 2 } },
+      ] },
+    ],
+    sections: {
+      pattern: "This pattern may describe how your role is felt by others before you explain it.",
+      practice: "Use it as a reflection tool: notice when this role feels natural versus when it becomes pressure.",
+      next: "Next, Centers explores where your energy feels consistent or influenced by others.",
+    },
+  },
+  "4": {
+    nodeId: 4,
+    resultKey: "hdCenters",
+    eyebrow: "Your Center Pattern",
+    title: "Discover Your Centers Pattern",
+    intro: "This MVP does not calculate defined or open centers. Your answers point to where you may feel consistent, influenced, or amplified.",
+    startLabel: "Find my center pattern",
+    results: CENTERS_RESULTS,
+    questions: [
+      { q: "Where do you most often feel outside influence?", opts: [
+        { label: "In my thoughts and mental pressure", score: { openMind: 2 } },
+        { label: "In my confidence or promises", score: { definedHeart: 2 } },
+        { label: "In the emotions around me", score: { emotionalReceiver: 2 } },
+        { label: "In my pace and work rhythm", score: { groundedBuilder: 2 } },
+        { label: "It changes depending on the room", score: { adaptiveChannel: 2 } },
+      ] },
+      { q: "What feels most consistent when you are well?", opts: [
+        { label: "Seeing many perspectives", score: { openMind: 1, adaptiveChannel: 1 } },
+        { label: "Commitment when my heart is in it", score: { definedHeart: 2 } },
+        { label: "Reading emotional atmosphere", score: { emotionalReceiver: 2 } },
+        { label: "Building steadily", score: { groundedBuilder: 2 } },
+        { label: "Adapting to what is needed", score: { adaptiveChannel: 2 } },
+      ] },
+      { q: "What do you need more of?", opts: [
+        { label: "Mental quiet", score: { openMind: 2 } },
+        { label: "Cleaner commitments", score: { definedHeart: 2 } },
+        { label: "Emotional boundaries", score: { emotionalReceiver: 2 } },
+        { label: "A grounded routine", score: { groundedBuilder: 2 } },
+        { label: "The right environment", score: { adaptiveChannel: 2 } },
+      ] },
+    ],
+    sections: {
+      pattern: "This pattern may reflect where your system is most stable and where it is most porous.",
+      practice: "Before deciding, ask whether the pressure is yours or something you are amplifying from the room.",
+      next: "Next, Channels looks at how energy moves through you once it is activated.",
+    },
+  },
+  "5": {
+    nodeId: 5,
+    resultKey: "hdChannels",
+    eyebrow: "Your Energy Flow",
+    title: "Discover Your Channels Flow",
+    intro: "This quiz reflects the way energy may move through you. It is not a precise bodygraph channel calculation yet.",
+    startLabel: "Find my flow",
+    results: CHANNELS_RESULTS,
+    questions: [
+      { q: "When energy is moving well, what happens?", opts: [
+        { label: "I create, write, design or make something", score: { creative: 2 } },
+        { label: "I protect what matters", score: { protective: 2 } },
+        { label: "I see a pattern clearly", score: { insight: 2 } },
+        { label: "I feel deeply and understand the emotional current", score: { emotional: 2 } },
+        { label: "I organize the next practical step", score: { grounding: 2 } },
+      ] },
+      { q: "What blocks your flow fastest?", opts: [
+        { label: "No room for expression", score: { creative: 2 } },
+        { label: "Weak boundaries", score: { protective: 2 } },
+        { label: "Noise that hides the signal", score: { insight: 2 } },
+        { label: "Being rushed through feelings", score: { emotional: 2 } },
+        { label: "Too much chaos", score: { grounding: 2 } },
+      ] },
+      { q: "What do others often receive from you?", opts: [
+        { label: "Ideas and expression", score: { creative: 2 } },
+        { label: "Protection and loyalty", score: { protective: 2 } },
+        { label: "Clarity and perspective", score: { insight: 2 } },
+        { label: "Depth and empathy", score: { emotional: 2 } },
+        { label: "Calm and structure", score: { grounding: 2 } },
+      ] },
+    ],
+    sections: {
+      pattern: "This flow may be the path your energy prefers when it is not being forced.",
+      practice: "Notice what kind of task makes your body soften instead of brace.",
+      next: "Next, Gates explores a more specific signal that may keep repeating in your life.",
+    },
+  },
+  "6": {
+    nodeId: 6,
+    resultKey: "hdGates",
+    eyebrow: "Your Recurring Signal",
+    title: "Discover Your Gates Pattern",
+    intro: "This MVP uses reflection questions to identify a recurring signal. It does not calculate official Human Design gates yet.",
+    startLabel: "Find my recurring signal",
+    results: GATES_RESULTS,
+    questions: [
+      { q: "What signal repeats most in your life lately?", opts: [
+        { label: "A sudden insight I cannot ignore", score: { insight: 2 } },
+        { label: "A pull toward a clearer direction", score: { direction: 2 } },
+        { label: "Pressure to say or create something", score: { expression: 2 } },
+        { label: "Questions of loyalty and devotion", score: { devotion: 2 } },
+        { label: "A need to change a pattern", score: { change: 2 } },
+      ] },
+      { q: "Where do you feel most sensitive?", opts: [
+        { label: "Hidden patterns", score: { insight: 2 } },
+        { label: "Being on the wrong path", score: { direction: 2 } },
+        { label: "Not expressing the truth", score: { expression: 2 } },
+        { label: "Giving too much to the wrong thing", score: { devotion: 2 } },
+        { label: "Staying too long after something is complete", score: { change: 2 } },
+      ] },
+      { q: "What would support you now?", opts: [
+        { label: "Trusting the quiet clue", score: { insight: 2 } },
+        { label: "Choosing the calmer direction", score: { direction: 2 } },
+        { label: "Speaking plainly", score: { expression: 2 } },
+        { label: "Recommitting or releasing", score: { devotion: 2 } },
+        { label: "Letting the old cycle end", score: { change: 2 } },
+      ] },
+    ],
+    sections: {
+      pattern: "This gate-like signal may be a recurring sensitivity that asks for attention before action.",
+      practice: "Track when this signal appears for three days without immediately fixing it.",
+      next: "Next, Cycles explores how your energy changes across time and seasons.",
+    },
+  },
+  "7": {
+    nodeId: 7,
+    resultKey: "hdCycles",
+    eyebrow: "Your Timing Pattern",
+    title: "Discover Your Cycles Pattern",
+    intro: "Your answers point to how you may move through timing, energy seasons, and change.",
+    startLabel: "Find my timing pattern",
+    results: CYCLES_RESULTS,
+    questions: [
+      { q: "How do new chapters usually begin for you?", opts: [
+        { label: "Quickly, with a spark", score: { fastInitiator: 2 } },
+        { label: "Slowly, after integration", score: { slowIntegrator: 2 } },
+        { label: "In clear seasons", score: { seasonalMover: 2 } },
+        { label: "Through emotional waves", score: { emotionalWave: 2 } },
+        { label: "Through small repeated steps", score: { quietBuilder: 2 } },
+      ] },
+      { q: "What kind of timing mistake do you make most?", opts: [
+        { label: "Moving before I pause", score: { fastInitiator: 2 } },
+        { label: "Forcing clarity too soon", score: { slowIntegrator: 2 } },
+        { label: "Expecting every season to be productive", score: { seasonalMover: 2 } },
+        { label: "Deciding inside an emotional high or low", score: { emotionalWave: 2 } },
+        { label: "Undervaluing small progress", score: { quietBuilder: 2 } },
+      ] },
+      { q: "What does your body want right now?", opts: [
+        { label: "A clean start", score: { fastInitiator: 2 } },
+        { label: "More time to digest", score: { slowIntegrator: 2 } },
+        { label: "Permission to honor the season", score: { seasonalMover: 2 } },
+        { label: "Emotional space", score: { emotionalWave: 2 } },
+        { label: "One repeatable action", score: { quietBuilder: 2 } },
+      ] },
+    ],
+    sections: {
+      pattern: "This timing pattern may show how your energy prefers to begin, pause, and complete cycles.",
+      practice: "Choose one decision and ask what timing would make it feel less forced.",
+      next: "Next, Living Design brings your saved Human Design results together.",
+    },
+  },
+};
+
+function calcMvpResult(config: HDMvpConfig, answers: number[]) {
+  const scores: Record<string, number> = {};
+  answers.forEach((answerIdx, questionIdx) => {
+    const option = config.questions[questionIdx]?.opts[answerIdx];
+    if (!option) return;
+    Object.entries(option.score).forEach(([key, value]) => {
+      scores[key] = (scores[key] ?? 0) + value;
+    });
+  });
+  const winner = Object.entries(scores).sort((a, b) => b[1] - a[1])[0]?.[0];
+  return winner && config.results[winner] ? config.results[winner] : Object.values(config.results)[0];
+}
+
+function getSavedString(nodeId: number, key: string) {
+  const value = getNodeState(DISCIPLINE, nodeId).result?.[key];
+  return typeof value === "string" ? value : "";
+}
+
+function HDMvpQuizNode({ config }: { config: HDMvpConfig }) {
+  const router = useRouter();
+  const [qIdx, setQIdx] = useState(-1);
+  const [answers, setAnswers] = useState<number[]>([]);
+  const [result, setResult] = useState<HDMvpResult | null>(null);
+
+  useEffect(() => {
+    const saved = getSavedString(config.nodeId, config.resultKey);
+    if (saved && config.results[saved]) {
+      setResult(config.results[saved]);
+      setQIdx(config.questions.length);
+      return;
+    }
+    startNode(DISCIPLINE, config.nodeId);
+  }, [config]);
+
+  const answer = (optIdx: number) => {
+    const next = [...answers, optIdx];
+    setAnswers(next);
+    if (next.length >= config.questions.length) {
+      setResult(calcMvpResult(config, next));
+      setQIdx(config.questions.length);
+    } else {
+      setQIdx(qIdx + 1);
+    }
+  };
+
+  const handleComplete = () => {
+    if (!result) return;
+    completeNode(DISCIPLINE, config.nodeId, { [config.resultKey]: result.key });
+    router.push("/sky/humandesign");
+  };
+
+  const q = qIdx >= 0 && qIdx < config.questions.length ? config.questions[qIdx] : null;
+
+  return (
+    <div>
+      {qIdx === -1 && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <div style={{ fontSize: 44, marginBottom: 12 }}>&#10022;</div>
+            <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", marginBottom: 10 }}>{config.title}</h3>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{config.intro}</p>
+          </div>
+          <button onClick={() => setQIdx(0)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
+            {config.startLabel} &#8594;
+          </button>
+        </div>
+      )}
+
+      {q && (
+        <div>
+          <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
+            {config.questions.map((_, i) => (
+              <div key={i} style={{ flex: 1, height: 3, borderRadius: 99, background: i <= qIdx ? "var(--gold)" : "rgba(255,255,255,.1)" }} />
+            ))}
+          </div>
+          <p style={{ fontSize: 11, color: "var(--muted)", marginBottom: 8 }}>Question {qIdx + 1} of {config.questions.length}</p>
+          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--text)", marginBottom: 20, lineHeight: 1.35 }}>{q.q}</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {q.opts.map((opt, i) => (
+              <button key={i} onClick={() => answer(i)} style={{ textAlign: "left", padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(216,168,95,.25)", background: "rgba(14,10,32,.55)", color: "var(--text)", fontSize: 14, lineHeight: 1.45, cursor: "pointer", fontFamily: "var(--font-sans)" }}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {result && qIdx === config.questions.length && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>{config.eyebrow}</p>
+            <div style={{ width: 104, height: 104, margin: "0 auto 14px", borderRadius: "50%", background: `radial-gradient(circle at 38% 32%, ${result.color}33, rgba(14,10,32,.95))`, border: `2px solid ${result.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 34px ${result.color}3f` }}>
+              <span style={{ fontSize: 42 }}>&#10022;</span>
+            </div>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 27, color: "var(--text)", marginBottom: 6 }}>{result.title}</h2>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>Your answers point to this Human Design reflection pattern.</p>
+          </div>
+
+          <div style={{ border: `1px solid ${result.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 12 }}>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{result.desc}</p>
+          </div>
+          <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 14, padding: "14px 16px", background: "rgba(216,168,95,.06)", marginBottom: 12 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 750, letterSpacing: ".09em", marginBottom: 5 }}>PATTERN</p>
+            <p style={{ fontSize: 13, color: "var(--text)", lineHeight: 1.55 }}>{config.sections.pattern}</p>
+          </div>
+          <div style={{ border: "1px solid rgba(255,255,255,.1)", borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.5)", marginBottom: 12 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 750, letterSpacing: ".09em", marginBottom: 5 }}>NATURAL STRENGTH</p>
+            <p style={{ fontSize: 13, color: "var(--text)", lineHeight: 1.55 }}>{result.strength}</p>
+          </div>
+          <div style={{ border: "1px solid rgba(160,130,220,.22)", borderRadius: 14, padding: "14px 16px", background: "rgba(80,40,130,.12)", marginBottom: 12 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 750, letterSpacing: ".09em", marginBottom: 5 }}>REFLECTION</p>
+            <p style={{ fontSize: 13, color: "var(--text)", lineHeight: 1.55 }}>{result.reflection}</p>
+          </div>
+          <div style={{ border: "1px solid rgba(255,255,255,.08)", borderRadius: 14, padding: "14px 16px", background: "rgba(12,8,28,.45)", marginBottom: 20 }}>
+            <p style={{ fontSize: 11, color: "var(--muted-2)", fontWeight: 750, letterSpacing: ".09em", marginBottom: 5 }}>NEXT</p>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{config.sections.next}</p>
+          </div>
+
+          <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
+            Complete node &#10003;
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const SYNTHESIS_LABELS: Record<string, { nodeId: number; key: string; title: string; lookup?: Record<string, HDMvpResult> }> = {
+  hdType: { nodeId: 1, key: "hdType", title: "Energy Type" },
+  hdAuthority: { nodeId: 2, key: "hdAuthority", title: "Authority" },
+  hdProfile: { nodeId: 3, key: "hdProfile", title: "Profile", lookup: PROFILE_RESULTS },
+  hdCenters: { nodeId: 4, key: "hdCenters", title: "Centers", lookup: CENTERS_RESULTS },
+  hdChannels: { nodeId: 5, key: "hdChannels", title: "Channels", lookup: CHANNELS_RESULTS },
+  hdGates: { nodeId: 6, key: "hdGates", title: "Gates", lookup: GATES_RESULTS },
+  hdCycles: { nodeId: 7, key: "hdCycles", title: "Cycles", lookup: CYCLES_RESULTS },
+};
+
+function formatSavedResult(item: { nodeId: number; key: string; lookup?: Record<string, HDMvpResult> }) {
+  const raw = getSavedString(item.nodeId, item.key);
+  if (!raw) return "";
+  if (item.lookup?.[raw]) return item.lookup[raw].title;
+  if (raw === "ManifestingGenerator") return "Manifesting Generator";
+  return raw;
+}
+
+function HDNode8() {
+  const router = useRouter();
+  const [completed, setCompleted] = useState(false);
+  const [saved, setSaved] = useState<Array<{ title: string; value: string }>>([]);
+  const [savedLivingDesign, setSavedLivingDesign] = useState("");
+
+  useEffect(() => {
+    const state = getNodeState(DISCIPLINE, 8);
+    setCompleted(state.status === "completed");
+    if (typeof state.result?.hdLivingDesign === "string") setSavedLivingDesign(state.result.hdLivingDesign);
+    if (state.status !== "completed") startNode(DISCIPLINE, 8);
+
+    const values = Object.values(SYNTHESIS_LABELS)
+      .map((item) => ({ title: item.title, value: formatSavedResult(item) }))
+      .filter((item) => item.value);
+    setSaved(values);
+  }, []);
+
+  const missingCount = Object.keys(SYNTHESIS_LABELS).length - saved.length;
+  const livingDesign = savedLivingDesign || (saved.length >= 5 ? "Integrated Path" : saved.length >= 3 ? "Emerging Design" : "Partial Design");
+
+  const handleComplete = () => {
+    completeNode(DISCIPLINE, 8, { hdLivingDesign: livingDesign });
+    setCompleted(true);
+    router.push("/sky/humandesign");
+  };
+
+  return (
+    <div>
+      <div style={{ textAlign: "center", marginBottom: 20 }}>
+        <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>Your Living Design</p>
+        <div style={{ width: 110, height: 110, margin: "0 auto 14px", borderRadius: "50%", background: "radial-gradient(circle at 38% 32%, rgba(216,168,95,.28), rgba(80,30,160,.92))", border: "2px solid rgba(216,168,95,.62)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 38px rgba(216,168,95,.32)" }}>
+          <span style={{ fontSize: 46 }}>&#10040;</span>
+        </div>
+        <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 6 }}>{livingDesign}</h2>
+        <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>
+          This synthesis uses the Human Design reflections saved in your path. It is a practical MVP summary, not a calculated bodygraph reading.
+        </p>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 14 }}>
+        {saved.map((item) => (
+          <div key={item.title} style={{ display: "flex", justifyContent: "space-between", gap: 14, border: "1px solid rgba(216,168,95,.18)", borderRadius: 14, padding: "12px 14px", background: "rgba(14,10,32,.52)" }}>
+            <span style={{ fontSize: 12, color: "var(--muted)", fontWeight: 700 }}>{item.title}</span>
+            <span style={{ fontSize: 13, color: "var(--text)", textAlign: "right" }}>{item.value}</span>
+          </div>
+        ))}
+      </div>
+
+      {missingCount > 0 && (
+        <div style={{ border: "1px solid rgba(216,168,95,.24)", borderRadius: 14, padding: "14px 16px", background: "rgba(216,168,95,.06)", marginBottom: 14 }}>
+          <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 750, letterSpacing: ".09em", marginBottom: 5 }}>PARTIAL SYNTHESIS</p>
+          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>
+            {missingCount} earlier result{missingCount === 1 ? " is" : "s are"} still missing. You can complete this node now, or return later after finishing more Human Design nodes for a fuller synthesis.
+          </p>
+        </div>
+      )}
+
+      <div style={{ border: "1px solid rgba(255,255,255,.1)", borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.5)", marginBottom: 12 }}>
+        <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 750, letterSpacing: ".09em", marginBottom: 5 }}>HOW IT WORKS TOGETHER</p>
+        <p style={{ fontSize: 13, color: "var(--text)", lineHeight: 1.55 }}>
+          Your Energy Type points to how your energy engages. Authority points to how you choose. The later nodes describe role, sensitivity, flow, signals, and timing. Together, they become a simple experiment: move in the way your energy can sustain.
+        </p>
+      </div>
+      <div style={{ border: "1px solid rgba(160,130,220,.22)", borderRadius: 14, padding: "14px 16px", background: "rgba(80,40,130,.12)", marginBottom: 20 }}>
+        <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 750, letterSpacing: ".09em", marginBottom: 5 }}>REFLECTION</p>
+        <p style={{ fontSize: 13, color: "var(--text)", lineHeight: 1.55 }}>What would change this week if you trusted your energy, timing, and decision rhythm a little more?</p>
+      </div>
+
+      <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
+        {completed ? "Update synthesis" : "Complete node"} &#10003;
+      </button>
+    </div>
+  );
+}
+
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
   "1": { en: "Energy Type",      ru: "Tip",       sub: { en: "Foundation",       ru: "Osnova" } },
   "2": { en: "Authority", ru: "Avtoritet", sub: { en: "Decision making", ru: "Prinyatie resheniy" } },
+  "3": { en: "Profile", ru: "Profil", sub: { en: "Life role", ru: "Rol" } },
+  "4": { en: "Centers", ru: "Tsentry", sub: { en: "Consistency and influence", ru: "Energiya" } },
+  "5": { en: "Channels", ru: "Kanaly", sub: { en: "Energy flow", ru: "Potok" } },
+  "6": { en: "Gates", ru: "Vrata", sub: { en: "Recurring signals", ru: "Temy" } },
+  "7": { en: "Cycles", ru: "Tsikly", sub: { en: "Timing pattern", ru: "Vremya" } },
+  "8": { en: "Living Design", ru: "Zhizn po Dizaynu", sub: { en: "Synthesis", ru: "Tselostnost" } },
 };
 
 export default function HDNodePage() {
@@ -434,6 +919,8 @@ export default function HDNodePage() {
       >
         {nodeId === "1" && <HDNode1 />}
         {nodeId === "2" && <HDNode2 />}
+        {HD_MVP_CONFIGS[nodeId] && <HDMvpQuizNode config={HD_MVP_CONFIGS[nodeId]} />}
+        {nodeId === "8" && <HDNode8 />}
       </NodePage>
     </SkyNodeEntitlementGate>
   );
