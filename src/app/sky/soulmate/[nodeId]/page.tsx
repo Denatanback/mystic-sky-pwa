@@ -1,4 +1,5 @@
 "use client";
+import type { ReactNode } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { NodePage } from "@/components/sky/NodePage";
@@ -28,11 +29,28 @@ const VENUS_LOVE: Record<string, { title: { en: string; ru: string }; style: { e
 
 // ── Attachment quiz ───────────────────────────────────────────────────────────
 type AttachType = "secure" | "anxious" | "avoidant" | "disorganised";
+type HeartLineResult = {
+  title: string;
+  style: string;
+  fear: string;
+  growth: string;
+  notice: string;
+  reflection: string;
+  teaser: string;
+  color: string;
+};
 const ATTACH_TYPES: Record<AttachType, { en: string; ru: string; desc: { en: string; ru: string }; growth: { en: string; ru: string }; color: string }> = {
   secure:       { en: "Secure",       ru: "Nadezhnyy",      desc: { en: "You feel comfortable with closeness and independence. Relationships feel safe and trusting.", ru: "Tebe komfortna i blizost, i nezavisimost. Otnosheniya oschuschayutsya bezopasnymi." }, growth: { en: "Continue modelling healthy love for others.", ru: "Prodolzhay modelirovat zdorovuyu lyubov dlya drugikh." }, color: "#7ab04a" },
   anxious:      { en: "Anxious",      ru: "Trevozhnyy",     desc: { en: "You crave closeness but fear abandonment. Reassurance is key — and working on self-soothing.", ru: "Ty zhazhdesh blizosti, no boishsya byt pokinutym. Klyuch — samouspokoenie." }, growth: { en: "Practice self-soothing and build trust in your own worth.", ru: "Praktikuy samouspokoenie i stroy doverie k svoey tsennosti." }, color: "#d8a85f" },
   avoidant:     { en: "Avoidant",     ru: "Izbegayuschiy",    desc: { en: "You value independence and can withdraw from closeness. Vulnerability feels risky.", ru: "Ty tsenish nezavisimost i mozhesh izbegat blizosti. Uyazvimost oschuschaetsya riskovannoy." }, growth: { en: "Practise letting people in — vulnerability is strength.", ru: "Praktikuy vpuskanie lyudey — uyazvimost — eto sila." }, color: "#7ab8d8" },
   disorganised: { en: "Disorganised", ru: "Dezorganizovannyy", desc: { en: "You both crave and fear closeness. This can reflect early relationship patterns and invites gentle self-reflection.", ru: "Ty i zhazhdesh, i boishsya blizosti. Eto mozhet otrazhat rannie patterny otnosheniy i priglashat k myagkoy samorefleksii." }, growth: { en: "Self-compassion and qualified professional support can be helpful tools for you.", ru: "Samosostradanie i kvalifitsirovannaya professionalnaya podderzhka mogut byt poleznymi instrumentami dlya tebya." }, color: "#9070d8" },
+};
+
+const HEART_LINES: Record<AttachType, HeartLineResult> = {
+  secure: { title: "Slow Trust", style: "Your answers point to a heart that bonds through consistency. You may open slowly, but each honest action becomes a thread of safety.", fear: "Your fear in love may be being rushed, pressured, or asked to trust words before behavior has had time to become real.", growth: "The bond grows through reliability, gentle pacing, and proof that care is still present after ordinary conflict.", notice: "You may notice your body softening around people who do not demand instant access to your inner world.", reflection: "What pace lets my heart open without bracing?", teaser: "Next, Attraction Pattern reveals the dynamic this Heart Line tends to draw in.", color: "#7ab04a" },
+  anxious: { title: "Magnetic Bond", style: "Your answers point to a heart that bonds through intensity, emotional charge, and the feeling that someone has reached a hidden room inside you.", fear: "Your fear in love may be that the spark will vanish unless you keep reaching, proving, or reading every signal.", growth: "The bond grows when chemistry is paired with steadiness, direct reassurance, and enough space to breathe.", notice: "You may notice fast attachment to people who feel rare, charged, or difficult to fully know.", reflection: "Can I let attraction be powerful without letting it become proof of destiny?", teaser: "Next, Attraction Pattern reveals what kind of dynamic this magnetism repeats.", color: "#d8a85f" },
+  avoidant: { title: "Freedom Bond", style: "Your answers point to a heart that bonds when there is air, autonomy, and room to remain fully yourself.", fear: "Your fear in love may be being consumed, managed, or made responsible for someone else's emotional weather.", growth: "The bond grows when closeness feels chosen, not captured, and when space is named with kindness instead of disappearance.", notice: "You may notice attraction to people who respect your rhythm, but also a reflex to pull away when tenderness becomes real.", reflection: "Where can I ask for space without leaving the bond?", teaser: "Next, Attraction Pattern reveals which dynamics awaken your need for freedom.", color: "#7ab8d8" },
+  disorganised: { title: "Healing Bond", style: "Your answers point to a heart that bonds through tenderness, repair, and the hope that love can become a place where old pain is met gently.", fear: "Your fear in love may be that pain will repeat unless you manage it first, fix it first, or understand it completely.", growth: "The bond grows through mutual care, clear boundaries, and repair that does not make either person the healer of everything.", notice: "You may notice deep compassion, but also a pull toward wounded people whose needs become louder than your own.", reflection: "Where can love be healing without becoming a rescue role?", teaser: "Next, Attraction Pattern reveals the relationship dynamic this healing instinct may attract.", color: "#9070d8" },
 };
 
 const ATTACH_Q: { q: { en: string; ru: string }; opts: { label: { en: string; ru: string }; score: AttachType }[] }[] = [
@@ -82,13 +100,13 @@ function calcAttach(answers: number[]): AttachType {
 
 type SoulmateType = "protector" | "adventurer" | "mystic" | "creator" | "intellectual" | "healer";
 
-const SOULMATE_TYPES: Record<SoulmateType, { en: string; draws: string; feel: string; challenge: string; color: string }> = {
-  protector: { en: "Protector", draws: "They are drawn to your tenderness, loyalty, and the way you make love feel emotionally real.", feel: "The connection may feel steady, safe, and deeply reassuring, like someone finally choosing to stay.", challenge: "The mirror is learning not to confuse protection with control, or safety with predictability.", color: "#7ab04a" },
-  adventurer: { en: "Adventurer", draws: "They are drawn to your curiosity, spark, and the parts of you that still want life to surprise you.", feel: "The connection may feel alive, playful, and expansive, like a door opening into a bigger world.", challenge: "The mirror is learning how to keep freedom and commitment in the same room.", color: "#d8a85f" },
-  mystic: { en: "Mystic", draws: "They are drawn to your intuition, emotional depth, and the quiet mystery you do not explain to everyone.", feel: "The connection may feel fated, dreamlike, and strangely familiar before it fully makes sense.", challenge: "The mirror is learning to ground the magic instead of disappearing into fantasy or silence.", color: "#9070d8" },
-  creator: { en: "Creator", draws: "They are drawn to your expressiveness, imagination, and the way your feelings become beauty.", feel: "The connection may feel inspiring, romantic, and creatively charged, as if you bring out each other's color.", challenge: "The mirror is learning to be seen clearly, not only admired or idealized.", color: "#e06090" },
-  intellectual: { en: "Intellectual", draws: "They are drawn to your mind, your questions, and the way conversation can become intimacy for you.", feel: "The connection may feel mentally electric, honest, and full of discovery.", challenge: "The mirror is learning to let the heart speak before the mind explains everything away.", color: "#7ab8d8" },
-  healer: { en: "Healer", draws: "They are drawn to your softness, empathy, and the part of you that understands pain without judging it.", feel: "The connection may feel gentle, restorative, and emotionally cleansing.", challenge: "The mirror is learning to receive care without turning love into a rescue mission.", color: "#c0a0d8" },
+const SOULMATE_TYPES: Record<SoulmateType, { en: string; draws: string; feel: string; challenge: string; notice: string; reflection: string; teaser: string; color: string }> = {
+  protector: { en: "Protector", draws: "Your answers point to someone who may be drawn to your tenderness, loyalty, and the way you make love feel emotionally real.", feel: "The connection may feel steady, safe, and deeply reassuring, like someone finally choosing to stay through ordinary days, not only dramatic moments.", challenge: "The mirror is learning not to confuse protection with control, or safety with predictability.", notice: "You may notice them showing love through consistency, practical care, and quiet watchfulness rather than big declarations.", reflection: "Where can I receive steadiness without testing it?", teaser: "Next, your Heart Line reveals how your own heart forms emotional bonds.", color: "#7ab04a" },
+  adventurer: { en: "Adventurer", draws: "Your answers point to someone who may be drawn to your curiosity, spark, and the parts of you that still want life to surprise you.", feel: "The connection may feel alive, playful, and expansive, like a door opening into a bigger world where both people get to keep growing.", challenge: "The mirror is learning how to keep freedom and commitment in the same room.", notice: "You may notice them inviting movement, honesty, risk, travel, laughter, or a less scripted version of love.", reflection: "What kind of freedom helps love deepen instead of drift?", teaser: "Next, your Heart Line reveals the pace your heart needs when the spark becomes real.", color: "#d8a85f" },
+  mystic: { en: "Mystic", draws: "Your answers point to someone who may be drawn to your intuition, emotional depth, and the quiet mystery you do not explain to everyone.", feel: "The connection may feel fated, dreamlike, and strangely familiar before it fully makes sense.", challenge: "The mirror is learning to ground the magic instead of disappearing into fantasy or silence.", notice: "You may notice meaningful coincidences, charged eye contact, and a sense that the bond speaks before either of you does.", reflection: "What would help the magic become clear, kind, and real?", teaser: "Next, your Heart Line reveals how your heart opens when a bond feels bigger than logic.", color: "#9070d8" },
+  creator: { en: "Creator", draws: "Your answers point to someone who may be drawn to your expressiveness, imagination, and the way your feelings become beauty.", feel: "The connection may feel inspiring, romantic, and creatively charged, as if you bring out each other's color.", challenge: "The mirror is learning to be seen clearly, not only admired or idealized.", notice: "You may notice playful intensity, shared taste, late-night ideas, and the desire to make something from the feeling.", reflection: "Where do I want to be witnessed, not only adored?", teaser: "Next, your Heart Line reveals what helps beauty become emotional safety.", color: "#e06090" },
+  intellectual: { en: "Intellectual", draws: "Your answers point to someone who may be drawn to your mind, your questions, and the way conversation can become intimacy for you.", feel: "The connection may feel mentally electric, honest, and full of discovery.", challenge: "The mirror is learning to let the heart speak before the mind explains everything away.", notice: "You may notice messages that stretch for hours, precise language, and attraction that grows through being understood.", reflection: "What feeling am I ready to say before I can perfectly explain it?", teaser: "Next, your Heart Line reveals how thought and tenderness meet in you.", color: "#7ab8d8" },
+  healer: { en: "Healer", draws: "Your answers point to someone who may be drawn to your softness, empathy, and the part of you that understands pain without judging it.", feel: "The connection may feel gentle, restorative, and emotionally cleansing.", challenge: "The mirror is learning to receive care without turning love into a rescue mission.", notice: "You may notice calm after hard conversations, an instinct to protect each other's wounds, and a need for careful boundaries.", reflection: "Where can care stay mutual instead of becoming a role?", teaser: "Next, your Heart Line reveals how your heart receives tenderness.", color: "#c0a0d8" },
 };
 
 const SOULMATE_TYPE_Q: { q: { en: string; ru: string }; opts: { label: { en: string; ru: string }; score: Partial<Record<SoulmateType, number>> }[] }[] = [
@@ -131,6 +149,24 @@ function normalizeSoulmateType(value: unknown): SoulmateType | null {
   if (typeof value !== "string") return null;
   const normalized = value.trim().toLowerCase().replace(/\s+/g, "_");
   return normalized in SOULMATE_TYPES ? normalized as SoulmateType : null;
+}
+
+function ResultSection({ color, label, body }: { color: string; label: string; body: string }) {
+  return (
+    <div style={{ border: `1px solid ${color}44`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
+      <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{label}</p>
+      <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.58 }}>{body}</p>
+    </div>
+  );
+}
+
+function TeaserBox({ children }: { children: ReactNode }) {
+  return (
+    <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 14, padding: "13px 15px", background: "rgba(216,168,95,.06)", margin: "8px 0 18px" }}>
+      <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".09em", marginBottom: 5 }}>NEXT NODE</p>
+      <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{children}</p>
+    </div>
+  );
 }
 
 // ── Node 1: Venus Sign ────────────────────────────────────────────────────────
@@ -279,15 +315,17 @@ function SMNode1() {
           </div>
 
           {[
-            { label: "WHAT DRAWS THEM TO YOU", body: data.draws },
-            { label: "WHAT THE CONNECTION MAY FEEL LIKE", body: data.feel },
-            { label: "POTENTIAL CHALLENGE / MIRROR", body: data.challenge },
+            { label: "WHAT THIS MEANS", body: data.draws },
+            { label: "HOW IT MAY SHOW UP NOW", body: `${data.feel} ${data.notice}` },
+            { label: "WHAT TO NOTICE NEXT", body: data.challenge },
           ].map((item) => (
             <div key={item.label} style={{ border: `1px solid ${data.color}44`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
               <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{item.label}</p>
               <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{item.body}</p>
             </div>
           ))}
+          <ResultSection color={data.color} label="REFLECTION QUESTION" body={data.reflection} />
+          <TeaserBox>{data.teaser}</TeaserBox>
 
           <div style={{ marginBottom: 20 }} />
           <button onClick={() => { completeNode(DISCIPLINE, 1, { venusSign: result }); router.push("/sky/soulmate"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
@@ -306,7 +344,15 @@ function SMNode2() {
   const [answers, setAnswers] = useState<number[]>([]);
   const [result, setResult] = useState<AttachType | null>(null);
 
-  useEffect(() => { startNode(DISCIPLINE, 2); }, []);
+  useEffect(() => {
+    const saved = getSavedString(2, "attachment") as AttachType;
+    if (saved && saved in HEART_LINES) {
+      setResult(saved);
+      setQIdx(ATTACH_Q.length);
+      return;
+    }
+    startNode(DISCIPLINE, 2);
+  }, []);
 
   const answer = (i: number) => {
     const next = [...answers, i];
@@ -316,7 +362,7 @@ function SMNode2() {
   };
 
   const q = qIdx >= 0 && qIdx < ATTACH_Q.length ? ATTACH_Q[qIdx] : null;
-  const attachData = result ? ATTACH_TYPES[result] : null;
+  const attachData = result ? HEART_LINES[result] : null;
 
   return (
     <div>
@@ -361,17 +407,15 @@ function SMNode2() {
             <div style={{ width: 100, height: 100, margin: "0 auto 12px", borderRadius: "50%", background: `radial-gradient(circle, ${attachData.color}33, rgba(14,10,32,.95))`, border: `2px solid ${attachData.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 30px ${attachData.color}44` }}>
               <span style={{ fontSize: 48 }}>&#10084;</span>
             </div>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{attachData.en}</h2>
-            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{false ? "Tvoy stil privyazannosti" : "Your attachment style"}</p>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{attachData.title}</h2>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>Your Heart Line</p>
           </div>
 
-          <div style={{ border: `1px solid ${attachData.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
-            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{attachData.desc.en}</p>
-          </div>
-          <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 14, padding: "14px 16px", background: "rgba(216,168,95,.05)", marginBottom: 20 }}>
-            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{false ? "PUT ROSTA" : "GROWTH PATH"}</p>
-            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{attachData.growth.en}</p>
-          </div>
+          <ResultSection color={attachData.color} label="WHAT THIS MEANS" body={attachData.style} />
+          <ResultSection color={attachData.color} label="HOW IT MAY SHOW UP NOW" body={`${attachData.fear} ${attachData.notice}`} />
+          <ResultSection color={attachData.color} label="WHAT TO NOTICE NEXT" body={attachData.growth} />
+          <ResultSection color={attachData.color} label="REFLECTION QUESTION" body={attachData.reflection} />
+          <TeaserBox>{attachData.teaser}</TeaserBox>
 
           <button onClick={() => { completeNode(DISCIPLINE, 2, { attachment: result }); router.push("/sky/soulmate"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
             {false ? "Zavershit uzel ✓" : "Complete node ✓"}
@@ -389,6 +433,9 @@ type SoulmateMvpResult = {
   desc: string;
   signal: string;
   reflection: string;
+  trigger?: string;
+  warning?: string;
+  teaser?: string;
   color: string;
 };
 
@@ -411,11 +458,14 @@ const SOULMATE_MVP_CONFIGS: Record<string, SoulmateMvpConfig> = {
     title: "Discover Your Attraction Pattern",
     intro: "This MVP does not predict a person. Your answers point to the emotional pattern that may shape who feels magnetic to you.",
     startLabel: "Find my attraction pattern",
-    question: "What tends to make someone feel magnetic to you first?",
+    question: "Which relationship dynamic keeps feeling strangely familiar?",
     results: {
-      safety: { key: "safety", title: "Safety Magnetism", desc: "Your answers point to attraction through steadiness, loyalty, and the feeling that your heart can exhale.", signal: "You may be drawn to people who make love feel consistent and emotionally real.", reflection: "Where can safety stay alive without becoming control?", color: "#7ab04a" },
-      mystery: { key: "mystery", title: "Mystery Magnetism", desc: "Your answers point to attraction through depth, intensity, subtle signals, and the feeling of a hidden story.", signal: "You may be drawn to people who awaken curiosity, intuition, and emotional risk.", reflection: "What helps mystery become intimacy instead of confusion?", color: "#9070d8" },
-      spark: { key: "spark", title: "Spark Magnetism", desc: "Your answers point to attraction through play, chemistry, movement, and a sense of possibility.", signal: "You may be drawn to people who make life feel wider, brighter, and less predictable.", reflection: "How can excitement include patience and presence?", color: "#d8a85f" },
+      harbor: { key: "harbor", title: "The Safe Harbor", desc: "Your answers point to a repeating attraction to steadiness: someone whose presence makes your heart exhale before it understands why.", signal: "The recurring pattern may be choosing people who feel calm, loyal, and emotionally legible.", trigger: "The attraction trigger is consistency after uncertainty, or a person who makes ordinary care feel almost sacred.", warning: "Warning sign: safety begins to become control, or comfort replaces honest desire.", reflection: "Where can safety stay alive without becoming a smaller life?", teaser: "Next, Relationship Mirror reveals what this pattern reflects back about your needs.", color: "#7ab04a" },
+      firestarter: { key: "firestarter", title: "The Firestarter", desc: "Your answers point to attraction through chemistry, boldness, and the person who wakes up the parts of you that were becoming too quiet.", signal: "The recurring pattern may be bonds that begin quickly, feel vivid, and ask you to risk more honesty.", trigger: "The attraction trigger is aliveness: laughter, directness, creative tension, or the sense that life is suddenly moving again.", warning: "Warning sign: intensity becomes the only proof of love, and steadiness starts to feel boring.", reflection: "How can I let fire warm the bond without letting it burn the ground?", teaser: "Next, Relationship Mirror reveals what this spark is trying to show you.", color: "#d8a85f" },
+      mirror: { key: "mirror", title: "The Mirror", desc: "Your answers point to attraction through recognition: someone who reflects hidden parts of you with uncomfortable precision.", signal: "The recurring pattern may be relationships that accelerate self-knowledge and make old defenses visible.", trigger: "The attraction trigger is being seen in a way that feels both relieving and exposing.", warning: "Warning sign: the bond becomes a self-improvement trial instead of a place where tenderness can rest.", reflection: "What is this person reflecting that I can meet without losing myself?", teaser: "Next, Relationship Mirror deepens the lesson this dynamic keeps revealing.", color: "#e06090" },
+      distant: { key: "distant", title: "The Distant Star", desc: "Your answers point to attraction toward people who feel luminous, rare, or slightly unreachable.", signal: "The recurring pattern may be longing for someone whose distance lets fantasy stay bright.", trigger: "The attraction trigger is mystery mixed with scarcity: a person who gives just enough light to keep your heart looking up.", warning: "Warning sign: you begin loving potential, absence, or timing more than the real exchange in front of you.", reflection: "What happens when I choose the love that can actually meet me?", teaser: "Next, Relationship Mirror reveals what distance protects in your heart.", color: "#9070d8" },
+      teacher: { key: "teacher", title: "The Soul Teacher", desc: "Your answers point to attraction through growth: someone who arrives like a lesson, a doorway, or a catalyst.", signal: "The recurring pattern may be relationships that change your direction, language, standards, or sense of self.", trigger: "The attraction trigger is wisdom, difference, or the feeling that this person carries a key to your next chapter.", warning: "Warning sign: the lesson becomes more important than mutual care.", reflection: "Can I receive the lesson without making the teacher my destination?", teaser: "Next, Relationship Mirror reveals what this teacher awakens in you.", color: "#7ab8d8" },
+      unfinished: { key: "unfinished", title: "The Unfinished Story", desc: "Your answers point to attraction through emotional incompletion: the person who feels familiar before the relationship has earned that depth.", signal: "The recurring pattern may be returning to bonds that feel unresolved, interrupted, or almost fated.", trigger: "The attraction trigger is a sense of history, near-misses, lingering questions, or a goodbye that never fully landed.", warning: "Warning sign: longing keeps the bond alive longer than reciprocity does.", reflection: "What ending am I asking a new person to rewrite?", teaser: "Next, Relationship Mirror reveals what this old story is asking you to reclaim.", color: "#c0a0d8" },
     },
   },
   "4": {
@@ -536,12 +586,18 @@ function SoulmateMvpNode({ config }: { config: SoulmateMvpConfig }) {
             <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{result.title}</h2>
             <p style={{ fontSize: 12, color: "var(--gold-2)" }}>Your answers point to this relationship pattern</p>
           </div>
-          {[{ label: "INTERPRETATION", body: result.desc }, { label: "SIGNAL TO NOTICE", body: result.signal }, { label: "REFLECTION", body: result.reflection }].map((item) => (
+          {[
+            { label: config.nodeId === 3 ? "WHAT THIS MEANS" : "INTERPRETATION", body: result.desc },
+            { label: config.nodeId === 3 ? "HOW IT MAY SHOW UP NOW" : "SIGNAL TO NOTICE", body: config.nodeId === 3 ? `${result.trigger ?? ""} ${result.signal}`.trim() : result.signal },
+            { label: config.nodeId === 3 ? "WHAT TO NOTICE NEXT" : "REFLECTION", body: config.nodeId === 3 ? result.warning ?? result.reflection : result.reflection },
+          ].map((item) => (
             <div key={item.label} style={{ border: `1px solid ${result.color}44`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
               <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{item.label}</p>
               <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{item.body}</p>
             </div>
           ))}
+          {config.nodeId === 3 && <ResultSection color={result.color} label="REFLECTION QUESTION" body={result.reflection} />}
+          {config.nodeId === 3 && result.teaser && <TeaserBox>{result.teaser}</TeaserBox>}
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)", marginTop: 10 }}>Complete node</button>
         </div>
       )}

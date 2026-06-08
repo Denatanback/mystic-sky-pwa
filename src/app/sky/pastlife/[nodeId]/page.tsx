@@ -116,18 +116,23 @@ const PAST_LIFE_ROLES: Record<PastLifeRole, {
   en: string;
   desc: string;
   gifts: string[];
+  shadow: string;
   lesson: string;
+  echo: string;
+  notice: string;
+  reflection: string;
+  teaser: string;
   color: string;
   emoji: string;
 }> = {
-  healer: { en: "Healer", desc: "Your answers point to a past-life role centered on repair, comfort, and restoring what was wounded.", gifts: ["Calming presence", "Emotional repair", "Deep compassion"], lesson: "This role may reflect a recurring pattern of helping others without forgetting your own needs.", color: "#7ab04a", emoji: "&#10045;" },
-  warrior: { en: "Warrior", desc: "Your answers point to a past-life role shaped by courage, protection, and decisive action under pressure.", gifts: ["Courage", "Protection", "Endurance"], lesson: "This role may reflect a pattern of learning when to fight, when to soften, and when to trust peace.", color: "#e05050", emoji: "&#9876;" },
-  priestess: { en: "Priest / Priestess", desc: "Your answers point to a past-life role devoted to ritual, intuition, and carrying meaning for others.", gifts: ["Intuition", "Ritual", "Spiritual devotion"], lesson: "This role may reflect a recurring pattern of trusting inner knowing without isolating yourself from ordinary life.", color: "#9070d8", emoji: "&#9789;" },
-  scientist: { en: "Scientist", desc: "Your answers point to a past-life role that studied patterns, solved problems, and searched for hidden laws.", gifts: ["Analysis", "Discovery", "Precision"], lesson: "This role may reflect a pattern of balancing the mind's certainty with the soul's mystery.", color: "#7ab8d8", emoji: "&#9883;" },
-  artist: { en: "Artist", desc: "Your answers point to a past-life role that transformed emotion, beauty, and longing into visible form.", gifts: ["Expression", "Beauty", "Emotional truth"], lesson: "This role may reflect a pattern of letting yourself be seen instead of hiding your sensitivity.", color: "#e06090", emoji: "&#10022;" },
-  explorer: { en: "Explorer", desc: "Your answers point to a past-life role drawn toward movement, foreign horizons, and unknown paths.", gifts: ["Freedom", "Curiosity", "Adaptability"], lesson: "This role may reflect a recurring pattern of seeking freedom while learning where you truly belong.", color: "#d8a85f", emoji: "&#10023;" },
-  teacher: { en: "Teacher", desc: "Your answers point to a past-life role that carried knowledge, guided others, and translated experience into wisdom.", gifts: ["Guidance", "Patience", "Wisdom"], lesson: "This role may reflect a pattern of sharing wisdom without needing to carry everyone's path for them.", color: "#c0a0d8", emoji: "&#10021;" },
-  ruler: { en: "Ruler", desc: "Your answers point to a past-life role of leadership, responsibility, and decisions that affected many lives.", gifts: ["Leadership", "Responsibility", "Command"], lesson: "This role may reflect a recurring pattern of using power with humility instead of control.", color: "#d8a85f", emoji: "&#9812;" },
+  healer: { en: "Healer", desc: "Your answers point to a past-life role centered on repair, comfort, and restoring what was wounded.", gifts: ["Calming presence", "Emotional repair", "Deep compassion"], shadow: "The old lesson may be over-giving, carrying pain that was never yours to solve, or becoming needed in order to feel safe.", lesson: "This role may ask you to let care become mutual, not endless.", echo: "You may notice people telling you secrets quickly, leaning on your warmth, or expecting you to know what will soothe them.", notice: "Notice where your body relaxes when help is received back, not only offered.", reflection: "Where do I confuse being loved with being useful?", teaser: "Next, your Karmic Pattern reveals the emotional loop this role may still be trying to heal.", color: "#7ab04a", emoji: "&#10045;" },
+  warrior: { en: "Warrior", desc: "Your answers point to a past-life role shaped by courage, protection, and decisive action under pressure.", gifts: ["Courage", "Protection", "Endurance"], shadow: "The old lesson may be staying armored after the danger has passed, or treating softness as a risk.", lesson: "This role may ask you to choose peace without abandoning your strength.", echo: "You may notice a fast protective instinct, impatience with helplessness, or a need to be ready before anyone asks.", notice: "Notice the difference between true danger and an old alarm waking up.", reflection: "Where can I let myself be protected too?", teaser: "Next, your Karmic Pattern shows what your courage may be defending underneath.", color: "#e05050", emoji: "&#9876;" },
+  priestess: { en: "Priest / Priestess", desc: "Your answers point to a past-life role devoted to ritual, intuition, and carrying meaning for others.", gifts: ["Intuition", "Ritual", "Spiritual devotion"], shadow: "The old lesson may be isolation, secrecy, or trusting the unseen so deeply that ordinary needs become neglected.", lesson: "This role may ask you to bring your knowing into daily life gently.", echo: "You may notice strong symbols, vivid dreams, or the sense that certain places and people arrive with messages.", notice: "Notice when your intuition feels calm and embodied rather than urgent or fearful.", reflection: "What sacred part of me wants to live in daylight?", teaser: "Next, your Karmic Pattern reveals the repeating emotional vow beneath this gift.", color: "#9070d8", emoji: "&#9789;" },
+  scientist: { en: "Scientist", desc: "Your answers point to a past-life role that studied patterns, solved problems, and searched for hidden laws.", gifts: ["Analysis", "Discovery", "Precision"], shadow: "The old lesson may be hiding in certainty, needing proof before trusting feeling, or trying to solve mysteries that ask to be lived.", lesson: "This role may ask you to let the mind become a lamp, not a cage.", echo: "You may notice that you read systems quickly, chase reasons, or feel restless when emotion has no clear explanation.", notice: "Notice where curiosity opens your heart instead of distancing you from it.", reflection: "What feeling am I trying to understand before I allow it?", teaser: "Next, your Karmic Pattern shows which unanswered question keeps returning.", color: "#7ab8d8", emoji: "&#9883;" },
+  artist: { en: "Artist", desc: "Your answers point to a past-life role that transformed emotion, beauty, and longing into visible form.", gifts: ["Expression", "Beauty", "Emotional truth"], shadow: "The old lesson may be fear of being seen, depending on praise, or turning pain into beauty before it has been held.", lesson: "This role may ask you to let expression be honest before it is perfect.", echo: "You may notice sudden creative longing, sensitivity to atmosphere, or a private ache when your real feelings stay hidden.", notice: "Notice what you make, wear, write, save, or arrange when your soul wants to speak.", reflection: "Where am I editing my truth to stay lovable?", teaser: "Next, your Karmic Pattern reveals the emotional story behind your visibility.", color: "#e06090", emoji: "&#10022;" },
+  explorer: { en: "Explorer", desc: "Your answers point to a past-life role drawn toward movement, foreign horizons, and unknown paths.", gifts: ["Freedom", "Curiosity", "Adaptability"], shadow: "The old lesson may be leaving before roots can form, chasing distance when intimacy asks you to stay present.", lesson: "This role may ask you to find belonging without losing freedom.", echo: "You may notice restlessness, attraction to faraway places, or a feeling that your real life is always just beyond the next threshold.", notice: "Notice which journeys make you more present, not only more unreachable.", reflection: "What kind of home would not feel like a trap?", teaser: "Next, your Karmic Pattern shows what your spirit may be trying to outrun.", color: "#d8a85f", emoji: "&#10023;" },
+  teacher: { en: "Teacher", desc: "Your answers point to a past-life role that carried knowledge, guided others, and translated experience into wisdom.", gifts: ["Guidance", "Patience", "Wisdom"], shadow: "The old lesson may be responsibility for everyone else's growth, or giving answers before your own heart has been heard.", lesson: "This role may ask you to share wisdom without carrying the whole path.", echo: "You may notice people asking your opinion, looking to you for steadiness, or assuming you can explain what they feel.", notice: "Notice when guidance feels generous and when it becomes a burden.", reflection: "Where can I let others learn without rescuing them from the lesson?", teaser: "Next, your Karmic Pattern reveals the vow beneath your sense of responsibility.", color: "#c0a0d8", emoji: "&#10021;" },
+  ruler: { en: "Ruler", desc: "Your answers point to a past-life role of leadership, responsibility, and decisions that affected many lives.", gifts: ["Leadership", "Responsibility", "Command"], shadow: "The old lesson may be control, loneliness at the top, or believing love must be earned through competence.", lesson: "This role may ask you to let power become stewardship, not armor.", echo: "You may notice others expecting you to decide, your standards rising quickly, or discomfort when no one is holding the center.", notice: "Notice where influence can become quieter, kinder, and still effective.", reflection: "What would I choose if I did not have to prove I can handle it?", teaser: "Next, your Karmic Pattern shows the emotional cost of old power.", color: "#d8a85f", emoji: "&#9812;" },
 };
 
 const PAST_LIFE_ROLE_Q: { q: { en: string; ru: string }; opts: { label: { en: string; ru: string }; scores: Partial<Record<PastLifeRole, number>> }[] }[] = [
@@ -185,8 +190,38 @@ function normalizePastLifeRole(value: unknown): PastLifeRole | null {
   return normalized in PAST_LIFE_ROLES ? normalized as PastLifeRole : null;
 }
 
+function ResultSection({ color, label, body }: { color: string; label: string; body: string }) {
+  return (
+    <div style={{ border: `1px solid ${color}44`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
+      <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{label}</p>
+      <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.58 }}>{body}</p>
+    </div>
+  );
+}
+
+function TeaserBox({ children }: { children: ReactNode }) {
+  return (
+    <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 14, padding: "13px 15px", background: "rgba(216,168,95,.06)", margin: "8px 0 18px" }}>
+      <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".09em", marginBottom: 5 }}>NEXT NODE</p>
+      <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{children}</p>
+    </div>
+  );
+}
+
 // ── Karma types ───────────────────────────────────────────────────────────────
 type KarmaTheme = "worth" | "trust" | "voice" | "freedom" | "love" | "power" | "surrender";
+type KarmaPattern = {
+  en: string;
+  pattern: string;
+  trigger: string;
+  lessonText: string;
+  healing: string;
+  now: string;
+  notice: string;
+  reflection: string;
+  teaser: string;
+  color: string;
+};
 const KARMA_THEMES: Record<KarmaTheme, { en: string; ru: string; lesson: { en: string; ru: string }; gift: { en: string; ru: string }; color: string }> = {
   worth:    { en: "Self-Worth",    ru: "Samotsennost",   lesson: { en: "Learning to value yourself without external validation.", ru: "Uchitsya tsenit sebya bez vneshnego podtverzhdeniya." }, gift: { en: "You have deep empathy for others' struggles with self-acceptance.", ru: "U tebya glubokaya empatiya k chuzhoy borbe s samoprinyatiem." }, color: "#d8a85f" },
   trust:    { en: "Trust",        ru: "Doverie",        lesson: { en: "Opening to trust — in others, in life, in the universe.", ru: "Otkrytsya doveriyu — k drugim, k zhizni, k Vselennoy." }, gift: { en: "Hard-won discernment — you know authentic safety when you find it.", ru: "Vystradannaya pronitsatelnost — ty uznaesh podlinnuyu bezopasnost." }, color: "#7ab8d8" },
@@ -195,6 +230,16 @@ const KARMA_THEMES: Record<KarmaTheme, { en: string; ru: string; lesson: { en: s
   love:     { en: "Love",          ru: "Lyubov",         lesson: { en: "Learning to love without losing yourself in the other.", ru: "Uchitsya lyubit, ne rastvoryayas v drugom." }, gift: { en: "Your capacity for love, once balanced, is extraordinary.", ru: "Tvoya sposobnost lyubit, buduchi sbalansirovannoy, neobychayna." }, color: "#e06090" },
   power:    { en: "Power",         ru: "Sila",           lesson: { en: "Owning your power without dominating — or diminishing yourself.", ru: "Prinyat svoyu silu bez dominirovaniya i bez samounichizheniya." }, gift: { en: "You can lead with both strength and humility.", ru: "Ty mozhesh vesti s siloy i smireniem odnovremenno." }, color: "#e05050" },
   surrender: { en: "Surrender",   ru: "Prinyatie",       lesson: { en: "Releasing the need to control outcomes and trusting the divine.", ru: "Otpustit potrebnost kontrolirovat iskhody i doveritsya vysshemu." }, gift: { en: "You develop extraordinary peace and acceptance.", ru: "Ty razvivaesh neobychaynyy pokoy i prinyatie." }, color: "#c0a0d8" },
+};
+
+const KARMA_PATTERNS: Record<KarmaTheme, KarmaPattern> = {
+  love: { en: "Unfinished Love", pattern: "Your answers point to a bond pattern that can feel unresolved, fated, or emotionally open-ended.", trigger: "Intense chemistry, unavailable people, endings without clarity, or memories that keep glowing may wake this loop.", lessonText: "The lesson may be learning to honor love without letting longing become a life direction.", healing: "Healing direction: grieving what did not complete, choosing present reciprocity, and letting mystery become tenderness rather than obsession.", now: "You may notice old feelings returning through new faces, or a pull toward people who feel familiar before they feel available.", notice: "Notice whether the bond is feeding your present life or keeping you loyal to an absence.", reflection: "What part of my heart is still waiting for a scene that already ended?", teaser: "Next, your Past Life Theme reveals the symbolic world around this longing.", color: "#c0a0d8" },
+  worth: { en: "Burden of Duty", pattern: "Your answers point to an old emotional contract around responsibility, obligation, and being the one who must endure.", trigger: "Being needed, disappointing others, or resting while something remains unfinished may activate this pattern.", lessonText: "The lesson may be learning that devotion does not require self-erasure.", healing: "Healing direction: shared responsibility, cleaner boundaries, and letting support arrive before you collapse.", now: "You may notice yourself becoming reliable before you are honest, or saying yes while a quieter part of you has already gone numb.", notice: "Notice where duty feels sacred and where it has become fear in a noble costume.", reflection: "What responsibility am I allowed to return to its rightful owner?", teaser: "Next, your Past Life Theme shows where this burden may have first become mythic.", color: "#d8a85f" },
+  trust: { en: "Abandonment Loop", pattern: "Your answers point to a repeating fear that love may vanish, even when nothing obvious has happened yet.", trigger: "Distance, slow replies, emotional ambiguity, or a shift in warmth may wake the old story.", lessonText: "The lesson may be learning to stay close to yourself before reaching for proof that another person will stay.", healing: "Healing begins with small acts of inner reassurance, honest requests, and choosing people whose presence is consistent.", now: "You may notice yourself scanning for signs, testing whether others care, or feeling younger inside when connection feels uncertain.", notice: "Notice the moment your body starts preparing for loss before the present has actually left.", reflection: "What helps me feel held without asking someone else to erase every fear?", teaser: "Next, your Past Life Theme gives this pattern a symbolic setting and story.", color: "#e06090" },
+  voice: { en: "Silenced Voice", pattern: "Your answers point to a repeating pattern around withheld truth, swallowed anger, or words that arrive too late.", trigger: "Dismissal, conflict, strong authority, or being misunderstood may make your voice retreat.", lessonText: "The lesson may be learning that truth can be spoken with care and still remain powerful.", healing: "Healing direction: naming needs earlier, practicing small honest sentences, and letting your body feel safe while you speak.", now: "You may notice delayed reactions, private rehearsals, or a sense that your real answer appears only after the moment passes.", notice: "Notice when silence is wisdom and when it is an old protection choosing for you.", reflection: "What truth wants to be spoken before it turns into distance?", teaser: "Next, your Past Life Theme gives this voice a place, a room, and a memory.", color: "#9070d8" },
+  power: { en: "Fear of Power", pattern: "Your answers point to a repeating tension around visibility, influence, and the fear of what happens when you become strong.", trigger: "Being seen, making decisions, receiving praise, or holding authority may stir this pattern.", lessonText: "The lesson may be learning that power can be clean, relational, and guided by conscience.", healing: "Healing direction: taking one visible step at a time, owning desire without apology, and choosing influence that protects rather than dominates.", now: "You may notice yourself shrinking after success, doubting your right to lead, or attracting people who test your boundaries.", notice: "Notice where humility is genuine and where it is fear of consequence.", reflection: "What would change if my power did not have to become control?", teaser: "Next, your Past Life Theme shows the stage where power once carried a cost.", color: "#e05050" },
+  freedom: { en: "Exile Pattern", pattern: "Your answers point to an old feeling of being outside the circle, different, displaced, or hard to fully claim.", trigger: "Groups, family expectations, rejection, or places where you must hide a part of yourself may wake the exile memory.", lessonText: "The lesson may be learning belonging without abandoning your difference.", healing: "Healing direction: choosing communities that can hold your whole self, and building home from truth rather than approval.", now: "You may notice yourself leaving before you are rejected, softening your strangeness, or feeling homesick even among familiar people.", notice: "Notice who makes your nervous system feel included without requiring performance.", reflection: "Where do I still act like belonging must be earned by becoming smaller?", teaser: "Next, your Past Life Theme reveals the landscape around this search for home.", color: "#7ab8d8" },
+  surrender: { en: "Exile Pattern", pattern: "Your answers point to an old feeling of being outside the circle, different, displaced, or hard to fully claim.", trigger: "Groups, family expectations, rejection, or places where you must hide a part of yourself may wake the exile memory.", lessonText: "The lesson may be learning belonging without abandoning your difference.", healing: "Healing direction: choosing communities that can hold your whole self, and building home from truth rather than approval.", now: "You may notice yourself leaving before you are rejected, softening your strangeness, or feeling homesick even among familiar people.", notice: "Notice who makes your nervous system feel included without requiring performance.", reflection: "Where do I still act like belonging must be earned by becoming smaller?", teaser: "Next, your Past Life Theme reveals the landscape around this search for home.", color: "#7ab8d8" },
 };
 
 const KARMA_Q: { q: { en: string; ru: string }; opts: { label: { en: string; ru: string }; score: KarmaTheme }[] }[] = [
@@ -320,6 +365,9 @@ function PLNode1() {
         <div style={{ border: `1px solid ${data.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 12 }}>
           <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{data.desc}</p>
         </div>
+        <ResultSection color={data.color} label="WHAT THIS MEANS" body={`This may reflect a ${data.en.toLowerCase()} imprint: a symbolic memory of how your soul learned to survive, serve, create, lead, or protect.`} />
+        <ResultSection color={data.color} label="HOW IT MAY SHOW UP NOW" body={data.echo} />
+        <ResultSection color={data.color} label="WHAT TO NOTICE NEXT" body={data.notice} />
         <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 14, padding: "14px 16px", background: "rgba(216,168,95,.05)", marginBottom: 12 }}>
           <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 8 }}>GIFTS CARRIED INTO THIS LIFE</p>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -330,8 +378,10 @@ function PLNode1() {
         </div>
         <div style={{ border: `1px solid ${data.color}33`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.45)", marginBottom: 20 }}>
           <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>RECURRING LESSON</p>
-          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{data.lesson}</p>
+          <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{data.lesson} {data.shadow}</p>
         </div>
+        <ResultSection color={data.color} label="REFLECTION QUESTION" body={data.reflection} />
+        <TeaserBox>{data.teaser}</TeaserBox>
         <button onClick={() => router.push("/sky/pastlife")} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
           Continue
         </button>
@@ -371,6 +421,9 @@ function PLNode1() {
               <div style={{ border: `1px solid ${data.color}44`, borderRadius: 16, padding: "16px", background: "rgba(14,10,32,.55)", marginBottom: 12 }}>
                 <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{data.desc}</p>
               </div>
+              <ResultSection color={data.color} label="WHAT THIS MEANS" body={`This may reflect a ${data.en.toLowerCase()} imprint: a symbolic memory of how your soul learned to survive, serve, create, lead, or protect.`} />
+              <ResultSection color={data.color} label="HOW IT MAY SHOW UP NOW" body={data.echo} />
+              <ResultSection color={data.color} label="WHAT TO NOTICE NEXT" body={data.notice} />
               <div style={{ border: "1px solid rgba(216,168,95,.2)", borderRadius: 14, padding: "14px 16px", background: "rgba(216,168,95,.05)", marginBottom: 12 }}>
                 <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 8 }}>GIFTS CARRIED INTO THIS LIFE</p>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -381,9 +434,11 @@ function PLNode1() {
               </div>
               <div style={{ border: `1px solid ${data.color}33`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.45)", marginBottom: 20 }}>
                 <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>RECURRING LESSON</p>
-                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{data.lesson}</p>
+                <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{data.lesson} {data.shadow}</p>
               </div>
-              <button onClick={() => { completeNode(DISCIPLINE, 1, { soulAge: r }); router.push("/sky/pastlife"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
+              <ResultSection color={data.color} label="REFLECTION QUESTION" body={data.reflection} />
+              <TeaserBox>{data.teaser}</TeaserBox>
+              <button onClick={() => { completeNode(DISCIPLINE, 1, { soulAge: r, pastLifeRole: r }); router.push("/sky/pastlife"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>
                 {false ? "Zavershit uzel ✓" : "Complete node ✓"}
               </button>
             </div>
@@ -398,7 +453,41 @@ function PLNode1() {
 function PLNode2() {
   const { lang } = useLang();
   const router = useRouter();
-  useEffect(() => { startNode(DISCIPLINE, 2); }, []);
+  const [restoredKarma, setRestoredKarma] = useState<KarmaTheme | null>(null);
+
+  useEffect(() => {
+    const saved = getSavedString(2, "karma") as KarmaTheme;
+    if (saved && saved in KARMA_PATTERNS) {
+      setRestoredKarma(saved);
+      return;
+    }
+    startNode(DISCIPLINE, 2);
+  }, []);
+
+  const renderKarmaResult = (r: KarmaTheme, completed = false) => {
+    const data = KARMA_PATTERNS[r];
+    return (
+      <div>
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <div style={{ width: 90, height: 90, margin: "0 auto 12px", borderRadius: "50%", background: `radial-gradient(circle, ${data.color}33, rgba(14,10,32,.95))`, border: `2px solid ${data.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 30px ${data.color}44` }}>
+            <span style={{ fontSize: 36 }}>&#9775;</span>
+          </div>
+          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 26, color: "var(--text)", marginBottom: 4 }}>{data.en}</h2>
+          <p style={{ fontSize: 12, color: "var(--gold-2)" }}>{completed ? "Your saved karmic pattern" : "Your answers point to this karmic pattern"}</p>
+        </div>
+        <ResultSection color={data.color} label="WHAT THIS MEANS" body={`${data.pattern} ${data.lessonText}`} />
+        <ResultSection color={data.color} label="HOW IT MAY SHOW UP NOW" body={`${data.trigger} ${data.now}`} />
+        <ResultSection color={data.color} label="WHAT TO NOTICE NEXT" body={`${data.healing} ${data.notice}`} />
+        <ResultSection color={data.color} label="REFLECTION QUESTION" body={data.reflection} />
+        <TeaserBox>{data.teaser}</TeaserBox>
+        <button onClick={() => { completeNode(DISCIPLINE, 2, { karma: r }); router.push("/sky/pastlife"); }} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
+          {completed ? "Continue" : "Complete node"}
+        </button>
+      </div>
+    );
+  };
+
+  if (restoredKarma) return renderKarmaResult(restoredKarma, true);
 
   return (
     <div>
@@ -415,6 +504,7 @@ function PLNode2() {
         calcResult={calcKarma}
         lang={lang}
         renderResult={(r: KarmaTheme) => {
+          return renderKarmaResult(r);
           const data = KARMA_THEMES[r];
           return (
             <div>
@@ -451,6 +541,9 @@ type PastLifeMvpResult = {
   desc: string;
   gift: string;
   reflection: string;
+  now?: string;
+  notice?: string;
+  teaser?: string;
   color: string;
 };
 
@@ -473,11 +566,14 @@ const PAST_LIFE_MVP_CONFIGS: Record<string, PastLifeMvpConfig> = {
     title: "Discover Your Past Life Theme",
     intro: "This is a symbolic reflection, not a claim of certainty. Your answers point to a theme that may echo through old stories and current patterns.",
     startLabel: "Find my past life theme",
-    question: "Which old feeling seems to follow you into new chapters?",
+    question: "Which symbolic memory feels most charged when you read it?",
     results: {
-      devotion: { key: "devotion", title: "Devotion and Service", desc: "Your answers point to a theme of serving something larger than yourself, sometimes at the cost of your own needs.", gift: "You may carry a deep instinct for loyalty, prayer, care, or sacred responsibility.", reflection: "Where can devotion become mutual instead of self-erasing?", color: "#9070d8" },
-      exile: { key: "exile", title: "Exile and Belonging", desc: "Your answers point to a theme of searching for home, tribe, or a place where your full self can be received.", gift: "You may carry sensitivity to outsiders and a gift for making others feel less alone.", reflection: "What helps you belong without hiding your difference?", color: "#7ab8d8" },
-      sovereignty: { key: "sovereignty", title: "Power and Sovereignty", desc: "Your answers point to a theme of power, visibility, and learning how to lead without hardening.", gift: "You may carry courage, presence, and the ability to make difficult choices.", reflection: "How can power move through you without becoming control?", color: "#d8a85f" },
+      temple: { key: "temple", title: "Sacred Temple", desc: "Your answers point to a memory like a lamp-lit temple: stone floors, quiet vows, herbs, water, and the feeling that ordinary life once touched the sacred through your hands.", gift: "This may mean your soul remembers devotion, ritual, and the responsibility of holding space for others.", now: "You may notice sensitivity to atmosphere, a need for meaningful routines, or the feeling that some rooms carry energy before anyone speaks.", notice: "Notice what becomes easier when your day has one small ritual that belongs only to you.", reflection: "What part of my life wants to become sacred again?", teaser: "Next, Emotional Memory explores the feeling that still echoes inside this setting.", color: "#9070d8" },
+      battlefield: { key: "battlefield", title: "Battlefield", desc: "Your answers point to a memory like a dawn battlefield: cold air, hard choices, loyalty under pressure, and a heart that learned to become brave quickly.", gift: "This may mean your soul remembers protection, courage, and the cost of standing between danger and what you love.", now: "You may notice fast reactions, strong boundaries, or exhaustion after being the one who stays composed in crisis.", notice: "Notice when your strength is needed and when peace is asking to be trusted.", reflection: "Where am I still living as if the battle is not over?", teaser: "Next, Emotional Memory explores what your body remembers after conflict ends.", color: "#e05050" },
+      school: { key: "school", title: "Hidden School", desc: "Your answers point to a memory like a hidden school: coded books, whispered lessons, a small circle of seekers, and knowledge protected from people who might misuse it.", gift: "This may mean your soul remembers study, secrecy, symbols, and the patience to learn what cannot be rushed.", now: "You may notice fascination with esoteric systems, private research, or a feeling that truth has layers other people miss.", notice: "Notice where secrecy protects wisdom and where it keeps you unseen.", reflection: "What knowledge am I ready to share more openly?", teaser: "Next, Emotional Memory explores the feeling behind what was hidden.", color: "#7ab8d8" },
+      court: { key: "court", title: "Royal Court", desc: "Your answers point to a memory like a royal court: polished floors, careful speech, alliances, beauty, pressure, and the ache of being watched before being known.", gift: "This may mean your soul remembers influence, diplomacy, performance, and the burden of choosing well when others are affected.", now: "You may notice awareness of social currents, sensitivity to status, or the habit of reading a room before showing your real self.", notice: "Notice where grace is natural and where performance has replaced honesty.", reflection: "What would I say if I did not have to manage the room?", teaser: "Next, Emotional Memory explores what was felt behind the mask.", color: "#d8a85f" },
+      voyage: { key: "voyage", title: "Sea Voyage", desc: "Your answers point to a memory like a sea voyage: salt wind, uncertain horizons, separation from home, and a promise carried across distance.", gift: "This may mean your soul remembers movement, longing, adaptability, and the courage to trust a path before land is visible.", now: "You may notice restlessness, love of thresholds, or relationships that stretch across distance, timing, or circumstance.", notice: "Notice which journeys expand your life and which ones help you avoid arrival.", reflection: "What am I still crossing toward?", teaser: "Next, Emotional Memory explores the longing carried over the water.", color: "#7ab04a" },
+      monastery: { key: "monastery", title: "Mountain Monastery", desc: "Your answers point to a memory like a mountain monastery: thin air, bells, silence, discipline, and a self that learned to listen beyond desire.", gift: "This may mean your soul remembers solitude, restraint, prayer, and the quiet strength of returning to center.", now: "You may notice a need to withdraw, discomfort with noise, or a deep relief when life becomes simple and inward.", notice: "Notice when solitude restores you and when it becomes a way to disappear.", reflection: "Where can silence become connection instead of distance?", teaser: "Next, Emotional Memory explores what your silence has been holding.", color: "#c0a0d8" },
     },
   },
   "4": {
@@ -598,12 +694,18 @@ function PastLifeMvpNode({ config }: { config: PastLifeMvpConfig }) {
             <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{result.title}</h2>
             <p style={{ fontSize: 12, color: "var(--gold-2)" }}>Your answers point to this pattern</p>
           </div>
-          {[{ label: "INTERPRETATION", body: result.desc }, { label: "GIFT", body: result.gift }, { label: "REFLECTION", body: result.reflection }].map((item) => (
+          {[
+            { label: config.nodeId === 3 ? "WHAT THIS MEANS" : "INTERPRETATION", body: config.nodeId === 3 ? result.gift : result.desc },
+            { label: config.nodeId === 3 ? "HOW IT MAY SHOW UP NOW" : "GIFT", body: config.nodeId === 3 ? result.now ?? result.desc : result.gift },
+            { label: config.nodeId === 3 ? "WHAT TO NOTICE NEXT" : "REFLECTION", body: config.nodeId === 3 ? result.notice ?? result.reflection : result.reflection },
+          ].map((item) => (
             <div key={item.label} style={{ border: `1px solid ${result.color}44`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
               <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{item.label}</p>
               <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{item.body}</p>
             </div>
           ))}
+          {config.nodeId === 3 && <ResultSection color={result.color} label="REFLECTION QUESTION" body={result.reflection} />}
+          {config.nodeId === 3 && result.teaser && <TeaserBox>{result.teaser}</TeaserBox>}
           <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)", marginTop: 10 }}>Complete node</button>
         </div>
       )}
