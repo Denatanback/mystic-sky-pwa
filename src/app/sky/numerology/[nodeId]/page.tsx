@@ -265,9 +265,238 @@ function NumNode2() {
 }
 
 // ── Router ───────────────────────────────────────────────────────────────────
+type NumMvpResult = {
+  key: string;
+  title: string;
+  number: string;
+  desc: string;
+  gift: string;
+  reflection: string;
+  color: string;
+};
+
+type NumMvpConfig = {
+  nodeId: number;
+  resultKey: "personalityNumber" | "expressionNumber" | "personalYear" | "karmicLesson" | "masterNumberSignal";
+  eyebrow: string;
+  title: string;
+  intro: string;
+  startLabel: string;
+  question: string;
+  results: Record<string, NumMvpResult>;
+};
+
+const NUM_MVP_CONFIGS: Record<string, NumMvpConfig> = {
+  "3": {
+    nodeId: 3,
+    resultKey: "personalityNumber",
+    eyebrow: "Your Personality Number",
+    title: "Discover Your Personality Number",
+    intro: "This MVP uses a short reflection instead of a full name calculation. Your answers point to the energy people may first notice in you.",
+    startLabel: "Find my personality pattern",
+    question: "What do people usually seem to notice first about you?",
+    results: {
+      warm: { key: "warm", title: "The Harmonizer", number: "6", desc: "Your answers point to a visible warmth that helps people feel cared for and included.", gift: "You make connection feel safer.", reflection: "Where can you let warmth include your own needs too?", color: "#e06090" },
+      bright: { key: "bright", title: "The Expressive One", number: "3", desc: "Your answers point to a visible spark of humor, language, creativity, or emotional brightness.", gift: "You help others feel lighter and more open.", reflection: "What wants to be expressed before it becomes overedited?", color: "#d8a85f" },
+      steady: { key: "steady", title: "The Reliable One", number: "4", desc: "Your answers point to a visible steadiness that makes people trust your presence.", gift: "You bring shape and calm to scattered situations.", reflection: "Where can consistency support you without becoming pressure?", color: "#7ab04a" },
+    },
+  },
+  "4": {
+    nodeId: 4,
+    resultKey: "expressionNumber",
+    eyebrow: "Your Expression Code",
+    title: "Discover Your Expression / Destiny Number",
+    intro: "This MVP does not run a full legal-name calculation yet. Your answers point to how your gifts may want to be expressed.",
+    startLabel: "Find my expression code",
+    question: "When you are at your best, what are you usually doing?",
+    results: {
+      lead: { key: "lead", title: "The Initiator", number: "1", desc: "Your answers point to an expression pattern that begins, directs, and chooses with courage.", gift: "You can make a path visible by taking the first step.", reflection: "What decision would become simpler if you trusted your own direction?", color: "#d8a85f" },
+      teach: { key: "teach", title: "The Teacher", number: "9", desc: "Your answers point to an expression pattern that turns experience into meaning others can use.", gift: "You can transform lived truth into guidance.", reflection: "What lesson are you ready to share more honestly?", color: "#9070d8" },
+      build: { key: "build", title: "The Builder", number: "4", desc: "Your answers point to an expression pattern that makes ideas stable, practical, and repeatable.", gift: "You can turn inspiration into a reliable structure.", reflection: "What deserves a real system instead of more intention?", color: "#7ab04a" },
+    },
+  },
+  "5": {
+    nodeId: 5,
+    resultKey: "personalYear",
+    eyebrow: "Your Personal Year",
+    title: "Discover Your Personal Year",
+    intro: "This MVP uses a reflection prompt for your current cycle. A fuller version can calculate the exact personal year from birth date and calendar year.",
+    startLabel: "Find my current cycle",
+    question: "What has this year been asking you to practice?",
+    results: {
+      begin: { key: "begin", title: "Year of Beginning", number: "1", desc: "Your answers point to a cycle of fresh starts, identity, initiative, and new direction.", gift: "You may be ready to choose before every detail is settled.", reflection: "What clean beginning is already asking for your attention?", color: "#d8a85f" },
+      change: { key: "change", title: "Year of Change", number: "5", desc: "Your answers point to a cycle of movement, flexibility, experimentation, and release from stale patterns.", gift: "You can learn quickly when you let life move.", reflection: "What wants more freedom without losing your center?", color: "#7ab8d8" },
+      integrate: { key: "integrate", title: "Year of Integration", number: "9", desc: "Your answers point to a cycle of closure, wisdom, compassion, and making meaning from what has passed.", gift: "You can bless an ending without shrinking your future.", reflection: "What completion would make space for a truer chapter?", color: "#9070d8" },
+    },
+  },
+  "6": {
+    nodeId: 6,
+    resultKey: "karmicLesson",
+    eyebrow: "Your Karmic Lesson",
+    title: "Discover Your Karmic Lesson",
+    intro: "This MVP is reflective, not a full karmic-number calculation. Your answers point to a recurring growth pattern that may be ready for attention.",
+    startLabel: "Find my lesson",
+    question: "Which pattern has been returning most often?",
+    results: {
+      voice: { key: "voice", title: "The Voice Lesson", number: "3", desc: "Your answers point to a lesson around speaking, creating, and letting your feelings have form.", gift: "Your expression can become medicine when it is honest.", reflection: "Where are you waiting for permission to say what is real?", color: "#d8a85f" },
+      boundary: { key: "boundary", title: "The Boundary Lesson", number: "6", desc: "Your answers point to a lesson around care, responsibility, and not confusing love with overgiving.", gift: "You can protect love by giving it clearer edges.", reflection: "What responsibility is not truly yours to carry?", color: "#e06090" },
+      trust: { key: "trust", title: "The Trust Lesson", number: "7", desc: "Your answers point to a lesson around inner knowing, solitude, doubt, and trusting quiet truth.", gift: "You can hear yourself more clearly when noise settles.", reflection: "What do you already know but keep asking others to confirm?", color: "#9070d8" },
+    },
+  },
+  "7": {
+    nodeId: 7,
+    resultKey: "masterNumberSignal",
+    eyebrow: "Your Master Number Signal",
+    title: "Discover Your Master Number Signal",
+    intro: "This MVP does not claim a fixed master number unless calculated elsewhere. Your answers point to the kind of amplified signal you may recognize.",
+    startLabel: "Find my signal",
+    question: "When life feels intense, what kind of signal usually appears?",
+    results: {
+      intuition: { key: "intuition", title: "11 Signal", number: "11", desc: "Your answers point to heightened intuition, inspiration, sensitivity, and flashes of inner knowing.", gift: "You can translate subtle perception into useful guidance.", reflection: "What helps your sensitivity become grounded instead of overwhelming?", color: "#9070d8" },
+      structure: { key: "structure", title: "22 Signal", number: "22", desc: "Your answers point to a builder signal: vision that wants structure, patience, and real-world form.", gift: "You can hold a large vision without abandoning practical steps.", reflection: "What big idea needs its first simple foundation?", color: "#7ab04a" },
+      compassion: { key: "compassion", title: "33 Signal", number: "33", desc: "Your answers point to a service signal: compassion, teaching, emotional repair, and responsibility to the heart.", gift: "You can lead through care when you also care for yourself.", reflection: "Where can service stay loving without becoming self-erasure?", color: "#e06090" },
+    },
+  },
+};
+
+function getSavedString(nodeId: number, key: string) {
+  const value = getNodeState(DISCIPLINE, nodeId).result?.[key];
+  return typeof value === "string" || typeof value === "number" ? String(value) : "";
+}
+
+function NumMvpNode({ config }: { config: NumMvpConfig }) {
+  const router = useRouter();
+  const [started, setStarted] = useState(false);
+  const [result, setResult] = useState<NumMvpResult | null>(null);
+
+  useEffect(() => {
+    const saved = getSavedString(config.nodeId, config.resultKey);
+    if (saved && config.results[saved]) {
+      setResult(config.results[saved]);
+      setStarted(true);
+      return;
+    }
+    startNode(DISCIPLINE, config.nodeId);
+  }, [config]);
+
+  const handleComplete = () => {
+    if (!result) return;
+    completeNode(DISCIPLINE, config.nodeId, { [config.resultKey]: result.key });
+    router.push("/sky/numerology");
+  };
+
+  return (
+    <div>
+      {!started && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <div style={{ fontSize: 52, marginBottom: 10 }}>#</div>
+            <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", marginBottom: 10 }}>{config.title}</h3>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{config.intro}</p>
+          </div>
+          <button onClick={() => setStarted(true)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>{config.startLabel}</button>
+        </div>
+      )}
+      {started && !result && (
+        <div>
+          <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 8 }}>{config.eyebrow}</p>
+          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 21, color: "var(--text)", marginBottom: 18, lineHeight: 1.35 }}>{config.question}</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {Object.values(config.results).map((option) => (
+              <button key={option.key} onClick={() => setResult(option)} style={{ textAlign: "left", padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(216,168,95,.25)", background: "rgba(14,10,32,.55)", color: "var(--text)", cursor: "pointer" }}>
+                <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "var(--gold-2)", marginBottom: 5 }}>{option.title}</span>
+                <span style={{ display: "block", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{option.desc}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+      {result && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>{config.eyebrow}</p>
+            <div style={{ width: 104, height: 104, margin: "0 auto 12px", borderRadius: "50%", background: `radial-gradient(circle, ${result.color}33, rgba(14,10,32,.95))`, border: `2px solid ${result.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 30px ${result.color}44` }}>
+              <span style={{ fontSize: 48, fontFamily: "var(--font-serif)", color: "var(--gold)" }}>{result.number}</span>
+            </div>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{result.title}</h2>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>Your answers point to this number pattern</p>
+          </div>
+          {[{ label: "INTERPRETATION", body: result.desc }, { label: "GIFT", body: result.gift }, { label: "REFLECTION", body: result.reflection }].map((item) => (
+            <div key={item.label} style={{ border: `1px solid ${result.color}44`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
+              <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{item.label}</p>
+              <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{item.body}</p>
+            </div>
+          ))}
+          <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)", marginTop: 10 }}>Complete node</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NumNode8() {
+  const router = useRouter();
+  const [saved, setSaved] = useState<Array<{ title: string; value: string }>>([]);
+  const [completed, setCompleted] = useState(false);
+
+  useEffect(() => {
+    const state = getNodeState(DISCIPLINE, 8);
+    setCompleted(state.status === "completed");
+    if (state.status !== "completed") startNode(DISCIPLINE, 8);
+    setSaved([
+      { title: "Destiny Code", value: getSavedString(1, "lifePathNumber") },
+      { title: "Soul Number", value: getSavedString(2, "soulNumber") },
+      { title: "Personality Number", value: getSavedString(3, "personalityNumber") },
+      { title: "Expression / Destiny Number", value: getSavedString(4, "expressionNumber") },
+      { title: "Personal Year", value: getSavedString(5, "personalYear") },
+      { title: "Karmic Lesson", value: getSavedString(6, "karmicLesson") },
+      { title: "Master Number Signal", value: getSavedString(7, "masterNumberSignal") },
+    ].filter((item) => item.value));
+  }, []);
+
+  const handleComplete = () => {
+    completeNode(DISCIPLINE, 8, { personalCodeSynthesis: saved.map((item) => item.value).join("|") || "partial" });
+    setCompleted(true);
+    router.push("/sky/numerology");
+  };
+
+  return (
+    <div>
+      <div style={{ textAlign: "center", marginBottom: 20 }}>
+        <div style={{ fontSize: 52, marginBottom: 10 }}>#</div>
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 24, color: "var(--text)", marginBottom: 10 }}>Your Personal Code Synthesis</h3>
+        <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>This gathers the numerology results available so far. If some results are missing, your synthesis remains partial and can deepen as earlier nodes are completed.</p>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
+        {saved.length ? saved.map((item) => (
+          <div key={item.title} style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 14, padding: "13px 15px", background: "rgba(14,10,32,.55)" }}>
+            <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".09em", marginBottom: 5 }}>{item.title.toUpperCase()}</p>
+            <p style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.45 }}>{item.value}</p>
+          </div>
+        )) : (
+          <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)" }}>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>Complete earlier numerology nodes to add more detail to this synthesis.</p>
+          </div>
+        )}
+      </div>
+      <div style={{ border: "1px solid rgba(160,130,220,.25)", borderRadius: 14, padding: "14px 16px", background: "rgba(12,8,28,.55)", marginBottom: 18 }}>
+        <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>REFLECTION</p>
+        <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>Which number pattern feels most visible in your choices right now?</p>
+      </div>
+      <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>{completed ? "Complete again" : "Complete node"}</button>
+    </div>
+  );
+}
+
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
   "1": { en: "Destiny Code",   ru: "Chislo puti",  sub: { en: "Foundation", ru: "Osnova" } },
   "2": { en: "Soul Number", ru: "Chislo dushi",  sub: { en: "Inner world", ru: "Vnutrenniy mir" } },
+  "3": { en: "Personality Number", ru: "Chislo lichnosti", sub: { en: "Outer signal", ru: "Vneshniy signal" } },
+  "4": { en: "Expression / Destiny Number", ru: "Chislo vyrazheniya", sub: { en: "Gifts", ru: "Dary" } },
+  "5": { en: "Personal Year", ru: "Lichnyy god", sub: { en: "Current cycle", ru: "Tekuschiy tsikl" } },
+  "6": { en: "Karmic Lesson", ru: "Karmicheskiy urok", sub: { en: "Growth pattern", ru: "Pattern rosta" } },
+  "7": { en: "Master Number Signal", ru: "Signal master-chisla", sub: { en: "Amplified energy", ru: "Usilennaya energiya" } },
+  "8": { en: "Personal Code Synthesis", ru: "Sintez lichnogo koda", sub: { en: "Wholeness", ru: "Tselostnost" } },
 };
 
 const NODE_CONTEXT: Record<string, { en: string; ru: string }> = {
@@ -279,6 +508,12 @@ const NODE_CONTEXT: Record<string, { en: string; ru: string }> = {
     en: "Your Soul Number points to the inner desire underneath your choices and emotional direction.",
     ru: "Chislo dushi ukazyvaet na vnutrennee zhelanie pod tvoimi vyborami i emotsionalnym napravleniem.",
   },
+  "3": { en: "Your Personality Number reflects the energy people may notice first in your presence.", ru: "Chislo lichnosti otrazhaet energiyu, kotoruyu drugie mogut zametit pervoy." },
+  "4": { en: "Your Expression / Destiny Number points to how your gifts may want to become visible.", ru: "Chislo vyrazheniya ukazyvaet, kak tvoi dary mogut proyavlyatsya." },
+  "5": { en: "Your Personal Year reflects the kind of cycle or lesson that may be active right now.", ru: "Lichnyy god otrazhaet tekuschiy tsikl ili urok." },
+  "6": { en: "Your Karmic Lesson points to a recurring growth pattern asking for care and awareness.", ru: "Karmicheskiy urok ukazyvaet na povtoryayuschiysya pattern rosta." },
+  "7": { en: "Your Master Number Signal explores the amplified energy you may recognize under intensity.", ru: "Signal master-chisla issleduet usilennuyu energiyu." },
+  "8": { en: "Your Personal Code Synthesis gathers your available numerology results into one reflection.", ru: "Sintez lichnogo koda sobiraet dostupnye numerologicheskie rezultaty." },
 };
 
 export default function NumerologyNodePage() {
@@ -318,6 +553,8 @@ export default function NumerologyNodePage() {
       </div>
       {nodeId === "1" && <NumNode1 />}
       {nodeId === "2" && <NumNode2 />}
+      {NUM_MVP_CONFIGS[nodeId] && <NumMvpNode config={NUM_MVP_CONFIGS[nodeId]} />}
+      {nodeId === "8" && <NumNode8 />}
       <div style={{ display: "grid", gap: 10, marginTop: 18 }}>
         <Link href="/sky" style={{ height: 46, borderRadius: 999, border: "1px solid rgba(216,168,95,.28)", background: "rgba(216,168,95,.08)", color: "var(--gold-2)", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-ui)" }}>
           {false ? "Vernutsya k Sky Map" : "Return to Sky Map"}
