@@ -110,7 +110,7 @@ export default function SettingsPage() {
         </header>
 
         {/* Language */}
-        <div style={{ marginBottom: 24 }}>
+        <div data-tour="settings-1" style={{ marginBottom: 24 }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", fontWeight: 600, marginBottom: 10 }}>{t.settings.language}</p>
           <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderBottom: "1px solid var(--line-soft)" }}>
@@ -154,7 +154,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Notifications */}
-        <div style={{ marginBottom: 12 }}>
+        <div data-tour="settings-2" style={{ marginBottom: 12 }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", fontWeight: 600, marginBottom: 10 }}>{t.settings.notifications}</p>
           <button type="button" onClick={openNotifications} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: "transparent", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)", cursor: "pointer", textAlign: "left", fontFamily: "var(--font-ui)" }}>
             <div style={iconCircle}><IconBell /></div>
@@ -167,7 +167,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Privacy */}
-        <div style={{ marginBottom: 12 }}>
+        <div data-tour="settings-3" style={{ marginBottom: 12 }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", fontWeight: 600, marginBottom: 10 }}>{t.settings.privacy}</p>
           <button type="button" onClick={openPrivacy} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: "transparent", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)", cursor: "pointer", textAlign: "left", fontFamily: "var(--font-ui)" }}>
             <div style={iconCircle}><IconShield /></div>

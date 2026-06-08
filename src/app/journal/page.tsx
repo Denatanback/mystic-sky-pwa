@@ -59,7 +59,7 @@ export default function JournalPage() {
           ))}
         </div>
 
-        <div style={{ background: "transparent", border: "1px solid rgba(216,168,95,.22)", borderRadius: "var(--radius-lg)", padding: "18px 18px 16px", marginBottom: 20, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
+        <div data-tour="journal-1" style={{ background: "transparent", border: "1px solid rgba(216,168,95,.22)", borderRadius: "var(--radius-lg)", padding: "18px 18px 16px", marginBottom: 20, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
             <span style={{ color: "var(--gold)", opacity: .7 }}><IconSparkle /></span>
             <span style={{ fontSize: 13, color: "var(--muted)", fontWeight: 500 }}>{t.journal.quickNote}</span>
@@ -74,13 +74,13 @@ export default function JournalPage() {
           </button>
         </div>
 
-        <div style={{ display: "flex", gap: 8, marginBottom: 16, overflowX: "auto", paddingBottom: 2 }}>
+        <div data-tour="journal-2" style={{ display: "flex", gap: 8, marginBottom: 16, overflowX: "auto", paddingBottom: 2 }}>
           {TAGS.map(tag => (
             <button key={tag} onClick={() => setActiveTag(tag)} style={{ flexShrink: 0, background: activeTag === tag ? "rgba(216,168,95,.18)" : "rgba(255,255,255,.04)", border: `1px solid ${activeTag === tag ? "rgba(216,168,95,.45)" : "var(--line-soft)"}`, borderRadius: 20, color: activeTag === tag ? "var(--gold)" : "var(--muted)", fontSize: 13, fontWeight: activeTag === tag ? 600 : 400, padding: "6px 14px", cursor: "pointer", transition: "all .18s", whiteSpace: "nowrap" }}>{tag}</button>
           ))}
         </div>
 
-        <section>
+        <section data-tour="journal-3">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
             <h2 style={{ fontSize: 15, fontWeight: 600 }}>{t.journal.recent}</h2>
             <button type="button" onClick={openArchive} style={{ background: "transparent", border: "none", fontSize: 12, color: "var(--gold)", opacity: .8, cursor: "pointer", fontFamily: "var(--font-ui)" }}>{t.journal.archive}</button>

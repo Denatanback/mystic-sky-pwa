@@ -63,11 +63,11 @@ export default function PathPage() {
   return (
     <PathShell>
       <div style={{ display: "grid", gap: 14, marginTop: 10 }}>
-        <LunaPathStatusCard state={state} />
+        <div data-tour="path-1"><LunaPathStatusCard state={state} /></div>
         <TokenEducationCard />
         <LunaPathLevels state={state} />
-        <DailyRituals state={state} onStateChange={setState} />
-        <ActivityCalendar state={state} />
+        <div data-tour="path-2"><DailyRituals state={state} onStateChange={setState} /></div>
+        <div data-tour="path-3"><ActivityCalendar state={state} /></div>
 
         <section style={{ ...lunaCardStyle, padding: 16 }}>
           <p style={{ color: "var(--gold)", fontSize: 10, fontWeight: 900, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Streak repair</p>
@@ -76,7 +76,7 @@ export default function PathPage() {
           <button type="button" disabled style={{ ...lunaSecondaryButtonStyle, opacity: .62, cursor: "default" }}>Soon</button>
         </section>
 
-        <OraclePreviewCard />
+        <div data-tour="path-4"><OraclePreviewCard /></div>
         <TokenLedgerPreview state={state} />
       </div>
     </PathShell>

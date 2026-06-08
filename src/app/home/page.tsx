@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
+import { AppLoader } from "@/components/app-shell/AppLoader";
 import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
 import { FeatureInfoSheet, type FeatureInfoSheetProps } from "@/components/ui/FeatureInfoSheet";
 import { PlanChip } from "@/components/subscription/PlanChip";
@@ -175,6 +176,7 @@ export default function HomePage() {
   const today = useMemo(() => new Date(), []);
   const todayKey = getTodayKey(today);
   const todayTitle = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(today);
+  const [loaderReady, setLoaderReady] = useState(false);
   const [featureInfo, setFeatureInfo] = useState<Omit<FeatureInfoSheetProps, "onClose"> | null>(null);
   const [launchContext, setLaunchContext] = useState<LaunchContext>({});
   const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
@@ -269,6 +271,8 @@ export default function HomePage() {
       if (!cancelled && user?.launchContext) {
         setLaunchContext({ ...storedContext, ...user.launchContext });
       }
+    }).finally(() => {
+      if (!cancelled) setLoaderReady(true);
     });
     return () => {
       cancelled = true;
@@ -335,6 +339,7 @@ export default function HomePage() {
 
   return (
       <div className="app">
+      <AppLoader ready={loaderReady} />
         <StarField />
         <div className="content">
         <header style={{ display: "grid", gridTemplateColumns: "40px 1fr auto", alignItems: "center", gap: 10, minHeight: 64, padding: "18px 0 10px" }}>
@@ -354,7 +359,7 @@ export default function HomePage() {
           </div>
         </header>
 
-        <section style={{ ...cardStyle, padding: 14, marginTop: 4 }}>
+        <section data-tour="home-day-energy" style={{ ...cardStyle, padding: 14, marginTop: 4 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
             <div>
               <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 3 }}>Your streak</p>
@@ -404,7 +409,7 @@ export default function HomePage() {
           <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...primaryButtonStyle, width: "100%" }}>Open today’s reading</Link>
         </section>
 
-        <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 12 }}>
+        <section data-tour="home-card-today" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 12 }}>
           <Link href="/today" onClick={() => setDailyField("readingOpened")} style={{ ...cardStyle, padding: 14, minHeight: 228, display: "flex", flexDirection: "column", textDecoration: "none", overflow: "hidden" }}>
             <img src="/assets/home/eluna-todays-reading-icon.png" alt="Today’s reading illustration" style={homeCardIllustrationStyle} draggable={false} />
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 21, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>Today’s reading</h2>
@@ -544,9 +549,11 @@ export default function HomePage() {
             </div>
           ))}
         </section>
+
       </div>
-        <BottomNav />
-        {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
-      </div>
+
+      <BottomNav />
+      {featureInfo && <FeatureInfoSheet {...featureInfo} onClose={() => setFeatureInfo(null)} />}
+    </div>
   );
 }

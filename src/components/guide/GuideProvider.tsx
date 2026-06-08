@@ -115,9 +115,30 @@ export function GuideProvider({ children }: { children: React.ReactNode }) {
     storageRef.current = loadStorage();
   }, []);
 
-  // ── Keep help user-initiated for launch clarity ──────────────────────────
+  // ── Auto-launch tutorial on first section visit ───────────────────────────
   useEffect(() => {
     if (autoTimerRef.current) clearTimeout(autoTimerRef.current);
+
+    if (!currentSection || !guide) return;
+    if (!guide.autoLaunchOnFirstVisit) return;
+
+    // Reload storage so we have the freshest flags (e.g. after navigation)
+    const latest = loadStorage();
+    storageRef.current = latest;
+
+    const sectionData = latest.sections[currentSection];
+    if (sectionData?.seen || sectionData?.completed || sectionData?.skipped) return;
+
+    // Mark as seen immediately so navigating away and back doesn't re-trigger
+    storageRef.current = markSection(storageRef.current, currentSection, { seen: true });
+    saveStorage(storageRef.current);
+
+    // Small delay so the page has finished rendering before the overlay attaches
+    autoTimerRef.current = setTimeout(() => {
+      setTutorialStep(0);
+      setCurrentTone("curious");
+      setTutorialOpen(true);
+    }, 800);
 
     return () => {
       if (autoTimerRef.current) clearTimeout(autoTimerRef.current);
@@ -186,7 +207,7 @@ export function GuideProvider({ children }: { children: React.ReactNode }) {
 
   // ── Context value ─────────────────────────────────────────────────────────
 
-  const ctxValue: GuideContextValue = {
+  const ctxValue:GuideContextValue = {
     openHelp,
     startTutorial,
     closeTutorial,
