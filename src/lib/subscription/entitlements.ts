@@ -5,6 +5,10 @@ import { isSupabaseConfigured, supabase } from "@/lib/supabase/client";
 
 export type EntitlementPlan =
   | "free"
+  | "intro_3_day"
+  | "monthly"
+  | "three_month"
+  | "six_month"
   | "trial_3_day_1_usd"
   | "premium_monthly_2999"
   | "premium_3_month_5999"
@@ -18,6 +22,8 @@ export type SubscriptionStatus =
   | "past_due"
   | "canceled"
   | "unpaid"
+  | "incomplete"
+  | "incomplete_expired"
   | "internal";
 
 export type EntitlementSource = "stripe" | "manual" | "internal" | "support";
@@ -43,6 +49,7 @@ type SubscriptionRow = {
   entitlement_source?: string | null;
   current_period_end?: string | null;
   trial_end?: string | null;
+  stripe_price_id?: string | null;
   status?: string | null;
   plan?: string | null;
   provider?: string | null;
@@ -50,6 +57,10 @@ type SubscriptionRow = {
 
 const planIds: EntitlementPlan[] = [
   "free",
+  "intro_3_day",
+  "monthly",
+  "three_month",
+  "six_month",
   "trial_3_day_1_usd",
   "premium_monthly_2999",
   "premium_3_month_5999",
@@ -57,7 +68,7 @@ const planIds: EntitlementPlan[] = [
   "internal_full_access",
 ];
 
-const statuses: SubscriptionStatus[] = ["free", "trialing", "active", "past_due", "canceled", "unpaid", "internal"];
+const statuses: SubscriptionStatus[] = ["free", "trialing", "active", "past_due", "canceled", "unpaid", "incomplete", "incomplete_expired", "internal"];
 const sources: EntitlementSource[] = ["stripe", "manual", "internal", "support"];
 const legacyIntroPlanAlias = ["tri", "al"].join("");
 
@@ -78,6 +89,10 @@ export const freeEntitlements: Entitlements = {
 
 function normalizePlan(value?: string | null): EntitlementPlan {
   if (value === legacyIntroPlanAlias) return "trial_3_day_1_usd";
+  if (value === "trial_3_day_1_usd") return "intro_3_day";
+  if (value === "premium_monthly_2999") return "monthly";
+  if (value === "premium_3_month_5999") return "three_month";
+  if (value === "premium_6_month_8999") return "six_month";
   if (value === "premium") return "premium_monthly_2999";
   return planIds.includes(value as EntitlementPlan) ? value as EntitlementPlan : "free";
 }
@@ -103,7 +118,7 @@ function scoreRow(row: SubscriptionRow) {
   if (status === "internal" || planId === "internal_full_access") return 5;
   if (status === "active") return 4;
   if (status === "trialing" && isFutureOrOpen(row.trial_end)) return 3;
-  if (status === "past_due" || status === "unpaid") return 2;
+  if (status === "past_due" || status === "unpaid" || status === "incomplete") return 2;
   if (status === "free") return 1;
   return 0;
 }
@@ -122,7 +137,7 @@ export function entitlementsFromSubscription(row?: SubscriptionRow | null): Enti
   const introAccess = status === "trialing" && isFutureOrOpen(row.trial_end);
   const active = status === "active";
   const hasFullAccess = internal || active || introAccess;
-  const isPremium = internal || active || planId.startsWith("premium_");
+  const isPremium = internal || active || planId === "monthly" || planId === "three_month" || planId === "six_month" || planId.startsWith("premium_");
 
   return {
     planId,
@@ -142,8 +157,9 @@ export function entitlementsFromSubscription(row?: SubscriptionRow | null): Enti
 
 export function getEntitlementLabel(entitlements: Entitlements) {
   if (entitlements.planId === "internal_full_access" && entitlements.status === "internal") return "Full Access";
-  if (entitlements.isTrial) return "Intro access";
+  if (entitlements.isTrial || (entitlements.planId === "intro_3_day" && entitlements.hasFullAccess)) return "Intro access";
   if (entitlements.isPremium && entitlements.hasFullAccess) return "Premium";
+  if (entitlements.hasFullAccess) return "Full Access";
   return "No active plan";
 }
 
@@ -152,7 +168,7 @@ async function fetchSubscriptionRows(userId: string) {
 
   const extended = await supabase
     .from("subscriptions")
-    .select("plan_id, subscription_status, entitlement_source, current_period_end, trial_end, status, plan, provider")
+    .select("plan_id, subscription_status, entitlement_source, current_period_end, trial_end, stripe_price_id, status, plan, provider")
     .eq("user_id", userId)
     .order("updated_at", { ascending: false });
 

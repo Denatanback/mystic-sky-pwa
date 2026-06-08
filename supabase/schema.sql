@@ -26,10 +26,11 @@ create table if not exists public.profiles (
 create table if not exists public.subscriptions (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references auth.users(id) on delete cascade,
-  plan_id text not null default 'free' check (plan_id in ('free', 'trial_3_day_1_usd', 'premium_monthly_2999', 'premium_3_month_5999', 'premium_6_month_8999', 'internal_full_access')),
-  subscription_status text not null default 'free' check (subscription_status in ('free', 'trialing', 'active', 'past_due', 'canceled', 'unpaid', 'internal')),
+  plan_id text not null default 'free' check (plan_id in ('free', 'intro_3_day', 'monthly', 'three_month', 'six_month', 'trial_3_day_1_usd', 'premium_monthly_2999', 'premium_3_month_5999', 'premium_6_month_8999', 'internal_full_access')),
+  subscription_status text not null default 'free' check (subscription_status in ('free', 'trialing', 'active', 'past_due', 'canceled', 'unpaid', 'incomplete', 'incomplete_expired', 'internal')),
   stripe_customer_id text null,
   stripe_subscription_id text null,
+  stripe_price_id text null,
   current_period_end timestamptz null,
   trial_end timestamptz null,
   cancel_at_period_end boolean not null default false,
@@ -59,6 +60,18 @@ create unique index if not exists subscriptions_stripe_subscription_id_uidx
 on public.subscriptions(stripe_subscription_id)
 where stripe_subscription_id is not null;
 
+create index if not exists subscriptions_stripe_price_id_idx
+on public.subscriptions(stripe_price_id);
+
+create table if not exists public.stripe_events (
+  id text primary key,
+  type text not null,
+  livemode boolean not null default false,
+  payload jsonb not null,
+  processed_at timestamptz null,
+  created_at timestamptz not null default now()
+);
+
 drop trigger if exists set_profiles_updated_at on public.profiles;
 create trigger set_profiles_updated_at
 before update on public.profiles
@@ -71,6 +84,7 @@ for each row execute function public.set_updated_at();
 
 alter table public.profiles enable row level security;
 alter table public.subscriptions enable row level security;
+alter table public.stripe_events enable row level security;
 
 drop policy if exists "Users can select own profile" on public.profiles;
 create policy "Users can select own profile"

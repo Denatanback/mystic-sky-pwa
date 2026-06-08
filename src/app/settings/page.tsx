@@ -37,6 +37,8 @@ export default function SettingsPage() {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordMessage, setPasswordMessage] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [billingLoading, setBillingLoading] = useState(false);
+  const [billingMessage, setBillingMessage] = useState("");
 
   useEffect(() => {
     setLegalReturnTo(`${window.location.pathname}${window.location.search}${window.location.hash}`);
@@ -85,6 +87,27 @@ export default function SettingsPage() {
     setNewPassword("");
     setConfirmPassword("");
     setPasswordMessage("Password updated successfully.");
+  }
+
+  async function openBillingPortal() {
+    setBillingMessage("");
+    setBillingLoading(true);
+
+    try {
+      const response = await fetch("/api/stripe/customer-portal", { method: "POST" });
+      const payload = await response.json().catch(() => ({})) as { url?: string; error?: string };
+
+      if (!response.ok || !payload.url) {
+        setBillingMessage(payload.error ?? "Could not open billing portal. Please contact support@myeluna.com if you need help.");
+        setBillingLoading(false);
+        return;
+      }
+
+      window.location.href = payload.url;
+    } catch {
+      setBillingMessage("Could not open billing portal. Please contact support@myeluna.com if you need help.");
+      setBillingLoading(false);
+    }
   }
 
   const iconCircle: React.CSSProperties = {
@@ -205,6 +228,19 @@ export default function SettingsPage() {
 
         <div>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 1.4, color: "var(--gold)", fontWeight: 600, marginBottom: 10 }}>Account & billing</p>
+          <button type="button" onClick={openBillingPortal} disabled={billingLoading} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: "transparent", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)", textAlign: "left", fontFamily: "var(--font-ui)", cursor: billingLoading ? "default" : "pointer", marginBottom: 10 }}>
+            <div style={iconCircle}><IconShield /></div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>Manage billing and cancellation</div>
+              <div style={{ fontSize: 12, color: "var(--muted-2)", marginTop: 2 }}>Open Stripe Customer Portal for subscription cancellation, payment methods, and invoices.</div>
+            </div>
+            <span style={{ color: "var(--muted-2)" }}><IconChevron /></span>
+          </button>
+          {billingMessage && (
+            <p style={{ color: "var(--gold-2)", fontSize: 12, lineHeight: 1.5, margin: "0 0 10px", fontWeight: 800 }}>
+              {billingMessage}
+            </p>
+          )}
           <a href={SUPPORT_MAILTO} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: "transparent", border: "1px solid var(--line-soft)", borderRadius: "var(--radius-md)", textDecoration: "none" }}>
             <div style={iconCircle}><IconSupport /></div>
             <div style={{ flex: 1 }}>

@@ -405,7 +405,7 @@ export const billingTerms: LegalDocument = {
       title: "Introductory Access",
       body: [
         "eLuna may offer 3-day introductory access for $1.00 USD. This gives temporary access to premium digital features for the period shown at checkout.",
-        "Unless canceled before the introductory period ends, this access may convert to a paid subscription at the price shown at checkout, currently $29.99 USD/month for monthly renewal unless another plan is selected.",
+        "Any renewal or follow-on subscription terms are shown before purchase in Stripe Checkout and control if they differ from this summary.",
         "Introductory access terms are shown before purchase and control if they differ from this summary.",
       ],
     },
