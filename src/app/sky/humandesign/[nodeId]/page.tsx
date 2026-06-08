@@ -118,6 +118,10 @@ function calcHDType(answers: number[]): HDType {
   return (Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0]) as HDType;
 }
 
+function isHDType(value: unknown): value is HDType {
+  return typeof value === "string" && value in HD_TYPES;
+}
+
 function HDNode1() {
   const { lang } = useLang();
   const router = useRouter();
@@ -125,7 +129,15 @@ function HDNode1() {
   const [answers, setAnswers] = useState<number[]>([]);
   const [result, setResult] = useState<HDType | null>(null);
 
-  useEffect(() => { startNode(DISCIPLINE, 1); }, []);
+  useEffect(() => {
+    const saved = getNodeState(DISCIPLINE, 1);
+    if (saved.status === "completed" && isHDType(saved.result?.hdType)) {
+      setResult(saved.result.hdType);
+      setQIdx(TYPE_QUESTIONS.length);
+      return;
+    }
+    startNode(DISCIPLINE, 1);
+  }, []);
 
   const answer = (optIdx: number) => {
     const next = [...answers, optIdx];
@@ -273,6 +285,10 @@ function calcAuthority(answers: number[]): HDAuthority {
   return (sorted[0]?.[0] ?? "Sacral") as HDAuthority;
 }
 
+function isHDAuthority(value: unknown): value is HDAuthority {
+  return typeof value === "string" && value in AUTHORITIES;
+}
+
 function HDNode2() {
   const { lang } = useLang();
   const router = useRouter();
@@ -280,7 +296,15 @@ function HDNode2() {
   const [answers, setAnswers] = useState<number[]>([]);
   const [result, setResult] = useState<HDAuthority | null>(null);
 
-  useEffect(() => { startNode(DISCIPLINE, 2); }, []);
+  useEffect(() => {
+    const saved = getNodeState(DISCIPLINE, 2);
+    if (saved.status === "completed" && isHDAuthority(saved.result?.hdAuthority)) {
+      setResult(saved.result.hdAuthority);
+      setQIdx(AUTH_QUESTIONS.length);
+      return;
+    }
+    startNode(DISCIPLINE, 2);
+  }, []);
 
   const answer = (optIdx: number) => {
     const next = [...answers, optIdx];
