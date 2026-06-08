@@ -50,9 +50,11 @@ pnpm-debug.log*
 skills/
 skills-lock.json
 
-# Design references (large image files, not app code)
-# Uncomment the line below to exclude reference images from git (~36MB)
-# src/references/
+# Design references (dev-only screenshots/icons, not app code)
+src/references/
+
+# Duplicate Next.js config stub
+next.config.ts
 
 # Next.js specific
 next-env.d.ts
