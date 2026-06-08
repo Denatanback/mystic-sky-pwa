@@ -6,9 +6,9 @@ import { useState, useEffect } from "react";
 import { StarField } from "@/components/app-shell/StarField";
 import { BottomNav } from "@/components/app-shell/BottomNav";
 import { useLang } from "@/lib/i18n";
-import { getNodeState, isNodeLocked } from "@/lib/nodeProgress";
+import { getNodeProgressStatus } from "@/lib/nodeProgress";
 
-export type NodeStatus = "done" | "current" | "locked";
+export type NodeStatus = "done" | "current" | "cooldown" | "locked";
 export interface PathNode {
   num: number;
   label: string;
@@ -33,10 +33,10 @@ const MAP_H = 510;
 
 /** Derive real status from localStorage, overriding whatever was hardcoded */
 function computeStatus(disciplineKey: string, nodeNum: number): NodeStatus {
-  const state = getNodeState(disciplineKey, nodeNum);
-  if (state.status === "completed") return "done";
-  if (isNodeLocked(disciplineKey, nodeNum)) return "locked";
-  // Unlocked and not completed yet — this is the current node
+  const status = getNodeProgressStatus(disciplineKey, nodeNum);
+  if (status === "completed") return "done";
+  if (status === "cooldown") return "cooldown";
+  if (status === "locked") return "locked";
   return "current";
 }
 
@@ -55,7 +55,7 @@ export function NodePathPage({ discipline, disciplineKey, nodes, lines, mapVaria
   }, [disciplineKey, nodes]);
 
   const currentNode = liveNodes.find(n => n.status === "current");
-  const nextNode    = liveNodes.find(n => n.status === "locked");
+  const nextNode    = liveNodes.find(n => n.status === "cooldown") ?? liveNodes.find(n => n.status === "locked");
   const doneCount   = liveNodes.filter(n => n.status === "done").length;
 
   return (
@@ -81,7 +81,7 @@ export function NodePathPage({ discipline, disciplineKey, nodes, lines, mapVaria
             <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(circle at 50% 44%, rgba(216,168,95,.04), transparent 36%), radial-gradient(circle at 50% 50%, transparent 0 40%, rgba(6,4,16,.18) 68%, rgba(6,4,16,.32)), linear-gradient(180deg, rgba(6,4,16,.22), rgba(6,4,16,.16) 52%, rgba(6,4,16,.34))" }} />
 
             {liveNodes.map((n) => {
-              const isDone = n.status === "done", isCurrent = n.status === "current", isLocked = n.status === "locked";
+              const isDone = n.status === "done", isCurrent = n.status === "current", isCooldown = n.status === "cooldown", isLocked = n.status === "locked";
               const nodeSize = isCurrent ? 54 : 46;
               const marker = (
                 <div style={{ position: "absolute", left: n.x + "%", top: n.y + "%", transform: "translate(-50%, -50%)", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", pointerEvents: "auto" }}>
@@ -91,15 +91,16 @@ export function NodePathPage({ discipline, disciplineKey, nodes, lines, mapVaria
                       <Image src={n.emblem} alt={n.label} fill style={{ objectFit: "contain", padding: 7, opacity: isLocked ? 0.68 : 1 }} />
                     </div>
                     {isCurrent && <div style={{ position: "absolute", top: 4, right: 4, zIndex: 3, width: 17, height: 17, borderRadius: "50%", background: "linear-gradient(135deg, #f0c883, #8040c0)", border: "1.5px solid rgba(244,204,136,.9)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, color: "#fff", boxShadow: "0 0 12px rgba(216,168,95,.82)" }}>&#9733;</div>}
-                    {isLocked && <div style={{ position: "absolute", bottom: 4, right: 4, zIndex: 3, lineHeight: 0, filter: "drop-shadow(0 1px 4px rgba(0,0,0,.9))" }}><Image src="/assets/icons/icon-lock.png" alt="locked" width={17} height={17} style={{ objectFit: "contain" }} /></div>}
+                    {(isLocked || isCooldown) && <div style={{ position: "absolute", bottom: 4, right: 4, zIndex: 3, lineHeight: 0, filter: "drop-shadow(0 1px 4px rgba(0,0,0,.9))" }}><Image src="/assets/icons/icon-lock.png" alt="locked" width={17} height={17} style={{ objectFit: "contain" }} /></div>}
                   </div>
                   <div style={{ textAlign: "center", lineHeight: 1.15, marginTop: -5, maxWidth: 102, padding: "3px 7px", borderRadius: 999, background: isCurrent ? "rgba(15,8,32,.84)" : "rgba(6,4,16,.68)", border: "1px solid " + (isCurrent ? "rgba(244,204,136,.34)" : "rgba(216,168,95,.16)"), boxShadow: "0 5px 14px rgba(0,0,0,.32)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
-                    <div style={{ fontSize: 10.8, fontWeight: isCurrent ? 850 : 700, color: isCurrent ? "var(--text)" : isDone ? "rgba(216,168,95,.94)" : "rgba(222,214,238,.78)", whiteSpace: "nowrap" }}>{n.num}. {n.label}</div>
+                    <div style={{ fontSize: 10.8, fontWeight: isCurrent ? 850 : 700, color: isCurrent ? "var(--text)" : isDone || isCooldown ? "rgba(216,168,95,.94)" : "rgba(222,214,238,.78)", whiteSpace: "nowrap" }}>{n.num}. {n.label}</div>
+                    {isCooldown && <div style={{ fontSize: 9, color: "var(--gold-2)", fontWeight: 800, marginTop: 2 }}>Opens tomorrow</div>}
                   </div>
                 </div>
               );
 
-              if (isLocked || !disciplineKey) return <div key={n.num}>{marker}</div>;
+              if (isLocked || isCooldown || !disciplineKey) return <div key={n.num}>{marker}</div>;
               return (
                 <Link key={n.num} href={"/sky/" + disciplineKey + "/" + n.num} aria-label={"Open " + n.label} style={{ textDecoration: "none", color: "inherit" }}>
                   {marker}
@@ -132,21 +133,22 @@ export function NodePathPage({ discipline, disciplineKey, nodes, lines, mapVaria
           </svg>
 
           {liveNodes.map((n) => {
-            const isDone = n.status === "done", isCurrent = n.status === "current", isLocked = n.status === "locked";
+            const isDone = n.status === "done", isCurrent = n.status === "current", isCooldown = n.status === "cooldown", isLocked = n.status === "locked";
             const nodeSize = 72;
             return (
               <div key={n.num} style={{ position: "absolute", left: n.x + "%", top: n.y + "%", transform: "translate(-50%, -50%)", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <div style={{ position: "relative", width: 88, height: 88, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   {isCurrent && <div style={{ position: "absolute", inset: 3, borderRadius: "50%", zIndex: 0, boxShadow: "0 0 0 5px rgba(216,168,95,.1), 0 0 20px rgba(216,168,95,.4)" }}/>}
-                  <div style={{ width: nodeSize, height: nodeSize, borderRadius: "50%", border: (isCurrent ? "2px" : "1.5px") + " solid " + (isCurrent ? "rgba(216,168,95,.95)" : isDone ? "rgba(216,168,95,.6)" : "rgba(160,130,220,.4)"), background: isCurrent ? "radial-gradient(circle at 38% 32%, rgba(216,168,95,.2), rgba(80,30,160,.9))" : isDone ? "radial-gradient(circle at 38% 32%, rgba(216,168,95,.12), rgba(30,14,80,.92))" : "radial-gradient(circle at 38% 32%, rgba(255,255,255,.05), rgba(10,5,26,.94))", boxShadow: isCurrent ? "0 0 0 5px rgba(216,168,95,.08), 0 0 18px rgba(216,168,95,.38), inset 0 0 12px rgba(216,168,95,.06)" : isDone ? "0 0 10px rgba(216,168,95,.18)" : "0 4px 12px rgba(0,0,0,.45)", overflow: "hidden", position: "relative", zIndex: 1, opacity: isLocked ? 0.78 : 1 }}>
-                    <Image src={n.emblem} alt={n.label} fill style={{ objectFit: "contain", padding: 9, opacity: isLocked ? 0.55 : 1 }}/>
+                  <div style={{ width: nodeSize, height: nodeSize, borderRadius: "50%", border: (isCurrent ? "2px" : "1.5px") + " solid " + (isCurrent ? "rgba(216,168,95,.95)" : isDone ? "rgba(216,168,95,.6)" : isCooldown ? "rgba(216,168,95,.44)" : "rgba(160,130,220,.4)"), background: isCurrent ? "radial-gradient(circle at 38% 32%, rgba(216,168,95,.2), rgba(80,30,160,.9))" : isDone ? "radial-gradient(circle at 38% 32%, rgba(216,168,95,.12), rgba(30,14,80,.92))" : isCooldown ? "radial-gradient(circle at 38% 32%, rgba(216,168,95,.1), rgba(10,5,26,.94))" : "radial-gradient(circle at 38% 32%, rgba(255,255,255,.05), rgba(10,5,26,.94))", boxShadow: isCurrent ? "0 0 0 5px rgba(216,168,95,.08), 0 0 18px rgba(216,168,95,.38), inset 0 0 12px rgba(216,168,95,.06)" : isDone ? "0 0 10px rgba(216,168,95,.18)" : isCooldown ? "0 0 16px rgba(216,168,95,.14), 0 4px 12px rgba(0,0,0,.45)" : "0 4px 12px rgba(0,0,0,.45)", overflow: "hidden", position: "relative", zIndex: 1, opacity: isLocked ? 0.78 : 1 }}>
+                    <Image src={n.emblem} alt={n.label} fill style={{ objectFit: "contain", padding: 9, opacity: isLocked || isCooldown ? 0.55 : 1 }}/>
                   </div>
                   {isCurrent && <div style={{ position: "absolute", top: 5, right: 5, zIndex: 3, width: 20, height: 20, borderRadius: "50%", background: "linear-gradient(135deg, #d8a85f, #8040c0)", border: "1.5px solid rgba(216,168,95,.85)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#fff", boxShadow: "0 0 10px rgba(216,168,95,.75)" }}>&#9733;</div>}
-                  {isLocked && <div style={{ position: "absolute", bottom: 4, right: 4, zIndex: 3, lineHeight: 0, filter: "drop-shadow(0 1px 4px rgba(0,0,0,.9))" }}><Image src="/assets/icons/icon-lock.png" alt="locked" width={22} height={22} style={{ objectFit: "contain" }}/></div>}
+                  {(isLocked || isCooldown) && <div style={{ position: "absolute", bottom: 4, right: 4, zIndex: 3, lineHeight: 0, filter: "drop-shadow(0 1px 4px rgba(0,0,0,.9))" }}><Image src="/assets/icons/icon-lock.png" alt="locked" width={22} height={22} style={{ objectFit: "contain" }}/></div>}
                 </div>
                 <div style={{ textAlign: "center", lineHeight: 1.3, marginTop: -2, maxWidth: 82 }}>
-                  <div style={{ fontSize: 11.5, fontWeight: isCurrent ? 700 : 500, color: isCurrent ? "var(--text)" : isDone ? "rgba(216,168,95,.85)" : "var(--muted-2)", whiteSpace: "nowrap" }}>{n.num}. {n.label}</div>
+                  <div style={{ fontSize: 11.5, fontWeight: isCurrent ? 700 : 500, color: isCurrent ? "var(--text)" : isDone || isCooldown ? "rgba(216,168,95,.85)" : "var(--muted-2)", whiteSpace: "nowrap" }}>{n.num}. {n.label}</div>
                   <div style={{ fontSize: 10, color: "var(--muted-2)", marginTop: 1 }}>{n.sub}</div>
+                  {isCooldown && <div style={{ fontSize: 9, color: "var(--gold-2)", fontWeight: 800, marginTop: 2 }}>Opens tomorrow</div>}
                 </div>
               </div>
             );
@@ -192,7 +194,7 @@ export function NodePathPage({ discipline, disciplineKey, nodes, lines, mapVaria
               <Image src={nextNode.emblem} alt={nextNode.label} fill style={{ objectFit: "contain", padding: 7, opacity: 0.7 }}/>
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 11, color: "var(--muted-2)", fontWeight: 700, letterSpacing: "0.08em", marginBottom: 3 }}>{t.nodePath.nextNode}</p>
+              <p style={{ fontSize: 11, color: nextNode.status === "cooldown" ? "var(--gold-2)" : "var(--muted-2)", fontWeight: 700, letterSpacing: "0.08em", marginBottom: 3 }}>{nextNode.status === "cooldown" ? "Opens tomorrow" : t.nodePath.nextNode}</p>
               <p style={{ fontSize: 17, fontWeight: 600, color: "var(--text)", lineHeight: 1.2 }}>{nextNode.label}</p>
               <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>{nextNode.desc}</p>
             </div>
@@ -210,7 +212,7 @@ export function NodePathPage({ discipline, disciplineKey, nodes, lines, mapVaria
             <div style={{ position: "absolute", left: 0, right: 0, height: 2, borderRadius: 99, background: "rgba(255,255,255,.1)" }}/>
             <div style={{ position: "absolute", left: 0, height: 2, borderRadius: 99, width: (liveNodes.length > 1 ? (doneCount / (liveNodes.length - 1)) * 100 : 0) + "%", background: "linear-gradient(90deg, #8040c0, #d8a85f)" }}/>
             {liveNodes.map((n, i) => {
-              const pct = (i / (liveNodes.length - 1)) * 100, active = n.status !== "locked";
+              const pct = (i / (liveNodes.length - 1)) * 100, active = n.status === "done" || n.status === "current";
               return (
                 <div key={i} style={{ position: "absolute", left: pct + "%", transform: "translateX(-50%)", zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   {i === 0

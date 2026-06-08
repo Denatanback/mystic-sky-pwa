@@ -3,9 +3,10 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { NodePage } from "@/components/sky/NodePage";
+import { CooldownNodeMessage } from "@/components/sky/CooldownNodeMessage";
 import { useLang } from "@/lib/i18n";
 import { lifePathNumber, soulNumber, NUMBER_TRAITS } from "@/lib/numerologyCalc";
-import { startNode, completeNode, getNodeState, isNodeLocked } from "@/lib/nodeProgress";
+import { startNode, completeNode, getNodeState, isNodeLocked, isNodeCoolingDown } from "@/lib/nodeProgress";
 import { getCurrentProfile, type CurrentProfile } from "@/lib/profile/currentProfile";
 
 const TOTAL = 8;
@@ -522,18 +523,22 @@ export default function NumerologyNodePage() {
   const { lang } = useLang();
   const router = useRouter();
 
-  const locked = typeof window !== "undefined" ? isNodeLocked(DISCIPLINE, parseInt(nodeId)) : false;
-  const state = typeof window !== "undefined" ? getNodeState(DISCIPLINE, parseInt(nodeId)) : { status: "locked" };
+  const nodeNum = parseInt(nodeId);
+  const locked = typeof window !== "undefined" ? isNodeLocked(DISCIPLINE, nodeNum) : false;
+  const coolingDown = typeof window !== "undefined" ? isNodeCoolingDown(DISCIPLINE, nodeNum) : false;
+  const state = typeof window !== "undefined" ? getNodeState(DISCIPLINE, nodeNum) : { status: "locked" };
 
   const meta = NODE_TITLES[nodeId];
   if (!meta) { router.push("/sky/numerology"); return null; }
 
   if (locked) return (
-    <NodePage title={meta.en} subtitle={meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/numerology">
-      <div style={{ textAlign: "center", padding: "40px 16px" }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
-        <p style={{ color: "var(--muted)" }}>{false ? "Zavershite predyduschiy uzel" : "Complete the previous node first"}</p>
-      </div>
+    <NodePage title={meta.en} subtitle={meta.sub.en} nodeNum={nodeNum} totalNodes={TOTAL} backHref="/sky/numerology">
+      {coolingDown ? <CooldownNodeMessage /> : (
+        <div style={{ textAlign: "center", padding: "40px 16px" }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
+          <p style={{ color: "var(--muted)" }}>{false ? "Zavershite predyduschiy uzel" : "Complete the previous node first"}</p>
+        </div>
+      )}
     </NodePage>
   );
 
@@ -541,7 +546,7 @@ export default function NumerologyNodePage() {
     <NodePage
       title={meta.en}
       subtitle={meta.sub.en}
-      nodeNum={parseInt(nodeId)}
+      nodeNum={nodeNum}
       totalNodes={TOTAL}
       backHref="/sky/numerology"
       badge={state.status === "completed" ? "completed" : undefined}

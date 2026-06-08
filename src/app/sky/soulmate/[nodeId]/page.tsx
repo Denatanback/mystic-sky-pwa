@@ -2,9 +2,10 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { NodePage } from "@/components/sky/NodePage";
+import { CooldownNodeMessage } from "@/components/sky/CooldownNodeMessage";
 import { SkyNodeEntitlementGate } from "@/components/sky/SkyNodeEntitlementGate";
 import { useLang } from "@/lib/i18n";
-import { startNode, completeNode, getNodeState, isNodeLocked } from "@/lib/nodeProgress";
+import { startNode, completeNode, getNodeState, isNodeLocked, isNodeCoolingDown } from "@/lib/nodeProgress";
 
 const TOTAL = 8;
 const DISCIPLINE = "soulmate";
@@ -619,21 +620,24 @@ export default function SoulmateNodePage() {
   const { lang } = useLang();
   const router = useRouter();
 
-  const locked = typeof window !== "undefined" ? isNodeLocked(DISCIPLINE, parseInt(nodeId)) : false;
-  const state = typeof window !== "undefined" ? getNodeState(DISCIPLINE, parseInt(nodeId)) : { status: "locked" };
+  const nodeNum = parseInt(nodeId);
+  const locked = typeof window !== "undefined" ? isNodeLocked(DISCIPLINE, nodeNum) : false;
+  const coolingDown = typeof window !== "undefined" ? isNodeCoolingDown(DISCIPLINE, nodeNum) : false;
+  const state = typeof window !== "undefined" ? getNodeState(DISCIPLINE, nodeNum) : { status: "locked" };
   const meta = NODE_TITLES[nodeId];
   if (!meta) { router.push("/sky/soulmate"); return null; }
-  const nodeNum = parseInt(nodeId);
   const title = meta.en;
   const subtitle = meta.sub.en;
 
   if (locked) return (
     <SkyNodeEntitlementGate discipline={DISCIPLINE} nodeId={nodeNum} title={title} subtitle={subtitle} totalNodes={TOTAL} backHref="/sky/soulmate">
       <NodePage title={title} subtitle={subtitle} nodeNum={nodeNum} totalNodes={TOTAL} backHref="/sky/soulmate">
-        <div style={{ textAlign: "center", padding: "40px 16px" }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
-          <p style={{ color: "var(--muted)" }}>Complete the previous node first</p>
-        </div>
+        {coolingDown ? <CooldownNodeMessage /> : (
+          <div style={{ textAlign: "center", padding: "40px 16px" }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
+            <p style={{ color: "var(--muted)" }}>Complete the previous node first</p>
+          </div>
+        )}
       </NodePage>
     </SkyNodeEntitlementGate>
   );

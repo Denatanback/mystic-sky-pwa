@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { NodePage } from "@/components/sky/NodePage";
+import { CooldownNodeMessage } from "@/components/sky/CooldownNodeMessage";
 import { useLang } from "@/lib/i18n";
 import { getSunSign, SUN_TRAITS, ZODIAC, ELEMENT_TRAITS } from "@/lib/astroCalc";
-import { startNode, completeNode, getNodeState, isNodeLocked } from "@/lib/nodeProgress";
+import { startNode, completeNode, getNodeState, isNodeLocked, isNodeCoolingDown } from "@/lib/nodeProgress";
 import { getCurrentProfile, type CurrentProfile } from "@/lib/profile/currentProfile";
 import { resolveUserZodiac } from "@/lib/astrology/resolveZodiac";
 
@@ -587,18 +588,22 @@ export default function AstrologyNodePage() {
   const { lang } = useLang();
   const router = useRouter();
 
-  const locked = typeof window !== "undefined" ? isNodeLocked(DISCIPLINE, parseInt(nodeId)) : false;
-  const state = typeof window !== "undefined" ? getNodeState(DISCIPLINE, parseInt(nodeId)) : { status: "locked" };
+  const nodeNum = parseInt(nodeId);
+  const locked = typeof window !== "undefined" ? isNodeLocked(DISCIPLINE, nodeNum) : false;
+  const coolingDown = typeof window !== "undefined" ? isNodeCoolingDown(DISCIPLINE, nodeNum) : false;
+  const state = typeof window !== "undefined" ? getNodeState(DISCIPLINE, nodeNum) : { status: "locked" };
 
   const meta = NODE_TITLES[nodeId];
   if (!meta) { router.push("/sky/astrology"); return null; }
 
   if (locked) return (
-    <NodePage title={meta.en} subtitle={meta.sub.en} nodeNum={parseInt(nodeId)} totalNodes={TOTAL} backHref="/sky/astrology">
-      <div style={{ textAlign: "center", padding: "40px 16px" }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
-        <p style={{ color: "var(--muted)", fontSize: 14 }}>{false ? "Zavershite predyduschiy uzel, chtoby otkryt etot" : "Complete the previous node to unlock this one"}</p>
-      </div>
+    <NodePage title={meta.en} subtitle={meta.sub.en} nodeNum={nodeNum} totalNodes={TOTAL} backHref="/sky/astrology">
+      {coolingDown ? <CooldownNodeMessage /> : (
+        <div style={{ textAlign: "center", padding: "40px 16px" }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>&#128274;</div>
+          <p style={{ color: "var(--muted)", fontSize: 14 }}>{false ? "Zavershite predyduschiy uzel, chtoby otkryt etot" : "Complete the previous node to unlock this one"}</p>
+        </div>
+      )}
     </NodePage>
   );
 
@@ -606,7 +611,7 @@ export default function AstrologyNodePage() {
     <NodePage
       title={meta.en}
       subtitle={meta.sub.en}
-      nodeNum={parseInt(nodeId)}
+      nodeNum={nodeNum}
       totalNodes={TOTAL}
       backHref="/sky/astrology"
       badge={state.status === "completed" ? "completed" : undefined}
