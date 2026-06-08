@@ -367,9 +367,235 @@ function SMNode2() {
 }
 
 // ── Router ────────────────────────────────────────────────────────────────────
+type SoulmateMvpResult = {
+  key: string;
+  title: string;
+  desc: string;
+  signal: string;
+  reflection: string;
+  color: string;
+};
+
+type SoulmateMvpConfig = {
+  nodeId: number;
+  resultKey: "attractionPattern" | "relationshipMirror" | "compatibilitySignals" | "soulContractTheme" | "loveBlocks";
+  eyebrow: string;
+  title: string;
+  intro: string;
+  startLabel: string;
+  question: string;
+  results: Record<string, SoulmateMvpResult>;
+};
+
+const SOULMATE_MVP_CONFIGS: Record<string, SoulmateMvpConfig> = {
+  "3": {
+    nodeId: 3,
+    resultKey: "attractionPattern",
+    eyebrow: "Your Attraction Pattern",
+    title: "Discover Your Attraction Pattern",
+    intro: "This MVP does not predict a person. Your answers point to the emotional pattern that may shape who feels magnetic to you.",
+    startLabel: "Find my attraction pattern",
+    question: "What tends to make someone feel magnetic to you first?",
+    results: {
+      safety: { key: "safety", title: "Safety Magnetism", desc: "Your answers point to attraction through steadiness, loyalty, and the feeling that your heart can exhale.", signal: "You may be drawn to people who make love feel consistent and emotionally real.", reflection: "Where can safety stay alive without becoming control?", color: "#7ab04a" },
+      mystery: { key: "mystery", title: "Mystery Magnetism", desc: "Your answers point to attraction through depth, intensity, subtle signals, and the feeling of a hidden story.", signal: "You may be drawn to people who awaken curiosity, intuition, and emotional risk.", reflection: "What helps mystery become intimacy instead of confusion?", color: "#9070d8" },
+      spark: { key: "spark", title: "Spark Magnetism", desc: "Your answers point to attraction through play, chemistry, movement, and a sense of possibility.", signal: "You may be drawn to people who make life feel wider, brighter, and less predictable.", reflection: "How can excitement include patience and presence?", color: "#d8a85f" },
+    },
+  },
+  "4": {
+    nodeId: 4,
+    resultKey: "relationshipMirror",
+    eyebrow: "Your Relationship Mirror",
+    title: "Discover Your Relationship Mirror",
+    intro: "This node reflects what relationships may show you about yourself. This pattern can suggest a mirror, not a fixed fate.",
+    startLabel: "Find my relationship mirror",
+    question: "What do close relationships usually reveal in you?",
+    results: {
+      worth: { key: "worth", title: "The Worth Mirror", desc: "Your answers point to relationships that mirror how deeply you believe you can be chosen without proving yourself.", signal: "Partners may reflect where self-worth is ready to become steadier.", reflection: "What would love feel like if you did not have to audition for it?", color: "#e06090" },
+      voice: { key: "voice", title: "The Voice Mirror", desc: "Your answers point to relationships that mirror how clearly you speak needs, boundaries, and desire.", signal: "Partners may reflect where honesty wants to become kinder and more direct.", reflection: "What truth can be spoken before resentment gathers?", color: "#7ab8d8" },
+      trust: { key: "trust", title: "The Trust Mirror", desc: "Your answers point to relationships that mirror your balance between closeness, space, and emotional risk.", signal: "Partners may reflect where trust is ready to become embodied, not only hoped for.", reflection: "What helps your body recognize safe connection?", color: "#7ab04a" },
+    },
+  },
+  "5": {
+    nodeId: 5,
+    resultKey: "compatibilitySignals",
+    eyebrow: "Your Compatibility Signals",
+    title: "Discover Your Compatibility Signals",
+    intro: "This MVP highlights relationship signals to notice. It does not score or guarantee compatibility.",
+    startLabel: "Find my compatibility signals",
+    question: "Which signal matters most for love to feel possible?",
+    results: {
+      rhythm: { key: "rhythm", title: "Rhythm Compatibility", desc: "Your answers point to compatibility through shared pacing, daily rhythm, and nervous-system ease.", signal: "Notice whether the connection feels sustainable after the first wave of chemistry.", reflection: "Does this bond support your actual life, not only your fantasy?", color: "#7ab04a" },
+      language: { key: "language", title: "Language Compatibility", desc: "Your answers point to compatibility through communication, humor, curiosity, and repair after misunderstanding.", signal: "Notice whether conversation helps you feel clearer instead of smaller.", reflection: "Can both people stay present when truth is inconvenient?", color: "#7ab8d8" },
+      values: { key: "values", title: "Values Compatibility", desc: "Your answers point to compatibility through shared ethics, direction, and what each person protects.", signal: "Notice whether attraction is supported by choices that actually align.", reflection: "What value needs to match for your heart to relax?", color: "#d8a85f" },
+    },
+  },
+  "6": {
+    nodeId: 6,
+    resultKey: "soulContractTheme",
+    eyebrow: "Your Soul Contract Theme",
+    title: "Discover Your Soul Contract Theme",
+    intro: "This is symbolic language for relationship growth. Your answers point to a theme that may feel like a deeper lesson in love.",
+    startLabel: "Find my contract theme",
+    question: "What deeper lesson does love seem to keep bringing you?",
+    results: {
+      freedom: { key: "freedom", title: "Freedom and Commitment", desc: "Your answers point to a soul-contract theme around keeping your spirit free while allowing real devotion.", signal: "This pattern can suggest partners who teach you that closeness does not have to become a cage.", reflection: "Where can commitment protect freedom instead of threatening it?", color: "#d8a85f" },
+      healing: { key: "healing", title: "Healing and Receiving", desc: "Your answers point to a soul-contract theme around letting love restore rather than only demand.", signal: "This pattern can suggest partners who reveal where care must become mutual.", reflection: "How can you receive without turning it into debt?", color: "#e06090" },
+      truth: { key: "truth", title: "Truth and Visibility", desc: "Your answers point to a soul-contract theme around being seen honestly and choosing love without hiding.", signal: "This pattern can suggest partners who draw your real self to the surface.", reflection: "What part of you is ready to be loved in daylight?", color: "#9070d8" },
+    },
+  },
+  "7": {
+    nodeId: 7,
+    resultKey: "loveBlocks",
+    eyebrow: "Your Love Blocks",
+    title: "Discover Your Love Blocks",
+    intro: "This MVP names a possible block with care. Your answers point to a protective pattern that may be ready to soften.",
+    startLabel: "Find my love block",
+    question: "What most often gets between you and the love you want?",
+    results: {
+      guarding: { key: "guarding", title: "The Guarded Heart", desc: "Your answers point to protection that may keep pain out, but can also keep tenderness at a distance.", signal: "This may reflect a heart that needs safety before it opens.", reflection: "What kind of openness would still respect your boundaries?", color: "#7ab8d8" },
+      idealizing: { key: "idealizing", title: "The Idealized Bond", desc: "Your answers point to a pattern of loving potential, fantasy, or intensity before reality has had time to speak.", signal: "This may reflect a heart that sees beauty quickly and needs grounding slowly.", reflection: "What facts need to stand beside the feeling?", color: "#9070d8" },
+      overgiving: { key: "overgiving", title: "The Overgiving Loop", desc: "Your answers point to a pattern of earning love through effort, care, or emotional labor.", signal: "This may reflect a generous heart learning reciprocity.", reflection: "Where can you let love meet you halfway?", color: "#e06090" },
+    },
+  },
+};
+
+function getSavedString(nodeId: number, key: string) {
+  const value = getNodeState(DISCIPLINE, nodeId).result?.[key];
+  return typeof value === "string" || typeof value === "number" ? String(value) : "";
+}
+
+function SoulmateMvpNode({ config }: { config: SoulmateMvpConfig }) {
+  const router = useRouter();
+  const [started, setStarted] = useState(false);
+  const [result, setResult] = useState<SoulmateMvpResult | null>(null);
+
+  useEffect(() => {
+    const saved = getSavedString(config.nodeId, config.resultKey);
+    if (saved && config.results[saved]) {
+      setResult(config.results[saved]);
+      setStarted(true);
+      return;
+    }
+    startNode(DISCIPLINE, config.nodeId);
+  }, [config]);
+
+  const handleComplete = () => {
+    if (!result) return;
+    completeNode(DISCIPLINE, config.nodeId, { [config.resultKey]: result.key });
+    router.push("/sky/soulmate");
+  };
+
+  return (
+    <div>
+      {!started && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <div style={{ fontSize: 52, marginBottom: 10 }}>*</div>
+            <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", marginBottom: 10 }}>{config.title}</h3>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{config.intro}</p>
+          </div>
+          <button onClick={() => setStarted(true)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>{config.startLabel}</button>
+        </div>
+      )}
+      {started && !result && (
+        <div>
+          <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 8 }}>{config.eyebrow}</p>
+          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 21, color: "var(--text)", marginBottom: 18, lineHeight: 1.35 }}>{config.question}</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {Object.values(config.results).map((option) => (
+              <button key={option.key} onClick={() => setResult(option)} style={{ textAlign: "left", padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(216,168,95,.25)", background: "rgba(14,10,32,.55)", color: "var(--text)", cursor: "pointer" }}>
+                <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "var(--gold-2)", marginBottom: 5 }}>{option.title}</span>
+                <span style={{ display: "block", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{option.desc}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+      {result && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>{config.eyebrow}</p>
+            <div style={{ width: 100, height: 100, margin: "0 auto 12px", borderRadius: "50%", background: `radial-gradient(circle, ${result.color}33, rgba(14,10,32,.95))`, border: `2px solid ${result.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 30px ${result.color}44` }}><span style={{ fontSize: 44 }}>*</span></div>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{result.title}</h2>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>Your answers point to this relationship pattern</p>
+          </div>
+          {[{ label: "INTERPRETATION", body: result.desc }, { label: "SIGNAL TO NOTICE", body: result.signal }, { label: "REFLECTION", body: result.reflection }].map((item) => (
+            <div key={item.label} style={{ border: `1px solid ${result.color}44`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
+              <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{item.label}</p>
+              <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{item.body}</p>
+            </div>
+          ))}
+          <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)", marginTop: 10 }}>Complete node</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SMNode8() {
+  const router = useRouter();
+  const [saved, setSaved] = useState<Array<{ title: string; value: string }>>([]);
+  const [completed, setCompleted] = useState(false);
+
+  useEffect(() => {
+    const state = getNodeState(DISCIPLINE, 8);
+    setCompleted(state.status === "completed");
+    if (state.status !== "completed") startNode(DISCIPLINE, 8);
+    setSaved([
+      { title: "Soulmate Type", value: getSavedString(1, "venusSign") },
+      { title: "Heart Line", value: getSavedString(2, "attachment") },
+      { title: "Attraction Pattern", value: getSavedString(3, "attractionPattern") },
+      { title: "Relationship Mirror", value: getSavedString(4, "relationshipMirror") },
+      { title: "Compatibility Signals", value: getSavedString(5, "compatibilitySignals") },
+      { title: "Soul Contract Theme", value: getSavedString(6, "soulContractTheme") },
+      { title: "Love Blocks", value: getSavedString(7, "loveBlocks") },
+    ].filter((item) => item.value));
+  }, []);
+
+  const handleComplete = () => {
+    completeNode(DISCIPLINE, 8, { soulmatePatternSynthesis: saved.map((item) => item.value).join("|") || "partial" });
+    setCompleted(true);
+    router.push("/sky/soulmate");
+  };
+
+  return (
+    <div>
+      <div style={{ textAlign: "center", marginBottom: 20 }}>
+        <div style={{ fontSize: 52, marginBottom: 10 }}>*</div>
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 24, color: "var(--text)", marginBottom: 10 }}>Your Soulmate Pattern Synthesis</h3>
+        <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>This gathers the soulmate-pattern reflections available so far. If some pieces are missing, the synthesis stays partial and can deepen as earlier nodes are completed.</p>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
+        {saved.length ? saved.map((item) => (
+          <div key={item.title} style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 14, padding: "13px 15px", background: "rgba(14,10,32,.55)" }}>
+            <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".09em", marginBottom: 5 }}>{item.title.toUpperCase()}</p>
+            <p style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.45 }}>{item.value}</p>
+          </div>
+        )) : (
+          <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)" }}>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>Complete earlier soulmate nodes to add more detail to this synthesis.</p>
+          </div>
+        )}
+      </div>
+      <div style={{ border: "1px solid rgba(160,130,220,.25)", borderRadius: 14, padding: "14px 16px", background: "rgba(12,8,28,.55)", marginBottom: 18 }}>
+        <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>REFLECTION</p>
+        <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>What pattern would help you recognize aligned love without abandoning yourself?</p>
+      </div>
+      <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>{completed ? "Complete again" : "Complete node"}</button>
+    </div>
+  );
+}
+
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
   "1": { en: "Soulmate Type",       ru: "Venera",         sub: { en: "Love nature", ru: "Priroda lyubvi" } },
   "2": { en: "Heart Line",  ru: "Liniya serdtsa",   sub: { en: "Connection",  ru: "Svyaz" } },
+  "3": { en: "Attraction Pattern", ru: "Pattern prityazheniya", sub: { en: "Magnetism", ru: "Magnetizm" } },
+  "4": { en: "Relationship Mirror", ru: "Zerkalo otnosheniy", sub: { en: "Reflection", ru: "Otrazhenie" } },
+  "5": { en: "Compatibility Signals", ru: "Signaly sovmestimosti", sub: { en: "Alignment", ru: "Soglasovanie" } },
+  "6": { en: "Soul Contract Theme", ru: "Tema dushevnogo kontrakta", sub: { en: "Lesson", ru: "Urok" } },
+  "7": { en: "Love Blocks", ru: "Bloki lyubvi", sub: { en: "Softening", ru: "Smyagchenie" } },
+  "8": { en: "Soulmate Pattern Synthesis", ru: "Sintez patterna soulmate", sub: { en: "Synthesis", ru: "Sintez" } },
 };
 
 export default function SoulmateNodePage() {
@@ -402,6 +628,8 @@ export default function SoulmateNodePage() {
       <NodePage title={title} subtitle={subtitle} nodeNum={nodeNum} totalNodes={TOTAL} backHref="/sky/soulmate" badge={state.status === "completed" ? "completed" : undefined}>
         {nodeId === "1" && <SMNode1 />}
         {nodeId === "2" && <SMNode2 />}
+        {SOULMATE_MVP_CONFIGS[nodeId] && <SoulmateMvpNode config={SOULMATE_MVP_CONFIGS[nodeId]} />}
+        {nodeId === "8" && <SMNode8 />}
       </NodePage>
     </SkyNodeEntitlementGate>
   );

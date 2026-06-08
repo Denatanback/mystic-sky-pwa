@@ -393,9 +393,235 @@ function PLNode2() {
 }
 
 // ── Router ─────────────────────────────────────────────────────────────────────
+type PastLifeMvpResult = {
+  key: string;
+  title: string;
+  desc: string;
+  gift: string;
+  reflection: string;
+  color: string;
+};
+
+type PastLifeMvpConfig = {
+  nodeId: number;
+  resultKey: "pastLifeTheme" | "emotionalMemory" | "relationshipKarma" | "hiddenTalents" | "repeatingLifeLesson";
+  eyebrow: string;
+  title: string;
+  intro: string;
+  startLabel: string;
+  question: string;
+  results: Record<string, PastLifeMvpResult>;
+};
+
+const PAST_LIFE_MVP_CONFIGS: Record<string, PastLifeMvpConfig> = {
+  "3": {
+    nodeId: 3,
+    resultKey: "pastLifeTheme",
+    eyebrow: "Your Past Life Theme",
+    title: "Discover Your Past Life Theme",
+    intro: "This is a symbolic reflection, not a claim of certainty. Your answers point to a theme that may echo through old stories and current patterns.",
+    startLabel: "Find my past life theme",
+    question: "Which old feeling seems to follow you into new chapters?",
+    results: {
+      devotion: { key: "devotion", title: "Devotion and Service", desc: "Your answers point to a theme of serving something larger than yourself, sometimes at the cost of your own needs.", gift: "You may carry a deep instinct for loyalty, prayer, care, or sacred responsibility.", reflection: "Where can devotion become mutual instead of self-erasing?", color: "#9070d8" },
+      exile: { key: "exile", title: "Exile and Belonging", desc: "Your answers point to a theme of searching for home, tribe, or a place where your full self can be received.", gift: "You may carry sensitivity to outsiders and a gift for making others feel less alone.", reflection: "What helps you belong without hiding your difference?", color: "#7ab8d8" },
+      sovereignty: { key: "sovereignty", title: "Power and Sovereignty", desc: "Your answers point to a theme of power, visibility, and learning how to lead without hardening.", gift: "You may carry courage, presence, and the ability to make difficult choices.", reflection: "How can power move through you without becoming control?", color: "#d8a85f" },
+    },
+  },
+  "4": {
+    nodeId: 4,
+    resultKey: "emotionalMemory",
+    eyebrow: "Your Emotional Memory",
+    title: "Discover Your Emotional Memory",
+    intro: "This MVP explores an emotional imprint through reflection. This pattern can suggest what your nervous system remembers symbolically.",
+    startLabel: "Find my emotional memory",
+    question: "Which emotional atmosphere feels strangely familiar?",
+    results: {
+      longing: { key: "longing", title: "The Longing Memory", desc: "Your answers point to an old emotional memory of distance, waiting, or reaching for what felt unavailable.", gift: "This may reflect a heart that can sense meaning across distance and time.", reflection: "What desire can you honor without abandoning the present?", color: "#e06090" },
+      vigilance: { key: "vigilance", title: "The Vigilance Memory", desc: "Your answers point to an old emotional memory of watching carefully, staying alert, and anticipating change.", gift: "This may reflect discernment, protection, and sharp emotional perception.", reflection: "Where is your body safe enough to stop scanning?", color: "#d8a85f" },
+      silence: { key: "silence", title: "The Silence Memory", desc: "Your answers point to an old emotional memory of withheld truth, quiet endurance, or words left unsaid.", gift: "This may reflect depth, restraint, and a powerful inner voice waiting for space.", reflection: "What truth can be spoken gently now?", color: "#9070d8" },
+    },
+  },
+  "5": {
+    nodeId: 5,
+    resultKey: "relationshipKarma",
+    eyebrow: "Your Relationship Karma",
+    title: "Discover Your Relationship Karma",
+    intro: "This node reflects relationship patterns symbolically. Your answers point to the kind of bond lesson that may repeat until it is met with awareness.",
+    startLabel: "Find my relationship karma",
+    question: "What relationship pattern has repeated most often?",
+    results: {
+      rescuer: { key: "rescuer", title: "The Rescuer Pattern", desc: "Your answers point to relationships where love can become saving, fixing, or carrying more than your share.", gift: "You may carry compassion and emotional endurance that helps others heal.", reflection: "Where can love remain caring without becoming rescue?", color: "#7ab04a" },
+      mirror: { key: "mirror", title: "The Mirror Pattern", desc: "Your answers point to relationships that reflect hidden parts of you with unusual intensity.", gift: "You may carry the ability to transform through honest emotional reflection.", reflection: "What is the mirror showing without requiring you to merge with it?", color: "#9070d8" },
+      oath: { key: "oath", title: "The Old Oath Pattern", desc: "Your answers point to relationships shaped by loyalty, obligation, or promises that feel older than this life.", gift: "You may carry devotion and a powerful respect for commitment.", reflection: "Which promises still feel alive, and which can be released?", color: "#d8a85f" },
+    },
+  },
+  "6": {
+    nodeId: 6,
+    resultKey: "hiddenTalents",
+    eyebrow: "Your Hidden Talents",
+    title: "Discover Your Hidden Talents",
+    intro: "This is not a fixed past-life claim. Your answers point to talents that may feel old, natural, or strangely familiar.",
+    startLabel: "Find my hidden talent",
+    question: "Which ability feels natural even when you have not practiced it much?",
+    results: {
+      healing: { key: "healing", title: "Restorative Talent", desc: "Your answers point to a talent for calming, repairing, and noticing where energy or emotion needs care.", gift: "You may sense what helps people feel safe enough to soften.", reflection: "How can this gift include your own restoration?", color: "#7ab04a" },
+      seeing: { key: "seeing", title: "Pattern-Seeing Talent", desc: "Your answers point to a talent for reading symbols, motives, timing, or subtle connections.", gift: "You may understand situations before the full story is spoken.", reflection: "What helps your insight stay grounded and useful?", color: "#7ab8d8" },
+      making: { key: "making", title: "Sacred Making Talent", desc: "Your answers point to a talent for turning feeling into form through art, ritual, craft, words, or beauty.", gift: "You may make invisible meaning easier to touch.", reflection: "What wants to be made without waiting for perfection?", color: "#e06090" },
+    },
+  },
+  "7": {
+    nodeId: 7,
+    resultKey: "repeatingLifeLesson",
+    eyebrow: "Your Repeating Life Lesson",
+    title: "Discover Your Repeating Life Lesson",
+    intro: "This MVP identifies a recurring growth theme. Your answers point to a lesson that may be asking for a new response in this life.",
+    startLabel: "Find my repeating lesson",
+    question: "Which lesson keeps returning in different forms?",
+    results: {
+      receive: { key: "receive", title: "Learning to Receive", desc: "Your answers point to a lesson around letting support, love, and resources reach you without needing to earn them first.", gift: "This may reflect a generous soul learning reciprocity.", reflection: "What would change if receiving became a practice?", color: "#e06090" },
+      choose: { key: "choose", title: "Learning to Choose", desc: "Your answers point to a lesson around making decisions from your own truth rather than fear, duty, or old expectation.", gift: "This may reflect a soul reclaiming direction.", reflection: "What choice would honor the current you?", color: "#d8a85f" },
+      release: { key: "release", title: "Learning to Release", desc: "Your answers point to a lesson around endings, forgiveness, and freeing energy from stories that have already served their purpose.", gift: "This may reflect a soul that can transform grief into wisdom.", reflection: "What can be blessed and set down now?", color: "#9070d8" },
+    },
+  },
+};
+
+function getSavedString(nodeId: number, key: string) {
+  const value = getNodeState(DISCIPLINE, nodeId).result?.[key];
+  return typeof value === "string" || typeof value === "number" ? String(value) : "";
+}
+
+function PastLifeMvpNode({ config }: { config: PastLifeMvpConfig }) {
+  const router = useRouter();
+  const [started, setStarted] = useState(false);
+  const [result, setResult] = useState<PastLifeMvpResult | null>(null);
+
+  useEffect(() => {
+    const saved = getSavedString(config.nodeId, config.resultKey);
+    if (saved && config.results[saved]) {
+      setResult(config.results[saved]);
+      setStarted(true);
+      return;
+    }
+    startNode(DISCIPLINE, config.nodeId);
+  }, [config]);
+
+  const handleComplete = () => {
+    if (!result) return;
+    completeNode(DISCIPLINE, config.nodeId, { [config.resultKey]: result.key });
+    router.push("/sky/pastlife");
+  };
+
+  return (
+    <div>
+      {!started && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <div style={{ fontSize: 52, marginBottom: 10 }}>*</div>
+            <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 22, color: "var(--text)", marginBottom: 10 }}>{config.title}</h3>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>{config.intro}</p>
+          </div>
+          <button onClick={() => setStarted(true)} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>{config.startLabel}</button>
+        </div>
+      )}
+      {started && !result && (
+        <div>
+          <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 8 }}>{config.eyebrow}</p>
+          <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 21, color: "var(--text)", marginBottom: 18, lineHeight: 1.35 }}>{config.question}</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {Object.values(config.results).map((option) => (
+              <button key={option.key} onClick={() => setResult(option)} style={{ textAlign: "left", padding: "14px 16px", borderRadius: 14, border: "1px solid rgba(216,168,95,.25)", background: "rgba(14,10,32,.55)", color: "var(--text)", cursor: "pointer" }}>
+                <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "var(--gold-2)", marginBottom: 5 }}>{option.title}</span>
+                <span style={{ display: "block", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{option.desc}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+      {result && (
+        <div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <p style={{ fontSize: 11, color: "var(--gold)", fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>{config.eyebrow}</p>
+            <div style={{ width: 100, height: 100, margin: "0 auto 12px", borderRadius: "50%", background: `radial-gradient(circle, ${result.color}33, rgba(14,10,32,.95))`, border: `2px solid ${result.color}66`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 30px ${result.color}44` }}><span style={{ fontSize: 44 }}>*</span></div>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "var(--text)", marginBottom: 4 }}>{result.title}</h2>
+            <p style={{ fontSize: 12, color: "var(--gold-2)" }}>Your answers point to this pattern</p>
+          </div>
+          {[{ label: "INTERPRETATION", body: result.desc }, { label: "GIFT", body: result.gift }, { label: "REFLECTION", body: result.reflection }].map((item) => (
+            <div key={item.label} style={{ border: `1px solid ${result.color}44`, borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)", marginBottom: 10 }}>
+              <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>{item.label}</p>
+              <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>{item.body}</p>
+            </div>
+          ))}
+          <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)", marginTop: 10 }}>Complete node</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PLNode8() {
+  const router = useRouter();
+  const [saved, setSaved] = useState<Array<{ title: string; value: string }>>([]);
+  const [completed, setCompleted] = useState(false);
+
+  useEffect(() => {
+    const state = getNodeState(DISCIPLINE, 8);
+    setCompleted(state.status === "completed");
+    if (state.status !== "completed") startNode(DISCIPLINE, 8);
+    setSaved([
+      { title: "Past Life Role", value: getSavedString(1, "soulAge") },
+      { title: "Karma", value: getSavedString(2, "karma") },
+      { title: "Past Life Theme", value: getSavedString(3, "pastLifeTheme") },
+      { title: "Emotional Memory", value: getSavedString(4, "emotionalMemory") },
+      { title: "Relationship Karma", value: getSavedString(5, "relationshipKarma") },
+      { title: "Hidden Talents", value: getSavedString(6, "hiddenTalents") },
+      { title: "Repeating Life Lesson", value: getSavedString(7, "repeatingLifeLesson") },
+    ].filter((item) => item.value));
+  }, []);
+
+  const handleComplete = () => {
+    completeNode(DISCIPLINE, 8, { pastLifeIntegration: saved.map((item) => item.value).join("|") || "partial" });
+    setCompleted(true);
+    router.push("/sky/pastlife");
+  };
+
+  return (
+    <div>
+      <div style={{ textAlign: "center", marginBottom: 20 }}>
+        <div style={{ fontSize: 52, marginBottom: 10 }}>*</div>
+        <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 24, color: "var(--text)", marginBottom: 10 }}>Your Past Life Integration</h3>
+        <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>This gathers the past-life reflections available so far. If some results are missing, the integration stays partial and can deepen as earlier nodes are completed.</p>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
+        {saved.length ? saved.map((item) => (
+          <div key={item.title} style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 14, padding: "13px 15px", background: "rgba(14,10,32,.55)" }}>
+            <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 800, letterSpacing: ".09em", marginBottom: 5 }}>{item.title.toUpperCase()}</p>
+            <p style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.45 }}>{item.value}</p>
+          </div>
+        )) : (
+          <div style={{ border: "1px solid rgba(216,168,95,.22)", borderRadius: 14, padding: "14px 16px", background: "rgba(14,10,32,.55)" }}>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6 }}>Complete earlier past-life nodes to add more detail to this integration.</p>
+          </div>
+        )}
+      </div>
+      <div style={{ border: "1px solid rgba(160,130,220,.25)", borderRadius: 14, padding: "14px 16px", background: "rgba(12,8,28,.55)", marginBottom: 18 }}>
+        <p style={{ fontSize: 10, color: "var(--gold)", fontWeight: 700, letterSpacing: ".09em", marginBottom: 6 }}>REFLECTION</p>
+        <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>Which old pattern feels ready to become wisdom instead of repetition?</p>
+      </div>
+      <button onClick={handleComplete} style={{ width: "100%", height: 52, borderRadius: 999, background: "linear-gradient(135deg,#7030b0,#b03060)", color: "#fff", border: "none", fontSize: 15, fontWeight: 600, cursor: "pointer", boxShadow: "0 8px 24px rgba(110,30,130,.45)" }}>{completed ? "Complete again" : "Complete node"}</button>
+    </div>
+  );
+}
+
 const NODE_TITLES: Record<string, { en: string; ru: string; sub: { en: string; ru: string } }> = {
   "1": { en: "Past Life Role",  ru: "Vozrast dushi", sub: { en: "Beginning",  ru: "Nachalo" } },
   "2": { en: "Karma",     ru: "Karma",        sub: { en: "Patterns",   ru: "Patterny" } },
+  "3": { en: "Past Life Theme", ru: "Tema proshloy zhizni", sub: { en: "Core echo", ru: "Glavnoe ekho" } },
+  "4": { en: "Emotional Memory", ru: "Emotsionalnaya pamyat", sub: { en: "Inner imprint", ru: "Vnutrenniy otpechatok" } },
+  "5": { en: "Relationship Karma", ru: "Karma otnosheniy", sub: { en: "Bond pattern", ru: "Pattern svyazi" } },
+  "6": { en: "Hidden Talents", ru: "Skrytye talanty", sub: { en: "Old gifts", ru: "Starye dary" } },
+  "7": { en: "Repeating Life Lesson", ru: "Povtoryayuschiysya urok", sub: { en: "Growth loop", ru: "Petlya rosta" } },
+  "8": { en: "Integration", ru: "Integratsiya", sub: { en: "Synthesis", ru: "Sintez" } },
 };
 
 export default function PastLifeNodePage() {
@@ -428,6 +654,8 @@ export default function PastLifeNodePage() {
       <NodePage title={title} subtitle={subtitle} nodeNum={nodeNum} totalNodes={TOTAL} backHref="/sky/pastlife" badge={state.status === "completed" ? "completed" : undefined}>
         {nodeId === "1" && <PLNode1 />}
         {nodeId === "2" && <PLNode2 />}
+        {PAST_LIFE_MVP_CONFIGS[nodeId] && <PastLifeMvpNode config={PAST_LIFE_MVP_CONFIGS[nodeId]} />}
+        {nodeId === "8" && <PLNode8 />}
       </NodePage>
     </SkyNodeEntitlementGate>
   );
