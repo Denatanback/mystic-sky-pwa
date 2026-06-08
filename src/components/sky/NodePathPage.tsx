@@ -77,8 +77,8 @@ export function NodePathPage({ discipline, disciplineKey, nodes, lines, mapVaria
         {/* Map */}
         {mapVariant === "body" && bodyMapBackground ? (
           <div style={{ position: "relative", height: "clamp(580px, 160vw, 720px)", marginBottom: 20, border: "1px solid rgba(216,168,95,.2)", borderRadius: 24, overflow: "hidden", background: "radial-gradient(circle at 50% 28%, rgba(86,36,150,.22), rgba(8,5,22,.92) 74%)", boxShadow: "0 18px 44px rgba(0,0,0,.28)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}>
-            <Image src={bodyMapBackground} alt="" fill priority sizes="(max-width: 700px) 94vw, 430px" style={{ objectFit: "cover", objectPosition: "center center", opacity: 0.58, filter: "brightness(.62) contrast(.78) saturate(.76)", pointerEvents: "none" }} />
-            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(circle at 50% 44%, rgba(216,168,95,.04), transparent 34%), radial-gradient(circle at 50% 50%, transparent 0 38%, rgba(6,4,16,.24) 68%, rgba(6,4,16,.42)), linear-gradient(180deg, rgba(6,4,16,.32), rgba(6,4,16,.26) 52%, rgba(6,4,16,.48))" }} />
+            <Image src={bodyMapBackground} alt="" fill priority sizes="(max-width: 700px) 94vw, 430px" style={{ objectFit: "cover", objectPosition: "center center", opacity: 0.72, filter: "brightness(.76) contrast(.82) saturate(.82)", pointerEvents: "none" }} />
+            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(circle at 50% 44%, rgba(216,168,95,.04), transparent 36%), radial-gradient(circle at 50% 50%, transparent 0 40%, rgba(6,4,16,.18) 68%, rgba(6,4,16,.32)), linear-gradient(180deg, rgba(6,4,16,.22), rgba(6,4,16,.16) 52%, rgba(6,4,16,.34))" }} />
 
             {liveNodes.map((n) => {
               const isDone = n.status === "done", isCurrent = n.status === "current", isLocked = n.status === "locked";

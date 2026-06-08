@@ -6,7 +6,7 @@ export default function PastLifePathPage() {
   const { lang } = useLang();
 
   const NODES: PathNode[] = false ? [
-    { num: 1, label: "Vozrast dushi",      sub: "Nachalo",       desc: "Uroven evolyutsii tvoey dushi i ee opyt proshlykh voploscheniy",      status: "done",    emblem: "/assets/node-emblems/pastlife/emblem-1-soul-age.png",    x: 50, y: 82 },
+    { num: 1, label: "Past Life Role",      sub: "Nachalo",       desc: "A symbolic role your answers may point to from past-life themes",      status: "done",    emblem: "/assets/node-emblems/pastlife/emblem-1-soul-age.png",    x: 50, y: 82 },
     { num: 2, label: "Karma",             sub: "Patterny",     desc: "Povtoryayuschiesya temy i karmicheskie patterny iz proshlykh zhizney",   status: "current", emblem: "/assets/node-emblems/pastlife/emblem-2-karma.png",       x: 21, y: 64 },
     { num: 3, label: "Znak proshloy zhizni", sub: "Pamyat",      desc: "Astrologicheskie sledy proshlykh voploscheniy v tvoey karte",        status: "locked",  emblem: "/assets/node-emblems/pastlife/emblem-3-sign.png",        x: 73, y: 64 },
     { num: 4, label: "Lunnye uzly",       sub: "Put",         desc: "Yuzhnyy uzel — proshloe, Severnyy — tvoya evolyutsiya v etoy zhizni",   status: "locked",  emblem: "/assets/node-emblems/pastlife/emblem-4-nodes.png",       x: 18, y: 40 },
@@ -15,7 +15,7 @@ export default function PastLifePathPage() {
     { num: 7, label: "Talanty",           sub: "Dary",         desc: "Sposobnosti i dary, prinesennye iz proshlykh voploscheniy",         status: "locked",  emblem: "/assets/node-emblems/pastlife/emblem-7-talents.png",     x: 47, y:  8 },
     { num: 8, label: "Integratsiya",        sub: "Tselostnost",  desc: "Sintez urokov proshlogo i sozdanie garmonichnogo buduschego",       status: "locked",  emblem: "/assets/node-emblems/pastlife/emblem-8-integration.png", x: 80, y: 11 },
   ] : [
-    { num: 1, label: "Soul Age",          sub: "Beginning",    desc: "The evolution level of your soul and its past incarnations",     status: "done",    emblem: "/assets/node-emblems/pastlife/emblem-1-soul-age.png",    x: 50, y: 82 },
+    { num: 1, label: "Past Life Role",          sub: "Beginning",    desc: "A symbolic role your answers may point to from past-life themes",     status: "done",    emblem: "/assets/node-emblems/pastlife/emblem-1-soul-age.png",    x: 50, y: 82 },
     { num: 2, label: "Karma",             sub: "Patterns",     desc: "Recurring themes and karmic patterns from past lives",           status: "current", emblem: "/assets/node-emblems/pastlife/emblem-2-karma.png",       x: 21, y: 64 },
     { num: 3, label: "Past Life Sign",    sub: "Memory",       desc: "Astrological imprints of past incarnations in your chart",      status: "locked",  emblem: "/assets/node-emblems/pastlife/emblem-3-sign.png",        x: 73, y: 64 },
     { num: 4, label: "Lunar Nodes",       sub: "Direction",    desc: "South Node — the past; North Node — your evolution this life",   status: "locked",  emblem: "/assets/node-emblems/pastlife/emblem-4-nodes.png",       x: 18, y: 40 },

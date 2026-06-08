@@ -6,7 +6,7 @@ export default function NumerologyPathPage() {
   const { lang, t } = useLang();
 
   const NODES: PathNode[] = false ? [
-    { num: 1, label: "Chislo puti",      sub: "Osnova",          desc: "Tvoe chislo sudby — glavnaya vibratsiya zhiznennogo puti",         status: "done",    emblem: "/assets/node-emblems/numerology/emblem-1-path-number.png",      x: 50, y: 82 },
+    { num: 1, label: "Destiny Code",      sub: "Osnova",          desc: "Your Life Path number as a clear destiny archetype",         status: "done",    emblem: "/assets/node-emblems/numerology/emblem-1-path-number.png",      x: 50, y: 82 },
     { num: 2, label: "Chislo dushi",      sub: "Vnutrenniy mir",  desc: "Intuitsiya, zhelaniya i tvoy vnutrenniy golos",                    status: "current", emblem: "/assets/node-emblems/numerology/emblem-2-soul-number.png",      x: 21, y: 64 },
     { num: 3, label: "Chislo lichnosti",  sub: "Vneshniy obraz",   desc: "Kak tebya vosprinimaet okruzhayuschiy mir",                         status: "locked",  emblem: "/assets/node-emblems/numerology/emblem-3-personality-number.png", x: 73, y: 64 },
     { num: 4, label: "Matritsa",         sub: "Potentsial",       desc: "Kvadrat Pifagora — karta tvoikh skrytykh vozmozhnostey",          status: "locked",  emblem: "/assets/node-emblems/numerology/emblem-4-matrix.png",            x: 18, y: 40 },
@@ -15,7 +15,7 @@ export default function NumerologyPathPage() {
     { num: 7, label: "Master-chisla",    sub: "Sila",            desc: "Osobye vibratsii 11, 22, 33 i ikh znachenie v tvoey karte",       status: "locked",  emblem: "/assets/node-emblems/numerology/emblem-7-master-number.png",     x: 47, y:  8 },
     { num: 8, label: "Lichnyy kod",      sub: "Tselostnost",     desc: "Sintez vsekh chisel — tvoya polnaya numerologicheskaya kartina",     status: "locked",  emblem: "/assets/node-emblems/numerology/emblem-8-personal-code.png",     x: 80, y: 11 },
   ] : [
-    { num: 1, label: "Life Path",       sub: "Foundation",      desc: "Your reflection number — the core vibration of your life path", status: "done",    emblem: "/assets/node-emblems/numerology/emblem-1-path-number.png",      x: 50, y: 82 },
+    { num: 1, label: "Destiny Code",       sub: "Foundation",      desc: "Your Life Path number as a clear destiny archetype", status: "done",    emblem: "/assets/node-emblems/numerology/emblem-1-path-number.png",      x: 50, y: 82 },
     { num: 2, label: "Soul Number",     sub: "Inner world",     desc: "Intuition, desires and your inner voice",                      status: "current", emblem: "/assets/node-emblems/numerology/emblem-2-soul-number.png",      x: 21, y: 64 },
     { num: 3, label: "Personality",     sub: "Outer image",     desc: "How the world perceives you",                                 status: "locked",  emblem: "/assets/node-emblems/numerology/emblem-3-personality-number.png", x: 73, y: 64 },
     { num: 4, label: "Matrix",          sub: "Potential",       desc: "Pythagoras square — a map of your hidden possibilities",      status: "locked",  emblem: "/assets/node-emblems/numerology/emblem-4-matrix.png",            x: 18, y: 40 },

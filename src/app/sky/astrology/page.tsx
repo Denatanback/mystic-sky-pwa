@@ -6,7 +6,7 @@ export default function AstrologyPathPage() {
   const { lang, t } = useLang();
 
   const NODES: PathNode[] = false ? [
-    { num: 1, label: "Solntse",    sub: "Nachalo puti",       desc: "Solnechnaya energiya — osnova lichnosti i zhiznennoy sily",         status: "done",    emblem: "/assets/node-emblems/astrology/emblem-1-sun.png",       x: 50, y: 82 },
+    { num: 1, label: "Cosmic Archetype",    sub: "Nachalo puti",       desc: "Sun sign, element, and quality as a fast archetype",         status: "done",    emblem: "/assets/node-emblems/astrology/emblem-1-sun.png",       x: 50, y: 82 },
     { num: 2, label: "Luna",      sub: "Emotsii, intuitsiya",  desc: "Emotsii, intuitsiya, vnutrenniy mir",                             status: "current", emblem: "/assets/node-emblems/astrology/emblem-2-moon.png",      x: 21, y: 64 },
     { num: 3, label: "Aspekty",   sub: "Vzaimosvyazi",       desc: "Ugly i vzaimodeystvie planet v natalnoy karte",               status: "locked",  emblem: "/assets/node-emblems/astrology/emblem-3-aspects.png",   x: 73, y: 64 },
     { num: 4, label: "Doma",      sub: "Sreda zhizni",       desc: "Dvenadtsat domov — sfery zhizni i deyatelnosti",               status: "locked",  emblem: "/assets/node-emblems/astrology/emblem-4-house-v2.png",  x: 18, y: 40 },
@@ -15,7 +15,7 @@ export default function AstrologyPathPage() {
     { num: 7, label: "Aspekty",   sub: "Struktura",         desc: "Glubokie struktury i patterny natalnoy karty",               status: "locked",  emblem: "/assets/node-emblems/astrology/emblem-7-aspect-v2.png", x: 47, y:  8 },
     { num: 8, label: "Sintez",    sub: "Tselostnost",       desc: "Tselostnoe ponimanie natalnoy karty i tvoego puti",            status: "locked",  emblem: "/assets/node-emblems/astrology/emblem-8-syntez.png",    x: 80, y: 11 },
   ] : [
-    { num: 1, label: "Sun",       sub: "Beginning",         desc: "Solar energy — the foundation of personality and life force",  status: "done",    emblem: "/assets/node-emblems/astrology/emblem-1-sun.png",       x: 50, y: 82 },
+    { num: 1, label: "Cosmic Archetype",       sub: "Beginning",         desc: "Sun sign, element, and quality as a fast archetype",  status: "done",    emblem: "/assets/node-emblems/astrology/emblem-1-sun.png",       x: 50, y: 82 },
     { num: 2, label: "Moon",      sub: "Emotions & intuition", desc: "Emotions, intuition and inner world",                      status: "current", emblem: "/assets/node-emblems/astrology/emblem-2-moon.png",      x: 21, y: 64 },
     { num: 3, label: "Aspects",   sub: "Connections",       desc: "Angles and interactions between planets in the natal chart",  status: "locked",  emblem: "/assets/node-emblems/astrology/emblem-3-aspects.png",   x: 73, y: 64 },
     { num: 4, label: "Houses",    sub: "Life areas",        desc: "Twelve houses — spheres of life and activity",               status: "locked",  emblem: "/assets/node-emblems/astrology/emblem-4-house-v2.png",  x: 18, y: 40 },
