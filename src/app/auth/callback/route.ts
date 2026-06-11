@@ -129,8 +129,14 @@ async function updateOAuthProfile(supabase: SupabaseClient, user: User, complete
 }
 
 function getPostAuthReturnTo(returnTo: string, complete: boolean) {
+  // Honour explicit paywall/claim destinations set before OAuth redirect
+  if (returnTo === "/claim/paywall" || returnTo === "/paywall") return returnTo;
+  // New users without birth data → onboarding first (then GlobalAccessGuard redirects to paywall)
   if (!complete) return "/onboarding";
-  return returnTo === "/onboarding" ? "/home" : returnTo;
+  // Returning users: honour returnTo, but avoid bouncing back to onboarding or home
+  // (GlobalAccessGuard will redirect to /paywall if no active access)
+  if (returnTo === "/onboarding" || returnTo === "/home") return "/paywall";
+  return returnTo;
 }
 
 export async function GET(request: Request) {

@@ -1,67 +1,41 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useState } from "react";
-import { usePathname } from "next/navigation";
-import { Logo } from "@/components/Logo";
-import { BottomNav } from "@/components/app-shell/BottomNav";
-import { StarField } from "@/components/app-shell/StarField";
-import { GuideTopBarButton } from "@/components/guide/GuideTopBarButton";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useEntitlements } from "@/lib/subscription/entitlements";
-import { getLockedProductPreview } from "./LockedProductPreviews";
-import { LockedProductPreviewShell } from "./LockedProductPreviewShell";
-import { PlanChip } from "./PlanChip";
-import { SubscriptionModal } from "./SubscriptionModal";
 
 type ProductAccessGateProps = {
   children: ReactNode;
+  /** @deprecated No longer rendered — gate now redirects to /paywall on access failure */
   featureName?: string;
+  /** @deprecated No longer rendered — gate now redirects to /paywall on access failure */
   description?: string;
+  /** @deprecated No longer rendered — gate now redirects to /paywall on access failure */
   preview?: ReactNode;
 };
 
-export function ProductAccessGate({
-  children,
-  featureName = "eLuna",
-  description = "Choose 3-day intro access or a subscription to activate product features.",
-  preview,
-}: ProductAccessGateProps) {
+/**
+ * Secondary access gate for feature pages (today, cards, journal, daily-card).
+ *
+ * GlobalAccessGuard is the primary guard and redirects unpaid users before they
+ * reach these pages. This component is a defence-in-depth fallback for edge cases
+ * (e.g. subscription expires while the user has an active session).
+ *
+ * On access failure it redirects to /paywall — SubscriptionModal is no longer used.
+ */
+export function ProductAccessGate({ children }: ProductAccessGateProps) {
   const { entitlements, loading } = useEntitlements();
-  const [subscriptionOpen, setSubscriptionOpen] = useState(false);
-  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !entitlements.hasFullAccess) {
+      router.replace("/paywall");
+    }
+  }, [loading, entitlements.hasFullAccess, router]);
 
   if (entitlements.hasFullAccess) return <>{children}</>;
 
-  const lockedPreview = preview ?? getLockedProductPreview(pathname);
-
-  return (
-    <div className="app">
-      <StarField />
-      <div className="content" style={{ paddingBottom: "calc(132px + env(safe-area-inset-bottom))" }}>
-        <header className="app-topbar">
-          <div className="app-topbar__logo"><Logo variant="header" /></div>
-          <div className="app-topbar__actions">
-            <GuideTopBarButton />
-            <PlanChip />
-          </div>
-        </header>
-
-        <LockedProductPreviewShell
-          featureName={featureName}
-          description={description}
-          loading={loading}
-          onChooseAccess={() => setSubscriptionOpen(true)}
-        >
-          {lockedPreview}
-        </LockedProductPreviewShell>
-      </div>
-      <BottomNav />
-      <SubscriptionModal
-        isOpen={subscriptionOpen}
-        onClose={() => setSubscriptionOpen(false)}
-        contextTitle={`Unlock ${featureName}`}
-        contextDescription={description}
-      />
-    </div>
-  );
+  // Show nothing while loading or while redirect is in flight.
+  return null;
 }

@@ -4,6 +4,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
 import { GuideProvider } from "@/components/guide/GuideProvider";
 import { AuthRouteGuard } from "@/components/auth/AuthRouteGuard";
+import { GlobalAccessGuard } from "@/components/subscription/GlobalAccessGuard";
 import { PrelandClaimGate } from "@/components/claims/PrelandClaimGate";
 
 const cormorant = Cormorant_Garamond({
@@ -53,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${manrope.variable} ${lora.variable}`}>
       <body>
-        <LanguageProvider><GuideProvider><AuthRouteGuard><PrelandClaimGate>{children}</PrelandClaimGate></AuthRouteGuard></GuideProvider></LanguageProvider>
+        <LanguageProvider><GuideProvider><AuthRouteGuard><GlobalAccessGuard><PrelandClaimGate>{children}</PrelandClaimGate></GlobalAccessGuard></AuthRouteGuard></GuideProvider></LanguageProvider>
       </body>
     </html>
   );

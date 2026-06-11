@@ -22,6 +22,16 @@ const publicExactRoutes = new Set([
   "/support",
   "/welcome-head",
   "/manifest.webmanifest",
+  // Paywall routes — accessible before auth so unauthenticated preland users
+  // can be deep-linked here and are prompted to sign in from the paywall itself.
+  "/paywall",
+  "/claim/paywall",
+  // Checkout result pages — must be reachable after Stripe redirect without
+  // an extra auth check intercepting the landing.
+  "/checkout/success",
+  "/checkout/cancel",
+  // Onboarding — profile setup, no paid content
+  "/onboarding",
 ]);
 
 const protectedExactRoutes = new Set([
@@ -38,7 +48,6 @@ const protectedExactRoutes = new Set([
   "/sky",
   "/path",
   "/practices",
-  "/onboarding",
 ]);
 
 function isPublicRoute(pathname: string) {
@@ -46,7 +55,11 @@ function isPublicRoute(pathname: string) {
 }
 
 function isProtectedRoute(pathname: string) {
-  return protectedExactRoutes.has(pathname) || pathname.startsWith("/sky/");
+  return (
+    protectedExactRoutes.has(pathname) ||
+    pathname.startsWith("/sky/") ||
+    pathname.startsWith("/today/")
+  );
 }
 
 function redirectToLogin(request: NextRequest) {

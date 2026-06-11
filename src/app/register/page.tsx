@@ -65,7 +65,7 @@ export default function RegisterPage() {
   const [launchContext, setLaunchContext] = useState(() => cleanLaunchContext({}));
   const [prelandContext, setPrelandContext] = useState<PrelandContext>({});
   const [legalReturnTo, setLegalReturnTo] = useState("/register");
-  const [oauthReturnTo, setOauthReturnTo] = useState("/onboarding");
+  const [oauthReturnTo, setOauthReturnTo] = useState("/paywall");
   const [socialLoading, setSocialLoading] = useState<OAuthProvider | null>(null);
 
   useEffect(() => {
@@ -157,7 +157,7 @@ export default function RegisterPage() {
     // Persist any pending preland claim to the DB so it survives the auth session
     await syncPendingClaimToServer();
     const hasPendingClaim = validateClaim(detectClaim()) !== null;
-    router.push(hasPendingClaim ? "/claim/paywall" : "/onboarding");
+    router.push(hasPendingClaim ? "/claim/paywall" : "/paywall");
     router.refresh();
   }
 

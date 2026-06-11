@@ -23,6 +23,14 @@ const publicExactRoutes = new Set([
   "/support",
   "/welcome-head",
   "/manifest.webmanifest",
+  // Paywall pages — must be reachable before authentication
+  "/paywall",
+  "/claim/paywall",
+  // Onboarding — profile setup only
+  "/onboarding",
+  // Checkout result pages
+  "/checkout/success",
+  "/checkout/cancel",
 ]);
 
 const protectedExactRoutes = new Set([
@@ -47,7 +55,11 @@ function isProtectedRoute(pathname: string) {
 }
 
 function isPublicRoute(pathname: string) {
-  return publicExactRoutes.has(pathname) || pathname.startsWith("/api/");
+  return (
+    publicExactRoutes.has(pathname) ||
+    pathname.startsWith("/api/") ||
+    pathname.startsWith("/checkout/")
+  );
 }
 
 function currentReturnTo() {

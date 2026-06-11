@@ -189,6 +189,81 @@ localStorage is used only for UX persistence (claim buffering, preland context).
 
 ---
 
+---
+
+## Global Access Gating (2026-06-11)
+
+**Product rule:** Authenticated users without active access cannot view any app content. The entire app is locked behind payment.
+
+### New files
+
+| File | Purpose |
+|---|---|
+| `src/middleware.ts` | Next.js root middleware — activates `updateSession()` from `src/lib/supabase/middleware.ts`. Was missing; session refresh and auth redirects were never running before this was added. |
+| `src/app/paywall/page.tsx` | Generic paywall for direct signups with no preland claim. Copy: "Unlock your personal star path". CTA: "Start my journey". Defaults to `intro_3_day`; falls back to monthly if intro already used. |
+| `src/components/subscription/GlobalAccessGuard.tsx` | Client component that checks `/api/access/status` on every route change and redirects before page content renders. |
+
+### How GlobalAccessGuard works
+
+**Location:** `src/components/subscription/GlobalAccessGuard.tsx`
+**Mount point:** root layout (`src/app/layout.tsx`), nested as `<AuthRouteGuard><GlobalAccessGuard>...</GlobalAccessGuard></AuthRouteGuard>`
+
+On every `pathname` change:
+
+1. If the route is in `ACCESS_FREE_EXACT` (auth pages, paywall pages, checkout pages, API routes, legal) → pass through immediately.
+2. If `accessConfirmedRef.current` is `true` (session-cached confirmation) → pass through without a network request.
+3. Otherwise → fetch `GET /api/access/status` with `AbortController` (cancels in-flight checks on fast navigation).
+   - `401` → pass through (AuthRouteGuard handles unauthenticated redirects).
+   - Network error / non-OK → pass through (fail-open; auth layers still protect).
+   - `active: true` → set `accessConfirmedRef.current = true`, pass through.
+   - `active: false` + pending claim → `router.replace("/claim/paywall")`.
+   - `active: false` + no claim → `router.replace("/paywall")`.
+4. While checking (`gateState === "checking"`) renders `<AccessCheckOverlay />` spinner, not page content.
+
+### Routes allowed without active access
+
+```
+/ /welcome /login /register /reset-password /auth/callback /onboarding
+/paywall /claim/paywall /checkout/success /checkout/cancel
+/settings/billing /legal/* /privacy /terms /about /contact /faq
+/api/* (all API routes)
+```
+
+All other routes — `/home`, `/sky/*`, `/path`, `/practices`, `/cards`, `/journal`, `/today/*`, `/daily-card`, `/profile` — require active access.
+
+### Secondary gates (defence-in-depth)
+
+GlobalAccessGuard is the primary guard. Secondary gates protect against edge cases (e.g. subscription expires mid-session while `accessConfirmedRef` is still `true`):
+
+| Component | Gate behaviour |
+|---|---|
+| `ProductAccessGate` | Wraps today, cards, journal, daily-card pages. `useEffect` redirects to `/paywall` when `hasFullAccess` becomes `false`. Renders `null` while loading or redirecting. |
+| `SkyNodeEntitlementGate` | Wraps every `/sky/[discipline]/[nodeId]` content page. `useEffect` redirects to `/paywall` when `hasFullAccess` is `false`. |
+
+Both components previously opened `SubscriptionModal` — that pattern is removed. All access failures now redirect to `/paywall`.
+
+### Register / login redirect changes
+
+- **Register (email):** After successful registration → `/claim/paywall` if pending claim, otherwise `/paywall` (never `/home` for unpaid users).
+- **Register (OAuth):** `oauthReturnTo` defaults to `/paywall`; set to `/claim/paywall` if a pending claim is detected before OAuth redirect.
+- **Login:** If `returnTo` is `/home` or `/onboarding` → override to `/paywall` (no claim) or `/claim/paywall` (pending claim).
+- **Auth callback:** If `returnTo` is `/home` or `/onboarding` → rewrite to `/paywall`.
+
+### Content audit — all protected routes verified
+
+| Route | Protection |
+|---|---|
+| `/home` | GlobalAccessGuard (no page-level gate needed) |
+| `/sky/[discipline]` | GlobalAccessGuard; shows nav map with lock icons — no premium content |
+| `/sky/[discipline]/[nodeId]` | GlobalAccessGuard + SkyNodeEntitlementGate |
+| `/path` | GlobalAccessGuard |
+| `/practices` | GlobalAccessGuard + inline `hasFullAccess` check |
+| `/today/*` | GlobalAccessGuard + ProductAccessGate |
+| `/cards` | GlobalAccessGuard + ProductAccessGate |
+| `/journal` | GlobalAccessGuard + ProductAccessGate |
+| `/daily-card` | GlobalAccessGuard + ProductAccessGate |
+| `/profile` | GlobalAccessGuard (account management; no premium reading content) |
+
 ## Remaining Blockers
 
 ### ⚠️ Must do before launch
@@ -280,6 +355,17 @@ Run these end-to-end before going live. Use Stripe test mode.
 - [ ] Complete payment flow — paywall shows "Your Soulmate Type is ready" copy
 - [ ] Redirected to `/sky/soulmate/1`
 - [ ] Node 1 completed with `soulmateType = protector`
+
+
+### Flow 8: Global access gating — unpaid user blocked from all app routes
+
+- [ ] Register a new account (no preland params)
+- [ ] Confirm browser redirects to `/paywall`, not `/home`
+- [ ] Manually try navigating to `/home` — confirm redirect back to `/paywall`
+- [ ] Manually try `/sky/pastlife` — confirm redirect back to `/paywall`
+- [ ] Manually try `/today` — confirm redirect back to `/paywall`
+- [ ] Complete payment; confirm redirect to `/home` after success
+- [ ] All above routes now load without redirect
 
 ---
 

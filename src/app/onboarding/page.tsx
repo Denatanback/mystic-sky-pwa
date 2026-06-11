@@ -200,7 +200,22 @@ export default function OnboardingPage() {
       setError(result.error);
       return;
     }
-    router.push("/home");
+    // After profile setup, go to paywall if not yet paid; home if already active.
+    try {
+      const accessRes = await fetch("/api/access/status");
+      if (accessRes.ok) {
+        const accessJson = await accessRes.json() as { active: boolean; pendingClaim: { id: string } | null };
+        if (accessJson.active) {
+          router.push("/home");
+          return;
+        }
+        router.push(accessJson.pendingClaim ? "/claim/paywall" : "/paywall");
+        return;
+      }
+    } catch {
+      // fail open
+    }
+    router.push("/paywall");
     router.refresh();
   }
 

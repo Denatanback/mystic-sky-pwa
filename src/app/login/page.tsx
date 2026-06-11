@@ -54,9 +54,16 @@ export default function LoginPage() {
     // Persist any pending preland claim from localStorage to the server
     await syncPendingClaimToServer();
     const hasPendingClaim = validateClaim(detectClaim()) !== null;
-    // If there is a pending preland claim and no explicit deep-link returnTo,
-    // redirect to the forced paywall. A custom returnTo takes precedence.
-    const loginReturnTo = hasPendingClaim && returnTo === "/home" ? "/claim/paywall" : returnTo;
+    // Route after login:
+    //  - pending preland claim + default returnTo → /claim/paywall
+    //  - no claim + default returnTo → /paywall (GlobalAccessGuard guards /home anyway)
+    //  - explicit non-home returnTo → honour it (deep-link or post-payment)
+    let loginReturnTo = returnTo;
+    if (returnTo === "/home" || returnTo === "/onboarding") {
+      loginReturnTo = hasPendingClaim ? "/claim/paywall" : "/paywall";
+    } else if (hasPendingClaim) {
+      loginReturnTo = "/claim/paywall";
+    }
     router.push(loginReturnTo);
   }
 
