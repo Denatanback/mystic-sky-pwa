@@ -4,14 +4,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { StarField } from "@/components/app-shell/StarField";
 
-// ---------------------------------------------------------------------------
-// Route classification
-// ---------------------------------------------------------------------------
+// Route classification (mirrors src/lib/supabase/middleware.ts)
 
-/**
- * Routes where global access gating is skipped entirely.
- * Includes public pages, auth flows, paywall pages, and checkout.
- */
 const ACCESS_FREE_EXACT = new Set([
   "/",
   "/welcome",
@@ -21,13 +15,10 @@ const ACCESS_FREE_EXACT = new Set([
   "/reset-password",
   "/auth/callback",
   "/onboarding",
-  // Paywalls
   "/paywall",
   "/claim/paywall",
-  // Checkout
   "/checkout/success",
   "/checkout/cancel",
-  // Legal / info
   "/privacy",
   "/policy",
   "/terms",
@@ -40,7 +31,7 @@ const ACCESS_FREE_EXACT = new Set([
   "/manifest.webmanifest",
 ]);
 
-function isAccessFree(pathname: string) {
+function isAccessFree(pathname: string): boolean {
   return (
     ACCESS_FREE_EXACT.has(pathname) ||
     pathname.startsWith("/api/") ||
@@ -48,18 +39,15 @@ function isAccessFree(pathname: string) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Access status response type
-// ---------------------------------------------------------------------------
-
 type AccessStatus = {
   active: boolean;
   pendingClaim: { id: string } | null;
 };
 
-// ---------------------------------------------------------------------------
-// Loading overlay
-// ---------------------------------------------------------------------------
+type GateState =
+  | "checking"    // access check in flight -- render overlay, NEVER children
+  | "allowed"     // confirmed active access -- render children
+  | "redirecting"; // redirecting to paywall -- render overlay, NEVER children
 
 function AccessCheckOverlay() {
   return (
@@ -93,42 +81,34 @@ function AccessCheckOverlay() {
           }}
         />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <p style={{ color: "var(--muted)", fontSize: 13 }}>Opening your path…</p>
+        <p style={{ color: "var(--muted)", fontSize: 13 }}>Opening your path...</p>
       </div>
     </main>
   );
 }
 
-// ---------------------------------------------------------------------------
-// GlobalAccessGuard
-// ---------------------------------------------------------------------------
-
 /**
- * Global paywall gate. Wraps all routes in the root layout.
+ * GlobalAccessGuard -- secondary defence-in-depth client guard.
  *
- * - Access-free routes (paywall, auth, checkout, legal): rendered immediately.
- * - All other routes: check /api/access/status first.
- *   - active: render children.
- *   - inactive + pending claim: redirect → /claim/paywall.
- *   - inactive + no claim: redirect → /paywall.
- *   - unauthenticated (401): let AuthRouteGuard handle → redirect → /login.
- *   - network error: fail open (render children) — auth layers still protect.
+ * The PRIMARY gate is middleware (src/lib/supabase/middleware.ts), which runs
+ * server-side before any HTML is delivered. This component covers:
+ *   1. Client-side navigations after session-level access was confirmed.
+ *   2. Mid-session subscription expiry.
  *
- * The check runs on every pathname change so client-side navigation is also
- * gated. Results are cached in a ref keyed by access state to avoid duplicate
- * fetches within the same session.
+ * Children are NEVER rendered while gateState is "checking" or "redirecting".
  */
 export function GlobalAccessGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  // "idle" before first render; then "checking", "allowed", "redirecting"
-  const [gateState, setGateState] = useState<"checking" | "allowed" | "redirecting">(
-    isAccessFree(pathname) ? "allowed" : "checking"
+  // Initialise as "checking" for protected routes so the overlay is shown on
+  // the very first render -- no flash of content before useEffect fires.
+  const [gateState, setGateState] = useState<GateState>(() =>
+    isAccessFree(pathname) ? "allowed" : "checking",
   );
 
-  // Cache: once active access is confirmed, keep it for subsequent navigations.
-  // Reset to false only when the component re-mounts (full page reload).
+  // Session-lifetime cache: once active access is confirmed, skip re-fetching
+  // on subsequent client-side navigations. Resets on full page reload.
   const accessConfirmedRef = useRef(false);
   const activeCheckRef = useRef<AbortController | null>(null);
 
@@ -138,13 +118,13 @@ export function GlobalAccessGuard({ children }: { children: ReactNode }) {
       return;
     }
 
-    // If access was already confirmed this session, allow immediately
+    // Access already confirmed this session -- allow immediately.
     if (accessConfirmedRef.current) {
       setGateState("allowed");
       return;
     }
 
-    // Cancel any in-flight check from a previous navigation
+    // Cancel any in-flight check from a previous navigation.
     activeCheckRef.current?.abort();
     const controller = new AbortController();
     activeCheckRef.current = controller;
@@ -155,13 +135,13 @@ export function GlobalAccessGuard({ children }: { children: ReactNode }) {
       .then(async (res) => {
         if (controller.signal.aborted) return;
 
-        // Unauthenticated — AuthRouteGuard handles the login redirect
+        // 401 -- unauthenticated; middleware / AuthRouteGuard handles redirect.
         if (res.status === 401) {
           setGateState("allowed");
           return;
         }
 
-        // Fail open on server errors
+        // Non-OK server error -- fail open; middleware is the real gate.
         if (!res.ok) {
           setGateState("allowed");
           return;
@@ -175,17 +155,13 @@ export function GlobalAccessGuard({ children }: { children: ReactNode }) {
           return;
         }
 
-        // No active access — redirect to appropriate paywall
+        // No active access -- redirect to appropriate paywall.
         setGateState("redirecting");
-        if (json.pendingClaim) {
-          router.replace("/claim/paywall");
-        } else {
-          router.replace("/paywall");
-        }
+        router.replace(json.pendingClaim ? "/claim/paywall" : "/paywall");
       })
       .catch((err: unknown) => {
         if (err instanceof Error && err.name === "AbortError") return;
-        // Fail open — auth layers still protect
+        // Network error -- fail open (middleware is the real gate).
         setGateState("allowed");
       });
 
@@ -194,6 +170,7 @@ export function GlobalAccessGuard({ children }: { children: ReactNode }) {
     };
   }, [pathname, router]);
 
+  // NEVER render children while checking or redirecting.
   if (gateState === "checking" || gateState === "redirecting") {
     return <AccessCheckOverlay />;
   }

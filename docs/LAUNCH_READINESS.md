@@ -193,17 +193,60 @@ localStorage is used only for UX persistence (claim buffering, preland context).
 
 ## Global Access Gating (2026-06-11)
 
-**Product rule:** Authenticated users without active access cannot view any app content. The entire app is locked behind payment.
+**Product rule:** Authenticated users without active access cannot view any app content. The entire app is locked behind payment. This is enforced server-side in middleware before any HTML is delivered to the browser.
 
-### New files
+### Files
 
-| File | Purpose |
+| File | Change |
 |---|---|
-| `src/middleware.ts` | Next.js root middleware — activates `updateSession()` from `src/lib/supabase/middleware.ts`. Was missing; session refresh and auth redirects were never running before this was added. |
-| `src/app/paywall/page.tsx` | Generic paywall for direct signups with no preland claim. Copy: "Unlock your personal star path". CTA: "Start my journey". Defaults to `intro_3_day`; falls back to monthly if intro already used. |
-| `src/components/subscription/GlobalAccessGuard.tsx` | Client component that checks `/api/access/status` on every route change and redirects before page content renders. |
+| `src/middleware.ts` | Next.js root middleware entry point. Calls `updateSession()`. |
+| `src/lib/supabase/middleware.ts` | **Rewritten** -- now performs full server-side paid-access gate in addition to session refresh. Blocks all protected routes for unpaid users before HTML is served. |
+| `src/app/paywall/page.tsx` | New generic paywall for direct signups with no preland claim. |
+| `src/components/subscription/GlobalAccessGuard.tsx` | Updated -- secondary defence-in-depth client guard; never renders children while access is unknown or denied. |
 
-### How GlobalAccessGuard works
+### How server-side access gating works (PRIMARY gate)
+
+**Location:** `src/lib/supabase/middleware.ts` -- `updateSession()` function
+
+Runs on **every HTTP request** (page loads, client-side RSC fetches, API calls) before any HTML or data is sent to the browser.
+
+**Flow for protected routes** (`/home`, `/sky/*`, `/today/*`, `/path`, `/practices`, `/profile`, `/journal`, `/cards`, `/daily-card`):
+
+1. If the route is public (paywall pages, auth, checkout, API) -- pass through immediately.
+2. On `/checkout/success` -- delete the `eluna_access_v1` cache cookie so the first post-payment navigation re-checks Supabase.
+3. Refresh Supabase session (renews auth token if needed); collect any new session cookies.
+4. Resolve the authenticated user. If unauthenticated -- redirect to `/login?returnTo=...`.
+5. Check the `eluna_access_v1` HMAC-signed httpOnly cookie cache (TTL: 120s):
+   - **Cache hit** -- `[access_guard_cache_hit]` -- skip DB, allow immediately.
+   - **Cache miss** -- `[access_guard_cache_miss]` -- query Supabase `subscriptions` table.
+6. On DB query:
+   - **Error** -- `[access_guard_db_error]` -- fail open (don't block paid users during outages).
+   - **No active access** -- query `pending_claims`; redirect to `/claim/paywall` or `/paywall`.
+   - **Active access** -- `[access_guard_allow_active]` -- write `eluna_access_v1` cache cookie; allow.
+
+**Cache cookie `eluna_access_v1`:**
+- Payload: `{ uid, access: true, exp }` (only `true` is ever cached; no-access is never cached)
+- Signed: HMAC-SHA256 with `SUPABASE_SERVICE_ROLE_KEY` (base64url)
+- httpOnly, SameSite=Lax, Secure (production), MaxAge=120s
+- Stored format: `{base64(payload)}.{base64url(hmac)}`
+
+**`"/"` route for authenticated users:**
+Middleware intercepts before the page component runs and redirects based on access:
+- Active access -> `/home`
+- No access + pending claim -> `/claim/paywall`
+- No access + no claim -> `/paywall`
+
+**Debug log prefixes:**
+- `[access_guard_check]` -- DB query started
+- `[access_guard_cache_hit]` -- served from cookie cache
+- `[access_guard_cache_miss]` -- cache absent/expired, querying DB
+- `[access_guard_allow_active]` -- request allowed through
+- `[access_guard_redirect_paywall]` -- redirected to /paywall
+- `[access_guard_redirect_claim_paywall]` -- redirected to /claim/paywall
+- `[access_guard_db_error]` -- DB error, failed open
+
+
+### How GlobalAccessGuard works (SECONDARY guard)
 
 **Location:** `src/components/subscription/GlobalAccessGuard.tsx`
 **Mount point:** root layout (`src/app/layout.tsx`), nested as `<AuthRouteGuard><GlobalAccessGuard>...</GlobalAccessGuard></AuthRouteGuard>`
