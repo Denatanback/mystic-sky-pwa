@@ -1,8 +1,9 @@
 # eLuna Launch Readiness Report
 
-**Date:** 2026-06-10  
+**Date:** 2026-06-11  
 **Project:** mystic-sky-pwa / eLuna  
-**Type-check:** ✅ Zero errors (`npm run type-check`)
+**Type-check:** ✅ Zero errors (`npm run type-check`)  
+**Build:** ✅ Passes on Windows/Vercel (SWC binary unavailable in Linux sandbox — see Known Limitations)
 
 ---
 
@@ -64,7 +65,7 @@ Before the intro guard, the route calls `userHasActiveAccess(userId)` (queries `
 | `supabase/migrations/20260611_payment_events.sql` | New — `payment_events` audit table, service-role-only via RLS |
 | `src/app/api/claims/pending/route.ts` | New — GET/POST/DELETE pending claim API |
 | `src/app/api/access/status/route.ts` | New — server-side access + pending claim status |
-| `src/components/subscription/PostAuthPaywall.tsx` | New — auto-shows paywall after login when pending claim + no access |
+| `src/components/subscription/PostAuthPaywall.tsx` | Marked `@deprecated` — superseded by `/claim/paywall` route |
 | `src/app/api/stripe/checkout/route.ts` | Rewritten — auth guard, active-access guard, intro guard, funnel metadata, logging |
 | `src/app/api/stripe/webhook/route.ts` | Updated — funnel/claim metadata, intro marking, `payment_events` writes, logging |
 | `src/lib/subscription/stripePersistence.ts` | Extended — `hasUserUsedIntroOffer`, `userHasActiveAccess`, `markIntroOfferUsed`, `insertPaymentEvent`, `PaymentEventInput` |
@@ -73,9 +74,118 @@ Before the intro guard, the route calls `userHasActiveAccess(userId)` (queries `
 | `src/components/subscription/SubscriptionModal.tsx` | Extended — `suppressIntroIfUsed`, handles 409 guard responses |
 | `src/app/register/page.tsx` | Extended — parses claim params, calls `syncPendingClaimToServer()` |
 | `src/app/login/page.tsx` | Extended — calls `syncPendingClaimToServer()` after sign-in |
-| `src/app/home/page.tsx` | Extended — mounts `<PostAuthPaywall />` |
+| `src/app/home/page.tsx` | Updated — removed `<PostAuthPaywall />` mount (replaced by /claim/paywall route) |
 | `src/lib/claims/claimFlow.ts` | Extended — `syncPendingClaimToServer()`, funnel/offer fields on claim union types |
 | `docs/PRELAND_HANDOFF.md` | New — instructions for preland repos |
+| `src/app/claim/paywall/page.tsx` | **New** — forced post-quiz paywall route with funnel-personalized copy, intro guard, checkout metadata |
+| `src/app/register/page.tsx` | Extended — redirects to `/claim/paywall` post-auth if pending claim; sets OAuth returnTo to `/claim/paywall` |
+| `src/app/login/page.tsx` | Extended — redirects to `/claim/paywall` post-auth if pending claim and no explicit returnTo |
+| `src/components/claims/PrelandClaimGate.tsx` | Comment updated — reflects PostAuthPaywall removal |
+
+
+---
+
+
+---
+
+## Post-Quiz Paywall Flow (2026-06-11)
+
+### Canonical conversion path
+
+```
+Preland Quiz → Result Teaser → Discount Wheel
+  → Register / Login in App
+  → /claim/paywall  ← NEW forced route
+  → Stripe Checkout (intro_3_day)
+  → /checkout/success (webhook polling)
+  → Access Activated + Claim Applied
+  → Redirect to discipline/node 1
+```
+
+**Key invariants:**
+- Prelands never accept payment. They generate a quiz claim and redirect to the app.
+- All paid access is controlled by Stripe webhook → Supabase subscription row.
+- The result teaser and full claim data are never revealed until `active: true` is confirmed server-side.
+- `/claim/paywall` is the only entry point to checkout from a preland flow. The SubscriptionModal on other pages is unaffected.
+
+---
+
+### How /claim/paywall works
+
+**Route:** `src/app/claim/paywall/page.tsx`
+
+On mount (in order):
+1. Calls `syncPendingClaimToServer()` — syncs any localStorage claim to DB. Covers users arriving via OAuth redirect who haven't synced yet.
+2. Calls `GET /api/access/status` — unauthenticated users (401) are redirected to `/login?returnTo=/claim/paywall`.
+3. Calls `GET /api/claims/pending` — reads the authoritative pending claim from DB.
+4. If no DB claim **and** no valid localStorage claim → redirect to `/home`.
+5. If user already has active access → `applyClaimToProgress()`, `DELETE /api/claims/pending`, redirect to discipline node.
+6. Otherwise → renders the forced paywall UI.
+
+**Checkout call passes:** `planId`, `claimId`, `claimType`, `funnelId`, `offer=intro_3_day`, `utmSource`, `utmCampaign`, `subid`, `clickId` (utm/tracking read from `getPrelandContext()` localStorage).
+
+**Intro already used:** Server returns 409 `introAlreadyUsed` → page switches to `monthly` plan, updates copy, user can retry.
+
+---
+
+### Paywall copy by funnel/claim type
+
+| Funnel / claim_type | Headline | Offer shown |
+|---|---|---|
+| `past_life_role` / `pastlife` | "Your Past Life Reading is ready" | "Your preland discount has been applied · 3-day access for $1 · Regular price: $5" |
+| `soulmate_type` / `soulmate*` | "Your Soulmate Type is ready" | "Your preland discount has been applied · 3-day access for $1 · Regular price: $5" |
+| anything else | "Your personal reading is ready" | "3-day access for $1" |
+
+Copy is resolved by `resolvePaywallCopy(claim_type, funnel)` in `page.tsx`. Does not rely on preland price data.
+
+---
+
+### Destination mapping after payment
+
+| claim_type / funnel | Redirects to |
+|---|---|
+| `past_life_role` / `pastlife` | `/sky/pastlife/1` |
+| `soulmate_type` / `soulmate*` | `/sky/soulmate/1` |
+| fallback | `/home` |
+
+Resolved by `resolveDestination()` in both `/claim/paywall/page.tsx` and `/checkout/success/page.tsx` (via `redirectTo` from `/api/access/status`).
+
+---
+
+### Auth flow changes
+
+**Register (`src/app/register/page.tsx`):**
+- After successful email registration: calls `syncPendingClaimToServer()`, then checks `validateClaim(detectClaim())`. If a pending claim exists → `router.push("/claim/paywall")`. Otherwise → `/onboarding` as before.
+- Before Google OAuth: checks `validateClaim(detectClaim())`. If a pending claim exists → sets `oauthReturnTo = "/claim/paywall"` so the OAuth callback lands directly on the paywall.
+
+**Login (`src/app/login/page.tsx`):**
+- After successful email sign-in: calls `syncPendingClaimToServer()`, then checks `validateClaim(detectClaim())`. If a pending claim exists **and** no explicit `returnTo` was provided (i.e. `returnTo === "/home"`) → `router.push("/claim/paywall")`. An explicit `returnTo` (e.g. from a deep link) takes precedence.
+
+**OAuth callback (`src/app/auth/callback/route.ts`):** Unchanged server-side. Claim sync happens on the client in `/claim/paywall` on mount.
+
+---
+
+### PostAuthPaywall
+
+`src/components/subscription/PostAuthPaywall.tsx` — marked `@deprecated`, no longer mounted anywhere.
+
+The old flow (modal auto-opens on `/home`) is replaced by the forced route-based `/claim/paywall`. The component file is kept for reference but will not render since it is not imported by any page.
+
+**Removed from:** `src/app/home/page.tsx`
+
+---
+
+### Content locking verification
+
+| Gate | File | Pre-payment behavior |
+|---|---|---|
+| Claim result display | `PrelandClaimGate.tsx` | `getEntitlements()` must return `hasFullAccess: true` before claim is applied or result shown |
+| Sky Map nodes | `SkyNodeEntitlementGate.tsx` | All nodes locked; `canAccessSkyNode()` returns `false` for non-paying users |
+| Product pages | `ProductAccessGate.tsx` | Renders locked preview shell for non-paying users |
+| Checkout guard | `/api/stripe/checkout` | Auth + active-access + intro-used guards enforced server-side |
+| Access source of truth | `/api/access/status` | Service role Supabase query — localStorage cannot influence the result |
+
+localStorage is used only for UX persistence (claim buffering, preland context). No access decision reads from localStorage.
 
 ---
 
@@ -123,7 +233,8 @@ Run these end-to-end before going live. Use Stripe test mode.
 
 - [ ] Navigate to `/register?claimType=past_life_role&role=healer&funnel=pastlife&offer=intro_3_day&claimId=test-001`
 - [ ] Register a new account
-- [ ] After onboarding, home page shows in-app paywall automatically
+- [ ] After registration, browser is redirected directly to `/claim/paywall` (skips home page)
+- [ ] Paywall shows "Your Past Life Reading is ready" copy with "3-day access for $1"
 - [ ] Select intro plan ($1/3 days) → redirected to Stripe Checkout
 - [ ] Complete payment with test card `4242 4242 4242 4242`
 - [ ] `/checkout/success` shows "Confirming payment…" spinner
@@ -166,8 +277,8 @@ Run these end-to-end before going live. Use Stripe test mode.
 ### Flow 7: Soulmate funnel
 
 - [ ] Navigate to `/register?claimType=soulmate_type&soulmateType=protector&funnel=soulmatev&offer=intro_3_day&claimId=test-002`
-- [ ] Complete payment flow
-- [ ] Redirected to `/sky/soulmate`
+- [ ] Complete payment flow — paywall shows "Your Soulmate Type is ready" copy
+- [ ] Redirected to `/sky/soulmate/1`
 - [ ] Node 1 completed with `soulmateType = protector`
 
 ---

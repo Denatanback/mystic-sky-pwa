@@ -4,7 +4,7 @@ import { Logo } from "@/components/Logo";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { sendPasswordReset, signIn, signInWithOAuth, type OAuthProvider } from "@/lib/auth/authAdapter";
-import { syncPendingClaimToServer } from "@/lib/claims/claimFlow";
+import { syncPendingClaimToServer, detectClaim, validateClaim } from "@/lib/claims/claimFlow";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { PolicyFooterLinks } from "@/components/legal/PolicyFooterLinks";
 import { useLang } from "@/lib/i18n";
@@ -53,7 +53,11 @@ export default function LoginPage() {
     }
     // Persist any pending preland claim from localStorage to the server
     await syncPendingClaimToServer();
-    router.push(returnTo);
+    const hasPendingClaim = validateClaim(detectClaim()) !== null;
+    // If there is a pending preland claim and no explicit deep-link returnTo,
+    // redirect to the forced paywall. A custom returnTo takes precedence.
+    const loginReturnTo = hasPendingClaim && returnTo === "/home" ? "/claim/paywall" : returnTo;
+    router.push(loginReturnTo);
   }
 
   async function handleSocialSignIn(provider: OAuthProvider) {

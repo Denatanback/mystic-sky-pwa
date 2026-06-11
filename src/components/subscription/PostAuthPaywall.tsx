@@ -16,13 +16,12 @@ type AccessStatusResponse = {
 };
 
 /**
- * PostAuthPaywall — mounts invisibly after the user is authenticated.
- * If the user has a pending preland claim and no active access, it opens
- * the SubscriptionModal automatically. If the user has active access,
- * it does nothing.
- *
- * Place this component inside the authenticated shell (e.g. home page
- * or app layout after onboarding is complete).
+ * @deprecated
+ * PostAuthPaywall is no longer mounted anywhere in the app.
+ * Pending-claim users are now redirected to /claim/paywall immediately
+ * after authentication (register/login), which is the authoritative
+ * forced paywall route. This component is kept for reference only and
+ * will never render because it returns null when not forced by /claim/paywall.
  */
 export function PostAuthPaywall() {
   const { entitlements, loading } = useEntitlements();

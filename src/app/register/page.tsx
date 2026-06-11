@@ -11,7 +11,7 @@ import { existingAccountErrorMessage, register, signInWithOAuth, type OAuthProvi
 import { cleanLaunchContext, saveLaunchContext } from "@/lib/launch/launchContext";
 import { parsePrelandContext, savePrelandContext, type PrelandContext } from "@/lib/funnel/prelandContext";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
-import { syncPendingClaimToServer, writeMockClaim } from "@/lib/claims/claimFlow";
+import { syncPendingClaimToServer, writeMockClaim, detectClaim, validateClaim } from "@/lib/claims/claimFlow";
 
 const inputRow: React.CSSProperties = {
   display: "flex",
@@ -74,6 +74,10 @@ export default function RegisterPage() {
     const returnTo = params.get("returnTo");
     if (returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//") && !returnTo.includes("http://") && !returnTo.includes("https://")) {
       setOauthReturnTo(returnTo);
+    }
+    // If a claim is already in localStorage, send OAuth users to /claim/paywall
+    if (validateClaim(detectClaim()) !== null) {
+      setOauthReturnTo("/claim/paywall");
     }
     const context = cleanLaunchContext({
       source: params.get("source"),
@@ -152,7 +156,8 @@ export default function RegisterPage() {
     savePrelandContext(prelandContext);
     // Persist any pending preland claim to the DB so it survives the auth session
     await syncPendingClaimToServer();
-    router.push("/onboarding");
+    const hasPendingClaim = validateClaim(detectClaim()) !== null;
+    router.push(hasPendingClaim ? "/claim/paywall" : "/onboarding");
     router.refresh();
   }
 

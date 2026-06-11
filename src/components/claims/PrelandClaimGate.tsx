@@ -120,8 +120,8 @@ export function PrelandClaimGate({ children }: { children: ReactNode }) {
     // Check server-side entitlements before showing the result screen.
     void getEntitlements().then((entitlements) => {
       if (!entitlements.hasFullAccess) {
-        // User has not paid yet — keep the claim in localStorage for PostAuthPaywall
-        // to pick up, but do not show or apply the result.
+        // User has not paid yet — claim stays in localStorage/DB for /claim/paywall to pick up,
+        // but the result must NOT be shown or applied until payment is confirmed.
         setChecked(true);
         return;
       }
