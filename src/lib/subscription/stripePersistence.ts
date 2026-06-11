@@ -14,6 +14,14 @@ type SubscriptionUpsertInput = {
   subscriptionStatus: string;
   currentPeriodEnd: string | null;
   cancelAtPeriodEnd: boolean;
+  funnelId?: string | null;
+  claimId?: string | null;
+  claimType?: string | null;
+  utmSource?: string | null;
+  utmCampaign?: string | null;
+  subid?: string | null;
+  clickId?: string | null;
+  markIntroUsed?: boolean;
 };
 
 function toIsoFromUnix(seconds: number | null | undefined) {
@@ -22,14 +30,28 @@ function toIsoFromUnix(seconds: number | null | undefined) {
 }
 
 function firstString(...values: unknown[]) {
-  return values.find((value): value is string => typeof value === "string" && value.trim().length > 0)?.trim() ?? "";
+  return values.find((v): v is string => typeof v === "string" && v.trim().length > 0)?.trim() ?? "";
 }
 
 function readSubscriptionPriceId(subscription: Stripe.Subscription) {
   return subscription.items.data[0]?.price?.id ?? null;
 }
 
-export function stripeSubscriptionToUpsert(subscription: Stripe.Subscription, fallback?: { userId?: string | null; planId?: string | null }): SubscriptionUpsertInput | null {
+export function stripeSubscriptionToUpsert(
+  subscription: Stripe.Subscription,
+  fallback?: {
+    userId?: string | null;
+    planId?: string | null;
+    funnelId?: string | null;
+    claimId?: string | null;
+    claimType?: string | null;
+    utmSource?: string | null;
+    utmCampaign?: string | null;
+    subid?: string | null;
+    clickId?: string | null;
+    markIntroUsed?: boolean;
+  }
+): SubscriptionUpsertInput | null {
   const periodEnd = (subscription as Stripe.Subscription & { current_period_end?: number }).current_period_end;
   const userId = firstString(subscription.metadata?.userId, fallback?.userId);
   const stripeCustomerId = typeof subscription.customer === "string" ? subscription.customer : subscription.customer?.id ?? null;
@@ -49,6 +71,14 @@ export function stripeSubscriptionToUpsert(subscription: Stripe.Subscription, fa
     subscriptionStatus: subscription.status,
     currentPeriodEnd: toIsoFromUnix(periodEnd),
     cancelAtPeriodEnd: Boolean(subscription.cancel_at_period_end),
+    funnelId: firstString(subscription.metadata?.funnelId, fallback?.funnelId) || null,
+    claimId: firstString(subscription.metadata?.claimId, fallback?.claimId) || null,
+    claimType: firstString(subscription.metadata?.claimType, fallback?.claimType) || null,
+    utmSource: firstString(subscription.metadata?.utm_source, fallback?.utmSource) || null,
+    utmCampaign: firstString(subscription.metadata?.utm_campaign, fallback?.utmCampaign) || null,
+    subid: firstString(subscription.metadata?.subid, fallback?.subid) || null,
+    clickId: firstString(subscription.metadata?.click_id, fallback?.clickId) || null,
+    markIntroUsed: fallback?.markIntroUsed ?? false,
   };
 }
 
@@ -70,10 +100,7 @@ export async function getOrCreateStripeCustomerForUser(user: User, stripe: Strip
 
   const customer = await stripe.customers.create({
     email: user.email ?? undefined,
-    metadata: {
-      userId: user.id,
-      product: "eluna",
-    },
+    metadata: { userId: user.id, product: "eluna" },
   });
 
   const latestRow = await supabase
@@ -124,14 +151,12 @@ export async function findStripeCustomerIdForUser(userId: string) {
 
 export async function recordStripeEvent(event: Stripe.Event) {
   const supabase = getSupabaseServiceRoleClient();
-  const insert = await supabase
-    .from("stripe_events")
-    .insert({
-      id: event.id,
-      type: event.type,
-      livemode: event.livemode,
-      payload: event as unknown as Record<string, unknown>,
-    });
+  const insert = await supabase.from("stripe_events").insert({
+    id: event.id,
+    type: event.type,
+    livemode: event.livemode,
+    payload: event as unknown as Record<string, unknown>,
+  });
 
   if (!insert.error) return { duplicate: false };
   if (insert.error.code === "23505") return { duplicate: true };
@@ -147,9 +172,84 @@ export async function markStripeEventProcessed(eventId: string) {
   if (update.error) throw new Error(update.error.message);
 }
 
+export async function hasUserUsedIntroOffer(userId: string): Promise<boolean> {
+  const supabase = getSupabaseServiceRoleClient();
+  const { data } = await supabase
+    .from("subscriptions")
+    .select("intro_offer_used")
+    .eq("user_id", userId)
+    .eq("intro_offer_used", true)
+    .limit(1)
+    .maybeSingle();
+  return Boolean(data);
+}
+
+export async function userHasActiveAccess(userId: string): Promise<boolean> {
+  const supabase = getSupabaseServiceRoleClient();
+  const { data } = await supabase
+    .from("subscriptions")
+    .select("subscription_status, trial_end")
+    .eq("user_id", userId)
+    .in("subscription_status", ["active", "trialing", "internal"])
+    .limit(5);
+
+  if (!data?.length) return false;
+  return data.some((row) => {
+    if (row.subscription_status === "active" || row.subscription_status === "internal") return true;
+    if (row.subscription_status === "trialing") {
+      const end = row.trial_end ? new Date(row.trial_end as string).getTime() : Infinity;
+      return end > Date.now();
+    }
+    return false;
+  });
+}
+
+export async function markIntroOfferUsed(userId: string): Promise<void> {
+  const supabase = getSupabaseServiceRoleClient();
+  await supabase.from("subscriptions").update({ intro_offer_used: true }).eq("user_id", userId);
+}
+
+export type PaymentEventInput = {
+  stripeEventId: string;
+  eventType: string;
+  livemode: boolean;
+  userId?: string | null;
+  planId?: string | null;
+  amountCents?: number | null;
+  currency?: string | null;
+  status?: string | null;
+  funnelId?: string | null;
+  claimId?: string | null;
+  stripeCustomerId?: string | null;
+  stripeSubscriptionId?: string | null;
+};
+
+export async function insertPaymentEvent(input: PaymentEventInput): Promise<void> {
+  const supabase = getSupabaseServiceRoleClient();
+  const payload: Record<string, unknown> = {
+    stripe_event_id: input.stripeEventId,
+    event_type: input.eventType,
+    livemode: input.livemode,
+  };
+  if (input.userId) payload.user_id = input.userId;
+  if (input.planId) payload.plan_id = input.planId;
+  if (input.amountCents != null) payload.amount_cents = input.amountCents;
+  if (input.currency) payload.currency = input.currency;
+  if (input.status) payload.status = input.status;
+  if (input.funnelId) payload.funnel_id = input.funnelId;
+  if (input.claimId) payload.claim_id = input.claimId;
+  if (input.stripeCustomerId) payload.stripe_customer_id = input.stripeCustomerId;
+  if (input.stripeSubscriptionId) payload.stripe_subscription_id = input.stripeSubscriptionId;
+
+  const { error } = await supabase.from("payment_events").insert(payload);
+  if (error) {
+    console.error("[payment_events] insert failed", { eventType: input.eventType, stripeEventId: input.stripeEventId, error: error.message });
+  }
+}
+
 export async function upsertStripeSubscription(input: SubscriptionUpsertInput) {
   const supabase = getSupabaseServiceRoleClient();
-  const payload = {
+  const payload: Record<string, unknown> = {
     user_id: input.userId,
     plan_id: input.planId,
     subscription_status: input.subscriptionStatus,
@@ -166,17 +266,26 @@ export async function upsertStripeSubscription(input: SubscriptionUpsertInput) {
     provider_subscription_id: input.stripeSubscriptionId,
   };
 
+  if (input.funnelId) payload.funnel_id = input.funnelId;
+  if (input.claimId) payload.claim_id = input.claimId;
+  if (input.claimType) payload.claim_type = input.claimType;
+  if (input.utmSource) payload.utm_source = input.utmSource;
+  if (input.utmCampaign) payload.utm_campaign = input.utmCampaign;
+  if (input.subid) payload.subid = input.subid;
+  if (input.clickId) payload.click_id = input.clickId;
+  if (input.markIntroUsed) payload.intro_offer_used = true;
+
   if (input.stripeSubscriptionId) {
-    const existingBySubscription = await supabase
+    const existingBySub = await supabase
       .from("subscriptions")
       .select("id")
       .eq("stripe_subscription_id", input.stripeSubscriptionId)
       .limit(1)
       .maybeSingle();
 
-    if (existingBySubscription.error) throw new Error(existingBySubscription.error.message);
-    if (existingBySubscription.data?.id) {
-      const update = await supabase.from("subscriptions").update(payload).eq("id", existingBySubscription.data.id);
+    if (existingBySub.error) throw new Error(existingBySub.error.message);
+    if (existingBySub.data?.id) {
+      const update = await supabase.from("subscriptions").update(payload).eq("id", existingBySub.data.id);
       if (update.error) throw new Error(update.error.message);
       return;
     }

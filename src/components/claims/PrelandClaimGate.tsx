@@ -10,6 +10,7 @@ import {
   validateClaim,
   type ValidPrelandClaim,
 } from "@/lib/claims/claimFlow";
+import { getEntitlements } from "@/lib/subscription/entitlements";
 
 const PAST_LIFE_RESULTS: Record<string, {
   title: string;
@@ -114,9 +115,20 @@ export function PrelandClaimGate({ children }: { children: ReactNode }) {
       setChecked(true);
       return;
     }
-    applyClaimToProgress(valid);
-    setClaim(valid);
-    setChecked(true);
+
+    // Claim result is only revealed and applied after payment is confirmed.
+    // Check server-side entitlements before showing the result screen.
+    void getEntitlements().then((entitlements) => {
+      if (!entitlements.hasFullAccess) {
+        // User has not paid yet — keep the claim in localStorage for PostAuthPaywall
+        // to pick up, but do not show or apply the result.
+        setChecked(true);
+        return;
+      }
+      applyClaimToProgress(valid);
+      setClaim(valid);
+      setChecked(true);
+    });
   }, []);
 
   if (!checked) {

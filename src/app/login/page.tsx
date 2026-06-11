@@ -4,6 +4,7 @@ import { Logo } from "@/components/Logo";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { sendPasswordReset, signIn, signInWithOAuth, type OAuthProvider } from "@/lib/auth/authAdapter";
+import { syncPendingClaimToServer } from "@/lib/claims/claimFlow";
 import { LangToggle } from "@/components/app-shell/LangToggle";
 import { PolicyFooterLinks } from "@/components/legal/PolicyFooterLinks";
 import { useLang } from "@/lib/i18n";
@@ -50,6 +51,8 @@ export default function LoginPage() {
       setAuthError(result.error);
       return;
     }
+    // Persist any pending preland claim from localStorage to the server
+    await syncPendingClaimToServer();
     router.push(returnTo);
   }
 

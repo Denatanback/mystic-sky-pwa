@@ -1,0 +1,110 @@
+⚠ It looks like there is a custom Babel configuration that can be removed.
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_017co48._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_017co48._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-filters (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_017co48._.js:962:29)
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/assets/node-emblems/humandesign/emblem-4-centers.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/humandesign/emblem-1-type.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/humandesign/emblem-3-profile.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/humandesign/emblem-2-authority.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/humandesign/emblem-5-channels.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/humandesign/emblem-6-gates.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/humandesign/emblem-7-cycles.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/humandesign/emblem-8-living.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_017co48._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_017co48._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-filters (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_017co48._.js:962:29)
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/assets/node-emblems/pastlife/emblem-1-soul-age.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/pastlife/emblem-3-sign.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/pastlife/emblem-2-karma.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-filters (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] Image with src "/assets/node-emblems/astrology/emblem-5-plantes.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-2-moon.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-3-aspects.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-4-house-v2.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-1-sun.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-7-aspect-v2.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-6-transit.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-8-syntez.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-filters (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/assets/node-emblems/numerology/emblem-3-personality-number.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-2-soul-number.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-4-matrix.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-5-cycles.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-1-path-number.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-8-personal-code.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-6-karma.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-7-master-number.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-1-sun.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-2-moon.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-3-aspects.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-4-house-v2.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-5-plantes.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-8-syntez.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-6-transit.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-7-aspect-v2.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-filters (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/assets/node-emblems/numerology/emblem-1-path-number.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-3-personality-number.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-2-soul-number.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-4-matrix.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-5-cycles.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-6-karma.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-7-master-number.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/numerology/emblem-8-personal-code.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-filters (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-filters (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-filters (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] Image with src "/assets/node-emblems/astrology/emblem-1-sun.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-2-moon.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-3-aspects.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-4-house-v2.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-5-plantes.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-8-syntez.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-6-transit.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/assets/node-emblems/astrology/emblem-7-aspect-v2.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-filters (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/assets/icons/icon-sky.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-main (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)
+[browser] [eLuna tour] Missing target: sky-map-filters (file://C:/Users/Artem/Documents/PyProjects/mystic-sky-pwa/.next/dev/static/chunks/src_0flyobn._.js:962:29)

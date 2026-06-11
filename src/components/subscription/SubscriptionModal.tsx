@@ -16,6 +16,8 @@ export type SubscriptionModalProps = {
   contextTitle?: string;
   contextDescription?: string;
   trialCtaLabel?: string;
+  /** When true, hides the intro_3_day plan if the server reports it already used. */
+  suppressIntroIfUsed?: boolean;
 };
 
 const unlocks = [
@@ -75,14 +77,19 @@ const planDetails: Record<PaidPlanId, {
 
 const displayOrder: PaidPlanId[] = ["intro_3_day", "six_month", "three_month", "monthly"];
 
-export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescription, trialCtaLabel }: SubscriptionModalProps) {
+export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescription, trialCtaLabel, suppressIntroIfUsed }: SubscriptionModalProps) {
   const [checkoutError, setCheckoutError] = useState("");
   const [loadingPlanId, setLoadingPlanId] = useState<PaidPlanId | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [introAlreadyUsed, setIntroAlreadyUsed] = useState(false);
   const { entitlements } = useEntitlements();
   const hasPaidAccess = entitlements.hasFullAccess;
   const hasInternalAccess = entitlements.planId === "internal_full_access" && entitlements.status === "internal";
-  const orderedPlans = useMemo(() => displayOrder.map((id) => paidPlans.find((plan) => plan.id === id)).filter(Boolean) as typeof paidPlans, []);
+  const orderedPlans = useMemo(() => {
+    const plans = displayOrder.map((id) => paidPlans.find((plan) => plan.id === id)).filter(Boolean) as typeof paidPlans;
+    if (suppressIntroIfUsed && introAlreadyUsed) return plans.filter((p) => p.id !== "intro_3_day");
+    return plans;
+  }, [suppressIntroIfUsed, introAlreadyUsed]);
 
   useEffect(() => {
     setMounted(true);
@@ -118,7 +125,15 @@ export function SubscriptionModal({ isOpen, onClose, contextTitle, contextDescri
       const payload = await response.json().catch(() => ({})) as { url?: string; error?: string };
 
       if (!response.ok || !payload.url) {
-        setCheckoutError(payload.error ?? "Could not start checkout. Please try again.");
+        if ((payload as { introAlreadyUsed?: boolean }).introAlreadyUsed) {
+          setIntroAlreadyUsed(true);
+          setCheckoutError("The introductory offer has already been used. Please choose a regular plan.");
+        } else if ((payload as { alreadyActive?: boolean }).alreadyActive) {
+          setCheckoutError("You already have active access. Refreshing…");
+          setTimeout(() => window.location.reload(), 1500);
+        } else {
+          setCheckoutError(payload.error ?? "Could not start checkout. Please try again.");
+        }
         setLoadingPlanId(null);
         return;
       }

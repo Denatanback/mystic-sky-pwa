@@ -11,6 +11,7 @@ import { existingAccountErrorMessage, register, signInWithOAuth, type OAuthProvi
 import { cleanLaunchContext, saveLaunchContext } from "@/lib/launch/launchContext";
 import { parsePrelandContext, savePrelandContext, type PrelandContext } from "@/lib/funnel/prelandContext";
 import { getCurrentProfile } from "@/lib/profile/currentProfile";
+import { syncPendingClaimToServer, writeMockClaim } from "@/lib/claims/claimFlow";
 
 const inputRow: React.CSSProperties = {
   display: "flex",
@@ -96,6 +97,36 @@ export default function RegisterPage() {
     saveLaunchContext(context);
     savePrelandContext(preland);
 
+    // If claim params are present in URL, write them to localStorage so they
+    // survive OAuth redirects and are available after registration.
+    const claimType = params.get("claimType");
+    const funnel = params.get("funnel");
+    const offer = params.get("offer");
+    const claimId = params.get("claimId");
+    if (claimType === "past_life_role" || claimType === "soulmate_type") {
+      const role = params.get("role");
+      const soulmateType = params.get("soulmateType");
+      if (claimType === "past_life_role" && role) {
+        writeMockClaim({
+          claimType,
+          payload: { role },
+          claimId: claimId ?? undefined,
+          source: "preland",
+          funnel: funnel ?? undefined,
+          offer: offer ?? undefined,
+        });
+      } else if (claimType === "soulmate_type" && soulmateType) {
+        writeMockClaim({
+          claimType,
+          payload: { soulmateType },
+          claimId: claimId ?? undefined,
+          source: "preland",
+          funnel: funnel ?? undefined,
+          offer: offer ?? undefined,
+        });
+      }
+    }
+
     void getCurrentProfile().then((profile) => {
       if (!profile) return;
       router.replace(profile.onboardingCompleted ? "/home" : "/onboarding");
@@ -119,6 +150,8 @@ export default function RegisterPage() {
     }
     saveLaunchContext(launchContext);
     savePrelandContext(prelandContext);
+    // Persist any pending preland claim to the DB so it survives the auth session
+    await syncPendingClaimToServer();
     router.push("/onboarding");
     router.refresh();
   }

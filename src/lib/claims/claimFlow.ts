@@ -2,6 +2,39 @@
 
 import { completeNode, getNodeState } from "@/lib/nodeProgress";
 
+/**
+ * Persist the current pending claim from localStorage to the server's
+ * pending_claims table. Call this after the user has registered or signed in.
+ * Safe to call multiple times — the server upserts (replaces) any existing
+ * pending claim.
+ */
+export async function syncPendingClaimToServer(): Promise<void> {
+  if (!isBrowser()) return;
+  const raw = detectClaim();
+  if (!raw) return;
+
+  const body = {
+    claimType: raw.claimType,
+    claimId: raw.claimId ?? null,
+    funnel: raw.funnel ?? null,
+    offer: raw.offer ?? null,
+    payload:
+      raw.claimType === "past_life_role"
+        ? { role: raw.payload.role }
+        : { soulmateType: raw.payload.soulmateType },
+  };
+
+  try {
+    await fetch("/api/claims/pending", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    // non-fatal — localStorage claim is still available as fallback
+  }
+}
+
 export type SupportedClaimType = "past_life_role" | "soulmate_type";
 
 export type RawPrelandClaim =
@@ -10,12 +43,16 @@ export type RawPrelandClaim =
       payload: { role: string };
       claimId?: string;
       source?: string;
+      funnel?: string;
+      offer?: string;
     }
   | {
       claimType: "soulmate_type";
       payload: { soulmateType: string };
       claimId?: string;
       source?: string;
+      funnel?: string;
+      offer?: string;
     };
 
 export type ValidPrelandClaim = {
